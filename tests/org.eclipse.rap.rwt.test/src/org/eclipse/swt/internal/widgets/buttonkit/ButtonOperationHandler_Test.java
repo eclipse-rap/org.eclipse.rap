@@ -29,44 +29,46 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
-import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 
 public class ButtonOperationHandler_Test {
 
+  @Rule
+  public TestContext context = new TestContext();
+
   private Display display;
   private Shell shell;
   private Button button;
   private Button mockedButton;
+  private IControlAdapter mockedControlAdapter;
   private ButtonOperationHandler handler;
 
   @Before
   public void setUp() {
-    Fixture.setUp();
     display = new Display();
     shell = new Shell( display, SWT.NONE );
     button = new Button( shell, SWT.PUSH );
     button.setBounds( 0, 0, 100, 20 );
     mockedButton = mock( Button.class );
+    mockedControlAdapter = mock( IControlAdapter.class );
+    when( mockedButton.getAdapter( IControlAdapter.class ) ).thenReturn( mockedControlAdapter );
     handler = new ButtonOperationHandler( mockedButton );
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
   }
 
   @Test
@@ -307,7 +309,7 @@ public class ButtonOperationHandler_Test {
     handler.handleSet( mockedButton, properties );
 
     ArgumentCaptor<Color> captor = ArgumentCaptor.forClass( Color.class );
-    verify( mockedButton ).setForeground( captor.capture() );
+    verify( mockedControlAdapter ).setForeground( captor.capture() );
     Color foregroundColor = captor.getValue();
     assertEquals( 1, foregroundColor.getRed() );
     assertEquals( 2, foregroundColor.getGreen() );
@@ -322,7 +324,7 @@ public class ButtonOperationHandler_Test {
     handler.handleSet( mockedButton, properties );
 
     ArgumentCaptor<Color> captor = ArgumentCaptor.forClass( Color.class );
-    verify( mockedButton ).setBackground( captor.capture() );
+    verify( mockedControlAdapter ).setBackground( captor.capture() );
     Color backgroundColor = captor.getValue();
     assertEquals( 1, backgroundColor.getRed() );
     assertEquals( 2, backgroundColor.getGreen() );

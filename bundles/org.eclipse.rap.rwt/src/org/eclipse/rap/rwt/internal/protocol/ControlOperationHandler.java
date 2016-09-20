@@ -30,6 +30,7 @@ import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PAR
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_TRAVERSE;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.wasEventSent;
 import static org.eclipse.swt.internal.events.EventLCAUtil.translateButton;
+import static org.eclipse.swt.internal.widgets.ControlUtil.getControlAdapter;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
@@ -111,7 +112,7 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
                                 arrayValue.get( 1 ).asInt(),
                                 arrayValue.get( 2 ).asInt() );
       }
-      control.setForeground( foreground );
+      getControlAdapter( control ).setForeground( foreground );
     }
   }
 
@@ -131,7 +132,7 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
                                 arrayValue.get( 1 ).asInt(),
                                 arrayValue.get( 2 ).asInt() );
       }
-      control.setBackground( background );
+      getControlAdapter( control ).setBackground( background );
     }
   }
 
@@ -143,7 +144,7 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
   public void handleSetVisibility( T control, JsonObject properties ) {
     JsonValue value = properties.get( PROP_VISIBILITY );
     if( value != null ) {
-      control.setVisible( value.asBoolean() );
+      getControlAdapter( control ).setVisible( value.asBoolean() );
     }
   }
 
@@ -155,7 +156,7 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
   public void handleSetEnabled( T control, JsonObject properties ) {
     JsonValue value = properties.get( PROP_ENABLED );
     if( value != null ) {
-      control.setEnabled( value.asBoolean() );
+      getControlAdapter( control ).setEnabled( value.asBoolean() );
     }
   }
 
@@ -168,7 +169,7 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
     JsonValue value = properties.get( PROP_TOOL_TIP );
     if( value != null ) {
       String toolTipText = value.isNull() ? null : value.asString();
-      control.setToolTipText( toolTipText );
+      getControlAdapter( control ).setToolTipText( toolTipText );
     }
   }
 
@@ -184,7 +185,7 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
       if( !value.isNull() ) {
         cursor = new Cursor( control.getDisplay(), translateCursor( value.asString() ) );
       }
-      control.setCursor( cursor );
+      getControlAdapter( control ).setCursor( cursor );
     }
   }
 

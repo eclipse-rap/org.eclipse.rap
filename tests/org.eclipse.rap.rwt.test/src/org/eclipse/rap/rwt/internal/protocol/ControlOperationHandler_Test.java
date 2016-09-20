@@ -31,6 +31,7 @@ import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -47,6 +48,7 @@ public class ControlOperationHandler_Test {
   private Shell shell;
   private Button control;
   private Control mockedControl;
+  private IControlAdapter mockedControlAdapter;
   private ControlOperationHandler<Control> handler;
 
   @Before
@@ -57,7 +59,9 @@ public class ControlOperationHandler_Test {
     control = new Button( shell, SWT.BORDER );
     control.setBounds( 10, 10, 100, 20 );
     mockedControl = mock( Control.class );
+    mockedControlAdapter = mock( IControlAdapter.class );
     when( mockedControl.getDisplay() ).thenReturn( display );
+    when( mockedControl.getAdapter( IControlAdapter.class ) ).thenReturn( mockedControlAdapter );
     handler = new ControlOperationHandler<Control>( mockedControl ) {};
   }
 
@@ -390,7 +394,7 @@ public class ControlOperationHandler_Test {
     handler.handleSet( mockedControl, properties );
 
     ArgumentCaptor<Color> captor = ArgumentCaptor.forClass( Color.class );
-    verify( mockedControl ).setForeground( captor.capture() );
+    verify( mockedControlAdapter ).setForeground( captor.capture() );
     Color foregroundColor = captor.getValue();
     assertEquals( 1, foregroundColor.getRed() );
     assertEquals( 2, foregroundColor.getGreen() );
@@ -403,7 +407,7 @@ public class ControlOperationHandler_Test {
 
     handler.handleSet( mockedControl, properties );
 
-    verify( mockedControl ).setForeground( eq( ( Color )null ) );
+    verify( mockedControlAdapter ).setForeground( eq( ( Color )null ) );
   }
 
   @Test
@@ -414,7 +418,7 @@ public class ControlOperationHandler_Test {
     handler.handleSet( mockedControl, properties );
 
     ArgumentCaptor<Color> captor = ArgumentCaptor.forClass( Color.class );
-    verify( mockedControl ).setBackground( captor.capture() );
+    verify( mockedControlAdapter ).setBackground( captor.capture() );
     Color backgroundColor = captor.getValue();
     assertEquals( 1, backgroundColor.getRed() );
     assertEquals( 2, backgroundColor.getGreen() );
@@ -427,7 +431,7 @@ public class ControlOperationHandler_Test {
 
     handler.handleSet( mockedControl, properties );
 
-    verify( mockedControl ).setBackground( eq( ( Color )null ) );
+    verify( mockedControlAdapter ).setBackground( eq( ( Color )null ) );
   }
 
   @Test
@@ -436,7 +440,7 @@ public class ControlOperationHandler_Test {
 
     handler.handleSet( mockedControl, properties );
 
-    verify( mockedControl ).setVisible( false );
+    verify( mockedControlAdapter ).setVisible( false );
   }
 
   @Test
@@ -445,7 +449,7 @@ public class ControlOperationHandler_Test {
 
     handler.handleSet( mockedControl, properties );
 
-    verify( mockedControl ).setEnabled( false );
+    verify( mockedControlAdapter ).setEnabled( false );
   }
 
   @Test
@@ -454,7 +458,7 @@ public class ControlOperationHandler_Test {
 
     handler.handleSet( mockedControl, properties );
 
-    verify( mockedControl ).setToolTipText( "foo" );
+    verify( mockedControlAdapter ).setToolTipText( "foo" );
   }
 
   @Test
@@ -463,7 +467,7 @@ public class ControlOperationHandler_Test {
 
     handler.handleSet( mockedControl, properties );
 
-    verify( mockedControl ).setToolTipText( eq( ( String )null ) );
+    verify( mockedControlAdapter ).setToolTipText( eq( ( String )null ) );
   }
 
   @Test
@@ -473,7 +477,7 @@ public class ControlOperationHandler_Test {
     handler.handleSet( mockedControl, properties );
 
     Cursor expected = new Cursor( mockedControl.getDisplay(), SWT.CURSOR_HELP );
-    verify( mockedControl ).setCursor( eq( expected ) );
+    verify( mockedControlAdapter ).setCursor( eq( expected ) );
   }
 
   @Test
@@ -482,7 +486,7 @@ public class ControlOperationHandler_Test {
 
     handler.handleSet( mockedControl, properties );
 
-    verify( mockedControl ).setCursor( eq( ( Cursor )null ) );
+    verify( mockedControlAdapter ).setCursor( eq( ( Cursor )null ) );
   }
 
   @Test( expected = IllegalArgumentException.class )

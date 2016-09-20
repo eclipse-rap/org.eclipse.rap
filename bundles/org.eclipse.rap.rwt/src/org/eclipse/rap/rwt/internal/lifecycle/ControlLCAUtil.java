@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2016 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,6 @@ import static org.eclipse.swt.internal.widgets.ControlUtil.getControlAdapter;
 import org.eclipse.rap.rwt.internal.util.ActiveKeysUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.ControlRemoteAdapter;
-import org.eclipse.swt.internal.widgets.ControlUtil;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -87,7 +86,7 @@ public class ControlLCAUtil {
 
   private static void resetTabIndices( Composite composite ) {
     for( Control control : composite.getChildren() ) {
-      ControlUtil.getControlAdapter( control ).setTabIndex( -1 );
+      getControlAdapter( control ).setTabIndex( -1 );
       if( control instanceof Composite ) {
         resetTabIndices( ( Composite )control );
       }
@@ -97,7 +96,7 @@ public class ControlLCAUtil {
   private static int computeTabIndices( Composite composite, int startIndex ) {
     int result = startIndex;
     for( Control control : composite.getTabList() ) {
-      ControlUtil.getControlAdapter( control ).setTabIndex( result );
+      getControlAdapter( control ).setTabIndex( result );
       // for Links, leave a range out to be assigned to hrefs on the client
       result += control instanceof Link ? 300 : 1;
       if( control instanceof Composite ) {
