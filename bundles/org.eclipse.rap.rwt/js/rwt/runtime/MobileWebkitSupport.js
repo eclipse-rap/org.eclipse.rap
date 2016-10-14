@@ -397,7 +397,8 @@ rwt.runtime.MobileWebkitSupport = {
   _getScrollYOffset : function( scrollBar ) {
     if( this._isGridRowContainer( this._touchSession.widgetTarget ) ) {
       var grid = this._touchSession.widgetTarget.getParent();
-      return grid._getTopItem().getOffset();
+      var topItem = grid._getTopItem();
+      return topItem ? topItem.getOffset() : 0;
     }
     return scrollBar.getValue();
   },
