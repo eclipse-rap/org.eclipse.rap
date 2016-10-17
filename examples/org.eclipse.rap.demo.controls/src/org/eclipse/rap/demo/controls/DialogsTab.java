@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2016 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,7 +24,6 @@ import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.window.Window;
 import org.eclipse.rap.rwt.widgets.DialogCallback;
-import org.eclipse.rap.rwt.widgets.DialogUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -64,7 +63,8 @@ public class DialogsTab extends ExampleTab {
   private Button showMessageBoxDlgButton;
   private Button showColorDialogButton;
   private Button showFontDialogButton;
-  protected boolean useDialogCallback;
+  private boolean useDialogCallback;
+  private boolean useMarkup;
 
   public DialogsTab() {
     super( "Dialogs" );
@@ -208,11 +208,22 @@ public class DialogsTab extends ExampleTab {
     final Button cbUseDialogCallback = new Button( swtDialogsGroup, SWT.CHECK );
     cbUseDialogCallback.setText( "Use DialogCallback" );
     cbUseDialogCallback.setSelection( useDialogCallback );
-    cbUseDialogCallback.setLayoutData( new GridData( SWT.LEFT, SWT.CENTER, false, false, 3, 1 ) );
+    cbUseDialogCallback.setLayoutData( new GridData( SWT.LEFT, SWT.CENTER, false, false, 1, 1 ) );
     cbUseDialogCallback.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent event ) {
         useDialogCallback = cbUseDialogCallback.getSelection();
+      }
+    } );
+
+    final Button cbUseMarkup = new Button( swtDialogsGroup, SWT.CHECK );
+    cbUseMarkup.setText( "Use markup" );
+    cbUseMarkup.setSelection( useMarkup );
+    cbUseMarkup.setLayoutData( new GridData( SWT.LEFT, SWT.CENTER, false, false, 2, 1 ) );
+    cbUseMarkup.addSelectionListener( new SelectionAdapter() {
+      @Override
+      public void widgetSelected( SelectionEvent event ) {
+        useMarkup = cbUseMarkup.getSelection();
       }
     } );
 
@@ -264,6 +275,7 @@ public class DialogsTab extends ExampleTab {
 
   private void showInputDialog() {
     final IInputValidator val = new IInputValidator() {
+      @Override
       public String isValid( final String newText ) {
         String result = null;
         if( newText.length() < 5 ) {
@@ -290,6 +302,7 @@ public class DialogsTab extends ExampleTab {
     ProgressMonitorDialog dialog = new ProgressMonitorDialog( getShell() );
     try {
       dialog.run( true, true, new IRunnableWithProgress() {
+        @Override
         public void run( final IProgressMonitor monitor )
           throws InvocationTargetException, InterruptedException
         {
@@ -434,12 +447,14 @@ public class DialogsTab extends ExampleTab {
       style |= SWT.ICON_WORKING;
     }
     String title = "MessageBox Title";
-    String mesg = "Lorem ipsum dolor sit amet consectetuer adipiscing elit.";
+    String mesg = "Lorem <b>ipsum</b> dolor sit amet consectetuer adipiscing elit.";
     MessageBox mb = new MessageBox( getShell(), style );
+    mb.setMarkupEnabled( useMarkup );
     mb.setText( title );
     mb.setMessage( mesg );
     if( useDialogCallback ) {
-      DialogUtil.open( mb, new DialogCallback() {
+      mb.open( new DialogCallback() {
+        @Override
         public void dialogClosed( int returnCode ) {
           String returnCodeText = returnCodeText( returnCode );
           messageBoxDlgResLabel.setText( "Result: " + returnCodeText );
@@ -457,7 +472,8 @@ public class DialogsTab extends ExampleTab {
   private void showColorDialog() {
     final ColorDialog dialog = new ColorDialog( getShell() );
     if( useDialogCallback ) {
-      DialogUtil.open( dialog, new DialogCallback() {
+      dialog.open( new DialogCallback() {
+        @Override
         public void dialogClosed( int returnCode ) {
           RGB result = dialog.getRGB();
           messageBoxDlgResLabel.setText( "Result: " + result );
@@ -474,7 +490,8 @@ public class DialogsTab extends ExampleTab {
   protected void showFontDialog() {
     final FontDialog dialog = new FontDialog( getShell(), SWT.SHELL_TRIM );
     if( useDialogCallback ) {
-      DialogUtil.open( dialog, new DialogCallback() {
+      dialog.open( new DialogCallback() {
+        @Override
         public void dialogClosed( int returnCode ) {
           FontData fontData = returnCode == SWT.OK ? dialog.getFontList()[ 0 ] : null;
           RGB rgb = dialog.getRGB();
@@ -567,4 +584,5 @@ public class DialogsTab extends ExampleTab {
     }
     return strResult;
   }
+
 }

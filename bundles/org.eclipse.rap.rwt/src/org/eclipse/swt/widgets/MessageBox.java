@@ -11,9 +11,11 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.internal.textsize.TextSizeUtil.stringExtent;
+
 import java.util.StringTokenizer;
 
-import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.widgets.DialogCallback;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -56,6 +58,7 @@ public class MessageBox extends Dialog {
 
   private Image image;
   private String message;
+  private boolean markupEnabled;
 
   /**
    * Constructs a new instance of this class given only its parent.
@@ -71,7 +74,7 @@ public class MessageBox extends Dialog {
    * </ul>
    */
   public MessageBox( Shell parent ) {
-  	this( parent, SWT.OK | SWT.ICON_INFORMATION | SWT.APPLICATION_MODAL );
+    this( parent, SWT.OK | SWT.ICON_INFORMATION | SWT.APPLICATION_MODAL );
   }
 
   /**
@@ -98,9 +101,9 @@ public class MessageBox extends Dialog {
    * </ul>
    */
   public MessageBox( Shell parent, int style ) {
-  	super( parent, checkStyle ( style ) );
-  	checkSubclass();
-  	message = "";
+    super( parent, checkStyle ( style ) );
+    checkSubclass();
+    message = "";
   }
 
   /**
@@ -111,7 +114,7 @@ public class MessageBox extends Dialog {
    * @return the message
    */
   public String getMessage() {
-  	return message;
+    return message;
   }
 
   /**
@@ -130,6 +133,20 @@ public class MessageBox extends Dialog {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     message = string;
+  }
+
+  /**
+   * Controls whether the use of <em>markup</em> in message is enabled. Once the markup in message
+   * is enabled it's not possible to disable it.
+   *
+   * @param markupEnabled true to enable the markup in message
+   *
+   * @since 3.2
+   */
+  public void setMarkupEnabled( boolean markupEnabled ) {
+    if( !this.markupEnabled ) {
+      this.markupEnabled = markupEnabled;
+    }
   }
 
   /**
@@ -209,6 +226,9 @@ public class MessageBox extends Dialog {
 
   private void createText() {
     Label textLabel = new Label( shell, SWT.WRAP );
+    if( markupEnabled ) {
+      textLabel.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+    }
     GridData data = new GridData( GridData.HORIZONTAL_ALIGN_FILL );
     int imageWidth = image == null ? 0 : image.getBounds().width;
     int maxTextWidth = MAX_WIDTH - imageWidth - SPACING;
@@ -267,12 +287,13 @@ public class MessageBox extends Dialog {
   }
 
   private int getMaxMessageLineWidth() {
-    Font font = shell.getFont();
     int result = 0;
-    StringTokenizer tokenizer = new StringTokenizer( message, "\n" );
+    Font font = shell.getFont();
+    String lineSeparator = markupEnabled ? "<br/>" : "\n";
+    StringTokenizer tokenizer = new StringTokenizer( message, lineSeparator );
     while( tokenizer.hasMoreTokens() ) {
       String line = tokenizer.nextToken();
-      int lineWidth = TextSizeUtil.stringExtent( font, line ).x;
+      int lineWidth = stringExtent( font, line, markupEnabled ).x;
       result = Math.max( result, lineWidth );
     }
     return result;
@@ -299,4 +320,5 @@ public class MessageBox extends Dialog {
     }
     return chkStyle;
   }
+
 }
