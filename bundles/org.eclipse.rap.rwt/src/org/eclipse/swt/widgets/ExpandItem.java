@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2016 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,8 +12,11 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.internal.textsize.TextSizeUtil.textExtent;
+import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
+import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
+
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
-import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
@@ -21,6 +24,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.widgets.MarkupValidator;
 import org.eclipse.swt.internal.widgets.expandbarkit.ExpandBarThemeAdapter;
 import org.eclipse.swt.internal.widgets.expanditemkit.ExpandItemLCA;
 
@@ -197,9 +201,11 @@ public class ExpandItem extends Item {
    */
   public int getHeaderHeight() {
     checkWidget();
+    Font font = parent.getFont();
     BoxDimensions itemHeaderBorder = getItemHeaderBorder();
     int borderHeight = itemHeaderBorder.top + itemHeaderBorder.bottom;
-    return Math.max( parent.getBandHeight(), imageHeight ) + borderHeight;
+    int textHeight = textExtent( font, text, SWT.DEFAULT, isMarkupEnabledFor( parent ) ).y + 4;
+    return Math.max( Math.max( CHEVRON_SIZE, imageHeight ), textHeight ) + borderHeight;
   }
 
   /**
@@ -235,23 +241,17 @@ public class ExpandItem extends Item {
   }
 
   int getPreferredWidth() {
-    int result = 0;
     if( !isDisposed() ) {
       Image image = getImage();
-      int w = ( image == null )
-                               ? 0
-                               : image.getBounds().width;
       String text = getText();
-      if( text != null ) {
-        if( w > 0 ) {
-          w += INTERNAL_SPACING;
-        }
-        Font parentFont = getParent().getFont();
-        w += TextSizeUtil.stringExtent( parentFont, text ).x;
+      int width = ( image == null ) ? 0 : image.getBounds().width;
+      if( width > 0 ) {
+        width += INTERNAL_SPACING;
       }
-      result = w + LEFT_MARGIN + RIGHT_MARGIN;
+      width += textExtent( parent.getFont(), text, SWT.DEFAULT, isMarkupEnabledFor( parent ) ).x;
+      return width + LEFT_MARGIN + RIGHT_MARGIN;
     }
-    return result;
+    return 0;
   }
 
   Rectangle getBounds() {
@@ -406,6 +406,9 @@ public class ExpandItem extends Item {
     checkWidget();
     if( string == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( isMarkupEnabledFor( parent ) && !isValidationDisabledFor( parent ) ) {
+      MarkupValidator.getInstance().validate( string );
     }
     if( !string.equals( getText() ) ) {
       super.setText( string );

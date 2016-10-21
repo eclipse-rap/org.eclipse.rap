@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2016 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,8 +15,11 @@ import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
@@ -24,6 +27,7 @@ import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.internal.widgets.MarkupValidator;
 import org.eclipse.swt.internal.widgets.expanditemkit.ExpandItemLCA;
 import org.eclipse.swt.layout.GridLayout;
 import org.junit.Before;
@@ -96,6 +100,36 @@ public class ExpandItem_Test {
   }
 
   @Test
+  public void testMarkupTextWithoutMarkupEnabled() {
+    expandBar.setData( RWT.MARKUP_ENABLED, Boolean.FALSE );
+
+    try {
+      expandItem.setText( "invalid xhtml: <<&>>" );
+    } catch( IllegalArgumentException notExpected ) {
+      fail();
+    }
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testMarkupTextWithMarkupEnabled() {
+    expandBar.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+
+    expandItem.setText( "invalid xhtml: <<&>>" );
+  }
+
+  @Test
+  public void testMarkupTextWithMarkupEnabled_ValidationDisabled() {
+    expandBar.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+    expandBar.setData( MarkupValidator.MARKUP_VALIDATION_DISABLED, Boolean.TRUE );
+
+    try {
+      expandItem.setText( "invalid xhtml: <<&>>" );
+    } catch( IllegalArgumentException notExpected ) {
+      fail();
+    }
+  }
+
+  @Test
   public void testImage() throws IOException {
     Image image = createImage( display, Fixture.IMAGE1 );
     ExpandItem expandItem = new ExpandItem( expandBar, SWT.NONE );
@@ -127,7 +161,7 @@ public class ExpandItem_Test {
     assertEquals( 32, expandItem.getHeaderHeight() );
     Font font = new Font( display, "font", 30, SWT.BOLD );
     expandBar.setFont( font );
-    assertEquals( 34, expandItem.getHeaderHeight() );
+    assertEquals( 42, expandItem.getHeaderHeight() );
   }
 
   @Test

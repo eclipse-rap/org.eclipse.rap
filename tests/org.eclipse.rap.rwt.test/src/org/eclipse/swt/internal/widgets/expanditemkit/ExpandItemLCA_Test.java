@@ -291,7 +291,7 @@ public class ExpandItemLCA_Test {
     lca.renderChanges( expandItem );
 
     TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( 26, message.findSetProperty( expandItem, "headerHeight" ).asInt() );
+    assertEquals( 32, message.findSetProperty( expandItem, "headerHeight" ).asInt() );
   }
 
   @Test

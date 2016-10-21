@@ -20,6 +20,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.SWT;
@@ -52,7 +53,6 @@ public class ExpandBar_Test {
 
   @Test
   public void testInitialValues() {
-    assertEquals( ExpandItem.CHEVRON_SIZE, expandBar.getBandHeight() );
     assertEquals( 4, expandBar.getSpacing() );
     assertEquals( 0, expandBar.getItemCount() );
     assertNull( expandBar.getBackgroundImage() );
@@ -97,14 +97,6 @@ public class ExpandBar_Test {
   }
 
   @Test
-  public void testBandHeight() {
-    assertEquals( ExpandItem.CHEVRON_SIZE, expandBar.getBandHeight() );
-    Font font = new Font( display, "font", 30, SWT.BOLD );
-    expandBar.setFont( font );
-    assertEquals( 34, expandBar.getBandHeight() );
-  }
-
-  @Test
   public void testSpacing() {
     assertEquals( 4, expandBar.getSpacing() );
     expandBar.setSpacing( 8 );
@@ -139,26 +131,16 @@ public class ExpandBar_Test {
     assertEquals( "expanded|collapsed", log.toString() );
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testIndexOfWithNullItem() {
-    try {
-      expandBar.indexOf( null );
-      fail( "No exception thrown for expandItem == null" );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
+    expandBar.indexOf( null );
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testIndexOfWithDisposedItem() {
     ExpandItem item = new ExpandItem( expandBar, SWT.NONE );
     item.dispose();
-    try {
-      expandBar.indexOf( item );
-      fail( "No exception thrown for disposed expandItem" );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
+    expandBar.indexOf( item );
   }
 
   // bug 301005
@@ -214,26 +196,36 @@ public class ExpandBar_Test {
     assertFalse( expandBar.isListening( SWT.Collapse ) );
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testAddExpandListenerWithNullArgument() {
-    try {
-      expandBar.addExpandListener( null );
-    } catch( IllegalArgumentException expected ) {
-    }
+    expandBar.addExpandListener( null );
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testRemoveExpandListenerWithNullArgument() {
-    try {
-      expandBar.removeExpandListener( null );
-    } catch( IllegalArgumentException expected ) {
-    }
+    expandBar.removeExpandListener( null );
   }
 
   @Test
   public void testGetAdapter_LCA() {
     assertTrue( expandBar.getAdapter( WidgetLCA.class ) instanceof ExpandBarLCA );
     assertSame( expandBar.getAdapter( WidgetLCA.class ), expandBar.getAdapter( WidgetLCA.class ) );
+  }
+
+  @Test
+  public void testSetMarkupEnabled() {
+    expandBar.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+
+    assertEquals( Boolean.TRUE, expandBar.getData( RWT.MARKUP_ENABLED ) );
+  }
+
+  @Test
+  public void testSetMarkupEnabled_resetIsIgnored() {
+    expandBar.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+
+    expandBar.setData( RWT.MARKUP_ENABLED, Boolean.FALSE );
+
+    assertEquals( Boolean.TRUE, expandBar.getData( RWT.MARKUP_ENABLED ) );
   }
 
 }

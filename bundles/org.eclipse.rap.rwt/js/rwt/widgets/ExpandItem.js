@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2016 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -86,7 +86,13 @@ rwt.qx.Class.define( "rwt.widgets.ExpandItem", {
       }
     },
 
-    setText : function( text ) {
+    setText : function( value ) {
+      var text = value;
+      var EncodingUtil = rwt.util.Encoding;
+      if( !this._expandBar.isMarkupEnabled() ) {
+        text = EncodingUtil.escapeText( text, false );
+        text = EncodingUtil.replaceNewLines( text, "<br/>" );
+      }
       this._header.setCellContent( 1, text );
     },
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2016 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,8 +11,10 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
+
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
-import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -21,7 +23,6 @@ import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ExpandAdapter;
 import org.eclipse.swt.events.ExpandEvent;
 import org.eclipse.swt.events.ExpandListener;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IExpandBarAdapter;
@@ -56,31 +57,9 @@ import org.eclipse.swt.internal.widgets.expandbarkit.ExpandBarLCA;
  */
 public class ExpandBar extends Composite {
 
-  private final class ExpandBarAdapter implements IExpandBarAdapter {
-
-    @Override
-    public Rectangle getBounds( ExpandItem item ) {
-      int index = indexOf( item );
-      return getItem( index ).getBounds();
-    }
-
-    @Override
-    public Rectangle getBottomSpacingBounds() {
-      return ExpandBar.this.getBottomSpacingBounds();
-    }
-  }
-
-  private final class ResizeListener extends ControlAdapter {
-    @Override
-    public void controlResized( ControlEvent event ) {
-      layoutItems( 0 );
-    }
-  }
-
   ExpandItem focusItem;
   int spacing;
   int allItemsHeight;
-  int charHeight;
   private transient IExpandBarAdapter expandBarAdapter;
   private final ItemHolder<ExpandItem> itemHolder;
   private final ResizeListener resizeListener;
@@ -263,10 +242,6 @@ public class ExpandBar extends Composite {
     return control;
   }
 
-  int getBandHeight() {
-    return Math.max( ExpandItem.CHEVRON_SIZE, charHeight );
-  }
-
   /**
    * Returns the item at the given, zero-relative index in the receiver. Throws
    * an exception if the index is out of range.
@@ -374,73 +349,52 @@ public class ExpandBar extends Composite {
   }
 
   void layoutItems( int index ) {
-    int itemCount = getItemCount();
-    if( index < itemCount ) {
-      int y = spacing;
-      for( int i = 0; i < index; i++ ) {
+    if( !isInDispose() ) {
+      int itemCount = getItemCount();
+      if( index < itemCount ) {
+        int y = spacing;
+        for( int i = 0; i < index; i++ ) {
+          ExpandItem item = getItem( i );
+          if( item.expanded ) {
+            y += item.height;
+          }
+          BoxDimensions itemBorder = item.getItemBorder();
+          y += item.getHeaderHeight() + itemBorder.top + itemBorder.bottom + spacing;
+        }
+        for( int i = index; i < itemCount; i++ ) {
+          ExpandItem item = getItem( i );
+          item.setBounds( spacing, y, 0, 0, true, false );
+          if( item.expanded ) {
+            y += item.height;
+          }
+          BoxDimensions itemBorder = item.getItemBorder();
+          y += item.getHeaderHeight() + itemBorder.top + itemBorder.bottom + spacing;
+        }
+      }
+      // Calculate all items size
+      if( itemCount > 0 ) {
+        ExpandItem lastItem = getItem( itemCount - 1 );
+        allItemsHeight = lastItem.y + lastItem.getBounds().height;
+      }
+      updateScrollBars();
+      // Set items width based on scrollbar visibility
+      Rectangle bounds = getBounds();
+      BoxDimensions border = getBorder();
+      int scrollBarWidth = getVScrollBarWidth();
+      for( int i = 0; i < itemCount; i++ ) {
         ExpandItem item = getItem( i );
-        if( item.expanded ) {
-          y += item.height;
+        Rectangle itemBounds = item.getBounds();
+        if( isVScrollBarVisible() ) {
+          if( this.getOrientation() == SWT.RIGHT_TO_LEFT ) {
+            itemBounds.x = spacing + scrollBarWidth;
+          }
+          int width = bounds.width - scrollBarWidth - ( border.left + border.right ) - 2 * spacing;
+          item.setBounds( itemBounds.x, itemBounds.y, width, item.height, true, true );
+        } else {
+          int width = bounds.width - ( border.left + border.right ) - 2 * spacing;
+          item.setBounds( spacing, itemBounds.y, width, item.height, true, true );
         }
-        BoxDimensions itemBorder = item.getItemBorder();
-        y += item.getHeaderHeight() + itemBorder.top + itemBorder.bottom + spacing;
       }
-      for( int i = index; i < itemCount; i++ ) {
-        ExpandItem item = getItem( i );
-        item.setBounds( spacing, y, 0, 0, true, false );
-        if( item.expanded ) {
-          y += item.height;
-        }
-        BoxDimensions itemBorder = item.getItemBorder();
-        y += item.getHeaderHeight() + itemBorder.top + itemBorder.bottom + spacing;
-      }
-    }
-    // Calculate all items size
-    if( itemCount > 0 ) {
-      ExpandItem lastItem = getItem( itemCount - 1 );
-      allItemsHeight = lastItem.y + lastItem.getBounds().height;
-    }
-    updateScrollBars();
-    // Set items width based on scrollbar visibility
-    Rectangle bounds = getBounds();
-    BoxDimensions border = getBorder();
-    int scrollBarWidth = getVScrollBarWidth();
-    for( int i = 0; i < itemCount; i++ ) {
-      ExpandItem item = getItem( i );
-      Rectangle itemBounds = item.getBounds();
-      if( isVScrollBarVisible() ) {
-        if( this.getOrientation() == SWT.RIGHT_TO_LEFT ) {
-          itemBounds.x = spacing + scrollBarWidth;
-        }
-        int width = bounds.width - scrollBarWidth - ( border.left + border.right ) - 2 * spacing;
-        item.setBounds( itemBounds.x, itemBounds.y, width, item.height, true, true );
-      } else {
-        int width = bounds.width - ( border.left + border.right ) - 2 * spacing;
-        item.setBounds( spacing, itemBounds.y, width, item.height, true, true );
-      }
-    }
-  }
-
-  /**
-   * Sets the font that the receiver will use to paint textual information
-   * to the font specified by the argument, or to the default font for that
-   * kind of control if the argument is null.
-   *
-   * @param font the new font (or null)
-   *
-   * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li>
-   *                </ul>
-   * @exception SWTException <ul>
-   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   *                </ul>
-   */
-  @Override
-  public void setFont( Font font ) {
-    if( font != getFont() ) {
-      super.setFont( font );
-      charHeight = TextSizeUtil.getCharHeight( getFont() ) + 4;
     }
   }
 
@@ -469,6 +423,13 @@ public class ExpandBar extends Composite {
   public void setOrientation( int orientation ) {
     super.setOrientation( orientation );
     layoutItems( 0 );
+  }
+
+  @Override
+  public void setData( String key, Object value ) {
+    if( !RWT.MARKUP_ENABLED.equals( key ) || !isMarkupEnabledFor( this ) ) {
+      super.setData( key, value );
+    }
   }
 
   void showItem( ExpandItem item ) {
@@ -582,4 +543,28 @@ public class ExpandBar extends Composite {
     }
     super.reskinChildren( flags );
   }
+
+  private final class ExpandBarAdapter implements IExpandBarAdapter {
+
+    @Override
+    public Rectangle getBounds( ExpandItem item ) {
+      return item.getBounds();
+    }
+
+    @Override
+    public Rectangle getBottomSpacingBounds() {
+      return ExpandBar.this.getBottomSpacingBounds();
+    }
+
+  }
+
+  private final class ResizeListener extends ControlAdapter {
+
+    @Override
+    public void controlResized( ControlEvent event ) {
+      layoutItems( 0 );
+    }
+
+  }
+
 }

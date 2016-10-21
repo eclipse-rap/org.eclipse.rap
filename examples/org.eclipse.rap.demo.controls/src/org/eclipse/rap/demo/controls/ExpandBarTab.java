@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2016 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ExpandEvent;
 import org.eclipse.swt.events.ExpandListener;
@@ -41,10 +42,12 @@ class ExpandBarTab extends ExampleTab {
 
   private ExpandBar expandBar;
   private Spinner spinner;
+  private boolean markupEnabled;
 
   ExpandBarTab() {
     super( "ExpandBar" );
     setDefaultStyle( SWT.BORDER | SWT.V_SCROLL );
+    markupEnabled = true;
   }
 
   @Override
@@ -52,6 +55,7 @@ class ExpandBarTab extends ExampleTab {
     createStyleButton( "V_SCROLL", SWT.V_SCROLL, true );
     createStyleButton( "BORDER", SWT.BORDER, true );
     createOrientationButton();
+    createMarkupButton();
     createVisibilityButton();
     createEnablementButton();
     spinner = createSpacingControl( parent );
@@ -69,6 +73,7 @@ class ExpandBarTab extends ExampleTab {
   protected void createExampleControls( Composite parent ) {
     parent.setLayout( new RowLayout( SWT.VERTICAL ) );
     expandBar = new ExpandBar( parent, getStyle() );
+    expandBar.setData( RWT.MARKUP_ENABLED, markupEnabled ? Boolean.TRUE : null );
     if( hasCreateProperty( PROP_CONTEXT_MENU ) ) {
       Menu expandBarMenu = new Menu( expandBar );
       MenuItem expandBarMenuItem = new MenuItem( expandBarMenu, SWT.PUSH );
@@ -125,7 +130,7 @@ class ExpandBarTab extends ExampleTab {
     new Button( composite, SWT.CHECK ).setText( "SWT.CHECK" );
     new Button( composite, SWT.TOGGLE ).setText( "SWT.TOGGLE" );
     ExpandItem item = new ExpandItem( expandBar, SWT.NONE, 0 );
-    item.setText( "What is your favorite button?" );
+    item.setText( "What is your <br/><b>favorite</b> button?" );
     item.setHeight( composite.computeSize( SWT.DEFAULT, SWT.DEFAULT ).y );
     item.setControl( composite );
     item.setImage( Util.loadImage( display, "resources/newfolder_wiz.gif" ) );
@@ -212,6 +217,20 @@ class ExpandBarTab extends ExampleTab {
       item.setHeight( content.computeSize( SWT.DEFAULT, SWT.DEFAULT ).y );
       item.setControl( content );
     }
+  }
+
+  private Button createMarkupButton() {
+    final Button button = new Button( styleComp, SWT.CHECK );
+    button.setText( "Enable Markup" );
+    button.setSelection( markupEnabled );
+    button.addSelectionListener( new SelectionAdapter() {
+      @Override
+      public void widgetSelected( final SelectionEvent event ) {
+        markupEnabled = button.getSelection();
+        createNew();
+      }
+    } );
+    return button;
   }
 
 }

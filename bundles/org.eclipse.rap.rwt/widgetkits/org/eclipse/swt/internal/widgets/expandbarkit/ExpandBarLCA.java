@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2016 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,17 +11,18 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.expandbarkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
@@ -40,6 +41,7 @@ public final class ExpandBarLCA extends WidgetLCA<ExpandBar> {
 
   private static final String PROP_BOTTOM_SPACING_BOUNDS = "bottomSpacingBounds";
   private static final String PROP_VSCROLLBAR_MAX = "vScrollBarMax";
+  private static final String PROP_MARKUP_ENABLED = "markupEnabled";
   private static final String PROP_EXPAND_LISTENER = "Expand";
   private static final String PROP_COLLAPSE_LISTENER = "Collapse";
 
@@ -55,6 +57,7 @@ public final class ExpandBarLCA extends WidgetLCA<ExpandBar> {
     remoteObject.setHandler( new ExpandBarOperationHandler( expandBar ) );
     remoteObject.set( "parent", getId( expandBar.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( expandBar, ALLOWED_STYLES ) ) );
+    remoteObject.set( PROP_MARKUP_ENABLED, isMarkupEnabledFor( expandBar ) );
     // Always listen for Expand and Collapse.
     // Currently required for item's control visibility and bounds update.
     remoteObject.listen( PROP_EXPAND_LISTENER, true );

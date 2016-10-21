@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2016 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ rwt.qx.Class.define( "rwt.widgets.ExpandBar", {
     this.setScrollBarsVisible( false, false );
     // This object is needed for proper scrolling behaviour
     this._bottomSpacing = new rwt.widgets.base.Parent();
+    this._markupEnabled = false;
     this._clientArea.add( this._bottomSpacing );
   },
 
@@ -59,6 +60,14 @@ rwt.qx.Class.define( "rwt.widgets.ExpandBar", {
 
     setVScrollBarMax : function( value ) {
       this._vertScrollBar.setMaximum( value );
+    },
+
+    setMarkupEnabled : function( value ) {
+      this._markupEnabled = value;
+    },
+
+    isMarkupEnabled : function() {
+      return this._markupEnabled;
     }
 
   }

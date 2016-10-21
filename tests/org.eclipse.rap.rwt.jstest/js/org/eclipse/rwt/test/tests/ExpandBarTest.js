@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 EclipseSource and others.
+ * Copyright (c) 2011, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,6 +49,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
       assertTrue( bar instanceof rwt.widgets.ExpandBar );
       assertIdentical( shell, bar.getParent() );
       assertTrue( bar.getUserData( "isControl") );
+    },
+
+    testCreateExpandBarByProtocol_withMarkupEnabled : function() {
+      bar = this._createExpandBarByProtocol( "w5", "w2", [ "NONE" ], true );
+
+      assertTrue( bar.isMarkupEnabled() );
     },
 
     testSetBottomSpacingBoundsByProtocol : function() {
@@ -117,6 +123,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
       TestUtil.protocolSet( "w4", { "text" : "foo<>bar" } );
 
       assertEquals( "foo&lt;&gt;bar", item._header.getCellContent( 1 ) );
+    },
+
+
+    testSetItemTextByProtocol_withMarkupEnabled : function() {
+      bar = this._createExpandBarByProtocol( "w5", "w2", [ "NONE" ], true );
+      item = this._createExpandItemByProtocol( "w6", "w5", [ "NONE" ] );
+
+      TestUtil.protocolSet( "w6", { "text" : "foo<b>bar</b>" } );
+
+      assertEquals( "foo<b>bar</b>", item._header.getCellContent( 1 ) );
     },
 
     testSetItemImageByProtocol : function() {
@@ -245,14 +261,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
     /////////
     // Helper
 
-    _createExpandBarByProtocol : function( id, parentId, style ) {
+    _createExpandBarByProtocol : function( id, parentId, style, markupEnabled ) {
       Processor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.ExpandBar",
         "properties" : {
           "style" : style,
-          "parent" : parentId
+          "parent" : parentId,
+          "markupEnabled": markupEnabled
         }
       } );
       Processor.processOperation( {
