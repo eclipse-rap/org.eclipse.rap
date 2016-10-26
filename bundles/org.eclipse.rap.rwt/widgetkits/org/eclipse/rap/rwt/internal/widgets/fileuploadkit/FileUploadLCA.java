@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 EclipseSource and others.
+ * Copyright (c) 2011, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,11 +39,15 @@ public final class FileUploadLCA extends WidgetLCA<FileUpload> {
 
   private static final String PROP_TEXT = "text";
   private static final String PROP_IMAGE = "image";
+  private static final String PROP_FILTER_EXTENSIONS = "filterExtensions";
+
+  private static final String[] DEFAUT_FILTER_EXTENSIONS = new String[ 0 ];
 
   @Override
   public void preserveValues( FileUpload fileUpload ) {
     preserveProperty( fileUpload, PROP_TEXT, fileUpload.getText() );
     preserveProperty( fileUpload, PROP_IMAGE, fileUpload.getImage() );
+    preserveProperty( fileUpload, PROP_FILTER_EXTENSIONS, fileUpload.getFilterExtensions() );
   }
 
   @Override
@@ -60,6 +64,10 @@ public final class FileUploadLCA extends WidgetLCA<FileUpload> {
     WidgetLCAUtil.renderCustomVariant( fileUpload );
     renderProperty( fileUpload, PROP_TEXT, fileUpload.getText(), "" );
     renderProperty( fileUpload, PROP_IMAGE, fileUpload.getImage(), null );
+    renderProperty( fileUpload,
+                    PROP_FILTER_EXTENSIONS,
+                    fileUpload.getFilterExtensions(),
+                    DEFAUT_FILTER_EXTENSIONS );
     renderListenSelection( fileUpload );
     renderSubmit( fileUpload );
   }

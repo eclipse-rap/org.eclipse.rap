@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 EclipseSource and others.
+ * Copyright (c) 2011, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,6 @@ import org.eclipse.rap.fileupload.FileUploadHandler;
 import org.eclipse.rap.fileupload.FileUploadListener;
 import org.eclipse.rap.rwt.service.ServerPushSession;
 import org.eclipse.rap.rwt.widgets.DialogCallback;
-import org.eclipse.rap.rwt.widgets.DialogUtil;
 import org.eclipse.rap.rwt.widgets.FileUpload;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -89,6 +88,7 @@ public class FileUploadExamplePage implements IExamplePage {
     ExampleUtil.createHeading( area, "FileUpload widget", 2 );
     fileUpload = new FileUpload( area, SWT.NONE );
     fileUpload.setText( "Select File" );
+    fileUpload.setFilterExtensions( new String[] { ".gif", ".png", ".jpg" } );
     fileUpload.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, false, false ) );
     fileNameLabel = new Label( area, SWT.NONE );
     fileNameLabel.setText( "no file selected" );
@@ -212,7 +212,7 @@ public class FileUploadExamplePage implements IExamplePage {
   private void openFileDialog( Shell parent, boolean multi ) {
     final FileDialog fileDialog = new FileDialog( parent, getDialogStyle( multi ) );
     fileDialog.setText( multi ? "Upload Multiple Files" : "Upload Single File" );
-    DialogUtil.open( fileDialog, new DialogCallback() {
+    fileDialog.open( new DialogCallback() {
       @Override
       public void dialogClosed( int returnCode ) {
         showUploadResults( fileDialog );

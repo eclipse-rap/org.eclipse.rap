@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 EclipseSource and others.
+ * Copyright (c) 2011, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -56,6 +56,17 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
       assertNull( widget._formElement );
       assertNull( widget._inputElement );
       assertTrue( iframe.isDisposed() );
+      shell.destroy();
+    },
+
+    testSetFilterExtensionsByProtocol : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+
+      var upload = createFileUploadByProtocol( "w3", "w2" );
+      TestUtil.protocolSet( "w3", { "filterExtensions" : [ ".gif", null, ".png" ] } );
+
+      var input = upload._inputElement;
+      assertEquals( ".gif,.png", input.getAttribute( "accept" ) );
       shell.destroy();
     },
 
@@ -179,6 +190,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
       assertEquals( "file", input.getAttribute( "type" ) );
       assertEquals( "1", input.getAttribute( "size" ) );
       assertEquals( "absolute", input.style.position );
+      assertNull( input.getAttribute( "accept" ) );
       upload.destroy();
     },
 

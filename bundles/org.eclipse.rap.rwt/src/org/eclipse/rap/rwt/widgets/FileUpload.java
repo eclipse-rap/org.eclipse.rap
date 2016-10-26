@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 EclipseSource and others.
+ * Copyright (c) 2011, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -64,6 +64,7 @@ public class FileUpload extends Canvas {
   private String text;
   private Image image;
   private String[] fileNames = new String[ 0 ];
+  private String[] filterExtensions = new String[ 0 ];
   private String url;
 
   /**
@@ -201,6 +202,45 @@ public class FileUpload extends Canvas {
   public String[] getFileNames() {
     checkWidget();
     return fileNames.clone();
+  }
+
+  /**
+   * Set the file extensions which the widget will use to filter the files it shows to the argument,
+   * which may not be null.
+   * <p>
+   * An extension filter string must be of the form ".extension".
+   * </p>
+   *
+   * @param extensions the file extension filter
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the extensions is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *   <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *   <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 3.2
+   */
+  public void setFilterExtensions( String[] extensions ) {
+    checkWidget();
+    if( extensions == null ) {
+      SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    filterExtensions = extensions;
+  }
+
+  /**
+   * Returns the file extensions which the widget will use to filter the files it shows.
+   *
+   * @return the file extensions filter
+   *
+   * @since 3.2
+   */
+  public String[] getFilterExtensions() {
+    checkWidget();
+    return filterExtensions;
   }
 
   /**

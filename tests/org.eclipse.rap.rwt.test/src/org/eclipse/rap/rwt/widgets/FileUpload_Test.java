@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 EclipseSource and others.
+ * Copyright (c) 2011, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 import java.io.InputStream;
@@ -48,36 +47,31 @@ public class FileUpload_Test {
 
   private Display display;
   private Composite shell;
+  private FileUpload upload;
 
   @Before
   public void setUp() {
     display = new Display();
     shell = new Shell( display, SWT.NONE );
+    upload = new FileUpload( shell, SWT.NONE );
   }
 
   @Test
   public void testStyle() {
-    FileUpload upload = new FileUpload( shell, SWT.BORDER | SWT.FLAT | SWT.MULTI );
+    upload = new FileUpload( shell, SWT.BORDER | SWT.FLAT | SWT.MULTI );
 
     assertEquals( 0, upload.getStyle() & SWT.FLAT );
     assertEquals( SWT.BORDER, upload.getStyle() & SWT.BORDER );
     assertEquals( SWT.MULTI, upload.getStyle() & SWT.MULTI );
   }
 
-  ///////
-  // Text
-
   @Test
   public void testGetTextDefaultsToEmpty() {
-    FileUpload upload = new FileUpload( shell, SWT.NONE );
-
     assertEquals( "", upload.getText() );
   }
 
   @Test
   public void testSetText() {
-    FileUpload upload = new FileUpload( shell, SWT.NONE );
-
     upload.setText( "foo" );
 
     assertEquals( "foo", upload.getText() );
@@ -85,37 +79,24 @@ public class FileUpload_Test {
 
   @Test
   public void testSetTextTwice() {
-    FileUpload upload = new FileUpload( shell, SWT.NONE );
-
     upload.setText( "foo" );
     upload.setText( "bar" );
 
     assertEquals( "bar", upload.getText() );
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testSetTextToNull() {
-    FileUpload upload = new FileUpload( shell, SWT.NONE );
-    try {
-      upload.setText( null );
-      fail( "Must not allow setting text to null" );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
+    upload.setText( null );
   }
-
-  ////////
-  // Image
 
   @Test
   public void testGetImageDefaultsToNull() {
-    FileUpload upload = new FileUpload( shell, SWT.NONE );
     assertEquals( null, upload.getImage() );
   }
 
   @Test
   public void testGetSetImage() {
-    FileUpload upload = new FileUpload( shell, SWT.NONE );
     Image image1 = createImage( Fixture.IMAGE1 );
     upload.setImage( image1 );
     assertSame( image1, upload.getImage() );
@@ -126,37 +107,38 @@ public class FileUpload_Test {
 
   @Test
   public void testSetImageToNull() {
-    FileUpload upload = new FileUpload( shell, SWT.NONE );
     upload.setImage( createImage( Fixture.IMAGE1 ) );
     upload.setImage( null );
     assertEquals( null, upload.getImage() );
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testSetImageToDisposedImage() {
-    FileUpload upload = new FileUpload( shell, SWT.NONE );
     Image image = createImage( Fixture.IMAGE1 );
     image.dispose();
-    try {
-      upload.setImage( image );
-      fail( "Must not allow disposed image" );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
+    upload.setImage( image );
   }
 
-  //////////////
-  // FileName(s)
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetFilterExtensionsToNull() {
+    upload.setFilterExtensions( null );
+  }
+
+  public void testSetFilterExtensions() {
+    String[] extensions = new String[] { "foo", "bar" };
+
+    upload.setFilterExtensions( extensions );
+
+    assertArrayEquals( extensions, upload.getFilterExtensions() );
+  }
 
   @Test
   public void testGetFileNameDefaultsToNull() {
-    FileUpload upload = new FileUpload( shell, SWT.NONE );
     assertNull( upload.getFileName() );
   }
 
   @Test
   public void testGetFileName() {
-    FileUpload upload = new FileUpload( shell, SWT.NONE );
     IFileUploadAdapter adapter = getFileUploadAdapter( upload );
     adapter.setFileNames( new String[]{ "foo.txt" } );
     assertEquals( "foo.txt", upload.getFileName() );
@@ -164,13 +146,12 @@ public class FileUpload_Test {
 
   @Test
   public void testGetFileNamesDefaultsToEmptyArray() {
-    FileUpload upload = new FileUpload( shell, SWT.NONE );
     assertEquals( 0, upload.getFileNames().length );
   }
 
   @Test
   public void testGetFileNames() {
-    FileUpload upload = new FileUpload( shell, SWT.MULTI );
+    upload = new FileUpload( shell, SWT.MULTI );
     IFileUploadAdapter adapter = getFileUploadAdapter( upload );
 
     adapter.setFileNames( new String[]{ "foo.txt", "bar.txt" } );
@@ -181,7 +162,7 @@ public class FileUpload_Test {
 
   @Test
   public void testGetFileNames_ReturnsSaveCopy() {
-    FileUpload upload = new FileUpload( shell, SWT.MULTI );
+    upload = new FileUpload( shell, SWT.MULTI );
     IFileUploadAdapter adapter = getFileUploadAdapter( upload );
     adapter.setFileNames( new String[]{ "foo.txt", "bar.txt" } );
 
@@ -191,12 +172,8 @@ public class FileUpload_Test {
     assertArrayEquals( expected, upload.getFileNames() );
   }
 
-  /////////
-  // Submit
-
   @Test
   public void testSubmit() {
-    FileUpload upload = new FileUpload( shell, SWT.NONE );
     IFileUploadAdapter adapter = getFileUploadAdapter( upload );
     adapter.setFileNames( new String[] { "foo.txt" } );
     assertNull( adapter.getAndResetUrl() );
@@ -206,7 +183,6 @@ public class FileUpload_Test {
 
   @Test
   public void testSubmitCalledTwice() {
-    FileUpload upload = new FileUpload( shell, SWT.NONE );
     IFileUploadAdapter adapter = getFileUploadAdapter( upload );
     assertNull( adapter.getAndResetUrl() );
     adapter.setFileNames( new String[]{ "foo.txt" } );
@@ -217,19 +193,13 @@ public class FileUpload_Test {
 
   @Test
   public void testSubmitWhileFileNameIsNull() {
-    FileUpload upload = new FileUpload( shell, SWT.NONE );
     upload.submit( "http://bla/" );
     IFileUploadAdapter adapter = getFileUploadAdapter( upload );
     assertNull( adapter.getAndResetUrl() );
   }
 
-  ////////////
-  // Listeners
-
   @Test
   public void testAddSelectionListener_registersUntypedListeners() {
-    FileUpload upload = new FileUpload( shell, SWT.NONE );
-
     upload.addSelectionListener( mock( SelectionListener.class ) );
 
     assertTrue( upload.isListening( SWT.Selection ) );
@@ -238,7 +208,6 @@ public class FileUpload_Test {
 
   @Test
   public void testRemoveSelectionListener_unregistersUntypedListeners() {
-    FileUpload upload = new FileUpload( shell, SWT.NONE );
     SelectionListener listener = mock( SelectionListener.class );
     upload.addSelectionListener( listener );
 
@@ -248,12 +217,8 @@ public class FileUpload_Test {
     assertFalse( upload.isListening( SWT.DefaultSelection ) );
   }
 
-  /////////
-  // Layout
-
   @Test
   public void testNoLayoutAccepted() {
-    FileUpload upload = new FileUpload( shell, SWT.NONE );
     assertEquals( null, upload.getLayout() );
     upload.setLayout( new GridLayout() );
     assertEquals( null, upload.getLayout() );
@@ -261,7 +226,6 @@ public class FileUpload_Test {
 
   @Test
   public void testNoChildrenAccepted() {
-    FileUpload upload = new FileUpload( shell, SWT.NONE );
     new Button( upload, SWT.PUSH );
     assertEquals( 0, upload.getChildren().length );
   }
@@ -273,7 +237,6 @@ public class FileUpload_Test {
     Point extent = TextSizeUtil.stringExtent( shell.getFont(), text );
     assertEquals( new Point( 60, 16 ), extent );
     Image image = createImage( Fixture.IMAGE_100x50 );
-    FileUpload upload = new FileUpload( shell, SWT.NONE );
     Point expected = new Point( 30, 22 );
     assertEquals( expected, upload.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     upload.setText( text );
@@ -300,7 +263,6 @@ public class FileUpload_Test {
 
   @Test
   public void testGetAdapter_LCA() {
-    FileUpload upload = new FileUpload( shell, SWT.NONE );
     assertTrue( upload.getAdapter( WidgetLCA.class ) instanceof FileUploadLCA );
     assertSame( upload.getAdapter( WidgetLCA.class ), upload.getAdapter( WidgetLCA.class ) );
   }

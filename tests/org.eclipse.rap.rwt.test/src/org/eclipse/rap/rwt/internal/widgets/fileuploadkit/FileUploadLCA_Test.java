@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 EclipseSource and others.
+ * Copyright (c) 2011, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -159,6 +159,37 @@ public class FileUploadLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( fileUpload, "text" ) );
+  }
+
+  @Test
+  public void testRenderInitialFilterExtensions() throws IOException {
+    lca.renderChanges( fileUpload );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( fileUpload, "filterExtensions" ) );
+  }
+
+  @Test
+  public void testRenderFilterExtensions() throws IOException {
+    fileUpload.setFilterExtensions( new String[] { "foo", "bar" } );
+    lca.renderChanges( fileUpload );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    JsonArray expected = new JsonArray().add( "foo" ).add( "bar" );
+    assertEquals( expected, message.findSetProperty( fileUpload, "filterExtensions" ).asArray() );
+  }
+
+  @Test
+  public void testRenderFilterExtensionsUnchanged() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( fileUpload );
+
+    fileUpload.setFilterExtensions( new String[] { "foo", "bar" } );
+    Fixture.preserveWidgets();
+    lca.renderChanges( fileUpload );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( fileUpload, "filterExtensions" ) );
   }
 
   @Test

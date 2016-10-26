@@ -26,7 +26,8 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.FileUpload", {
 
   properties : rwt.remote.HandlerUtil.extendControlProperties( [
     "text",
-    "image"
+    "image",
+    "filterExtensions"
   ] ),
 
   propertyHandler : rwt.remote.HandlerUtil.extendControlPropertyHandler( {

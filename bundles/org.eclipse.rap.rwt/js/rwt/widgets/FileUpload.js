@@ -22,6 +22,7 @@ rwt.qx.Class.define( "rwt.widgets.FileUpload", {
     this._inputElement = null;
     this._iframe = null;
     this._multi = multi;
+    this._filterExtensions = null;
     this._cursor = "";
     this.__onValueChange = rwt.util.Functions.bind( this._onValueChange, this );
     this.setEnableElementFocus( false );
@@ -34,6 +35,15 @@ rwt.qx.Class.define( "rwt.widgets.FileUpload", {
   },
 
   members : {
+
+    setFilterExtensions : function( extensions ) {
+      this._filterExtensions = extensions.filter( function( extension ) {
+        return extension != null;
+      }).join();
+      if( this._inputElement ) {
+        this._inputElement.setAttribute( "accept", this._filterExtensions );
+      }
+    },
 
     submit : function( url ) {
       if( typeof url !== "string" ) {
@@ -92,6 +102,9 @@ rwt.qx.Class.define( "rwt.widgets.FileUpload", {
       this._inputElement.setAttribute( "size", "1" );
       if( this._multi ) {
         this._inputElement.setAttribute( "multiple", "multiple" );
+      }
+      if( this._filterExtensions ) {
+        this._inputElement.setAttribute( "accept", this._filterExtensions );
       }
       this._inputElement.style.cursor = this._cursor;
       this._inputElement.onchange = this.__onValueChange;
