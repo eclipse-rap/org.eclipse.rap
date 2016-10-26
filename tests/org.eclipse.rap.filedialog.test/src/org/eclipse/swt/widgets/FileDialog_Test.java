@@ -14,6 +14,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -340,6 +341,32 @@ public class FileDialog_Test {
     dialog.open( callback );
 
     verify( singleThreadExecutor, never() ).execute( any( FileUploadRunnable.class ) );
+  }
+
+  @Test
+  public void testGetFilterExtensions_initial() {
+    assertNull( dialog.getFilterExtensions() );
+  }
+
+  @Test
+  public void testSetFilterExtensions() {
+    dialog = new TestFileDialog( shell );
+
+    String[] extensions = new String[] { ".gif", ".png" };
+    dialog.setFilterExtensions( extensions );
+    dialog.open( callback );
+
+    assertArrayEquals( extensions, dialog.getFilterExtensions() );
+    assertArrayEquals( extensions, getFileUpload().getFilterExtensions() );
+  }
+
+  @Test
+  public void testSetFilterExtensions_reset() {
+    dialog.setFilterExtensions( new String[] { ".gif", ".png" } );
+
+    dialog.setFilterExtensions( null );
+
+    assertNull( dialog.getFilterExtensions() );
   }
 
   @Test

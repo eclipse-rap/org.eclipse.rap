@@ -93,6 +93,7 @@ public class FileDialog extends Dialog {
   private UploadPanel placeHolder;
   private ProgressCollector progressCollector;
   private ClientFile[] clientFiles;
+  private String[] filterExtensions;
 
   /**
    * Constructs a new instance of this class given only its parent.
@@ -168,6 +169,34 @@ public class FileDialog extends Dialog {
       return new String[] { completedFileNames[ completedFileNames.length - 1 ] };
     }
     return EMPTY_ARRAY;
+  }
+
+  /**
+   * Set the file extensions which the dialog will
+   * use to filter the files it shows to the argument,
+   * which may be null.
+   * <p>
+   * An extension filter string must be of the form ".extension".
+   * </p>
+   *
+   * @param extensions the file extension filter
+   *
+   * @since 3.2
+   */
+  public void setFilterExtensions( String[] extensions ) {
+    filterExtensions = extensions;
+  }
+
+  /**
+   * Returns the file extensions which the dialog will
+   * use to filter the files it shows.
+   *
+   * @return the file extensions filter
+   *
+   * @since 3.2
+   */
+  public String[] getFilterExtensions() {
+    return filterExtensions;
   }
 
   /**
@@ -373,6 +402,9 @@ public class FileDialog extends Dialog {
     FileUpload fileUpload = new FileUpload( parent, isMulti() ? SWT.MULTI : SWT.NONE );
     fileUpload.setText( text );
     fileUpload.setLayoutData( createButtonLayoutData( fileUpload ) );
+    if( filterExtensions != null ) {
+      fileUpload.setFilterExtensions( filterExtensions );
+    }
     fileUpload.addListener( SWT.Selection, new Listener() {
       @Override
       public void handleEvent( Event event ) {
