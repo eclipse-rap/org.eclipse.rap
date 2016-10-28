@@ -52,6 +52,10 @@ rwt.runtime.MobileWebkitSupport = {
       "mousedown" : true,
       "mouseup" : true
     },
+    "SELECT" : {
+      "mousedown" : true,
+      "mouseup" : true
+    },
     "*" : {
       "mousewheel" : true
     }
