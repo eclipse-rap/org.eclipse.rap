@@ -250,7 +250,8 @@ rwt.runtime.MobileWebkitSupport = {
     };
     if(    !this._touchSession.type.scroll
         && !this._touchSession.type.outerScroll
-        && !this._touchSession.type.focus )
+        && !this._touchSession.type.focus
+        && !this._allowTouch( target ) )
     {
       domEvent.preventDefault();
     }
@@ -290,7 +291,9 @@ rwt.runtime.MobileWebkitSupport = {
   },
 
   _handleTouchEnd : function( domEvent ) {
-    domEvent.preventDefault();
+    if( !this._allowTouch( domEvent.target ) ) {
+      domEvent.preventDefault();
+    }
     var touch = this._getTouch( domEvent );
     var pos = [ touch.clientX, touch.clientY ];
     var target = domEvent.target;
@@ -415,6 +418,10 @@ rwt.runtime.MobileWebkitSupport = {
 
   /////////
   // Helper
+
+  _allowTouch : function( target ) {
+    return target.tagName === "SELECT";
+  },
 
   _isFocusable : function( widgetTarget ) {
     return widgetTarget instanceof rwt.widgets.base.BasicText;
