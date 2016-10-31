@@ -199,6 +199,9 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRowContainer", {
       }
       var states = { rowTempalte : this._config.rowTemplate != null };
       states[ line ] = true;
+      if( this._config.variant != null ) {
+        states[ this._config.variant ] = true;
+      }
       var tv = new rwt.theme.ThemeValues( states );
       var gridColor = tv.getCssColor( rwt.util.Strings.toFirstUp( this._baseAppearance ) + "-GridLine", "color" );
       gridColor = gridColor == "undefined" ? "transparent" : gridColor;
