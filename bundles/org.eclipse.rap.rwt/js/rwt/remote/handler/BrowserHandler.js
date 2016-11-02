@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 EclipseSource and others.
+ * Copyright (c) 2011, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,9 +31,11 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Browser", {
   propertyHandler : rwt.remote.HandlerUtil.extendControlPropertyHandler( {
     "url" : function( widget, value ) {
       widget.setSource( value );
-      setTimeout( function() { // Delay syncSource, see Bug 474141
-        widget.syncSource();
-      }, 0 );
+      if( widget.isCreated() ) {
+        setTimeout( function() { // Delay syncSource, see Bug 474141
+          widget.syncSource();
+        }, 0 );
+      }
     },
     "functionResult" : function( widget, value ) {
       widget.setFunctionResult( value[ 0 ], value[ 1 ], value[ 2 ] );
