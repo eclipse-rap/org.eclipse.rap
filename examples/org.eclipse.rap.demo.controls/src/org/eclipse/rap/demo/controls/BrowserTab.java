@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2016 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.UrlLauncher;
 import org.eclipse.rap.rwt.widgets.BrowserCallback;
-import org.eclipse.rap.rwt.widgets.BrowserUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.BrowserFunction;
@@ -37,6 +36,7 @@ final class BrowserTab extends ExampleTab {
 
   private static final String PROP_PROGRESS_LISTENER = "progressListener";
 
+  private static final String DEFAULT_URL = "http://developer.eclipsesource.com/technology/crossplatform/#rap";
   private static final String DEFAULT_HTML
     = "<html>\n"
     + "<head>\n"
@@ -87,10 +87,12 @@ final class BrowserTab extends ExampleTab {
     browser = new Browser( parent, getStyle() );
     if( hasCreateProperty( PROP_PROGRESS_LISTENER ) ) {
       browser.addProgressListener( new ProgressListener() {
+        @Override
         public void changed( final ProgressEvent event ) {
           log( "changed: " + event );
         }
 
+        @Override
         public void completed( final ProgressEvent event ) {
           log( "completed: " + event );
         }
@@ -105,7 +107,8 @@ final class BrowserTab extends ExampleTab {
     Label lblURL = new Label( composite, SWT.NONE );
     lblURL.setText( "URL" );
     final Text txtURL = new Text( composite, SWT.BORDER );
-    txtURL.setText( "http://eclipse.org/rap" );
+    txtURL.setText( DEFAULT_URL );
+    txtURL.setLayoutData( new GridData( 300, SWT.DEFAULT ) );
     Button btnURL = new Button( composite, SWT.PUSH );
     btnURL.setText( "Go" );
     btnURL.addSelectionListener( new SelectionAdapter() {
@@ -120,7 +123,7 @@ final class BrowserTab extends ExampleTab {
     lblHTML.setLayoutData( new GridData( GridData.VERTICAL_ALIGN_BEGINNING ) );
     final Text txtHTML = new Text( composite, SWT.BORDER | SWT.MULTI );
     txtHTML.setText( DEFAULT_HTML );
-    txtHTML.setLayoutData( new GridData( 110, 100 ) );
+    txtHTML.setLayoutData( new GridData( 300, 100 ) );
 
     Button btnHTML = new Button( composite, SWT.PUSH );
     btnHTML.setText( "Go" );
@@ -134,7 +137,8 @@ final class BrowserTab extends ExampleTab {
 
     Label lblExecute = new Label( composite, SWT.NONE );
     lblExecute.setText( "Execute" );
-    final Text txtExecute = new Text( composite, SWT.BORDER );
+    final Text txtExecute = new Text( composite, SWT.BORDER | SWT.MULTI );
+    txtExecute.setLayoutData( new GridData( 300, 100 ) );
     Button btnExecButton = new Button( composite, SWT.PUSH );
     btnExecButton.setText( "Go" );
     btnExecButton.addSelectionListener( new SelectionAdapter() {
@@ -142,14 +146,16 @@ final class BrowserTab extends ExampleTab {
       public void widgetSelected( final SelectionEvent event ) {
         if( useBrowserCallback ) {
           BrowserCallback browserCallback = new BrowserCallback() {
+            @Override
             public void evaluationSucceeded( Object result ) {
               log( "Execution was successful." );
             }
+            @Override
             public void evaluationFailed( Exception exception ) {
               log( "Execution was not successful." );
             }
           };
-          BrowserUtil.evaluate( browser, txtExecute.getText(), browserCallback );
+          browser.evaluate( txtExecute.getText(), browserCallback );
         } else {
           boolean result = browser.execute( txtExecute.getText() );
           String msg = result
@@ -169,7 +175,8 @@ final class BrowserTab extends ExampleTab {
     lblUrl.setText( "URL" );
     final Text txtUrl = new Text( group, SWT.BORDER );
     txtUrl.setLayoutData( grapExcessHorizontalSpace() );
-    txtUrl.setText( "http://eclipse.org/rap" );
+    txtUrl.setText( DEFAULT_URL );
+    txtUrl.setLayoutData( new GridData( 300, SWT.DEFAULT ) );
     Button btnOpen = new Button( group, SWT.PUSH );
     btnOpen.setLayoutData( horizontalSpan2() );
     btnOpen.setText( "openURL( url )" );
