@@ -2,12 +2,12 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.rap.nebula.widgets.richtext
-Bundle-Version: 3.1.1.qualifier
+Bundle-Version: 3.1.2.qualifier
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: %Bundle-Vendor
 Import-Package: javax.servlet;version="2.5.0",
  javax.servlet.http;version="2.5.0"
-Export-Package: org.eclipse.nebula.widgets.richtext;version="3.1.1",
- org.eclipse.nebula.widgets.richtext.toolbar;version="3.1.1"
-Require-Bundle: org.eclipse.rap.rwt;bundle-version="[3.0.0,4.0.0)"
+Export-Package: org.eclipse.nebula.widgets.richtext;version="3.1.2",
+ org.eclipse.nebula.widgets.richtext.toolbar;version="3.1.2"
+Require-Bundle: org.eclipse.rap.rwt;bundle-version="[3.1.0,4.0.0)"

@@ -17,12 +17,12 @@
   <parent>
     <groupId>org.eclipse.rap</groupId>
     <artifactId>org.eclipse.rap.runtime-parent</artifactId>
-    <version>3.1.1-SNAPSHOT</version>
+    <version>3.1.2-SNAPSHOT</version>
     <relativePath>../../releng/org.eclipse.rap.build/pom.xml</relativePath>
   </parent>
 
   <artifactId>org.eclipse.rap.demo</artifactId>
   <packaging>eclipse-plugin</packaging>
-  <version>3.1.1-SNAPSHOT</version>
+  <version>3.1.2-SNAPSHOT</version>
 
 </project>
