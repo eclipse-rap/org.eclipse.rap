@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2016 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,8 +17,8 @@ var appearances = {
     style : function( states ) {
       var tv = new rwt.theme.ThemeValues( states );
       return {
-        cursor: "default",
-        padding : 2,
+        cursor : "default",
+        padding : tv.getCssBoxDimensions( "Link", "padding" ),
         font : tv.getCssFont( "Link", "font" ),
         border : tv.getCssBorder( "Link", "border" ),
         textColor : tv.getCssColor( "Link", "color" ),

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2016 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,9 +41,6 @@ import org.eclipse.swt.internal.widgets.linkkit.LinkLCA;
  * @since 1.0
  */
 public class Link extends Control {
-
-  // Must be kept in sync with appearance value in AppearancesBase.js
-  private final static int PADDING = 2;
 
   private String text;
   private String displayText;
@@ -208,7 +205,6 @@ public class Link extends Control {
     checkWidget();
     int width = 0;
     int height = 0;
-    BoxDimensions border = getBorder();
     if( ( displayText.length() > 0 ) ) {
       // Replace '&' with '&&' to ensure proper size calculation with one '&',
       // because the other will be escaped in
@@ -224,8 +220,10 @@ public class Link extends Control {
     if( hHint != SWT.DEFAULT ) {
       height = hHint;
     }
-    width += border.left + border.right + PADDING * 2;
-    height += border.top + border.bottom + PADDING * 2;
+    BoxDimensions border = getBorder();
+    BoxDimensions padding = getPadding();
+    width += border.left + border.right + padding.left + padding.right;
+    height += border.top + border.bottom + padding.top + padding.bottom;
     return new Point( width, height );
   }
 
