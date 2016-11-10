@@ -548,6 +548,7 @@ Label {
   cursor: default;
   opacity: 1;
   text-shadow: none;
+  padding: 0;
 }
 
 Label[BORDER] {

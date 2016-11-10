@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2016 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -306,8 +306,9 @@ public class Label extends Control {
       height = hHint;
     }
     BoxDimensions border = getBorder();
-    width += border.left + border.right;
-    height += border.top + border.bottom;
+    BoxDimensions padding = getPadding();
+    width += border.left + border.right + padding.left + padding.right;
+    height += border.top + border.bottom + padding.top + padding.bottom;
     return new Point( width, height );
   }
 
