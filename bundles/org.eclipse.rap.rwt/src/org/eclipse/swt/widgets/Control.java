@@ -2516,6 +2516,9 @@ public abstract class Control extends Widget implements Drawable {
       }
       ActiveKeysUtil.preserveCancelKeys( this );
     }
+    if( RWT.CUSTOM_VARIANT.equals( key ) ) {
+      bufferedPadding = null;
+    }
     super.setData( key, value );
   }
 

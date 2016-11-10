@@ -1554,6 +1554,35 @@ public class Control_Test {
   }
 
   @Test
+  public void testPadding() throws IOException {
+    String css = "Composite { padding: 1px 2px 3px 4px }";
+    ThemeTestUtil.registerTheme( "custom", css, null );
+    ThemeTestUtil.setCurrentThemeId( "custom" );
+
+    Composite composite = new Composite( shell, SWT.NONE );
+
+    BoxDimensions expected = new BoxDimensions( 1, 2, 3, 4 );
+    assertEquals( expected, composite.getPadding() );
+  }
+
+  @Test
+  public void testPadding_afterSettingCustomVariant() throws IOException {
+    String css = "Composite { padding: 1px 2px 3px 4px } "
+               + "Composite.abc { padding: 5px 6px 7px 8px }";
+    ThemeTestUtil.registerTheme( "custom", css, null );
+    ThemeTestUtil.setCurrentThemeId( "custom" );
+
+    Composite composite = new Composite( shell, SWT.NONE );
+    // buffer the padding
+    composite.getPadding();
+    composite.setData( RWT.CUSTOM_VARIANT, "abc" );
+
+
+    BoxDimensions expected = new BoxDimensions( 5, 6, 7, 8 );
+    assertEquals( expected, composite.getPadding() );
+  }
+
+  @Test
   public void testGetBorderWidth_returnsTheMaximumBorderEdgeWidth() throws IOException {
     String css = "Composite { border: 1px solid black; border-top: 3px solid black; }";
     ThemeTestUtil.registerTheme( "custom", css, null );
