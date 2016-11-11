@@ -237,6 +237,7 @@ final class GCOperationWriter {
       .add( arcAngle < 0 )
     );
     if( operation.fill ) {
+      addClientOperation( "lineTo", 0, 0 );
       addClientOperation( "closePath" );
     }
     addClientOperation( operation.fill ? "fill" : "stroke" );
