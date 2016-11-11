@@ -163,8 +163,8 @@ public final class CanvasTab extends ExampleTab {
     gc.setBackground( display.getSystemColor( SWT.COLOR_WHITE ) );
     gc.setForeground( display.getSystemColor( SWT.COLOR_GREEN ) );
     gc.drawArc( 90, 220, 50, 25, 45, 180 );
-    gc.setBackground( display.getSystemColor( SWT.COLOR_YELLOW ) );
-    gc.fillArc( 150, 220, 50, 25, 45, 180 );
+    gc.setBackground( display.getSystemColor( SWT.COLOR_MAGENTA ) );
+    gc.fillArc( 150, 220, 50, 25, 45, 250 );
     gc.setBackground( display.getSystemColor( SWT.COLOR_BLUE ) );
     gc.fillOval( 210, 220, 50, 50 );
   }

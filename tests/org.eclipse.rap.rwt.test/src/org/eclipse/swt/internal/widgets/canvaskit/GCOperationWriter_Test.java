@@ -483,9 +483,10 @@ public class GCOperationWriter_Test {
     assertEquals( "[\"save\"]", getOperation( 1, ops ) );
     assertEquals( "[\"beginPath\"]", getOperation( 2, ops ) );
     assertEquals( "[\"ellipse\",60,120,50,100,0,-0.8727,-2.618,true]", getOperation( 3, ops ) );
-    assertEquals( "[\"closePath\"]", getOperation( 4, ops ) );
-    assertEquals( "[\"fill\"]", getOperation( 5, ops ) );
-    assertEquals( "[\"restore\"]", getOperation( 6, ops ) );
+    assertEquals( "[\"lineTo\",0,0]", getOperation( 4, ops ) );
+    assertEquals( "[\"closePath\"]", getOperation( 5, ops ) );
+    assertEquals( "[\"fill\"]", getOperation( 6, ops ) );
+    assertEquals( "[\"restore\"]", getOperation( 7, ops ) );
   }
 
   @Test
@@ -497,9 +498,10 @@ public class GCOperationWriter_Test {
     assertEquals( "[\"save\"]", getOperation( 1, ops ) );
     assertEquals( "[\"beginPath\"]", getOperation( 2, ops ) );
     assertEquals( "[\"ellipse\",60,120,50,100,0,-0.8727,0.8726001,false]", getOperation( 3, ops ) );
-    assertEquals( "[\"closePath\"]", getOperation( 4, ops ) );
-    assertEquals( "[\"fill\"]", getOperation( 5, ops ) );
-    assertEquals( "[\"restore\"]", getOperation( 6, ops ) );
+    assertEquals( "[\"lineTo\",0,0]", getOperation( 4, ops ) );
+    assertEquals( "[\"closePath\"]", getOperation( 5, ops ) );
+    assertEquals( "[\"fill\"]", getOperation( 6, ops ) );
+    assertEquals( "[\"restore\"]", getOperation( 7, ops ) );
   }
 
   @Test
