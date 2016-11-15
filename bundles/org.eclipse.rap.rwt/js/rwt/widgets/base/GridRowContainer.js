@@ -354,6 +354,9 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRowContainer", {
                        this._isSelected( item ),
                        this._getHoverElement( item ),
                        contentOnly );
+      if( item ) {
+        this.dispatchSimpleEvent( "rowRendered", row );
+      }
     },
 
     _sortRows : function( newFirstRow, forwards ) {

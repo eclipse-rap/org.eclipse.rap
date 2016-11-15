@@ -17,7 +17,12 @@
 
     factory : function( properties ) {
       var control = rwt.remote.ObjectRegistry.getObject( properties.parent );
-      var dropdown = new rwt.widgets.DropDown( control, properties.markupEnabled, "dropdown" );
+      var dropdown = new rwt.widgets.DropDown( {
+        parent: control,
+        markupEnabled: properties.markupEnabled,
+        appearance: "dropdown",
+        hScroll: properties.style.indexOf("H_SCROLL") !== -1
+      } );
       new rwt.widgets.util.DropDownSynchronizer( dropdown );
       return dropdown;
     },

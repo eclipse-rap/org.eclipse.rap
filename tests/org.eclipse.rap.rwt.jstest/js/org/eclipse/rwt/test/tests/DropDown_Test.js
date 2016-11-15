@@ -70,7 +70,7 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
         }
       } );
 
-      dropdown = new rwt.widgets.DropDown( widget, false, "dropdown" );
+      dropdown = new rwt.widgets.DropDown( { parent: widget, appearance: "dropdown" } );
       popup = dropdown._.popup;
 
       assertEquals( "dotted", popup.getBorder().getStyle() );
@@ -101,7 +101,11 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
     testConstructor_SetsMarkupEnabledTrue : function() {
       widget = new rwt.widgets.Composite();
       widget.setParent( shell );
-      dropdown = new rwt.widgets.DropDown( widget, true, "dropdown" );
+      dropdown = new rwt.widgets.DropDown( {
+        parent: widget,
+        markupEnabled: true,
+         appearance: "dropdown"
+      } );
       grid = dropdown._.grid;
 
       assertTrue( grid.getRenderConfig().markupEnabled );
@@ -574,6 +578,15 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
       assertEquals( 2 * ITEM_HEIGHT, popup.getInnerHeight() );
     },
 
+    testShowPopUpInnerHeightWithHScroll : function() {
+      dropdown.destroy();
+      this.createExample( true );
+      dropdown.setItems( [ "a", "b" ] );
+      showDropDown();
+
+      assertEquals( 60, popup.getInnerHeight() );
+    },
+
     testSetMinWidth_UpdatesPopupWidthIfVisible : function() {
       showDropDown();
 
@@ -595,7 +608,7 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
         }
       } );
 
-      dropdown = new rwt.widgets.DropDown( widget, false, "dropdown" );
+      dropdown = new rwt.widgets.DropDown( { parent: widget, appearance: "dropdown" } );
       dropdown.setCustomVariant( "bar" );
 
       assertTrue( log.states.bar );
@@ -636,12 +649,48 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
       assertEquals( [ "a", "b", "c" ], dropdown.getItems() );
     },
 
-    testSetItems_UpdatesScrollbar : function() {
+    testSetItems_UpdatesScrollbarWithOverflow : function() {
       dropdown.setVisibleItemCount( 2 );
+      showDropDown();
 
       dropdown.setItems( [ "a", "b", "c" ] );
+      TestUtil.flush();
 
-      assertTrue( grid.getVerticalBar().getDisplay() );
+      assertTrue( grid.getVerticalBar().getVisibility() );
+    },
+
+    testSetItems_UpdatesScrollbarWithNoOverflow : function() {
+      dropdown.setVisibleItemCount( 2 );
+      showDropDown();
+
+      dropdown.setItems( [ "a", "b", "c" ] );
+      dropdown.setItems( [ "a", "b" ] );
+      TestUtil.flush();
+
+      assertFalse( grid.getVerticalBar().getVisibility() );
+    },
+
+    testSetItems_UpdatesScrollbarWithHScrollAndOverflow : function() {
+      dropdown.destroy();
+      this.createExample( true );
+      showDropDown();
+
+      dropdown.setItems( [ "a", "b" ] );
+      dropdown.setItems( [ "a", "b", new Array( 100 ).join( "_" ) ] );
+      TestUtil.flush();
+
+      assertTrue( grid.getHorizontalBar().getVisibility() );
+    },
+
+    testSetItems_UpdatesScrollbarWithHScrollAndNoOverflow : function() {
+      dropdown.destroy();
+      this.createExample( true );
+      showDropDown();
+
+      dropdown.setItems( [ "a", "b" ] );
+      TestUtil.flush();
+
+      assertFalse( grid.getHorizontalBar().getVisibility() );
     },
 
     testSetItems_RendersLayout : function() {
@@ -671,6 +720,32 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
       assertEquals( grid.getWidth(), config.itemWidth[ 0 ] );
       assertEquals( PADDING_LEFT, config.itemTextLeft[ 0 ] );
       assertEquals( grid.getWidth() - PADDING_RIGHT - PADDING_LEFT, config.itemTextWidth[ 0 ] );
+    },
+
+    testShow_setsItemMetricsWithHScrollAndNoOverflow: function() {
+      dropdown.destroy();
+      this.createExample( true );
+      dropdown.setItems( [ "a", "b" ] );
+      showDropDown();
+
+      var config = grid.getRenderConfig();
+      assertEquals( 0, config.itemLeft[ 0 ] );
+      assertEquals( grid.getWidth(), config.itemWidth[ 0 ] );
+      assertEquals( PADDING_LEFT, config.itemTextLeft[ 0 ] );
+      assertEquals( grid.getWidth() - PADDING_RIGHT - PADDING_LEFT, config.itemTextWidth[ 0 ] );
+    },
+
+    testShow_setsItemMetricsWithHScrollAndOverflow: function() {
+      dropdown.destroy();
+      this.createExample( true );
+      dropdown.setItems( [ "a", "b", new Array( 100 ).join( "_" ) ] );
+      showDropDown();
+
+      var config = grid.getRenderConfig();
+      assertEquals( 0, config.itemLeft[ 0 ] );
+      assertTrue( grid.getWidth() < config.itemWidth[ 0 ] );
+      assertEquals( PADDING_LEFT, config.itemTextLeft[ 0 ] );
+      assertEquals( config.itemWidth[ 0 ] - PADDING_RIGHT - PADDING_LEFT, config.itemTextWidth[ 0 ] );
     },
 
     testShow_SetsGridFont : function() {
@@ -1609,13 +1684,13 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
     ///////////
     // Helper
 
-    createExample : function() {
+    createExample : function( hScroll ) {
       widget = new rwt.widgets.Composite();
       widget.setFont( rwt.html.Font.fromString( "Arial 10px" ) );
       widget.setParent( shell );
       widget.setLocation( 10, 20 );
       widget.setDimension( 100, 30 );
-      dropdown = new rwt.widgets.DropDown( widget, false, "dropdown" );
+      dropdown = new rwt.widgets.DropDown( { parent: widget, appearance: "dropdown", hScroll: hScroll } );
       rwt.remote.ObjectRegistry.add(
         "w3",
         dropdown,

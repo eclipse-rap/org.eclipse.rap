@@ -135,7 +135,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
       // DropDown requires valid parent focus root when creating
       if( !this._list ) {
         var appearance = this.getAppearance() + "-list";
-        this._list = new rwt.widgets.DropDown( this, false, appearance );
+        this._list = new rwt.widgets.DropDown( { parent: this, appearance: appearance } );
         this._list.setSelectionWrapping( false );
         this._list.setDirection( this.getDirection() );
         var that = this;

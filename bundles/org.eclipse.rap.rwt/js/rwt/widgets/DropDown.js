@@ -34,16 +34,17 @@
   /**
    * @class Instances of DropDown represent the server-side counterpart of a DropDown widget
    */
-  rwt.widgets.DropDown = function( parent, markupEnabled, appearance ) {
+  rwt.widgets.DropDown = function( args ) {
     this._ = {};
+    this._.hScroll = !!args.hScroll;
     this._.hideTimer = new rwt.client.Timer( 0 );
     this._.hideTimer.addEventListener( "interval", checkFocus, this );
-    this._.parent = parent;
-    this._.appearance = appearance;
+    this._.parent = args.parent;
+    this._.appearance = args.appearance;
     this._.customVariant = null;
     this._.styleMap = null;
-    this._.popup = createPopup( appearance ); // TODO: create on demand
-    this._.grid = createGrid( this._.popup, markupEnabled, appearance );
+    this._.popup = createPopup( args.appearance ); // TODO: create on demand
+    this._.grid = createGrid( this._.popup, !!args.markupEnabled, args.appearance );
     inheritParentStyling.call( this );
     this._.visibleItemCount = 5;
     this._.items = [];
@@ -56,7 +57,7 @@
     addParentListeners.call( this );
     addGridListeners.call( this );
     this._.popup.addEventListener( "appear", onAppear, this );
-    this._.parentFocusRoot = parent.getFocusRoot();
+    this._.parentFocusRoot = args.parent.getFocusRoot();
     this._.parentFocusRoot.addEventListener( "changeFocusedChild", onFocusChange, this );
   };
 
@@ -66,12 +67,12 @@
 
     setItems : function( items ) {
       this.setSelectionIndex( -1 );
+      delete this._.maxTextWidth;
       this._.items = rwt.util.Arrays.copy( items );
       renderGridItems.call( this );
       if( this._.grid.isSeeable() ) {
         renderLayout.call( this );
       }
-      updateScrollBars.call( this );
       if( this._.visibility && items.length > 0 ) {
         this.show();
       } else if( this._.visibility && items.length === 0 ) {
@@ -96,7 +97,6 @@
         renderLayout.call( this );
       }
       // TODO: hide dropdown completely if no items are visible
-      updateScrollBars.call( this );
     },
 
     getVisibleItemCount : function() {
@@ -349,6 +349,9 @@
     this._.grid.addEventListener( "keypress", onKeyEvent, this );
     this._.grid.addEventListener( "mousedown", onMouseDown, this );
     this._.grid.addEventListener( "mouseup", onMouseUp, this );
+    if ( this._.hScroll && !this._.columns ) {
+      this._.grid.getRowContainer().addEventListener( "rowRendered", onRowRendered, this );
+    }
   }
 
   function setPopUpVisible( visible ) {
@@ -367,13 +370,15 @@
     var itemHeight = Math.floor( font.getSize() * 1.3 ) + padding[ 0 ] + padding[ 2 ];
     var visibleItems = Math.min( this._.visibleItemCount, this.getItemCount() );
     var gridWidth = calcGridWidth.apply( this );
-    var gridHeight = visibleItems * itemHeight;
+    var gridHeight = calcGridHeight.apply( this, [ visibleItems, itemHeight ] );
+    var itemWidth = computeItemWidth.apply( this, [ gridWidth, padding ] );
     renderPosition.call( this );
     var frameWidth = getStyleMap.call( this ).border.getWidthLeft() * 2;
     this._.popup.setWidth( gridWidth + frameWidth );
     this._.popup.setHeight( gridHeight + frameWidth );
     this._.grid.setDimension( gridWidth, gridHeight );
-    renderItemMetrics.apply( this, [ itemHeight, gridWidth, padding ] );
+    renderItemMetrics.apply( this, [ itemHeight, itemWidth, padding ] );
+    updateScrollBars.apply( this, [ gridWidth, itemWidth ] );
   }
 
   function renderPosition() {
@@ -405,6 +410,14 @@
       if( columnsSum > result ) {
         result = columnsSum;
       }
+    }
+    return result;
+  }
+
+  function calcGridHeight( visibleItems, itemHeight ) {
+    var result = visibleItems * itemHeight;
+    if ( this._.hScroll ) {
+      result += this._.grid.getHorizontalBar().getHeight();
     }
     return result;
   }
@@ -441,6 +454,11 @@
         0 // checkWith
       );
     }
+  }
+
+  function computeItemWidth( gridWidth, padding ) {
+    var neededWidth = this._.hScroll ? ( this._.maxTextWidth || 0 ) + padding[ 1 ] + padding[ 3 ] : 0;
+    return Math.max( neededWidth, gridWidth );
   }
 
   function renderGridItems() {
@@ -580,6 +598,14 @@
     this._.hideTimer.start();
   }
 
+  function onRowRendered( row ) {
+    var textWidth = row._computeVisualTextWidth( 0 );
+    if ( textWidth > ( this._.maxTextWidth || 0 ) ) {
+      this._.maxTextWidth = textWidth;
+      renderLayout.call( this );
+    }
+  }
+
   function fireEvent( type ) {
     var event = {
       "text" : "",
@@ -609,10 +635,10 @@
     }
   }
 
-  function updateScrollBars() {
-    var scrollable = this._.visibleItemCount < this.getItemCount();
-    // TODO [tb] : Horizontal scrolling would require measuring all items preferred width
-    this._.grid.setScrollBarsVisible( false, scrollable );
+  function updateScrollBars( gridWidth, itemWidth ) {
+    var vScrollable = this._.visibleItemCount < this.getItemCount();
+    var hScrollable = this._.hScroll && gridWidth < itemWidth;
+    this._.grid.setScrollBarsVisible( hScrollable, vScrollable );
   }
 
   function notify( type, event ) {

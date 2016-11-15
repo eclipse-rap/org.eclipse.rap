@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2015 EclipseSource and others.
+ * Copyright (c) 2013, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,10 +10,12 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.widgets;
 
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
+import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
@@ -66,6 +68,9 @@ public class DropDown extends Widget {
   private static final String REMOTE_TYPE = "rwt.widgets.DropDown";
   private static final String SELECTION = "Selection";
   private static final String DEFAULT_SELECTION = "DefaultSelection";
+  private static final String[] ALLOWED_STYLES = {
+    "V_SCROLL", "H_SCROLL"
+  };
   private final java.util.List<String> items;
 
   private RemoteObject remoteObject;
@@ -75,6 +80,43 @@ public class DropDown extends Widget {
   private boolean visibility = false;
   private int selectionIndex = -1;
   private int visibleItemCount = 5;
+
+  /**
+   * Constructs a new instance of this class given its parent
+   * and a style value describing its behavior.
+   *
+   * @param parent a control, usually <code>Text</code>,
+   *        which will be the parent of the new instance (cannot be null)
+   * @param style the style of widget to construct
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the parent is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
+   *    <li>ERROR_INVALID_SUBCLASS - if this class is not an allowed subclass</li>
+   * </ul>
+   *
+   * @see Text
+   * @see Widget#checkSubclass
+   *
+   * @since 3.2
+   */
+  public DropDown( Control parent, int style ) {
+    super( parent, checkStyle( style ) );
+    this.parent = parent;
+    items = new ArrayList<>();
+    getRemoteObject().set( "parent", WidgetUtil.getId( parent ) );
+    getRemoteObject().set( "style", createJsonArray( getStyles( this, ALLOWED_STYLES ) ) );
+    getRemoteObject().setHandler( new InternalOperationHandler() );
+    disposeListener = new Listener() {
+      @Override
+      public void handleEvent( Event event ) {
+        DropDown.this.dispose();
+      }
+    };
+    parent.addListener( SWT.Dispose, disposeListener );
+  }
 
   /**
    * Constructs a new instance of this class given its parent.
@@ -94,18 +136,7 @@ public class DropDown extends Widget {
    * @see Widget#checkSubclass
    */
   public DropDown( Control parent ) {
-    super( parent, SWT.NONE );
-    this.parent = parent;
-    items = new ArrayList<>();
-    getRemoteObject().set( "parent", WidgetUtil.getId( parent ) );
-    getRemoteObject().setHandler( new InternalOperationHandler() );
-    disposeListener = new Listener() {
-      @Override
-      public void handleEvent( Event event ) {
-        DropDown.this.dispose();
-      }
-    };
-    parent.addListener( SWT.Dispose, disposeListener );
+    this( parent, SWT.V_SCROLL );
   }
 
   /**
@@ -134,7 +165,7 @@ public class DropDown extends Widget {
     }
     this.items.clear();
     this.items.addAll( Arrays.asList( items ) );
-    remoteObject.set( "items", JsonUtil.createJsonArray( items ) );
+    remoteObject.set( "items", createJsonArray( items ) );
     setSelectionIndexImpl( -1 );
   }
 
@@ -443,12 +474,8 @@ public class DropDown extends Widget {
     return result;
   }
 
-  private static JsonArray createJsonArray( int[] arr ) {
-    JsonArray array = new JsonArray();
-    for( int i = 0; i < arr.length; i++ ) {
-      array.add( arr[ i ] );
-    }
-    return array;
+  private static int checkStyle( int style ) {
+    return style | SWT.V_SCROLL;
   }
 
 }

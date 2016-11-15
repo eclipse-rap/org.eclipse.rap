@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2015 EclipseSource.
+ * Copyright (c) 2013, 2016 EclipseSource.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.widgets;
 
+import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
@@ -21,6 +22,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -90,6 +92,28 @@ public class DropDown_Test {
   @Test
   public void testContructor_CreatesRemoteObjectWithCorrentType() {
     verify( connection ).createRemoteObject( "rwt.widgets.DropDown" );
+  }
+
+  @Test
+  public void testStyles_hasVSrollByDefault() {
+    assertEquals( SWT.V_SCROLL, dropDown.getStyle() & SWT.V_SCROLL );
+  }
+
+  @Test
+  public void testStyles_addsHSroll() {
+    dropDown = new DropDown( text, SWT.H_SCROLL );
+
+    assertEquals( SWT.V_SCROLL, dropDown.getStyle() & SWT.V_SCROLL );
+    assertEquals( SWT.H_SCROLL, dropDown.getStyle() & SWT.H_SCROLL );
+  }
+
+  @Test
+  public void testContructor_rendersStyle() {
+    reset( remoteObject );
+    dropDown = new DropDown( text, SWT.H_SCROLL );
+
+    JsonArray expected = createJsonArray( new String[]{ "V_SCROLL", "H_SCROLL" } );
+    verify( remoteObject ).set( eq( "style" ), eq( expected ) );
   }
 
   @Test
