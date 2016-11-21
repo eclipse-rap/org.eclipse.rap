@@ -143,6 +143,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       assertTrue( overlay.isSeeable() );
       assertTrue( overlay.getZIndex() > shell.getZIndex() );
       assertTrue( overlay.getZIndex() < shell2.getZIndex() );
+      assertTrue( shell2.getZIndex() < 1e7 );
       assertFalse( overlay.hasState( "rwt_myTest1" ) );
       assertTrue( overlay.hasState( "rwt_myTest2" ) );
       assertTrue( overlay.hasState( "rwt_myTest2b" ) );
@@ -181,6 +182,20 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       assertFalse( shell._maximizeButton.hasState( variant) );
       assertFalse( shell._restoreButton.hasState( variant) );
       assertFalse( shell._closeButton.hasState( variant) );
+    },
+
+    testMinimizeRestore : function() {
+      var shell = TestUtil.createShellByProtocol( "w3" );
+
+      shell.setActive(false);
+      shell.minimize();
+      shell.restore();
+      shell.setActive(true);
+
+      assertTrue(shell.getElement().style.zIndex < 1e7);
+      assertTrue(shell.getElement().style.zIndex >= 1e5);
+      assertTrue(shell.isSeeable());
+      shell.destroy();
     },
 
     testDefaultButtonState_addedAndRemovedWithSetter : function() {

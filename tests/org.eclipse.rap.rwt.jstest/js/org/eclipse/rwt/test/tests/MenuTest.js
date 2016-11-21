@@ -287,6 +287,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       widget.destroy();
     },
 
+    testZIndex : function() {
+      openSimpleMenu( "push" );
+      TestUtil.flush();
+
+      assertTrue( menu.getElement().style.zIndex >= 1e7 );
+    },
+
     testTextOnly : function() {
       openSimpleMenu( "push" );
       menuItem.setText( "Hello World!" );

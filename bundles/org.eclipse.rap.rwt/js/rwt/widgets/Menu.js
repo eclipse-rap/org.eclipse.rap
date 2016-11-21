@@ -118,6 +118,8 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
 
   members : {
 
+    _minZIndex : 1e7,
+
     /////////
     // Opener
 
