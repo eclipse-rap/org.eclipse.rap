@@ -795,6 +795,15 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
       assertEquals( [ 0, 1 ], config.cellOrder );
     },
 
+    testSetColumns_protectsCellOrderFromOverride : function() {
+      dropdown.setColumns( [ 30, 40 ] );
+
+      grid.flushWidgetQueue();
+
+      var config = grid.getRenderConfig();
+      assertEquals( [ 0, 1 ], config.cellOrder );
+    },
+
     testSetColumns_setsItemMetrics : function() {
       dropdown.setColumns( [ 30, 40 ] );
       showDropDown();
