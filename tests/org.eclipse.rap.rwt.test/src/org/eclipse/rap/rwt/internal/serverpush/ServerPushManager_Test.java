@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2017 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
+import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.NoOpRunnable;
@@ -526,6 +527,16 @@ public class ServerPushManager_Test {
     boolean sessionExpired = ServerPushManager.isSessionExpired( 1, 9000 );
 
     assertFalse( sessionExpired );
+  }
+
+  @Test
+  public void testIsSessionExpiredWhenUISessionInactive() {
+    UISessionImpl uiSession = ( UISessionImpl )ContextProvider.getUISession();
+    uiSession.shutdown();
+
+    boolean sessionExpired = ServerPushManager.isSessionExpired( 1, 2 );
+
+    assertTrue( sessionExpired );
   }
 
   @Test

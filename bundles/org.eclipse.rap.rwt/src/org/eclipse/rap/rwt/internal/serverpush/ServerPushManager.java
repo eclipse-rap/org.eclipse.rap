@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2017 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -188,13 +188,16 @@ public final class ServerPushManager implements SerializableCompatibility {
   }
 
   static boolean isSessionExpired( long requestStartTime, long currentTime ) {
-    boolean result = false;
-    HttpSession httpSession = ContextProvider.getUISession().getHttpSession();
+    UISession uiSession = ContextProvider.getUISession();
+    if( uiSession == null ) {
+      return true;
+    }
+    HttpSession httpSession = uiSession.getHttpSession();
     int maxInactiveInterval = httpSession.getMaxInactiveInterval();
     if( maxInactiveInterval > 0 ) {
-      result = currentTime > requestStartTime + maxInactiveInterval * 1000;
+      return currentTime > requestStartTime + maxInactiveInterval * 1000;
     }
-    return result;
+    return false;
   }
 
   private static boolean isConnectionAlive( HttpServletResponse response ) {
