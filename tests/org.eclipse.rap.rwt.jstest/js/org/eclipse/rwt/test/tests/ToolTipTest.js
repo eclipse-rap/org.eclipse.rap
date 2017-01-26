@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -61,6 +61,19 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
       assertTrue( ObjectRegistry.getObject( "w2" ) == null );
       assertTrue( shell.isDisposed() );
       assertTrue( ObjectRegistry.getObject( "w3" ) == null );
+      assertTrue( widget.isDisposed() );
+    },
+
+    testDestroyToolTipBeforeParent : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var widget = this._createToolTipByProtocol( "w3", "w2", [ "BALLOON" ] );
+
+      Processor.processOperationArray( [ "destroy", "w3"] );
+      TestUtil.flush();
+      Processor.processOperationArray( [ "destroy", "w2"] );
+      TestUtil.flush();
+
+      assertTrue( shell.isDisposed() );
       assertTrue( widget.isDisposed() );
     },
 
