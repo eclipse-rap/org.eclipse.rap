@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2017 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,7 @@ final class DateTimeCalendarLCA extends AbstractDateTimeLCADelegate {
     preserveProperty( dateTime, PROP_YEAR, dateTime.getYear() );
     preserveProperty( dateTime, PROP_MONTH, dateTime.getMonth() );
     preserveProperty( dateTime, PROP_DAY, dateTime.getDay() );
+    DateTimeLCAUtil.preserveMinMaxLimit( dateTime );
   }
 
   @Override
@@ -49,6 +50,7 @@ final class DateTimeCalendarLCA extends AbstractDateTimeLCADelegate {
     renderProperty( dateTime, PROP_YEAR, dateTime.getYear(), SWT.DEFAULT );
     renderProperty( dateTime, PROP_MONTH, dateTime.getMonth(), SWT.DEFAULT );
     renderProperty( dateTime, PROP_DAY, dateTime.getDay(), SWT.DEFAULT );
+    DateTimeLCAUtil.renderMinMaxLimit( dateTime );
   }
 
   private DateTimeCalendarLCA() {

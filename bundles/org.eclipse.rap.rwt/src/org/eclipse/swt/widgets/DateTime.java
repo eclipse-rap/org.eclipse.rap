@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2017 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.StringTokenizer;
 
@@ -158,6 +159,9 @@ public class DateTime extends Composite {
   private final Point cellSize;
   private transient IDateTimeAdapter dateTimeAdapter;
   private final Calendar rightNow;
+  private Date minimum;
+  private Date maximum;
+  private boolean ignoreLimits;
   // Date fields
   private Rectangle weekdayTextFieldBounds;
   private Rectangle dayTextFieldBounds;
@@ -403,6 +407,40 @@ public class DateTime extends Composite {
   }
 
   /**
+   * Returns the minimum value which the receiver will allow or null if no minimum limit is applied.
+   *
+   * @return the minimum value
+   * @exception SWTException
+   *              <ul>
+   *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the
+   *              receiver</li>
+   *              </ul>
+   * @since 3.2
+   */
+  public Date getMinimum() {
+    checkWidget();
+    return minimum;
+  }
+
+  /**
+   * Returns the maximum value which the receiver will allow or null if no maximum limit is applied.
+   *
+   * @return the maximum value
+   * @exception SWTException
+   *              <ul>
+   *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the
+   *              receiver</li>
+   *              </ul>
+   * @since 3.2
+   */
+  public Date getMaximum() {
+    checkWidget();
+    return maximum;
+  }
+
+  /**
    * Sets the receiver's hours.
    * <p>
    * Hours is an integer between 0 and 23.
@@ -420,6 +458,7 @@ public class DateTime extends Composite {
     checkWidget();
     if( checkTime( hours, getMinutes(), getSeconds() ) ) {
       rightNow.set( Calendar.HOUR_OF_DAY, hours );
+      applyLimits();
     }
   }
 
@@ -441,6 +480,7 @@ public class DateTime extends Composite {
     checkWidget();
     if( checkTime( getHours(), minutes, getSeconds() ) ) {
       rightNow.set( Calendar.MINUTE, minutes );
+      applyLimits();
     }
   }
 
@@ -462,6 +502,7 @@ public class DateTime extends Composite {
     checkWidget();
     if( checkTime( getHours(), getMinutes(), seconds ) ) {
       rightNow.set( Calendar.SECOND, seconds );
+      applyLimits();
     }
   }
 
@@ -486,6 +527,7 @@ public class DateTime extends Composite {
     int year = rightNow.get( Calendar.YEAR );
     if( checkDate( year, month, day ) ) {
       rightNow.set( Calendar.DATE, day );
+      applyLimits();
     }
   }
 
@@ -509,6 +551,7 @@ public class DateTime extends Composite {
     int year = rightNow.get( Calendar.YEAR );
     if( checkDate( year, month, day ) ) {
       rightNow.set( Calendar.MONTH, month );
+      applyLimits();
     }
   }
 
@@ -532,6 +575,49 @@ public class DateTime extends Composite {
     int month = rightNow.get( Calendar.MONTH );
     if( checkDate( year, month, day ) ) {
       rightNow.set( Calendar.YEAR, year );
+      applyLimits();
+    }
+  }
+
+  /**
+   * Sets the minimum value. If this value is greater than or equal to the maximum, the value is
+   * ignored.
+   *
+   * @param date the new minimum
+   * @exception SWTException
+   *              <ul>
+   *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the
+   *              receiver</li>
+   *              </ul>
+   * @since 3.2
+   */
+  public void setMinimum( Date date ) {
+    checkWidget();
+    if( date == null || maximum == null || date.getTime() < maximum.getTime() ) {
+      minimum = date;
+      applyLimits();
+    }
+  }
+
+  /**
+   * Sets the maximum value. If this value is lower than or equal to the minimum, the value is
+   * ignored.
+   *
+   * @param date the new maximum
+   * @exception SWTException
+   *              <ul>
+   *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the
+   *              receiver</li>
+   *              </ul>
+   * @since 3.2
+   */
+  public void setMaximum( Date date ) {
+    checkWidget();
+    if( date == null || minimum == null || date.getTime() > minimum.getTime() ) {
+      maximum = date;
+      applyLimits();
     }
   }
 
@@ -558,6 +644,7 @@ public class DateTime extends Composite {
     checkWidget();
     if( checkDate( year, month, day ) ) {
       // reset
+      ignoreLimits = true;
       setYear( 9996 );
       setMonth( 0 );
       setDay( 1 );
@@ -565,6 +652,8 @@ public class DateTime extends Composite {
       setYear( year );
       setMonth( month );
       setDay( day );
+      ignoreLimits = false;
+      applyLimits();
     }
   }
 
@@ -1047,6 +1136,17 @@ public class DateTime extends Composite {
       style &= ~SWT.DROP_DOWN;
     }
     return style;
+  }
+
+  private void applyLimits() {
+    if( !ignoreLimits ) {
+      if( maximum != null && rightNow.getTimeInMillis() > maximum.getTime() ) {
+        rightNow.setTime( maximum );
+      }
+      if( minimum != null && rightNow.getTimeInMillis() < minimum.getTime() ) {
+        rightNow.setTime( minimum );
+      }
+    }
   }
 
 }

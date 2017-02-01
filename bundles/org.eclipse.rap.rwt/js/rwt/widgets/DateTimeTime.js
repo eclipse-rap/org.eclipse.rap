@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2017 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -152,29 +152,65 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeTime", {
 
     _setFocusedTextField :  function( textField ) {
       if( this._focusedTextField !== textField ) {
-        var tmpValue;
         this._focusedTextField.removeState( "selected" );
         this._focusedTextField = null;
-        if( textField === this._hoursTextField ) {
-          this._spinner.setMin( 0 );
-          this._spinner.setMax( 23 );
-          tmpValue = this._removeLeadingZero( this._hoursTextField.getText() );
-          this._spinner.setValue( parseInt( tmpValue, 10 ) );
-        } else if( textField === this._minutesTextField ) {
-          this._spinner.setMin( 0 );
-          this._spinner.setMax( 59 );
-          tmpValue = this._removeLeadingZero( this._minutesTextField.getText() );
-          this._spinner.setValue( parseInt( tmpValue, 10 ) );
-        } else if( textField === this._secondsTextField ) {
-          this._spinner.setMin( 0 );
-          this._spinner.setMax( 59 );
-          tmpValue = this._removeLeadingZero( this._secondsTextField.getText() );
-          this._spinner.setValue( parseInt( tmpValue, 10 ) );
-        }
+        this._applySpinnerValue( textField );
         this._focusedTextField = textField;
         this._focusedTextField.addState( "selected" );
         this._initialEditing = true;
       }
+    },
+
+    _applySpinnerValue : function( textField ) {
+      if( textField === this._hoursTextField ) {
+        this._applyHourSpinnerValue();
+      } else if( textField === this._minutesTextField ) {
+        this._applyMinuteSpinnerValue();
+      } else if( textField === this._secondsTextField ) {
+        this._applySecondSpinnerValue();
+      }
+    },
+
+    _applySecondSpinnerValue : function() {
+      this._spinner.setMin( 0 );
+      this._spinner.setMax( 59 );
+      var hour = parseInt( this._removeLeadingZero( this._hoursTextField.getText() ) );
+      var minute = parseInt( this._removeLeadingZero( this._minutesTextField.getText() ) );
+      if( this._minimum && this._minimum.getHours() === hour && this._minimum.getMinutes() === minute ) {
+        this._spinner.setMin( this._minimum.getSeconds() );
+      }
+      if( this._maximum && this._maximum.getHours() === hour && this._maximum.getMinutes() === minute ) {
+        this._spinner.setMax( this._maximum.getSeconds() );
+      }
+      var tmpValue = this._removeLeadingZero( this._secondsTextField.getText() );
+      this._spinner.setValue( parseInt( tmpValue, 10 ) );
+    },
+
+    _applyMinuteSpinnerValue : function() {
+      this._spinner.setMin( 0 );
+      this._spinner.setMax( 59 );
+      var hour = parseInt( this._removeLeadingZero( this._hoursTextField.getText() ) );
+      if( this._minimum && this._minimum.getHours() === hour ) {
+        this._spinner.setMin( this._minimum.getMinutes() );
+      }
+      if( this._maximum && this._maximum.getHours() === hour ) {
+        this._spinner.setMax( this._maximum.getMinutes() );
+      }
+      var tmpValue = this._removeLeadingZero( this._minutesTextField.getText() );
+      this._spinner.setValue( parseInt( tmpValue, 10 ) );
+    },
+
+    _applyHourSpinnerValue : function() {
+      this._spinner.setMin( 0 );
+      this._spinner.setMax( 23 );
+      if( this._minimum ) {
+        this._spinner.setMin( this._minimum.getHours() );
+      }
+      if( this._maximum ) {
+        this._spinner.setMax( this._maximum.getHours() );
+      }
+      var tmpValue = this._removeLeadingZero( this._hoursTextField.getText() );
+      this._spinner.setValue( parseInt( tmpValue, 10 ) );
     },
 
     _onSpinnerChange : function() {
@@ -185,6 +221,24 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeTime", {
         if( oldValue != newValue ) {
           this._sendChanges();
         }
+        this._applyLimitRestriction();
+      }
+    },
+
+    _applyLimitRestriction : function() {
+      var hour = parseInt( this._removeLeadingZero( this._hoursTextField.getText() ) );
+      var minute = parseInt( this._removeLeadingZero( this._minutesTextField.getText() ) );
+      var second = parseInt( this._removeLeadingZero( this._secondsTextField.getText() ) );
+      var date = new Date( 1970, 0, 1, hour, minute, second );
+      if ( this._minimum && date.getTime() < this._minimum.getTime() ) {
+        this.setHours( this._minimum.getHours() );
+        this.setMinutes( this._minimum.getMinutes() );
+        this.setSeconds( this._minimum.getSeconds() );
+      }
+      if ( this._maximum && date.getTime() > this._maximum.getTime()) {
+        this.setHours( this._maximum.getHours() );
+        this.setMinutes( this._maximum.getMinutes() );
+        this.setSeconds( this._maximum.getSeconds() );
       }
     },
 
@@ -384,6 +438,26 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeTime", {
       if( this._focusedTextField === this._secondsTextField ) {
         this._spinner.setValue( value );
       }
+    },
+
+    setMinimum : function( value ) {
+      this._minimum = value === null ? null : new Date( value );
+      if( this._minimum ) {
+        this._minimum.setYear( 1970 );
+        this._minimum.setMonth( 0 );
+        this._minimum.setDate( 1 );
+      }
+      this._applyLimitRestriction();
+    },
+
+    setMaximum : function( value ) {
+      this._maximum = value === null ? null : new Date( value );
+      if( this._maximum ) {
+        this._maximum.setYear( 1970 );
+        this._maximum.setMonth( 0 );
+        this._maximum.setDate( 1 );
+      }
+      this._applyLimitRestriction();
     },
 
     setBounds : function( index, x, y, width, height ) {

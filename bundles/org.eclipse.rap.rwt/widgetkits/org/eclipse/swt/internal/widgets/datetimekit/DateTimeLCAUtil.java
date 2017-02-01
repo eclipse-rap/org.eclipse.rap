@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2017 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,10 @@ import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 
+import java.util.Date;
+
 import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
@@ -46,6 +49,8 @@ final class DateTimeLCAUtil {
   private static final String PROP_DATE_SEPARATOR = "dateSeparator";
   private static final String PROP_DATE_PATTERN = "datePattern";
   private static final String PROP_SUB_WIDGETS_BOUNDS = "subWidgetsBounds";
+  private static final String PROP_MINIMUM = "minimum";
+  private static final String PROP_MAXIMUM = "maximum";
 
   private DateTimeLCAUtil() {
     // prevent instantiation
@@ -99,6 +104,25 @@ final class DateTimeLCAUtil {
     getRemoteObject( dateTime ).set( PROP_DATE_PATTERN, datePattern );
   }
 
+  static void preserveMinMaxLimit( DateTime dateTime ) {
+    preserveProperty( dateTime, PROP_MINIMUM, getMinLimit( dateTime ) );
+    preserveProperty( dateTime, PROP_MAXIMUM, getMaxLimit( dateTime ) );
+  }
+
+  static void renderMinMaxLimit( DateTime dateTime ) {
+    RemoteObject remoteObject = getRemoteObject( dateTime );
+    Long minimum = getMinLimit( dateTime );
+    if( hasChanged( dateTime, PROP_MINIMUM, minimum, null ) ) {
+      JsonValue value = minimum == null ? JsonValue.NULL : JsonValue.valueOf( minimum.longValue() );
+      remoteObject.set( PROP_MINIMUM, value );
+    }
+    Long maximum = getMaxLimit( dateTime );
+    if( hasChanged( dateTime, PROP_MAXIMUM, maximum, null ) ) {
+      JsonValue value = maximum == null ? JsonValue.NULL : JsonValue.valueOf( maximum.longValue() );
+      remoteObject.set( PROP_MAXIMUM, value );
+    }
+  }
+
   static void preserveSubWidgetsBounds( DateTime dateTime, SubWidgetBounds[] subWidgetBounds ) {
     preserveProperty( dateTime, PROP_SUB_WIDGETS_BOUNDS, subWidgetBounds );
   }
@@ -124,6 +148,16 @@ final class DateTimeLCAUtil {
 
   private static IDateTimeAdapter getDateTimeAdapter( DateTime dateTime ) {
     return dateTime.getAdapter( IDateTimeAdapter.class );
+  }
+
+  private static Long getMinLimit( DateTime dateTime ) {
+    Date minimum = dateTime.getMinimum();
+    return minimum == null ? null : Long.valueOf( minimum.getTime() );
+  }
+
+  private static Long getMaxLimit( DateTime dateTime ) {
+    Date maximum = dateTime.getMaximum();
+    return maximum == null ? null : Long.valueOf( maximum.getTime() );
   }
 
   static final class SubWidgetBounds {

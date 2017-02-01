@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2017 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -107,6 +107,22 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeCalendar", {
       var date = this._calendar.getDate();
       date.setYear( value );
       this._calendar.setDate( date );
+    },
+
+    setMinimum : function( value ) {
+      var minimum = value === null ? null : new Date( value );
+      if( minimum ) {
+        minimum.setHours( 0, 0, 0, 0 );
+      }
+      this._calendar.setMinimum( minimum );
+    },
+
+    setMaximum : function( value ) {
+      var maximum = value === null ? null : new Date( value );
+      if( maximum ) {
+        maximum.setHours( 0, 0, 0, 0 );
+      }
+      this._calendar.setMaximum( maximum );
     },
 
     setFont : function() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2017 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -274,6 +274,20 @@ rwt.qx.Class.define("rwt.widgets.base.Calendar", {
       apply : "_applyDate",
       event : "changeDate",
       transform : "_checkDate"
+    },
+
+    minimum : {
+      check : "Date",
+      init : null,
+      nullable : true,
+      apply : "_applyMinimum"
+    },
+
+    maximum : {
+      check : "Date",
+      init : null,
+      nullable : true,
+      apply : "_applyMaximum"
     }
   },
 
@@ -405,7 +419,7 @@ rwt.qx.Class.define("rwt.widgets.base.Calendar", {
      * @return {void}
      */
     _onDayClicked : function(evt) {
-      if( evt.isLeftButtonPressed() ) {
+      if( evt.isLeftButtonPressed() && !evt.getTarget().hasState("disabled") ) {
         var time = evt.getTarget().dateTime;
         this.setDate(new Date(time));
       }
@@ -609,7 +623,7 @@ rwt.qx.Class.define("rwt.widgets.base.Calendar", {
       }
 
       // Show the days
-      helpDate = new Date(shownYear, shownMonth, 1);
+      helpDate = new Date( shownYear, shownMonth, 1 );
       var nrDaysOfLastMonth = (7 + firstDayOfWeek - startOfWeek) % 7;
       helpDate.setDate(helpDate.getDate() - nrDaysOfLastMonth);
 
@@ -622,13 +636,18 @@ rwt.qx.Class.define("rwt.widgets.base.Calendar", {
           var year = helpDate.getFullYear();
           var month = helpDate.getMonth();
           var dayOfMonth = helpDate.getDate();
+          var minimum = this.getMinimum();
+          var maximum = this.getMaximum();
 
+          var isBeforeMinimumLimit = minimum && helpDate.getTime() < minimum.getTime();
+          var isAfterMaximumLimit = maximum && helpDate.getTime() > maximum.getTime();
           var isSelectedDate = (selYear == year && selMonth == month && selDayOfMonth == dayOfMonth);
           var isToday = (year == todayYear && month == todayMonth && dayOfMonth == todayDayOfMonth);
 
           dayLabel.toggleState( "selected", isSelectedDate );
           dayLabel.toggleState( "otherMonth", month != shownMonth );
           dayLabel.toggleState( "today", isToday );
+          dayLabel.toggleState( "disabled", isBeforeMinimumLimit || isAfterMaximumLimit );
 
           dayLabel.setText("" + dayOfMonth);
           dayLabel.dateTime = helpDate.getTime();
@@ -864,6 +883,14 @@ rwt.qx.Class.define("rwt.widgets.base.Calendar", {
     __getTerritory : function() {
         var territory = rwt.client.Client.getTerritory() || rwt.client.Client.getLanguage();
       return territory.toUpperCase();
+    },
+
+    _applyMinimum : function() {
+      this._updateDatePane();
+    },
+
+    _applyMaximum : function() {
+      this._updateDatePane();
     }
   },
 

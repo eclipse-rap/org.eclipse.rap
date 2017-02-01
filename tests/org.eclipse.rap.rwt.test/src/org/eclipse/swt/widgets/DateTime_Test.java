@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2017 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,9 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 import org.eclipse.rap.rwt.RWT;
@@ -45,12 +48,14 @@ public class DateTime_Test {
 
   private Shell shell;
   private DateTime dateTime;
+  SimpleDateFormat formatter;
 
   @Before
   public void setUp() {
     Display display = new Display();
     shell = new Shell( display, SWT.NONE );
     dateTime = new DateTime( shell, SWT.NONE );
+    formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
   }
 
   @Test
@@ -124,6 +129,170 @@ public class DateTime_Test {
     assertEquals( 12, dateTime.getHours() );
     assertEquals( 14, dateTime.getMinutes() );
     assertEquals( 16, dateTime.getSeconds() );
+  }
+
+  @Test
+  public void testSetMininum() throws ParseException {
+    Date minimum = formatter.parse( "1985-10-29 11:00:00" );
+
+    dateTime.setMinimum( minimum );
+
+    assertEquals( minimum, dateTime.getMinimum() );
+  }
+
+  @Test
+  public void testSetMininum_limitsDate() throws ParseException {
+    dateTime.setDate( 1984, 8, 28 );
+    dateTime.setMinimum( formatter.parse( "1985-10-29 11:00:00" ) );
+
+    assertEquals( 29, dateTime.getDay() );
+    assertEquals( 9, dateTime.getMonth() );
+    assertEquals( 1985, dateTime.getYear() );
+  }
+
+  @Test
+  public void testSetMininum_limitsYear() throws ParseException {
+    dateTime.setMinimum( formatter.parse( "1985-10-29 11:00:00" ) );
+    dateTime.setDate( 1984, 10, 29 );
+
+    assertEquals( 29, dateTime.getDay() );
+    assertEquals( 9, dateTime.getMonth() );
+    assertEquals( 1985, dateTime.getYear() );
+  }
+
+  @Test
+  public void testSetMininum_limitsMonth() throws ParseException {
+    dateTime.setMinimum( formatter.parse( "1985-10-29 11:00:00" ) );
+    dateTime.setDate( 1985, 5, 29 );
+
+    assertEquals( 29, dateTime.getDay() );
+    assertEquals( 9, dateTime.getMonth() );
+    assertEquals( 1985, dateTime.getYear() );
+  }
+
+  @Test
+  public void testSetMininum_limitsDay() throws ParseException {
+    dateTime.setMinimum( formatter.parse( "1985-10-29 11:00:00" ) );
+    dateTime.setDate( 1985, 9, 28 );
+
+    assertEquals( 29, dateTime.getDay() );
+    assertEquals( 9, dateTime.getMonth() );
+    assertEquals( 1985, dateTime.getYear() );
+  }
+
+  @Test
+  public void testSetMininum_limitsHour() throws ParseException {
+    dateTime.setMinimum( formatter.parse( "1985-10-29 11:22:33" ) );
+    dateTime.setDate( 1985, 9, 28 );
+    dateTime.setTime( 10, 22, 33 );
+
+    assertEquals( 11, dateTime.getHours() );
+    assertEquals( 22, dateTime.getMinutes() );
+    assertEquals( 33, dateTime.getSeconds() );
+  }
+
+  @Test
+  public void testSetMininum_limitsMinute() throws ParseException {
+    dateTime.setMinimum( formatter.parse( "1985-10-29 11:22:33" ) );
+    dateTime.setDate( 1985, 9, 28 );
+    dateTime.setTime( 11, 21, 33 );
+
+    assertEquals( 11, dateTime.getHours() );
+    assertEquals( 22, dateTime.getMinutes() );
+    assertEquals( 33, dateTime.getSeconds() );
+  }
+
+  @Test
+  public void testSetMininum_limitsSecond() throws ParseException {
+    dateTime.setMinimum( formatter.parse( "1985-10-29 11:22:33" ) );
+    dateTime.setDate( 1985, 9, 28 );
+    dateTime.setTime( 11, 22, 32 );
+
+    assertEquals( 11, dateTime.getHours() );
+    assertEquals( 22, dateTime.getMinutes() );
+    assertEquals( 33, dateTime.getSeconds() );
+  }
+
+  @Test
+  public void testSetMaximum() throws ParseException {
+    Date maximum = formatter.parse( "2020-03-15 11:00:00" );
+
+    dateTime.setMaximum( maximum );
+
+    assertEquals( maximum, dateTime.getMaximum() );
+  }
+
+  @Test
+  public void testSetMaximum_limitsDate() throws ParseException {
+    dateTime.setDate( 2021, 3, 16 );
+    dateTime.setMaximum( formatter.parse( "2020-03-15 11:00:00" ) );
+
+    assertEquals( 15, dateTime.getDay() );
+    assertEquals( 2, dateTime.getMonth() );
+    assertEquals( 2020, dateTime.getYear() );
+  }
+
+  @Test
+  public void testSetMaximum_limitsYear() throws ParseException {
+    dateTime.setMaximum( formatter.parse( "2020-03-15 11:00:00" ) );
+    dateTime.setDate( 2021, 2, 15 );
+
+    assertEquals( 15, dateTime.getDay() );
+    assertEquals( 2, dateTime.getMonth() );
+    assertEquals( 2020, dateTime.getYear() );
+  }
+
+  @Test
+  public void testSetMaximum_limitsMonth() throws ParseException {
+    dateTime.setMaximum( formatter.parse( "2020-03-15 11:00:00" ) );
+    dateTime.setDate( 2020, 3, 15 );
+
+    assertEquals( 15, dateTime.getDay() );
+    assertEquals( 2, dateTime.getMonth() );
+    assertEquals( 2020, dateTime.getYear() );
+  }
+
+  @Test
+  public void testSetMaximum_limitsDay() throws ParseException {
+    dateTime.setMaximum( formatter.parse( "2020-03-15 11:00:00" ) );
+    dateTime.setDate( 2020, 2, 16 );
+
+    assertEquals( 15, dateTime.getDay() );
+    assertEquals( 2, dateTime.getMonth() );
+    assertEquals( 2020, dateTime.getYear() );
+  }
+
+  @Test
+  public void testSetMaximum_limitsHour() throws ParseException {
+    dateTime.setMaximum( formatter.parse( "2020-03-15 11:22:33" ) );
+    dateTime.setDate( 2020, 2, 16 );
+    dateTime.setTime( 12, 22, 33 );
+
+    assertEquals( 11, dateTime.getHours() );
+    assertEquals( 22, dateTime.getMinutes() );
+    assertEquals( 33, dateTime.getSeconds() );
+  }
+
+  @Test
+  public void testSetMaximum_limitsMinute() throws ParseException {
+    dateTime.setMaximum( formatter.parse( "2020-03-15 11:22:33" ) );
+    dateTime.setDate( 2020, 2, 16 );
+    dateTime.setTime( 11, 23, 33 );
+
+    assertEquals( 11, dateTime.getHours() );
+    assertEquals( 22, dateTime.getMinutes() );
+    assertEquals( 33, dateTime.getSeconds() );
+  }
+
+  @Test
+  public void testSetMaximum_limitsSecond() throws ParseException {
+    dateTime.setMaximum( formatter.parse( "2020-03-15 11:22:33" ) );
+    dateTime.setDate( 2020, 2, 16 );
+    dateTime.setTime( 11, 23, 34 );
+
+    assertEquals( 11, dateTime.getHours() );
+    assertEquals( 22, dateTime.getMinutes() );
+    assertEquals( 33, dateTime.getSeconds() );
   }
 
   @Test

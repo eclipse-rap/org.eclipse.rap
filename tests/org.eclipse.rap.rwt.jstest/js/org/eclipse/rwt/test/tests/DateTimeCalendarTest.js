@@ -88,6 +88,22 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
       widget.destroy();
     },
 
+    testSetMinimumByProtocol : function() {
+      var widget = this._createDefaultDateTimeByProtocol( "w3", "w2" );
+      var date = new Date( 1999, 0, 1, 0, 0, 0, 0 );
+      TestUtil.protocolSet( "w3", { "minimum" : date.getTime() } );
+      assertEquals( date.getTime(), widget._calendar.getMinimum().getTime() );
+      widget.destroy();
+    },
+
+    testSetMaximumByProtocol : function() {
+      var widget = this._createDefaultDateTimeByProtocol( "w3", "w2" );
+      var date = new Date( 2050, 0, 1, 0, 0, 0, 0 );
+      TestUtil.protocolSet( "w3", { "maximum" : date.getTime() } );
+      assertEquals( date.getTime(), widget._calendar.getMaximum().getTime() );
+      widget.destroy();
+    },
+
     // see bug 401780
     testKeypressEscape : function() {
       var widget = this._createDefaultDateTimeByProtocol( "w3", "w2" );

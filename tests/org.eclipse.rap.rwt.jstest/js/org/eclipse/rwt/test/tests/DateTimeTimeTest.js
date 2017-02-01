@@ -107,6 +107,48 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeTimeTest", {
       widget.destroy();
     },
 
+    testSetMinimumByProtocol : function() {
+      var minimum = 1000;
+      var minimumDate = new Date( minimum );
+      var time = new Date(1970, 0, 1, minimumDate.getHours(), minimumDate.getMinutes(), minimumDate.getSeconds());
+
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.DateTime",
+        "properties" : {
+          "style" : [ "TIME", "MEDIUM" ],
+          "parent" : "w2",
+          "minimum" : minimum
+        }
+      } );
+      var widget = ObjectRegistry.getObject( "w3" );
+
+      assertEquals( time.getTime(), widget._minimum.getTime() );
+      widget.destroy();
+    },
+
+    testSetMaximumByProtocol : function() {
+      var maximum = 99000;
+      var maximumDate = new Date( maximum );
+      var time = new Date(1970, 0, 1, maximumDate.getHours(), maximumDate.getMinutes(), maximumDate.getSeconds());
+
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.DateTime",
+        "properties" : {
+          "style" : [ "TIME", "MEDIUM" ],
+          "parent" : "w2",
+          "maximum" : maximum
+        }
+      } );
+      var widget = ObjectRegistry.getObject( "w3" );
+
+      assertEquals( time.getTime(), widget._maximum.getTime() );
+      widget.destroy();
+    },
+
     testSetSubWidgetsBoundsByProtocol : function() {
       Processor.processOperation( {
         "target" : "w3",

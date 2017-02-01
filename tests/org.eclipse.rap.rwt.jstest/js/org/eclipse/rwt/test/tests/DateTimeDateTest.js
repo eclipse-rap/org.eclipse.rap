@@ -105,6 +105,22 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
       widget.destroy();
     },
 
+    testSetMinimumByProtocol : function() {
+      var widget = this._createDefaultDateTimeByProtocol( "w3", "w2", true );
+      var date = new Date( 2000, 0, 1, 0, 0, 0, 0 );
+      TestUtil.protocolSet( "w3", { "minimum" : date.getTime() } );
+      assertEquals( date.getTime(), widget._minimum.getTime() );
+      widget.destroy();
+    },
+
+    testSetMaximumByProtocol : function() {
+      var widget = this._createDefaultDateTimeByProtocol( "w3", "w2", true );
+      var date = new Date( 2090, 0, 1, 0, 0, 0, 0 );
+      TestUtil.protocolSet( "w3", { "maximum" : date.getTime() } );
+      assertEquals( date.getTime(), widget._maximum.getTime() );
+      widget.destroy();
+    },
+
     testSetSubWidgetsBoundsByProtocol : function() {
       var widget = this._createDefaultDateTimeByProtocol( "w3", "w2", true );
       TestUtil.protocolSet( "w3", { "subWidgetsBounds" : [ [ 0, 3, 5, 0, 18 ],

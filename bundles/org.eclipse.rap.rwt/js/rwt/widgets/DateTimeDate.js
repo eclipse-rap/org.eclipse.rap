@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2017 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -257,28 +257,64 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
       this._setFocusedTextField( event.getTarget() );
     },
 
-    _setFocusedTextField :  function( textField ) {
+    _setFocusedTextField : function( textField ) {
       if( this._focusedTextField !== textField ) {
         this._focusedTextField.removeState( "selected" );
         this._focusedTextField = null;
-        if( textField === this._dayTextField ) {
-          this._spinner.setMin( 1 );
-          this._spinner.setMax( this._getDaysInMonth() );
-          var tmpValue = this._removeLeadingZero( this._dayTextField.getText() );
-          this._spinner.setValue( parseInt( tmpValue, 10 ) );
-        } else if( textField === this._monthTextField ) {
-          this._spinner.setMin( 1 );
-          this._spinner.setMax( 12 );
-          this._spinner.setValue( this._monthInt );
-        } else if( textField === this._yearTextField ) {
-          this._spinner.setMax( 9999 );
-          this._spinner.setMin( 1752 );
-          this._spinner.setValue( this._lastValidYear );
-        }
+        this._applySpinnerValue( textField );
         this._focusedTextField = textField;
         this._focusedTextField.addState( "selected" );
         this._initialEditing = true;
       }
+    },
+
+    _applySpinnerValue : function( textField ) {
+      if( textField === this._dayTextField ) {
+        this._applyDaySpinnerValue();
+      } else if( textField === this._monthTextField ) {
+        this._applyMonthSpinnerValue();
+      } else if( textField === this._yearTextField ) {
+        this._applyYearSpinnerValue();
+      }
+    },
+
+    _applyDaySpinnerValue : function() {
+      this._spinner.setMin( 1 );
+      this._spinner.setMax( this._getDaysInMonth() );
+      if( this._minimum && this._minimum.getFullYear() === this._lastValidYear &&
+          this._minimum.getMonth() === this._monthInt - 1 ) {
+        this._spinner.setMin( this._minimum.getDate() );
+      }
+      if( this._maximum && this._maximum.getFullYear() === this._lastValidYear &&
+          this._maximum.getMonth() === this._monthInt - 1 ) {
+        this._spinner.setMax( this._maximum.getDate() );
+      }
+      var tmpValue = this._removeLeadingZero( this._dayTextField.getText() );
+      this._spinner.setValue( parseInt( tmpValue, 10 ) );
+    },
+
+    _applyMonthSpinnerValue : function() {
+      this._spinner.setMin( 1 );
+      this._spinner.setMax( 12 );
+      if( this._minimum && this._minimum.getFullYear() === this._lastValidYear ) {
+        this._spinner.setMin( this._minimum.getMonth() + 1 );
+      }
+      if( this._maximum && this._maximum.getFullYear() === this._lastValidYear ) {
+        this._spinner.setMax( this._maximum.getMonth() + 1 );
+      }
+      this._spinner.setValue( this._monthInt );
+    },
+
+    _applyYearSpinnerValue : function() {
+      this._spinner.setMax( 9999 );
+      this._spinner.setMin( 1752 );
+      if( this._minimum ) {
+        this._spinner.setMin( this._minimum.getFullYear() );
+      }
+      if( this._maximum ) {
+        this._spinner.setMax( this._maximum.getFullYear() );
+      }
+      this._spinner.setValue( this._lastValidYear );
     },
 
     _onSpinnerChange : function() {
@@ -313,6 +349,22 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
         if( oldValue != newValue ) {
           this._sendChanges();
         }
+        this._applyLimitRestriction();
+      }
+    },
+
+    _applyLimitRestriction : function() {
+      var day = parseInt( this._removeLeadingZero( this._dayTextField.getText() ) );
+      var date = new Date(this._lastValidYear, this._monthInt - 1, day);
+      if( this._minimum && date.getTime() < this._minimum.getTime() ) {
+        this.setYear( this._minimum.getFullYear() );
+        this.setMonth( this._minimum.getMonth() );
+        this.setDay( this._minimum.getDate() );
+      }
+      if( this._maximum && date.getTime() > this._maximum.getTime()) {
+        this.setYear( this._maximum.getFullYear() );
+        this.setMonth( this._maximum.getMonth() );
+        this.setDay( this._maximum.getDate() );
       }
     },
 
@@ -647,6 +699,30 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
       this._setWeekday();
     },
 
+    setMinimum : function( value ) {
+      this._minimum = value === null ? null : new Date( value );
+      if( this._minimum ) {
+        this._minimum.setHours( 0, 0, 0, 0 );
+      }
+      this._applySpinnerValue(this._focusedTextField);
+      this._applyLimitRestriction();
+      if( this._calendar ) {
+        this._calendar.setMinimum( this._minimum );
+      }
+    },
+
+    setMaximum : function( value ) {
+      this._maximum = value === null ? null : new Date( value );
+      if( this._maximum ) {
+        this._maximum.setHours( 0, 0, 0, 0 );
+      }
+      this._applySpinnerValue(this._focusedTextField);
+      this._applyLimitRestriction();
+      if( this._calendar ) {
+        this._calendar.setMaximum( this._maximum );
+      }
+    },
+
     _setDate : function( date ) {
       this.setYear( date.getFullYear() );
       this.setMonth( date.getMonth() );
@@ -737,9 +813,11 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
       if( event.isLeftButtonPressed() ) {
         var target = event.getTarget();
         if( target.getUserData( "calendar-day" ) ) {
-          this._calendar._onDayClicked( event );
-          this._hideCalendar();
-          this.setFocused( true );
+          if( !target.hasState( "disabled" ) ) {
+            this._calendar._onDayClicked( event );
+            this._hideCalendar();
+            this.setFocused( true );
+          }
         } else if( target.getUserData( "calendar-button" ) ) {
           this._calendar._onNavButtonClicked( event );
         } else if( target === this._dropDownButton ) {

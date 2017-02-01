@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2017 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,17 +11,23 @@
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
+import java.util.Calendar;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DateTime;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
@@ -32,7 +38,7 @@ class DateTimeTab extends ExampleTab {
   private static final String PROP_SELECTION_LISTENER = "selectionListener";
 
   private DateTime dateTime;
-  private Group group1, group2;
+  private Group group1, group2, group3;
 
   DateTimeTab() {
     super( "DateTime" );
@@ -63,6 +69,10 @@ class DateTimeTab extends ExampleTab {
     createBgColorButton();
     createPropertyCheckbox( "Add Context Menu", PROP_CONTEXT_MENU );
     createPropertyCheckbox( "Add Selection Listener", PROP_SELECTION_LISTENER );
+    group3 = new Group( parent, SWT.NONE );
+    group3.setText( "Min/Max Limit" );
+    group3.setLayout( new GridLayout( 3, false ) );
+    createMinMaxLimit( group3 );
   }
 
   @Override
@@ -126,6 +136,48 @@ class DateTimeTab extends ExampleTab {
     button.setData( "style", new Integer( style ) );
     button.setSelection( checked );
     return button;
+  }
+
+  private void createMinMaxLimit( Composite parent ) {
+    Label minLabel = new Label(parent, SWT.NONE);
+    minLabel.setText( "Minimum" );
+    DateTime minDate = new DateTime( parent, SWT.DATE | SWT.MEDIUM | SWT.BORDER );
+    DateTime minTime = new DateTime( parent, SWT.TIME | SWT.SHORT | SWT.BORDER );
+    Label maxLabel = new Label(parent, SWT.NONE);
+    maxLabel.setText( "Maximum" );
+    DateTime maxDate = new DateTime( parent, SWT.DATE | SWT.MEDIUM | SWT.BORDER );
+    DateTime maxTime = new DateTime( parent, SWT.TIME | SWT.SHORT | SWT.BORDER );
+    Button clearButton = new Button( group3, SWT.PUSH );
+    clearButton.setText( "Clear" );
+    clearButton.addListener( SWT.Selection, new Listener() {
+      @Override
+      public void handleEvent( Event event ) {
+        dateTime.setMinimum( null );
+        dateTime.setMaximum( null );
+      }
+    } );
+    Button applyButton = new Button( group3, SWT.PUSH );
+    applyButton.setText( "Apply" );
+    applyButton.addListener( SWT.Selection, new Listener() {
+      @Override
+      public void handleEvent( Event event ) {
+        Calendar limit = Calendar.getInstance();
+        limit.set( minDate.getYear(),
+                   minDate.getMonth(),
+                   minDate.getDay(),
+                   minTime.getHours(),
+                   minTime.getMinutes(),
+                   minTime.getSeconds() );
+        dateTime.setMinimum( limit.getTime() );
+        limit.set( maxDate.getYear(),
+                   maxDate.getMonth(),
+                   maxDate.getDay(),
+                   maxTime.getHours(),
+                   maxTime.getMinutes(),
+                   maxTime.getSeconds() );
+        dateTime.setMaximum( limit.getTime() );
+      }
+    } );
   }
 
   protected int getStyle( Composite comp ) {

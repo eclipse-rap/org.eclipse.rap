@@ -16,6 +16,7 @@ import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemot
 import static org.eclipse.rap.rwt.testfixture.internal.TestMessage.getParent;
 import static org.eclipse.rap.rwt.testfixture.internal.TestMessage.getStyles;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -23,6 +24,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import org.eclipse.rap.json.JsonArray;
@@ -420,6 +422,110 @@ public class DateTimeLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( dateTime, "day" ) );
+  }
+
+  @Test
+  public void testRenderInitialMinimum() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.DATE );
+
+    lca.render( dateTime );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( dateTime );
+    assertFalse( operation.getProperties().names().contains( "minimum" ) );
+  }
+
+  @Test
+  public void testRenderMinimum() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.DATE );
+    Date date = new Date();
+
+    dateTime.setMinimum( date );
+    lca.renderChanges( dateTime );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( date.getTime(), message.findSetProperty( dateTime, "minimum" ).asLong() );
+  }
+
+  @Test
+  public void testRenderMinimumUnchanged() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.DATE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( dateTime );
+
+    dateTime.setMinimum( new Date() );
+    Fixture.preserveWidgets();
+    lca.renderChanges( dateTime );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( dateTime, "minimum" ) );
+  }
+
+  @Test
+  public void testRenderMinimumReset() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.DATE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( dateTime );
+
+    dateTime.setMinimum( new Date() );
+    Fixture.preserveWidgets();
+    dateTime.setMinimum( null );
+    lca.renderChanges( dateTime );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( JsonValue.NULL, message.findSetProperty( dateTime, "minimum" ) );
+  }
+
+  @Test
+  public void testRenderInitialMaximum() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.DATE );
+
+    lca.render( dateTime );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( dateTime );
+    assertFalse( operation.getProperties().names().contains( "maximum" ) );
+  }
+
+  @Test
+  public void testRenderMaximum() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.DATE );
+    Date date = new Date();
+
+    dateTime.setMaximum( date );
+    lca.renderChanges( dateTime );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( date.getTime(), message.findSetProperty( dateTime, "maximum" ).asLong() );
+  }
+
+  @Test
+  public void testRenderMaximumUnchanged() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.DATE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( dateTime );
+
+    dateTime.setMaximum( new Date() );
+    Fixture.preserveWidgets();
+    lca.renderChanges( dateTime );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( dateTime, "maximum" ) );
+  }
+
+  @Test
+  public void testRenderMaximumReset() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.DATE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( dateTime );
+
+    dateTime.setMaximum( new Date() );
+    Fixture.preserveWidgets();
+    dateTime.setMaximum( null );
+    lca.renderChanges( dateTime );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( JsonValue.NULL, message.findSetProperty( dateTime, "maximum" ) );
   }
 
   @Test

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2017 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,6 +36,7 @@ final class DateTimeDateLCA extends AbstractDateTimeLCADelegate {
     preserveProperty( dateTime, PROP_MONTH, dateTime.getMonth() );
     preserveProperty( dateTime, PROP_DAY, dateTime.getDay() );
     DateTimeLCAUtil.preserveSubWidgetsBounds( dateTime, getSubWidgetsBounds( dateTime ) );
+    DateTimeLCAUtil.preserveMinMaxLimit( dateTime );
   }
 
   @Override
@@ -56,6 +57,7 @@ final class DateTimeDateLCA extends AbstractDateTimeLCADelegate {
     renderProperty( dateTime, PROP_MONTH, dateTime.getMonth(), SWT.DEFAULT );
     renderProperty( dateTime, PROP_DAY, dateTime.getDay(), SWT.DEFAULT );
     DateTimeLCAUtil.renderSubWidgetsBounds( dateTime, getSubWidgetsBounds( dateTime ) );
+    DateTimeLCAUtil.renderMinMaxLimit( dateTime );
   }
 
   ///////////////////////////////////////////////////
