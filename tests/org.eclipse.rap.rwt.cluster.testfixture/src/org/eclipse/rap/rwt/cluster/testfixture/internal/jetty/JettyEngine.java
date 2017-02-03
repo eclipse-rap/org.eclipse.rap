@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,41 +30,46 @@ public class JettyEngine implements IServletEngine {
 
   private final JettyController jettyController;
   private final SessionTracker sessionTracker;
-  
+
   public JettyEngine() {
-    this( new SessionManagerProvider() );
+    this( new SessionHandlerProvider() );
   }
-  
+
   public JettyEngine( int port ) {
-    this( new SessionManagerProvider(), port );
+    this( new SessionHandlerProvider(), port );
   }
-  
-  JettyEngine( ISessionManagerProvider sessionManagerProvider ) {
-    this( sessionManagerProvider, SocketUtil.getFreePort() );
+
+  JettyEngine( ISessionHandlerProvider sessionHandlerProvider ) {
+    this( sessionHandlerProvider, SocketUtil.getFreePort() );
   }
-  
-  JettyEngine( ISessionManagerProvider sessionManagerProvider, int port ) {
-    this.jettyController = new JettyController( sessionManagerProvider, port );
+
+  JettyEngine( ISessionHandlerProvider sessionHandlerProvider, int port ) {
+    this.jettyController = new JettyController( sessionHandlerProvider, port );
     this.sessionTracker = new SessionTracker();
   }
-  
+
+  @Override
   public void start( Class<? extends EntryPoint> entryPointClass ) throws Exception {
     addEntryPoint( entryPointClass );
     jettyController.start();
   }
 
+  @Override
   public void stop() throws Exception {
     stop( 0 );
   }
-  
+
+  @Override
   public void stop( int timeout ) throws Exception {
     jettyController.stop( timeout );
   }
 
+  @Override
   public int getPort() {
     return jettyController.getPort();
   }
-  
+
+  @Override
   public HttpSession[] getSessions() {
     return sessionTracker.getSessions();
   }
@@ -81,4 +86,5 @@ public class JettyEngine implements IServletEngine {
     EnumSet<DispatcherType> dispatcherType = EnumSet.of( DispatcherType.REQUEST );
     context.addFilter( filterHolder, IServletEngine.SERVLET_PATH, dispatcherType );
   }
+
 }

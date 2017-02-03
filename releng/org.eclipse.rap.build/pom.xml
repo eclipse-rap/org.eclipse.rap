@@ -29,7 +29,7 @@
     <tycho-baseline-repo.url>http://download.eclipse.org/rt/rap/3.2/</tycho-baseline-repo.url>
      -->
     <cbi-plugins.version>1.1.2</cbi-plugins.version>
-    <jetty-repo.url>http://download.eclipse.org/jetty/updates/jetty-bundles-9.x/9.3.9.v20160517/</jetty-repo.url>
+    <jetty-repo.url>http://download.eclipse.org/jetty/updates/jetty-bundles-9.x/9.4.1.v20170120/</jetty-repo.url>
     <orbit-repo.url>http://download.eclipse.org/tools/orbit/downloads/drops/S20170120205402/repository/</orbit-repo.url>
     <platform-repo.url>http://download.eclipse.org/eclipse/updates/4.7milestones/S-4.7M5-201701261030/</platform-repo.url>
     <rap-extra-repo.url>http://build.eclipse.org/rt/rap/base-platforms/3.2/extra-dependencies/</rap-extra-repo.url>
@@ -86,11 +86,11 @@
             <artifactId>tycho-buildtimestamp-jgit</artifactId>
             <version>${tycho-extras.version}</version>
           </dependency>
-          <dependency> 
-            <groupId>org.eclipse.tycho.extras</groupId> 
-            <artifactId>tycho-sourceref-jgit</artifactId> 
-            <version>${tycho-extras.version}</version> 
-          </dependency> 
+          <dependency>
+            <groupId>org.eclipse.tycho.extras</groupId>
+            <artifactId>tycho-sourceref-jgit</artifactId>
+            <version>${tycho-extras.version}</version>
+          </dependency>
         </dependencies>
         <configuration>
           <timestampProvider>jgit</timestampProvider>
@@ -98,9 +98,9 @@
             pom.xml
           </jgit.ignore>
           <format>yyyyMMdd-HHmm</format>
-          <sourceReferences> 
-            <generate>true</generate> 
-          </sourceReferences> 
+          <sourceReferences>
+            <generate>true</generate>
+          </sourceReferences>
         </configuration>
       </plugin>
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 EclipseSource and others.
+ * Copyright (c) 2011, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,8 +19,6 @@ import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.HandlerContainer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.server.SessionIdManager;
-import org.eclipse.jetty.server.SessionManager;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.DefaultServlet;
@@ -31,18 +29,18 @@ import org.eclipse.rap.rwt.cluster.testfixture.internal.util.FileUtil;
 
 
 class JettyController {
+
   static {
     Log.setLog( new ServletEngineLogger() );
   }
 
-  private final ISessionManagerProvider sessionManagerProvider;
+  private final ISessionHandlerProvider sessionHandlerProvider;
   private final int port;
   private Server server;
-  private SessionManager sessionManager;
   private SessionHandler sessionHandler;
 
-  JettyController( ISessionManagerProvider sessionManagerProvider, int port ) {
-    this.sessionManagerProvider = sessionManagerProvider;
+  JettyController( ISessionHandlerProvider sessionHandlerProvider, int port ) {
+    this.sessionHandlerProvider = sessionHandlerProvider;
     this.port = port;
   }
 
@@ -81,7 +79,6 @@ class JettyController {
   private void ensureServer() {
     if( server == null ) {
       createServer();
-      createSessionManager();
       createSessionHandler();
     }
   }
@@ -93,17 +90,13 @@ class JettyController {
     server.setHandler( new ContextHandlerCollection() );
   }
 
-  private void createSessionManager() {
-    sessionManager = sessionManagerProvider.createSessionManager( server );
-    SessionIdManager sessionIdManager = sessionManagerProvider.createSessionIdManager( server );
-    sessionManager.setMaxInactiveInterval( 60 * 60 );
-    sessionManager.setSessionIdManager( sessionIdManager );
-    server.setSessionIdManager( sessionIdManager );
-  }
-
   private void createSessionHandler() {
-    sessionHandler = new SessionHandler( sessionManager );
-    sessionManager.setSessionHandler( sessionHandler );
+    try {
+      sessionHandler = sessionHandlerProvider.createSessionHandler( server );
+      server.setSessionIdManager( sessionHandler.getSessionIdManager() );
+    } catch( Exception e ) {
+      throw new RuntimeException( e );
+    }
   }
 
   private FileResource createServletContextPath() {
@@ -143,4 +136,5 @@ class JettyController {
   private HandlerContainer getHandlerContainer() {
     return ( HandlerContainer )server.getHandler();
   }
+
 }
