@@ -101,13 +101,13 @@ rwt.qx.Class.define( "rwt.widgets.base.GridHeader", {
 
     _renderLabel : function( label, column ) {
       this._renderLabelLeft( label, column );
+      label.setCustomVariant( column.getCustomVariant() );
       label.setVisibility( column.getVisibility() && column.getWidth() > 0 );
       if( this._footer ) {
         this._renderFooterLabel( label, column );
       } else {
         this._renderHeaderLabel( label, column );
       }
-      label.setCustomVariant( column.getCustomVariant() );
       label.setHorizontalChildrenAlign( this._getAlignment( column ) );
       label.setWordWrap( column.getHeaderWordWrap() );
     },

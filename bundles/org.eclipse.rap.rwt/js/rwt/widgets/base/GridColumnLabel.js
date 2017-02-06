@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2017 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -77,6 +77,9 @@ rwt.qx.Class.define( "rwt.widgets.base.GridColumnLabel", {
         var manager = rwt.theme.AppearanceManager.getInstance();
         var states = {};
         states[ value ] = true;
+        if( this._customVariant !== null ) {
+          states[ this._customVariant ] = true;
+        }
         var styleMap = manager.styleFrom( this.getAppearance() + "-sort-indicator", states );
         var image = styleMap.backgroundImage;
         this.setCellContent( 2, image[ 0 ] );
