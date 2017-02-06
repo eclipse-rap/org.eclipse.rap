@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2015 EclipseSource and others.
+ * Copyright (c) 2014, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,7 +35,11 @@ rwt.widgets.util.GridRowLayout.prototype._computeIndention = function() {
 
 rwt.widgets.util.GridRowLayout.prototype._computeCellPadding = function() {
   var manager = rwt.theme.AppearanceManager.getInstance();
-  this.cellPadding = manager.styleFrom( this._gridConfig.baseAppearance + "-cell", {} ).padding;
+  var states = {};
+  if( this._gridConfig.variant ) {
+    states[ this._gridConfig.variant ] = true;
+  }
+  this.cellPadding = manager.styleFrom( this._gridConfig.baseAppearance + "-cell", states ).padding;
 };
 
 rwt.widgets.util.GridRowLayout.prototype._computeAllCells = function() {
