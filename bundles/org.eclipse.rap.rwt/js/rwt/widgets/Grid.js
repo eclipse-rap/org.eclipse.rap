@@ -372,6 +372,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       if( state.slice( 0, 8 ) === "variant_" ) {
         this._config.variant = state;
         this._rootItem.setVariant( state );
+        this._rowContainer.updateGridLines();
         this._scheduleColumnUpdate();
       }
     },
@@ -380,6 +381,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       if( this._config.variant === state ) {
         this._config.variant = null;
         this._rootItem.setVariant( null );
+        this._rowContainer.updateGridLines();
         this._scheduleColumnUpdate();
       }
       this.base( arguments, state );
