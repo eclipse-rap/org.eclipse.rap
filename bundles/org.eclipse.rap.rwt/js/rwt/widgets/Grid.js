@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2016 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2010, 2017 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -78,7 +78,8 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     _createHeader : function() {
       this._header = new rwt.widgets.base.GridHeader( {
         "appearance" : this.getAppearance(),
-        "splitContainer" : this._hasFixedColumns
+        "splitContainer" : this._hasFixedColumns,
+        "config" : this._config
       } );
       this.add( this._header );
       this._header.addEventListener( "showResizeLine", this._onShowResizeLine, this );
@@ -93,7 +94,8 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       this._footer = new rwt.widgets.base.GridHeader( {
         "appearance" : this.getAppearance(),
         "splitContainer" : this._hasFixedColumns,
-        "footer" : true
+        "footer" : true,
+        "config" : this._config
       } );
       this.add( this._footer );
       this._footer.setScrollLeft( this._adjustScrollLeft( this._horzScrollBar.getValue() ) );
@@ -369,12 +371,16 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       this.base( arguments, state );
       if( state.slice( 0, 8 ) === "variant_" ) {
         this._config.variant = state;
+        this._rootItem.setVariant( state );
+        this._scheduleColumnUpdate();
       }
     },
 
     removeState : function( state ) {
       if( this._config.variant === state ) {
         this._config.variant = null;
+        this._rootItem.setVariant( null );
+        this._scheduleColumnUpdate();
       }
       this.base( arguments, state );
     },
