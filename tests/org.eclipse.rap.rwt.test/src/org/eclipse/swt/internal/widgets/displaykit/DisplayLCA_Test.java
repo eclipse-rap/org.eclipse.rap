@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2016 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2017 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -427,7 +427,18 @@ public class DisplayLCA_Test {
     displayLCA.render( display );
 
     TestMessage message = Fixture.getProtocolMessage();
-    assertNotNull( message.findSetProperty( "rwt.client.ServerPush", "active" ) );
+    assertEquals( JsonValue.TRUE, message.findSetProperty( "rwt.client.ServerPush", "active" ) );
+  }
+
+  @Test
+  public void testServerPushRendered_onDisposedDisplay() throws IOException {
+    ServerPushManager.getInstance().activateServerPushFor( new Object() );
+    display.dispose();
+
+    displayLCA.render( display );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( JsonValue.FALSE, message.findSetProperty( "rwt.client.ServerPush", "active" ) );
   }
 
   @Test

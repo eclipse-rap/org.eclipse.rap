@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,7 +63,7 @@ public class ServerPushRenderer {
     return preserved != null ? preserved.booleanValue() : false;
   }
 
-  private static void renderActivation( boolean activation ) {
+  void renderActivation( boolean activation ) {
     ProtocolMessageWriter writer = ContextProvider.getProtocolWriter();
     writer.appendSet( REMOTE_OBJECT_ID, PROP_ACTIVE, activation );
   }

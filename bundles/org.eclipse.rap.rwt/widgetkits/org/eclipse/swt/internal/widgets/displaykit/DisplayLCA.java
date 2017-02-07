@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2016 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2017 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -102,7 +102,7 @@ public class DisplayLCA {
     renderFocus( display );
     renderBeep( display );
     renderResizeListener( display );
-    renderUICallBack();
+    renderServerPush( display );
     ActiveKeysUtil.renderActiveKeys( display );
     ActiveKeysUtil.renderCancelKeys( display );
     ActiveKeysUtil.renderMnemonicActivator( display );
@@ -250,8 +250,13 @@ public class DisplayLCA {
     }
   }
 
-  private static void renderUICallBack() {
-    new ServerPushRenderer().render();
+  private static void renderServerPush( Display display ) {
+    ServerPushRenderer serverPushRenderer = new ServerPushRenderer();
+    if( display.isDisposed() ) {
+      serverPushRenderer.renderActivation( false );
+    } else {
+      serverPushRenderer.render();
+    }
   }
 
   private static void renderEnableUiTests( Display display ) {

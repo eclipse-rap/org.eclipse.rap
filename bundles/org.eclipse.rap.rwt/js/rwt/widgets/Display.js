@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 EclipseSource and others.
+ * Copyright (c) 2011, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -166,6 +166,7 @@ rwt.widgets.Display.prototype = {
     this._document.removeEventListener( "windowresize", this._onResize, this );
     this._document.removeEventListener( "keypress", this._onKeyPress, this );
     this._server.removeEventListener( "send", this._onSend, this );
+    rwt.client.ServerPush.getInstance().setActive( false );
     this._sendShutdown();
   },
 
