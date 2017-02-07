@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2017 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,7 @@ public class ServerPushServiceHandler implements ServiceHandler {
     // https://bugs.eclipse.org/bugs/show_bug.cgi?id=410157
     response.setHeader( "Cache-Control", "no-cache, no-store, must-revalidate" );
     response.setHeader( "Pragma", "no-cache" );
+    response.setHeader( "Content-Type", "application/octet-stream" );
     response.setDateHeader( "Expires", 0 );
   }
 
