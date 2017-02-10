@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 EclipseSource and others.
+ * Copyright (c) 2011, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -524,6 +524,29 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       tree.destroy();
     },
 
+    testCustomVariant_isInheritFromGrid : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var column = this._createColumnByProtocol( "w4", "w3", [] );
+
+      tree.setCustomVariant( "variant_blue" );
+
+      assertEquals( "variant_blue", column.getCustomVariant() );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testCustomVariant_canBeOverridden : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var column = this._createColumnByProtocol( "w4", "w3", [] );
+
+      tree.setCustomVariant( "variant_blue" );
+      column.setCustomVariant( "variant_red" );
+
+      assertEquals( "variant_red", column.getCustomVariant() );
+      column.dispose();
+      tree.destroy();
+    },
+
     testSetHtmlAttribute : function() {
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var column = this._createColumnByProtocol( "w4", "w3", [] );
@@ -578,6 +601,28 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
 
       var label = this._getColumnLabel( tree, column );
       assertEquals( "up.gif", label.getCellContent( 2 ) );
+      assertEquals( [ 10, 15 ], label.getCellDimension( 2 ) );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testRenderSortIndicator_withCustomVariant : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var column = this._createColumnByProtocol( "w4", "w3", [] );
+      TestUtil.fakeAppearance( "tree-column-sort-indicator", {
+        style : function( states ) {
+          return {
+            "backgroundImage" : [ states.variant_foo ? "foo.gif" : "bar.gif", 10, 15 ]
+          };
+        }
+      } );
+
+      tree.setCustomVariant( "variant_foo" );
+      TestUtil.protocolSet( "w3", { "sortColumn" : "w4", "sortDirection" : "up" } );
+      TestUtil.flush();
+
+      var label = this._getColumnLabel( tree, column );
+      assertEquals( "foo.gif", label.getCellContent( 2 ) );
       assertEquals( [ 10, 15 ], label.getCellDimension( 2 ) );
       column.dispose();
       tree.destroy();
@@ -1907,6 +1952,7 @@ describe( "GridHeader", function() {
       columnOrder[ i ] = column;
     }
     grid.getColumnOrder.andReturn( columnOrder );
+    grid.getRenderConfig.andReturn( {} );
   } );
 
   afterEach( function(){
@@ -1920,7 +1966,8 @@ describe( "GridHeader", function() {
 
     beforeEach( function(){
       header = new GridHeader( {
-        "appearance" : "table"
+        "appearance" : "table",
+        "config" : {}
       } );
       label = header._getLabelByColumn( columns[ 0 ] );
     } );
@@ -1949,7 +1996,8 @@ describe( "GridHeader", function() {
     beforeEach( function(){
       footer = new GridHeader( {
         "appearance" : "table",
-        "footer" : true
+        "footer" : true,
+        "config" : {}
       } );
       label = footer._getLabelByColumn( columns[ 0 ] );
     } );

@@ -1,5 +1,5 @@
   /*******************************************************************************
- * Copyright (c) 2010, 2015 EclipseSource and others.
+ * Copyright (c) 2010, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -3435,20 +3435,36 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( 12, parseInt( nodes[ 0 ].style.height, 10 ) );
     },
 
-     /////////
-     // Helper
+    testCustomVariantIsRespectedForCellPadding : function() {
+      tree = new rwt.widgets.Grid( {
+        "appearance": "tree",
+        "indentionWidth" : 10
+      } );
+      tree.setCustomVariant( "variant_big" );
+      var item = new rwt.widgets.GridItem( tree.getRootItem() );
+      item.setTexts( [ "Test" ] );
+      tree.setItemMetrics( 0, 0, 15, 0, 10, 10, 40 );
+      this._setCellPadding( 3, "variant_big", 9 );
 
-     _createRow : function( tree, isTable ) {
-       var result = new rwt.widgets.base.GridRow( tree );
-       if( isTable ) {
-         result.setAppearance( "table-row" );
-       } else {
-         result.setAppearance( "tree-row" );
-       }
-       row = result;
-       row.setWidth( 400 );
-       this._addToDom( row );
-     },
+      var layout = this._getRowLayout( tree, item );
+
+      assertEquals( 9, layout.cellPadding );
+    },
+
+    /////////
+    // Helper
+
+    _createRow : function( tree, isTable ) {
+      var result = new rwt.widgets.base.GridRow( tree );
+      if( isTable ) {
+        result.setAppearance( "table-row" );
+      } else {
+        result.setAppearance( "tree-row" );
+      }
+      row = result;
+      row.setWidth( 400 );
+      this._addToDom( row );
+    },
 
     _addToDom : function( widget ) {
       rwt.util.RWTQuery( document.body ).append( widget.$el );
@@ -3660,6 +3676,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
             "backgroundImage" : null,
             "foreground" : value,
             "checkBox" : null
+          };
+        }
+      } );
+    },
+
+    _setCellPadding : function( value, customVariant, customValue ) {
+      TestUtil.fakeAppearance( "tree-cell",  {
+        style : function( state ) {
+          return {
+            "padding" : state[ customVariant ] ? customValue : value
           };
         }
       } );
