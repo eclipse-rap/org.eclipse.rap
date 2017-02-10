@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 EclipseSource and others.
+ * Copyright (c) 2011, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,8 +15,6 @@ rwt.client.ServerPush = function() {
   this._retryCount = 0;
   this._active = false;
   this._running = false;
-  this._requestTimer = new rwt.client.Timer( 0 );
-  this._requestTimer.addEventListener( "interval", this._doSendServerPushRequest, this );
 };
 
 rwt.client.ServerPush.getInstance = function() {
@@ -32,14 +30,8 @@ rwt.client.ServerPush.prototype = {
   sendServerPushRequest : function() {
     if( this._active && !this._running ) {
       this._running = true;
-      this._requestTimer.start();
+      this._createRequest().send();
     }
-  },
-
-  // workaround for bug 353819 - send ServerPushRequest with a timer
-  _doSendServerPushRequest : function() {
-    this._requestTimer.stop();
-    this._createRequest().send();
   },
 
   _createRequest : function() {
