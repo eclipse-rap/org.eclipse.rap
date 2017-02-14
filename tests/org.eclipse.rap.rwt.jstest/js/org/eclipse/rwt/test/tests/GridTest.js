@@ -5103,6 +5103,26 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.destroy();
     },
 
+    testGridLinesCustomVariant_isInheritFromGrid : function() {
+      var tree = this._createDefaultTree();
+
+      tree.setCustomVariant( "variant_foo" );
+
+      assertEquals( "variant_foo", tree.getRowContainer().getRenderConfig().variant );
+      tree.destroy();
+    },
+
+    testGridLinesCustomVariant_isInheritFromGrid_withFixedColumns : function() {
+      var tree = this._createDefaultTree( false, false, "fixedColumns", 1 );
+
+      tree.setCustomVariant( "variant_foo" );
+
+      var rowContainer = tree.getRowContainer();
+      assertEquals( "variant_foo", rowContainer.getSubContainer( 0 ).getRenderConfig().variant );
+      assertEquals( "variant_foo", rowContainer.getSubContainer( 1 ).getRenderConfig().variant );
+      tree.destroy();
+    },
+
     /////////
     // helper
 

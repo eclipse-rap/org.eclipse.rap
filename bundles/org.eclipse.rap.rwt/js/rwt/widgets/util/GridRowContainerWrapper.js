@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2011, 2017 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -148,8 +148,10 @@ rwt.widgets.util.GridRowContainerWrapper.prototype = {
 
   updateGridLines : function() {
     this._container[ 0 ].getRenderConfig().linesVisible = this._config.linesVisible;
+    this._container[ 0 ].getRenderConfig().variant = this._config.variant;
     this._container[ 0 ].updateGridLines();
     this._container[ 1 ].getRenderConfig().linesVisible = this._config.linesVisible;
+    this._container[ 1 ].getRenderConfig().variant = this._config.variant;
     this._container[ 1 ].updateGridLines();
   },
 
