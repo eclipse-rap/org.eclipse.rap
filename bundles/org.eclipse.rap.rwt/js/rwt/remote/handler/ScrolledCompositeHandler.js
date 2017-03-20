@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -53,6 +53,16 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.ScrolledComposite", {
 
   listeners : rwt.remote.HandlerUtil.extendControlListeners( [] ),
 
-  listenerHandler : rwt.remote.HandlerUtil.extendControlListenerHandler( {} )
+  listenerHandler : rwt.remote.HandlerUtil.extendControlListenerHandler( {} ),
+
+  scriptingMethods : rwt.remote.HandlerUtil.extendControlScriptingMethods( {
+    setOrigin : function(x, y) {
+      this.setHBarSelection( x );
+      this.setVBarSelection( y );
+    },
+    getOrigin : function() {
+      return [ this.getHorizontalBar().getValue(), this.getVerticalBar().getValue()];
+    }
+  } )
 
 } );

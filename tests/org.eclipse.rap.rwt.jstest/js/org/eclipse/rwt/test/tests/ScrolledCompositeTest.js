@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2015 EclipseSource and others.
+ * Copyright (c) 2010, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -138,6 +138,29 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       var widget = ObjectRegistry.getObject( "w3" );
       assertEquals( 1, widget._horzScrollBar.getValue() );
       assertEquals( 2, widget._vertScrollBar.getValue() );
+      assertEquals( [ 1, 2, ], rap.getObject( "w3" ).getOrigin() );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetOriginByClientAPI : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      MessageProcessor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.ScrolledComposite",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2"
+        }
+      } );
+
+      rap.getObject( "w3" ).setOrigin( 1, 2 );
+
+      var widget = ObjectRegistry.getObject( "w3" );
+      assertEquals( 1, widget._horzScrollBar.getValue() );
+      assertEquals( 2, widget._vertScrollBar.getValue() );
+      assertEquals( [ 1, 2, ], rap.getObject( "w3" ).getOrigin() );
       shell.destroy();
       widget.destroy();
     },
@@ -673,7 +696,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
 
     _getScrollPosition : function( composite ) {
       var client = composite._clientArea;
-      return [ client.getScrollLeft(), client.getScrollTop() ];
+      return [ Math.round( client.getScrollLeft() ), Math.round( client.getScrollTop() ) ];
     },
 
     _setScrollDimension : function( composite, width, height, noflush ) {
