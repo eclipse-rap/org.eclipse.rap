@@ -420,7 +420,7 @@ public class DateTime extends Composite {
    */
   public Date getMinimum() {
     checkWidget();
-    return minimum;
+    return minimum == null ? null : ( Date )minimum.clone();
   }
 
   /**
@@ -437,7 +437,7 @@ public class DateTime extends Composite {
    */
   public Date getMaximum() {
     checkWidget();
-    return maximum;
+    return maximum == null ? null : ( Date )maximum.clone();
   }
 
   /**
@@ -594,8 +594,11 @@ public class DateTime extends Composite {
    */
   public void setMinimum( Date date ) {
     checkWidget();
-    if( date == null || maximum == null || date.getTime() < maximum.getTime() ) {
-      minimum = date;
+    if( date == null ) {
+      minimum = null;
+      applyLimits();
+    } else  if( maximum == null || date.getTime() < maximum.getTime() ) {
+      minimum = ( Date )date.clone();
       applyLimits();
     }
   }
@@ -615,8 +618,11 @@ public class DateTime extends Composite {
    */
   public void setMaximum( Date date ) {
     checkWidget();
-    if( date == null || minimum == null || date.getTime() > minimum.getTime() ) {
-      maximum = date;
+    if( date == null ) {
+      maximum = null;
+      applyLimits();
+    } else if( minimum == null || date.getTime() > minimum.getTime() ) {
+      maximum = ( Date )date.clone();
       applyLimits();
     }
   }

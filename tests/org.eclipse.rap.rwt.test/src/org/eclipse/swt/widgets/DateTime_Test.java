@@ -43,6 +43,8 @@ import org.junit.Test;
 
 public class DateTime_Test {
 
+  private static long WEEK_TIME = 7 * 24 * 60 * 60 * 1000;
+
   @Rule
   public TestContext context = new TestContext();
 
@@ -132,7 +134,7 @@ public class DateTime_Test {
   }
 
   @Test
-  public void testSetMininum() throws ParseException {
+  public void testSetMinimum() throws ParseException {
     Date minimum = formatter.parse( "1985-10-29 11:00:00" );
 
     dateTime.setMinimum( minimum );
@@ -141,7 +143,7 @@ public class DateTime_Test {
   }
 
   @Test
-  public void testSetMininum_limitsDate() throws ParseException {
+  public void testSetMinimum_limitsDate() throws ParseException {
     dateTime.setDate( 1984, 8, 28 );
     dateTime.setMinimum( formatter.parse( "1985-10-29 11:00:00" ) );
 
@@ -151,7 +153,7 @@ public class DateTime_Test {
   }
 
   @Test
-  public void testSetMininum_limitsYear() throws ParseException {
+  public void testSetMinimum_limitsYear() throws ParseException {
     dateTime.setMinimum( formatter.parse( "1985-10-29 11:00:00" ) );
     dateTime.setDate( 1984, 10, 29 );
 
@@ -161,7 +163,7 @@ public class DateTime_Test {
   }
 
   @Test
-  public void testSetMininum_limitsMonth() throws ParseException {
+  public void testSetMinimum_limitsMonth() throws ParseException {
     dateTime.setMinimum( formatter.parse( "1985-10-29 11:00:00" ) );
     dateTime.setDate( 1985, 5, 29 );
 
@@ -171,7 +173,7 @@ public class DateTime_Test {
   }
 
   @Test
-  public void testSetMininum_limitsDay() throws ParseException {
+  public void testSetMinimum_limitsDay() throws ParseException {
     dateTime.setMinimum( formatter.parse( "1985-10-29 11:00:00" ) );
     dateTime.setDate( 1985, 9, 28 );
 
@@ -181,7 +183,7 @@ public class DateTime_Test {
   }
 
   @Test
-  public void testSetMininum_limitsHour() throws ParseException {
+  public void testSetMinimum_limitsHour() throws ParseException {
     dateTime.setMinimum( formatter.parse( "1985-10-29 11:22:33" ) );
     dateTime.setDate( 1985, 9, 28 );
     dateTime.setTime( 10, 22, 33 );
@@ -192,7 +194,7 @@ public class DateTime_Test {
   }
 
   @Test
-  public void testSetMininum_limitsMinute() throws ParseException {
+  public void testSetMinimum_limitsMinute() throws ParseException {
     dateTime.setMinimum( formatter.parse( "1985-10-29 11:22:33" ) );
     dateTime.setDate( 1985, 9, 28 );
     dateTime.setTime( 11, 21, 33 );
@@ -203,7 +205,7 @@ public class DateTime_Test {
   }
 
   @Test
-  public void testSetMininum_limitsSecond() throws ParseException {
+  public void testSetMinimum_limitsSecond() throws ParseException {
     dateTime.setMinimum( formatter.parse( "1985-10-29 11:22:33" ) );
     dateTime.setDate( 1985, 9, 28 );
     dateTime.setTime( 11, 22, 32 );
@@ -211,6 +213,26 @@ public class DateTime_Test {
     assertEquals( 11, dateTime.getHours() );
     assertEquals( 22, dateTime.getMinutes() );
     assertEquals( 33, dateTime.getSeconds() );
+  }
+
+  @Test
+  public void testSetMinimum_createsSafeCopy() throws ParseException {
+    Date minimum = formatter.parse( "1985-10-10 11:22:33" );
+    dateTime.setMinimum( minimum );
+
+    minimum.setTime( minimum.getTime() + WEEK_TIME );
+
+    assertEquals( formatter.parse( "1985-10-10 11:22:33" ), dateTime.getMinimum() );
+  }
+
+  @Test
+  public void testGetMinimum_returnsSafeCopy() throws ParseException {
+    dateTime.setMinimum( formatter.parse( "1985-10-10 11:22:33" ) );
+    Date minimum = dateTime.getMinimum();
+
+    minimum.setTime( minimum.getTime() + WEEK_TIME );
+
+    assertEquals( formatter.parse( "1985-10-10 11:22:33" ), dateTime.getMinimum() );
   }
 
   @Test
@@ -293,6 +315,26 @@ public class DateTime_Test {
     assertEquals( 11, dateTime.getHours() );
     assertEquals( 22, dateTime.getMinutes() );
     assertEquals( 33, dateTime.getSeconds() );
+  }
+
+  @Test
+  public void testSetMaximum_createsSafeCopy() throws ParseException {
+    Date maximum = formatter.parse( "1985-10-10 11:22:33" );
+    dateTime.setMaximum( maximum );
+
+    maximum.setTime( maximum.getTime() + WEEK_TIME );
+
+    assertEquals( formatter.parse( "1985-10-10 11:22:33" ), dateTime.getMaximum() );
+  }
+
+  @Test
+  public void testGetMaximum_returnsSafeCopy() throws ParseException {
+    dateTime.setMaximum( formatter.parse( "1985-10-10 11:22:33" ) );
+    Date maximum = dateTime.getMaximum();
+
+    maximum.setTime( maximum.getTime() + WEEK_TIME );
+
+    assertEquals( formatter.parse( "1985-10-10 11:22:33" ), dateTime.getMaximum() );
   }
 
   @Test
