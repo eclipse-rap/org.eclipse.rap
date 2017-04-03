@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2016 EclipseSource and others.
+ * Copyright (c) 2013, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -373,10 +373,10 @@
     var gridWidth = calcGridWidth.apply( this );
     var gridHeight = calcGridHeight.apply( this, [ visibleItems, itemHeight ] );
     var itemWidth = computeItemWidth.apply( this, [ gridWidth, padding ] );
-    renderPosition.call( this );
     var frameWidth = getStyleMap.call( this ).border.getWidthLeft() * 2;
     this._.popup.setWidth( gridWidth + frameWidth );
     this._.popup.setHeight( gridHeight + frameWidth );
+    renderPosition.call( this );
     this._.grid.setDimension( gridWidth, gridHeight );
     renderItemMetrics.apply( this, [ itemHeight, itemWidth, padding ] );
     updateScrollBars.apply( this, [ gridWidth, itemWidth ] );
