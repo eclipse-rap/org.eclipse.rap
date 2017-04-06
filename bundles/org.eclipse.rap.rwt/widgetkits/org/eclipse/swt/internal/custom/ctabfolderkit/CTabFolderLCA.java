@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2017 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,6 +36,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
+import org.eclipse.swt.widgets.Control;
 
 
 public final class CTabFolderLCA extends WidgetLCA<CTabFolder> {
@@ -148,6 +149,12 @@ public final class CTabFolderLCA extends WidgetLCA<CTabFolder> {
     renderSelectionBackgroundGradient( folder );
     renderProperty( folder, PROP_BORDER_VISIBLE, folder.getBorderVisible(), false );
     renderListenDefaultSelection( folder );
+  }
+
+  @Override
+  public void doRedrawFake( Control control ) {
+    CTabFolder folder = ( CTabFolder )control;
+    getCTabFolderAdapter( folder ).doRedraw();
   }
 
   /////////////////////////////////////////
