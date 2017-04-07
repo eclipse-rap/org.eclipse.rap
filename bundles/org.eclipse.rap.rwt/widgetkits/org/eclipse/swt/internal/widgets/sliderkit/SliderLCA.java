@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2017 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,17 +11,19 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.sliderkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderClientListeners;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.widgets.Slider;
@@ -81,6 +83,7 @@ public class SliderLCA extends WidgetLCA<Slider> {
     renderProperty( slider, PROP_PAGE_INCREMENT, slider.getPageIncrement(), DEFAULT_PINCREMENT );
     renderProperty( slider, PROP_THUMB, slider.getThumb(), DEFAULT_THUMB );
     renderListenSelection( slider );
+    renderClientListeners( slider );
   }
 
   private SliderLCA() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2017 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -152,6 +152,7 @@ rwt.qx.Class.define( "rwt.widgets.base.AbstractSlider", {
       if( this._autoRepeat !== "" && !this._repeatTimer.isEnabled() ) {
         this._delayTimer.start();
       }
+      this.dispatchSimpleEvent( "selectionChanged" );
     },
 
     _onChangeSize : function() {

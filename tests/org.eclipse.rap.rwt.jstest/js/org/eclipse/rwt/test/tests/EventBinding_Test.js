@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2016 EclipseSource and others.
+ * Copyright (c) 2012, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -515,6 +515,19 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       assertEquals( 1, logger.log.length );
       rwt.remote.Connection.getInstance().send();
       spinner.destroy();
+    },
+
+    testAddListenerToSlider_SelectionEvent : function() {
+      var slider = TestUtil.createWidgetByProtocol( "w4", "w2", "rwt.widgets.Slider" );
+      TestUtil.flush();
+      var logger = this._createLogger();
+
+      EventBinding.addListener( slider, "Selection", logger );
+      slider.dispatchSimpleEvent( "selectionChanged" );
+
+      assertEquals( 1, logger.log.length );
+      rwt.remote.Connection.getInstance().send();
+      slider.destroy();
     },
 
     /////////

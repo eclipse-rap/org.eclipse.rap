@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2017 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import static org.eclipse.rap.rwt.testfixture.internal.TestMessage.getParent;
 import static org.eclipse.rap.rwt.testfixture.internal.TestMessage.getStyles;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -32,6 +33,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.remote.OperationHandler;
+import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
 import org.eclipse.swt.SWT;
@@ -367,6 +369,16 @@ public class SliderLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( slider, "selection" ) );
+  }
+
+  @Test
+  public void testRenderChanges_rendersClientListener() throws IOException {
+    slider.addListener( SWT.Selection, new ClientListener( "" ) );
+
+    lca.renderChanges( slider );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertNotNull( message.findCallOperation( slider, "addListener" ) );
   }
 
 }
