@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import org.eclipse.rap.rwt.internal.application.ApplicationImpl;
 import org.eclipse.rap.rwt.internal.resources.ContentBuffer;
 import org.eclipse.rap.rwt.service.ResourceLoader;
 import org.eclipse.rap.ui.resources.IResource;
+import org.eclipse.swt.SWT;
 
 
 class ResourceRegisterer {
@@ -65,12 +66,13 @@ class ResourceRegisterer {
   }
 
   private void registerConcatenatedScript() {
-    application.addResource( "resources.js", new ResourceLoader() {
+    application.addResource( SWT.getVersion() + "/resources.js", new ResourceLoader() {
+      @Override
       public InputStream getResourceAsStream( String resourceName ) {
         return concatenatedScript.getContentAsStream();
       }
     } );
-    applicationContext.getStartupPage().addJsLibrary( "rwt-resources/resources.js" );
+    applicationContext.getStartupPage().addJsLibrary( "rwt-resources/" + SWT.getVersion() + "/resources.js" );
   }
 
   private static class WorkbenchResourceLoader implements ResourceLoader {
@@ -81,6 +83,7 @@ class ResourceRegisterer {
       this.resource = resource;
     }
 
+    @Override
     public InputStream getResourceAsStream( String resourceName ) {
       return resource.getLoader().getResourceAsStream( resource.getLocation() );
     }
