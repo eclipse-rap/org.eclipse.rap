@@ -18,6 +18,9 @@ namespace( "rwt.client" );
  *
  * Version names follow the wikipedia scheme: major.minor[.revision[.build]] at
  * http://en.wikipedia.org/wiki/Software_version
+ *
+ * @public
+ * @since 3.2
  */
 rwt.client.Client = {
 
@@ -30,7 +33,6 @@ rwt.client.Client = {
     this._engineVersionRevision = 0;
     this._engineVersionBuild = 0;
     this._browserPlatform = "other";
-    this._runsLocally = window.location.protocol === "file:";
     this._defaultLocale = "en";
     // NOTE: Order is important!
     this._initKonqueror();
@@ -43,62 +45,102 @@ rwt.client.Client = {
     this._initPlatform();
   },
 
-  getRunsLocally : function() {
-    return this._runsLocally;
-  },
-
+  /**
+   * @description Returns the name of the browser engine - "trident", "gecko", "webkit" or "blink".
+   * If the browser engine name can't be detected this function returns "unknown".
+   */
   getEngine : function() {
     return this._engineName;
   },
 
+  /**
+   * @description Returns the name of the browser, "chrome" or "firefox" for example.
+   * If the browser name can't be detected this function returns "unknown".
+   */
   getBrowser : function() {
     return this._browserName;
   },
 
+  /**
+   * @description Returns the browser engine version.
+   */
   getVersion : function() {
     return this._engineVersion;
   },
 
+  /**
+   * @description Returns the major number of browser engine version.
+   */
   getMajor : function() {
     return this._engineVersionMajor;
   },
 
+  /**
+   * @description Returns the minor number of browser engine version.
+   */
   getMinor : function() {
     return this._engineVersionMinor;
   },
 
+  /**
+   * @description Returns the revision number of browser engine version.
+   */
   getRevision : function() {
     return this._engineVersionRevision;
   },
 
+  /**
+   * @description Returns the build number of browser engine version.
+   */
   getBuild : function() {
     return this._engineVersionBuild;
   },
 
+  /**
+   * @description Returns true is browser engine is "trident" (IE/Edge), false otherwise.
+   */
   isTrident : function() {
     return this._engineName === "trident";
   },
 
+  /**
+   * @description Returns true is browser engine is "gecko" (Firefox), false otherwise.
+   */
   isGecko : function() {
     return this._engineName === "gecko";
   },
 
+  /**
+   * @description Returns true is browser engine is "blink" (Chrome/Opera), false otherwise.
+   */
   isBlink : function() {
     return this._engineName === "blink";
   },
 
+  /**
+   * @description Returns true is browser engine is "webkit" (Safari), false otherwise.
+   */
   isWebkit : function() {
     return this._engineName === "webkit";
   },
 
+  /**
+   * @description Returns the client timezone.
+   */
   getTimezoneOffset : function() {
     return ( new Date() ).getTimezoneOffset();
   },
 
+  /**
+   * @description Returns the browser locale as defined in http://www.ietf.org/rfc/bcp/bcp47.txt.
+   */
   getLocale : function() {
     return this._browserLocale;
   },
 
+  /**
+   * @description Returns the language part from the browser locale.
+   */
   getLanguage : function() {
     var locale = this.getLocale();
     var language;
@@ -111,14 +153,23 @@ rwt.client.Client = {
     return language;
   },
 
+  /**
+   * @description Returns the region part from the browser locale.
+   */
   getTerritory : function() {
     return this.getLocale().split( "_" )[ 1 ] || "";
   },
 
+  /**
+   * @description Returns the browser default locale.
+   */
   getDefaultLocale : function() {
     return this._defaultLocale;
   },
 
+  /**
+   * @description Returns true if the current browser locale is the default one, false otherwise.
+   */
   usesDefaultLocale : function() {
     return this._browserLocale === this._defaultLocale;
   },
@@ -127,30 +178,51 @@ rwt.client.Client = {
     return this._engineBoxSizingAttributes;
   },
 
+  /**
+   * @description Returns client platform like Windows, Android for example.
+   */
   getPlatform : function() {
     return this._browserPlatform;
   },
 
+  /**
+   * @description Returns true if the browser is mobile Safari, false otherwise.
+   */
   isMobileSafari : function() {
     return this.getPlatform() === "ios" && this.getBrowser() === "safari";
   },
 
+  /**
+   * @description Returns true if the browser is mobile Chrome, false otherwise.
+   */
   isMobileChrome : function() {
     return this.getPlatform() === "android" && this.getBrowser() === "chrome";
   },
 
+  /**
+   * @description Returns true if the browser is default Android browser, false otherwise.
+   */
   isAndroidBrowser : function() {
     return this.getPlatform() === "android" && this.getBrowser() === "android";
   },
 
+  /**
+   * @description Returns true if the browser is mobile Firefox, false otherwise.
+   */
   isMobileFirefox : function() {
     return this.getPlatform() === "android" && this.getBrowser() === "firefox";
   },
 
+  /**
+   * @description Returns true if the browser supports file drop, false otherwise.
+   */
   supportsFileDrop : function() {
     return !!window.FormData;
   },
 
+  /**
+   * @description Returns true if the browser supports touch events, false otherwise.
+   */
   supportsTouch : function() {
     return    this.isMobileSafari()
            || this.isAndroidBrowser()
@@ -158,8 +230,12 @@ rwt.client.Client = {
            || this.isMobileFirefox();
   },
 
-  // NOTE: This returns true if the browser sufficiently implements
-  // border-radius, drop-shadow and linear-gradient.
+  /**
+   * @description Returns true if the browser supports CSS3, false otherwise.
+   *
+   * NOTE: This returns true if the browser sufficiently implements border-radius,
+   * drop-shadow and linear-gradient.
+   */
   supportsCss3 : function() {
     var engine = rwt.client.Client.getEngine();
     var version = rwt.client.Client.getVersion();
@@ -189,6 +265,9 @@ rwt.client.Client = {
     return result;
   },
 
+  /**
+   * @description Returns application base path.
+   */
   getBasePath : function() {
     if( !this._basePath ) {
       this._basePath = this._computeBasePath( document.location.href );

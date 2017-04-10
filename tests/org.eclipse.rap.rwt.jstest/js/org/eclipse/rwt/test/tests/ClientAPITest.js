@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 EclipseSource and others.
+ * Copyright (c) 2011, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -352,6 +352,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ClientAPITest", {
       // succeeds by not crashing
     },
 
+    testGetClient : function() {
+      assertIdentical( rwt.client.Client, rap.getClient() );
+    },
+
     setUp : function() {
       shell = TestUtil.createShellByProtocol( "w2" );
     },
@@ -362,7 +366,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ClientAPITest", {
         shell = null;
       }
     }
-
 
   }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 EclipseSource and others.
+ * Copyright (c) 2012, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -84,7 +84,7 @@ rap = {
    * For SWT/RWT widgets (any Control or Item) a wrapper (instance of {@link Widget}) is returned that approximates
    * a subset of the API of its Java analog. Getting objects of other types is unsupported.
    * @see Widget
-   * @see rap.registerTypeHandler   
+   * @see rap.registerTypeHandler
    * @param {string} id The protocol id for a client object.
    * @returns {Object} The client object associated with the id.
    */
@@ -110,6 +110,15 @@ rap = {
    */
   getRemoteObject : function( object ) {
     return rwt.remote.Connection.getInstance().getRemoteObject( object );
+  },
+
+  /**
+   * @description Returns an instance of Client object used for basic client detection.
+   * @returns {Client}
+   * @since 3.2
+   */
+  getClient : function() {
+    return rwt.client.Client;
   },
 
   /**
