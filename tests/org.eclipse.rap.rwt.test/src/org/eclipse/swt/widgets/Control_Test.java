@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2009, 2017 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,6 +46,8 @@ import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.rap.rwt.theme.ControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
+import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.DragDetectListener;
 import org.eclipse.swt.events.FocusAdapter;
@@ -272,6 +274,46 @@ public class Control_Test {
     Control control = new Button( shell, SWT.PUSH );
 
     IControlAdapter adapter = ControlUtil.getControlAdapter( control );
+
+    assertEquals( -1, adapter.getTabIndex() );
+  }
+
+  @Test
+  public void testSetTabIndex_onControl() {
+    Control control = new Button( shell, SWT.PUSH );
+
+    IControlAdapter adapter = ControlUtil.getControlAdapter( control );
+    adapter.setTabIndex( 5 );
+
+    assertEquals( 5, adapter.getTabIndex() );
+  }
+
+  @Test
+  public void testSetTabIndex_onScrolledComposite() {
+    Control control = new ScrolledComposite( shell, SWT.NONE );
+
+    IControlAdapter adapter = ControlUtil.getControlAdapter( control );
+    adapter.setTabIndex( 5 );
+
+    assertEquals( -1, adapter.getTabIndex() );
+  }
+
+  @Test
+  public void testSetTabIndex_onComposite() {
+    Control control = new Composite( shell, SWT.NONE );
+
+    IControlAdapter adapter = ControlUtil.getControlAdapter( control );
+    adapter.setTabIndex( 5 );
+
+    assertEquals( -1, adapter.getTabIndex() );
+  }
+
+  @Test
+  public void testSetTabIndex_onSashForm() {
+    Control control = new SashForm( shell, SWT.NONE );
+
+    IControlAdapter adapter = ControlUtil.getControlAdapter( control );
+    adapter.setTabIndex( 5 );
 
     assertEquals( -1, adapter.getTabIndex() );
   }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2016 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2017 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.accessibility.Accessible;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.DragDetectListener;
 import org.eclipse.swt.events.FocusListener;
@@ -93,6 +94,7 @@ public abstract class Control extends Widget implements Drawable {
     private boolean takesFocus() {
       boolean result = ( getStyle() & SWT.NO_FOCUS ) == 0;
       result &= Control.this.getClass() != Composite.class;
+      result &= Control.this.getClass() != ScrolledComposite.class;
       result &= Control.this.getClass() != SashForm.class;
       return result;
     }
