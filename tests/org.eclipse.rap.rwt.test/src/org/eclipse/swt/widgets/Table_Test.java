@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2017 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -2878,6 +2878,16 @@ public class Table_Test {
   public void testGetAdapter_LCA() {
     assertTrue( table.getAdapter( WidgetLCA.class ) instanceof TableLCA );
     assertSame( table.getAdapter( WidgetLCA.class ), table.getAdapter( WidgetLCA.class ) );
+  }
+
+  @Test
+  public void testChanged() {
+    TableItem item = new TableItem( table, SWT.NONE );
+    item.setText( "text" );
+
+    table.changed( table.getChildren() );
+
+    assertFalse( item.hasTextWidthBuffer( 0 ) );
   }
 
   private Image createImage50x100() throws IOException {
