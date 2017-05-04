@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 EclipseSource and others.
+ * Copyright (c) 2011, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,13 +18,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ClientTest", {
   extend : rwt.qx.Object,
 
   members : {
-
-    testRunsLocally : function() {
-      var msg = "Always run tests from an http-server!";
-      assertFalse( msg, Client.getRunsLocally() );
-      // NOTE: If this fails, either getRunsLocally returns the wrong value
-      //       or, more likely, you started tests from the filesystem
-    },
 
     testEngine : function() {
       var engines = [ "gecko", "blink", "webkit", "trident" ];
