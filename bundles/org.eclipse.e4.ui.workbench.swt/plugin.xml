@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<!--
+     Copyright (c) 2012 IBM Corporation and others.
+     All rights reserved. This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License v1.0
+     which accompanies this distribution, and is available at
+     http://www.eclipse.org/legal/epl-v10.html
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+<plugin>
+   <extension
+         id="E4Application"
+         name="%extension.e4application.name"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="main"
+            visible="true">
+         <run
+               class="org.eclipse.e4.ui.internal.workbench.swt.E4Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         id="GenTopic"
+         name="%extension.generatetopic.name"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="main"
+            visible="true">
+         <run
+               class="org.eclipse.e4.ui.internal.workbench.swt.GenTopic">
+         </run>
+      </application>
+   </extension>
+
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.eclipse.jface.viewers.ISelection"
+            class="org.eclipse.e4.ui.internal.workbench.swt.SelectionAdapterFactory">
+         <adapter
+               type="org.eclipse.core.expressions.IIterable">
+         </adapter>
+         <adapter
+               type="org.eclipse.core.expressions.ICountable">
+         </adapter>
+      </factory>
+   </extension>
+</plugin>

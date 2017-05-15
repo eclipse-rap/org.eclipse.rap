@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application:Application xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:advanced="http://www.eclipse.org/ui/2010/UIModel/application/ui/advanced" xmlns:application="http://www.eclipse.org/ui/2010/UIModel/application" xmlns:basic="http://www.eclipse.org/ui/2010/UIModel/application/ui/basic" xmlns:menu="http://www.eclipse.org/ui/2010/UIModel/application/ui/menu" xmi:id="_-j-GgKBNEeODEs7-bWqIxA" elementId="org.eclipse.e4.ide.application" bindingContexts="_-j-tkKBNEeODEs7-bWqIxA">
+  <children xsi:type="basic:TrimmedWindow" xmi:id="_-j-GgaBNEeODEs7-bWqIxA" label="%trimmedwindow.label.1" width="500" height="400">
+    <children xsi:type="advanced:PerspectiveStack" xmi:id="_X6m9cBqfEeW5c6mkiizldg" elementId="org.eclipse.rap.e4.demo.perspectivestack.0">
+      <children xsi:type="advanced:Perspective" xmi:id="_YZLIwBqfEeW5c6mkiizldg" elementId="org.eclipse.rap.e4.demo.perspective.0" label="">
+        <children xsi:type="basic:PartSashContainer" xmi:id="_5fAc0KLgEeSGUftsJTPCBQ" elementId="org.eclipse.rap.e4.demo.partsashcontainer.2">
+          <children xsi:type="basic:PartSashContainer" xmi:id="_FPvvQKCAEeOCJ5u74o02rg" elementId="org.eclipse.rap.e4.demo.partsashcontainer.0" containerData="100" horizontal="true">
+            <children xsi:type="basic:PartStack" xmi:id="_8eKmwKJKEeSZFtDwdo07Rg" elementId="org.eclipse.rap.e4.demo.partstack.1" containerData="100">
+              <children xsi:type="basic:Part" xmi:id="_FzadAKCAEeOCJ5u74o02rg" elementId="org.eclipse.rap.e4.demo.part.0" containerData="100" label="Empty Left" iconURI="platform:/plugin/org.eclipse.rap.e4.demo/icons/folder_user.png"/>
+              <children xsi:type="advanced:Placeholder" xmi:id="_w0yjEBqfEeW5c6mkiizldg" elementId="org.eclipse.rap.e4.demo.placeholder.0" ref="_hixKgBqfEeW5c6mkiizldg"/>
+            </children>
+            <children xsi:type="basic:PartStack" xmi:id="_M-uNIKCAEeOCJ5u74o02rg" elementId="org.eclipse.rap.e4.demo.partstack.0" containerData="300">
+              <children xsi:type="basic:Part" xmi:id="_GwxdIKCAEeOCJ5u74o02rg" elementId="org.eclipse.rap.e4.demo.part.1" contributionURI="bundleclass://org.eclipse.rap.e4.demo/org.eclipse.rap.e4.demo.parts.EventSamplePart" label="%part.label.1" iconURI="platform:/plugin/org.eclipse.rap.e4.demo/icons/user_delete.png">
+                <toolbar xmi:id="_HHjAcOGREeObqJp-_0s5uA" elementId="org.eclipse.rap.e4.demo.toolbar.1">
+                  <children xsi:type="menu:DirectToolItem" xmi:id="_Hh9EgOGREeObqJp-_0s5uA" elementId="org.eclipse.rap.e4.demo.directtoolitem.1" label="%directtoolitem.label.1" contributionURI="bundleclass://org.eclipse.rap.e4.demo/org.eclipse.rap.e4.demo.handlers.HelloWorldHandler"/>
+                </toolbar>
+              </children>
+              <children xsi:type="basic:Part" xmi:id="_rk6l0KhAEeO0Haj3z6o3PQ" elementId="org.eclipse.rap.e4.demo.part.2" contributionURI="bundleclass://org.eclipse.rap.e4.demo/org.eclipse.rap.e4.demo.parts.PreferenceSamplePart" label="%part.label.2" iconURI="platform:/plugin/org.eclipse.rap.e4.demo/icons/user_add.png">
+                <menus xmi:id="_EIg8IOGUEeObqJp-_0s5uA" elementId="org.eclipse.rap.e4.demo.menu.2">
+                  <tags>ViewMenu</tags>
+                  <children xsi:type="menu:DirectMenuItem" xmi:id="_HAt4UOGUEeObqJp-_0s5uA" elementId="org.eclipse.rap.e4.demo.directmenuitem.1" label="%directmenuitem.label.2" contributionURI="bundleclass://org.eclipse.rap.e4.demo/org.eclipse.rap.e4.demo.handlers.HelloWorldHandler"/>
+                </menus>
+              </children>
+              <children xsi:type="basic:Part" xmi:id="_JBUKsKhHEeO0Haj3z6o3PQ" elementId="org.eclipse.rap.e4.demo.part.3" contributionURI="bundleclass://org.eclipse.rap.e4.demo/org.eclipse.rap.e4.demo.parts.NLSSamplePart" label="%part.label.3" iconURI="platform:/plugin/org.eclipse.rap.e4.demo/icons/report_user.png">
+                <menus xmi:id="_4EurEOGcEeObqJp-_0s5uA" elementId="org.eclipse.rap.e4.demo.menu.3">
+                  <tags>ViewMenu</tags>
+                  <children xsi:type="menu:DirectMenuItem" xmi:id="_4nG_YOGcEeObqJp-_0s5uA" elementId="org.eclipse.rap.e4.demo.directmenuitem.2" label="%directmenuitem.label.3" contributionURI="bundleclass://org.eclipse.rap.e4.demo/org.eclipse.rap.e4.demo.handlers.HelloWorldHandler"/>
+                </menus>
+                <toolbar xmi:id="_6O4mwOGiEeObqJp-_0s5uA" elementId="org.eclipse.rap.e4.demo.toolbar.2">
+                  <tags>ContentArea</tags>
+                  <children xsi:type="menu:DirectToolItem" xmi:id="_7pm4UOGiEeObqJp-_0s5uA" elementId="org.eclipse.rap.e4.demo.directtoolitem.2" label="%directtoolitem.label.2" contributionURI="bundleclass://org.eclipse.rap.e4.demo/org.eclipse.rap.e4.demo.handlers.HelloWorldHandler"/>
+                </toolbar>
+              </children>
+            </children>
+          </children>
+          <children xsi:type="basic:PartSashContainer" xmi:id="_gYBKQKLgEeSGUftsJTPCBQ" elementId="org.eclipse.rap.e4.demo.partsashcontainer.1" containerData="100" horizontal="true">
+            <children xsi:type="basic:Part" xmi:id="_iOPsEKLgEeSGUftsJTPCBQ" elementId="org.eclipse.rap.e4.demo.part.4" containerData="200" contributionURI="bundleclass://org.eclipse.rap.e4.demo/org.eclipse.rap.e4.demo.parts.SimpleTest" label="Simple Lower Part Right" iconURI="platform:/plugin/org.eclipse.rap.e4.demo/icons/door_in.png"/>
+            <children xsi:type="basic:PartStack" xmi:id="_izBNEKLgEeSGUftsJTPCBQ" elementId="org.eclipse.rap.e4.demo.partstack.2" containerData="400">
+              <children xsi:type="basic:Part" xmi:id="_16In4KLgEeSGUftsJTPCBQ" elementId="org.eclipse.rap.e4.demo.part.5" contributionURI="bundleclass://org.eclipse.rap.e4.demo/org.eclipse.rap.e4.demo.parts.SimpleTest" label="Simple Lower Right" iconURI="platform:/plugin/org.eclipse.rap.e4.demo/icons/disk.png"/>
+            </children>
+          </children>
+        </children>
+      </children>
+      <children xsi:type="advanced:Perspective" xmi:id="_ffRowBqfEeW5c6mkiizldg" elementId="org.eclipse.rap.e4.demo.perspective.1">
+        <children xsi:type="basic:PartStack" xmi:id="_vVprkBqfEeW5c6mkiizldg" elementId="org.eclipse.rap.e4.demo.partstack.3">
+          <children xsi:type="advanced:Placeholder" xmi:id="_zhYFIBqfEeW5c6mkiizldg" elementId="org.eclipse.rap.e4.demo.placeholder.1" ref="_hixKgBqfEeW5c6mkiizldg"/>
+        </children>
+      </children>
+    </children>
+    <mainMenu xmi:id="_wk6tQKhGEeO0Haj3z6o3PQ" elementId="org.eclipse.rap.e4.demo.menu.0">
+      <children xsi:type="menu:Menu" xmi:id="_xXHmQKhGEeO0Haj3z6o3PQ" elementId="org.eclipse.rap.e4.demo.menu.1" label="%menu.label.1">
+        <children xsi:type="menu:DirectMenuItem" xmi:id="_y5diwKhGEeO0Haj3z6o3PQ" elementId="org.eclipse.rap.e4.demo.directmenuitem.0" label="%directmenuitem.label.1" contributionURI="bundleclass://org.eclipse.rap.e4.demo/org.eclipse.rap.e4.demo.handlers.HelloWorldHandler"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_gD30kKJDEeSqSpaGLeFO-g" elementId="org.eclipse.rap.e4.demo.handledmenuitem.0" label="%handledmenuitem.label.1" command="_Zs-j8KJDEeSqSpaGLeFO-g"/>
+      </children>
+      <children xsi:type="menu:Menu" xmi:id="_-cK-wBqfEeW5c6mkiizldg" elementId="org.eclipse.rap.e4.demo.menu.perspectives" label="Perspectives">
+        <children xsi:type="menu:DirectMenuItem" xmi:id="_AHvvwBqgEeW5c6mkiizldg" elementId="org.eclipse.rap.e4.demo.directmenuitem.toggleperspectives" label="Toggle Perspectives" contributionURI="bundleclass://org.eclipse.rap.e4.demo/org.eclipse.rap.e4.demo.handlers.SwitchPerspectives"/>
+      </children>
+    </mainMenu>
+    <sharedElements xsi:type="basic:Part" xmi:id="_hixKgBqfEeW5c6mkiizldg" elementId="org.eclipse.rap.e4.demo.part.asharedpart" contributionURI="bundleclass://org.eclipse.rap.e4.demo/org.eclipse.rap.e4.demo.parts.SharedPart" label="A shared part"/>
+    <trimBars xmi:id="_svgAANdbEeOAKaBhrzDgEg" elementId="org.eclipse.rap.e4.demo.trimbar.0">
+      <children xsi:type="menu:ToolBar" xmi:id="_uOnCUNdbEeOAKaBhrzDgEg" elementId="org.eclipse.rap.e4.demo.toolbar.0">
+        <children xsi:type="menu:DirectToolItem" xmi:id="_wqJQoNdbEeOAKaBhrzDgEg" elementId="org.eclipse.rap.e4.demo.directtoolitem.0" label="%directmenuitem.label.1" contributionURI="bundleclass://org.eclipse.rap.e4.demo/org.eclipse.rap.e4.demo.handlers.HelloWorldHandler"/>
+      </children>
+    </trimBars>
+  </children>
+  <handlers xmi:id="_bbwZ8KJDEeSqSpaGLeFO-g" elementId="org.eclipse.rap.e4.demo.handler.0" contributionURI="bundleclass://org.eclipse.rap.e4.demo/org.eclipse.rap.e4.demo.handlers.HelloWorldHandler" command="_Zs-j8KJDEeSqSpaGLeFO-g"/>
+  <rootContext xmi:id="_-j-tkKBNEeODEs7-bWqIxA" elementId="org.eclipse.ui.contexts.dialogAndWindow" name="In Dialog and Windows">
+    <children xmi:id="_-j-tkaBNEeODEs7-bWqIxA" elementId="org.eclipse.ui.contexts.window" name="In Windows"/>
+    <children xmi:id="_-j-tkqBNEeODEs7-bWqIxA" elementId="org.eclipse.ui.contexts.dialog" name="In Dialogs"/>
+  </rootContext>
+  <commands xmi:id="_Zs-j8KJDEeSqSpaGLeFO-g" elementId="org.eclipse.rap.e4.demo.command.0" commandName="%command.commandname.1"/>
+  <addons xmi:id="_-j-GgqBNEeODEs7-bWqIxA" elementId="org.eclipse.e4.core.commands.service" contributionURI="bundleclass://org.eclipse.e4.core.commands/org.eclipse.e4.core.commands.CommandServiceAddon"/>
+  <addons xmi:id="_-j-Gg6BNEeODEs7-bWqIxA" elementId="org.eclipse.e4.ui.contexts.service" contributionURI="bundleclass://org.eclipse.e4.ui.services/org.eclipse.e4.ui.services.ContextServiceAddon"/>
+  <addons xmi:id="_-j-GhKBNEeODEs7-bWqIxA" elementId="org.eclipse.e4.ui.bindings.service" contributionURI="bundleclass://org.eclipse.e4.ui.bindings/org.eclipse.e4.ui.bindings.BindingServiceAddon"/>
+  <addons xmi:id="_-j-GhaBNEeODEs7-bWqIxA" elementId="org.eclipse.e4.ui.workbench.commands.model" contributionURI="bundleclass://org.eclipse.e4.ui.workbench/org.eclipse.e4.ui.internal.workbench.addons.CommandProcessingAddon"/>
+  <addons xmi:id="_-j-GhqBNEeODEs7-bWqIxA" elementId="org.eclipse.e4.ui.workbench.handler.model" contributionURI="bundleclass://org.eclipse.e4.ui.workbench/org.eclipse.e4.ui.internal.workbench.addons.HandlerProcessingAddon"/>
+  <addons xmi:id="_-j-Gh6BNEeODEs7-bWqIxA" elementId="org.eclipse.e4.ui.workbench.contexts.model" contributionURI="bundleclass://org.eclipse.e4.ui.workbench/org.eclipse.e4.ui.internal.workbench.addons.ContextProcessingAddon"/>
+  <addons xmi:id="_-j-GiKBNEeODEs7-bWqIxA" elementId="org.eclipse.e4.ui.workbench.bindings.model" contributionURI="bundleclass://org.eclipse.e4.ui.workbench.swt/org.eclipse.e4.ui.workbench.swt.util.BindingProcessingAddon"/>
+</application:Application>

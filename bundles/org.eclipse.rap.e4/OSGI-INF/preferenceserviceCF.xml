@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.eclipse.rap.e4.preferenceserviceCF">
+   <implementation class="org.eclipse.rap.e4.preferences.internal.PreferenceServiceContextFunction"/>
+   <service>
+      <provide interface="org.eclipse.e4.core.contexts.IContextFunction"/>
+   </service>
+   <property name="service.context.key" type="String" value="org.eclipse.rap.e4.preferences.EPreferenceService"/>
+   <property name="service.ranking" type="Integer" value="100"/>
+</scr:component>

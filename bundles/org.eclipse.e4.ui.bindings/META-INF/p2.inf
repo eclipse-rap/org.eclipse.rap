@@ -1,0 +1,13 @@
+# Ensure that modified RAP e4 platform bundles are only installed in RAP environment
+# https://bugs.eclipse.org/bugs/show_bug.cgi?id=491177
+# https://bugs.eclipse.org/bugs/show_bug.cgi?id=490922
+
+# Make sure that a RAP RWT implementation is available
+requires.0.namespace = org.eclipse.rap
+requires.0.name = org.eclipse.rap.rwt
+
+# Do not allow to install this IU in case the SWT bundle is available
+requires.1.namespace = org.eclipse.equinox.p2.iu
+requires.1.name = org.eclipse.swt
+requires.1.min = 0
+requires.1.max = 0
