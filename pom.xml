@@ -77,6 +77,7 @@
     <module>features/org.eclipse.rap.e4.target.feature</module>
     <!-- Repository projects -->
     <module>releng/org.eclipse.rap.build/repository</module>
+    <module>releng/org.eclipse.rap.build/repository.e4</module>
     <!-- Builder projects -->
     <module>releng/org.eclipse.rap.clientbuilder</module>
   </modules>
