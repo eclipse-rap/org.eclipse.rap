@@ -17,7 +17,7 @@ import javax.inject.Named;
 import org.eclipse.e4.core.di.IInjector;
 import org.eclipse.e4.core.di.InjectionException;
 import org.eclipse.e4.core.di.extensions.EventTopic;
-import org.eclipse.e4.core.di.extensions.EventUtils;
+import org.eclipse.e4.core.di.internal.extensions.util.EventUtils;
 import org.eclipse.e4.core.di.suppliers.ExtendedObjectSupplier;
 import org.eclipse.e4.core.di.suppliers.IObjectDescriptor;
 import org.eclipse.e4.core.di.suppliers.IRequestor;
