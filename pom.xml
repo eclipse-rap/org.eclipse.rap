@@ -37,6 +37,14 @@
     <module>bundles/org.eclipse.rap.ui</module>
     <module>bundles/org.eclipse.rap.ui.views</module>
     <module>bundles/org.eclipse.rap.ui.workbench</module>
+    <!-- e4 Runtime projects -->
+    <module>bundles/org.eclipse.e4.core.commands</module>
+    <module>bundles/org.eclipse.e4.ui.bindings</module>
+    <module>bundles/org.eclipse.e4.ui.workbench.addons.swt</module>
+    <module>bundles/org.eclipse.e4.ui.workbench.renderers.swt</module>
+    <module>bundles/org.eclipse.e4.ui.workbench.swt</module>
+    <module>bundles/org.eclipse.e4.ui.workbench</module>
+    <module>bundles/org.eclipse.rap.e4</module>
     <!-- Examples projects -->
     <module>examples/org.eclipse.rap.demo.controls</module>
     <module>examples/org.eclipse.rap.demo.databinding</module>
@@ -65,6 +73,8 @@
     <module>features/org.eclipse.rap.examples.feature</module>
     <module>features/org.eclipse.rap.feature</module>
     <module>features/org.eclipse.rap.sdk.feature</module>
+    <module>features/org.eclipse.rap.e4.base.feature</module>
+    <module>features/org.eclipse.rap.e4.target.feature</module>
     <!-- Repository projects -->
     <module>releng/org.eclipse.rap.build/repository</module>
     <!-- Builder projects -->

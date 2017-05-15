@@ -4,16 +4,15 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.eclipse.rap.e4</groupId>
   <artifactId>org.eclipse.e4.ui.workbench.renderers.swt</artifactId>
   <version>0.13.0-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 
   <parent>
-    <groupId>org.eclipse.rap.e4</groupId>
-    <artifactId>org.eclipse.rap.e4.target-releng</artifactId>
-    <relativePath>../../releng/releng-target/pom.xml</relativePath>
-    <version>0.9.0-SNAPSHOT</version>
+    <groupId>org.eclipse.rap</groupId>
+    <artifactId>org.eclipse.rap.runtime-parent</artifactId>
+    <version>3.2.0-SNAPSHOT</version>
+    <relativePath>../../releng/org.eclipse.rap.build/pom.xml</relativePath>
   </parent>
 
   <build>
@@ -32,6 +31,20 @@
         <artifactId>tycho-source-plugin</artifactId>
       </plugin>
     </plugins>
+
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-packaging-plugin</artifactId>
+          <version>${tycho-version}</version>
+          <configuration>
+            <archiveSite>true</archiveSite>
+            <format>'rap-'yyyyMMdd-HHmm</format>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
 
 </project>
