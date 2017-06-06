@@ -25,26 +25,27 @@
         </includes>
       </resource>
     </resources>
+
     <plugins>
+
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-source-plugin</artifactId>
       </plugin>
+
+      <!-- Configure qualifier replacement prepended by 'rap-' -->
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-packaging-plugin</artifactId>
+        <version>${tycho.version}</version>
+        <configuration>
+          <archiveSite>true</archiveSite>
+          <format>'rap-'yyyyMMdd-HHmm</format>
+        </configuration>
+      </plugin>
+
     </plugins>
 
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.eclipse.tycho</groupId>
-          <artifactId>tycho-packaging-plugin</artifactId>
-          <version>${tycho-version}</version>
-          <configuration>
-            <archiveSite>true</archiveSite>
-            <format>'rap-'yyyyMMdd-HHmm</format>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
   </build>
 
 </project>
