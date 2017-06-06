@@ -22,7 +22,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
-    <tycho.version>0.25.0</tycho.version>
+    <tycho.version>1.0.0</tycho.version>
     <tycho.scmUrl>scm:git:git://git.eclipse.org/gitroot/rap/org.eclipse.rap.git</tycho.scmUrl>
     <tycho-extras.version>${tycho.version}</tycho-extras.version>
     <!-- disabled due to bug 393977
@@ -129,6 +129,16 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-compiler-plugin</artifactId>
+        <version>${tycho.version}</version>
+        <configuration>
+          <!-- for keeping changes minimal keep old setting from Tycho < 1.0 -->
+          <useProjectSettings>false</useProjectSettings>
+        </configuration>
       </plugin>
 
       <plugin>
