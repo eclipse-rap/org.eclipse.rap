@@ -52,7 +52,7 @@
           <repositoryName>RAP Runtime</repositoryName>
           <includeAllDependencies>false</includeAllDependencies>
           <compress>true</compress>
-          <finalName>rap-${unqualifiedVersion}-${buildType}-${build}</finalName>
+          <finalName>rap-e4-${unqualifiedVersion}-${buildType}-${build}</finalName>
         </configuration>
       </plugin>
 

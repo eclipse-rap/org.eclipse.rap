@@ -10,21 +10,26 @@
      EclipseSource - initial implementation
 -->
 <site>
+   <stats location="http://download.eclipse.org/stats/rt/rap">
+      <feature url="features/org.eclipse.rap.e4.base.feature_0.9.0.qualifier.jar" id="org.eclipse.rap.e4.base.feature" version="0.9.0.qualifier"/>
+      <feature url="features/org.eclipse.rap.e4.target.feature_0.9.0.qualifier.jar" id="org.eclipse.rap.e4.target.feature" version="0.9.0.qualifier"/>
+      <bundle id="org.eclipse.rap.e4" version="0.9.0.qualifier"/>
+   </stats>
 
   <feature url="http://eclipse.org/rap"
       id="org.eclipse.rap.e4.base.feature"
       version="0.9.0.qualifier">
-    <category name="org.eclipse.rap.category"/>
+    <category name="org.eclipse.rap.e4.category"/>
   </feature>
 
   <feature url="http://eclipse.org/rap"
       id="org.eclipse.rap.e4.target.feature"
       version="0.9.0.qualifier">
-    <category name="org.eclipse.rap.category"/>
+    <category name="org.eclipse.rap.e4.category"/>
   </feature>
 
   <category-def
-      name="org.eclipse.rap.category"
+      name="org.eclipse.rap.e4.category"
       label="Remote Application Platform (RAP) with e4">
     <description>
       Remote Application Platform (RAP) with e4 components
