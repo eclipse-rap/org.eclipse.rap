@@ -37,14 +37,13 @@
     <module>bundles/org.eclipse.rap.ui</module>
     <module>bundles/org.eclipse.rap.ui.views</module>
     <module>bundles/org.eclipse.rap.ui.workbench</module>
-    <!-- e4 Runtime projects -->
+    <module>bundles/org.eclipse.rap.e4</module>
     <module>bundles/org.eclipse.e4.core.commands</module>
     <module>bundles/org.eclipse.e4.ui.bindings</module>
     <module>bundles/org.eclipse.e4.ui.workbench.addons.swt</module>
     <module>bundles/org.eclipse.e4.ui.workbench.renderers.swt</module>
     <module>bundles/org.eclipse.e4.ui.workbench.swt</module>
     <module>bundles/org.eclipse.e4.ui.workbench</module>
-    <module>bundles/org.eclipse.rap.e4</module>
     <!-- Examples projects -->
     <module>examples/org.eclipse.rap.demo.controls</module>
     <module>examples/org.eclipse.rap.demo.databinding</module>
@@ -55,6 +54,7 @@
     <module>examples/org.eclipse.rap.filedialog.demo.examples</module>
     <module>examples/org.eclipse.rap.nebula.widgets.grid.demo.examples</module>
     <module>examples/org.eclipse.rap.nebula.widgets.richtext.demo.examples</module>
+    <module>examples/org.eclipse.rap.e4.demo</module>
     <!-- Test projects -->
     <module>tests/org.eclipse.rap.filedialog.test</module>
     <module>tests/org.eclipse.rap.fileupload.test</module>
