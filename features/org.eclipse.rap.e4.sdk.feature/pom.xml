@@ -21,26 +21,8 @@
     <relativePath>../../releng/org.eclipse.rap.build/pom.xml</relativePath>
   </parent>
 
-  <artifactId>org.eclipse.rap.e4.base.feature</artifactId>
+  <artifactId>org.eclipse.rap.e4.sdk.feature</artifactId>
   <packaging>eclipse-feature</packaging>
   <version>3.2.0-SNAPSHOT</version>
-
-  <repositories>
-    <repository>
-      <id>platform-repo</id>
-      <layout>p2</layout>
-      <url>${platform-repo.url}</url>
-    </repository>
-    <repository>
-      <id>orbit-repo</id>
-      <layout>p2</layout>
-      <url>${orbit-repo.url}</url>
-    </repository>
-    <repository>
-      <id>jetty-repo</id>
-      <layout>p2</layout>
-      <url>${jetty-repo.url}</url>
-    </repository>
-  </repositories>
 
 </project>

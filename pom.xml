@@ -73,8 +73,10 @@
     <module>features/org.eclipse.rap.examples.feature</module>
     <module>features/org.eclipse.rap.feature</module>
     <module>features/org.eclipse.rap.sdk.feature</module>
-    <module>features/org.eclipse.rap.e4.base.feature</module>
-    <module>features/org.eclipse.rap.e4.target.feature</module>
+    <module>features/org.eclipse.rap.e4.equinox.target.feature</module>
+    <module>features/org.eclipse.rap.e4.examples.feature</module>
+    <module>features/org.eclipse.rap.e4.feature</module>
+    <module>features/org.eclipse.rap.e4.sdk.feature</module>
     <!-- Repository projects -->
     <module>releng/org.eclipse.rap.build/repository</module>
     <module>releng/org.eclipse.rap.build/repository.e4</module>

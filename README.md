@@ -37,6 +37,10 @@ features in
 
     releng/org.eclipse.rap.build/repository/target/repository/
 
+and a second one with the RAP e4 Runtime bundles in
+
+    releng/org.eclipse.rap.build/repository.e4/target/repository/
+
 Official builds are available from the [RAP Download page] [4].
 
 Contributions

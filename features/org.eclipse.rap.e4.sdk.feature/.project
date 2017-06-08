@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>org.eclipse.rap.e4.base.feature</name>
-	<comment></comment>
-	<projects>
+	<name>org.eclipse.rap.e4.sdk.feature</name>
+	<comment></comment> 
+	<projects> 
 	</projects>
 	<buildSpec>
 		<buildCommand>
