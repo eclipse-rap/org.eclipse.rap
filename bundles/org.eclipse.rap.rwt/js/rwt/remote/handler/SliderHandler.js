@@ -25,6 +25,13 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Slider", {
   properties : rwt.remote.HandlerUtil.extendControlProperties( [
     "minimum",
     "maximum",
+    /**
+      * @name setSelection
+      * @methodOf Slider#
+      * @description Sets the 'selection', which is the receiver's value, to the argument which
+      * must be greater than or equal to zero.
+      * @param {int} selection the new selection (must be zero or greater)
+      */
     "selection",
     "increment",
     "pageIncrement",

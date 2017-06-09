@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright: 2004, 2015 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright: 2004, 2017 1&1 Internet AG, Germany, http://www.1und1.de,
  *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -14,13 +14,13 @@
 namespace( "rwt.client" );
 
 /**
- * Basic client detection implementation.
- *
- * Version names follow the wikipedia scheme: major.minor[.revision[.build]] at
+ * @class Basic client detection implementation.
+ * @description Version names follow the wikipedia scheme: major.minor[.revision[.build]] at
  * http://en.wikipedia.org/wiki/Software_version
- *
+ * Object can be obtained from {@link rap.getClient}.
  * @public
  * @since 3.2
+ * @exports rwt.client.Client as Client
  */
 rwt.client.Client = {
 

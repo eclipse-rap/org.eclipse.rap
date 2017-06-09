@@ -55,11 +55,28 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.ScrolledComposite", {
 
   listenerHandler : rwt.remote.HandlerUtil.extendControlListenerHandler( {} ),
 
-  scriptingMethods : rwt.remote.HandlerUtil.extendControlScriptingMethods( {
+  /**
+   * @class RWT Scripting analoge to org.eclipse.swt.custom.ScrolledComposite
+   * @name ScrolledComposite
+   * @extends Control
+   * @description The constructor is not public.
+   * @since 3.2
+   */
+  scriptingMethods : rwt.remote.HandlerUtil.extendControlScriptingMethods(
+    /** @lends ScrolledComposite.prototype */
+  {
+    /**
+      * @description Sets the 'origin', which is the receiver's scroll position.
+      * @return {int, int} the origin
+      */
     setOrigin : function(x, y) {
       this.setHBarSelection( x );
       this.setVBarSelection( y );
     },
+    /**
+      * @description Returns the 'origin', which is the receiver's scroll position.
+      * @return {[int, int]} the origin
+      */
     getOrigin : function() {
       return [ this.getHorizontalBar().getValue(), this.getVerticalBar().getValue()];
     }
