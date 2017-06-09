@@ -20,7 +20,7 @@
    </license>
 
    <includes
-         id="org.eclipse.rap.feature"
+         id="org.eclipse.rap.e4.feature"
          version="0.0.0"/>
 
    <plugin
