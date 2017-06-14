@@ -609,10 +609,12 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
     },
 
     _setWeekday : function() {
-      var tmpDate = new Date();
-      tmpDate.setFullYear( parseInt( this._yearTextField.getText(), 10 ) );
-      tmpDate.setMonth( this._monthInt - 1 );
-      tmpDate.setDate( parseInt( this._dayTextField.getText(), 10 ) );
+      var tmpMonth = this._monthInt - 1;
+      var tmpYear = parseInt( this._yearTextField.getText(), 10 );
+      var tmpDay = parseInt( this._dayTextField.getText(), 10 );
+      // Set all fields together to avoid date-shift
+      // See bug: https://bugs.eclipse.org/bugs/show_bug.cgi?id=517598
+      var tmpDate = new Date( tmpYear, tmpMonth, tmpDay );
       this._weekdayTextField.setText( this._weekday[ tmpDate.getDay() + 1 ] );
     },
 
