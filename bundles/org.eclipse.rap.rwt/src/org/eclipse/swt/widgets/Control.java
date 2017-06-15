@@ -2253,6 +2253,7 @@ public abstract class Control extends Widget implements Drawable {
       getRemoteAdapter().preserveParent( this.parent );
       ReparentedControls.add( this );
       this.parent = parent;
+      getRemoteAdapter().setParent( parent );
       parent.addChild( this );
     }
     return true;

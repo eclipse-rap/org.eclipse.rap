@@ -1756,6 +1756,16 @@ public class Control_Test {
   }
 
   @Test
+  public void testSetParent_setsParentInRemoteAdapter() {
+    Control control = new Button( shell, SWT.NONE );
+    Composite parent = new Composite( shell, SWT.NONE );
+
+    control.setParent( parent );
+
+    assertSame( parent, control.getAdapter( RemoteAdapter.class ).getParent() );
+  }
+
+  @Test
   public void testIsReparentable() {
     Control control = new Button( shell, SWT.NONE );
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 EclipseSource and others.
+ * Copyright (c) 2011, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -131,22 +131,24 @@ rwt.remote.MessageProcessor = {
 
   _processDestroy : function( targetId ) {
     var objectEntry = rwt.remote.ObjectRegistry.getEntry( targetId );
-    var handler = objectEntry.handler;
-    var targetObject = objectEntry.object;
-    var children =   handler.getDestroyableChildren
-                   ? handler.getDestroyableChildren( targetObject )
-                   : null;
-    if( handler.destructor instanceof Function ) {
-      handler.destructor( targetObject );
-    } else if( typeof handler.destructor === "string" ) {
-      var destructorName = handler.destructor;
-      targetObject[ destructorName ]();
-    }
-    rwt.remote.ObjectRegistry.remove( targetId );
-    rwt.remote.RemoteObjectFactory.remove( targetId );
-    for( var i = 0; children != null && i < children.length; i++ ) {
-      if( children[ i ] ) {
-        this._processDestroy( rwt.remote.ObjectRegistry.getId( children[ i ] ) );
+    if( objectEntry ) {
+      var handler = objectEntry.handler;
+      var targetObject = objectEntry.object;
+      var children =   handler.getDestroyableChildren
+                     ? handler.getDestroyableChildren( targetObject )
+                     : null;
+      if( handler.destructor instanceof Function ) {
+        handler.destructor( targetObject );
+      } else if( typeof handler.destructor === "string" ) {
+        var destructorName = handler.destructor;
+        targetObject[ destructorName ]();
+      }
+      rwt.remote.ObjectRegistry.remove( targetId );
+      rwt.remote.RemoteObjectFactory.remove( targetId );
+      for( var i = 0; children != null && i < children.length; i++ ) {
+        if( children[ i ] ) {
+          this._processDestroy( rwt.remote.ObjectRegistry.getId( children[ i ] ) );
+        }
       }
     }
   },
