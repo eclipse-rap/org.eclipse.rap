@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 EclipseSource and others.
+ * Copyright (c) 2013, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
@@ -193,6 +194,19 @@ public class CTabFolderOperationHandler_Test {
 
     verify( listener ).close( any( CTabFolderEvent.class ) );
     assertFalse( item.isDisposed() );
+  }
+
+  @Test
+  public void testHandleNotifyFolder_closeWithoutDisposedItem() {
+    CTabItem item = folder.getItem( 1 );
+    CTabFolder2Listener listener = mock( CTabFolder2Listener.class );
+    folder.addCTabFolder2Listener( listener );
+
+    item.dispose();
+    JsonObject properties = new JsonObject().add( "detail", "close" ).add( "item", getId( item ) );
+    handler.handleNotify( ClientMessageConst.EVENT_FOLDER, properties );
+
+    verify( listener, never() ).close( any( CTabFolderEvent.class ) );
   }
 
   @Test

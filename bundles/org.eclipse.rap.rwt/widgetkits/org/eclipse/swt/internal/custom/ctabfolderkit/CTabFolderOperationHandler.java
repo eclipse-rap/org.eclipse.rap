@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2015 EclipseSource and others.
+ * Copyright (c) 2013, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,9 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.ctabfolderkit;
 
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.find;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_DEFAULT_SELECTION;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_FOLDER;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_FOLDER_DETAIL_CLOSE;
@@ -19,9 +22,6 @@ import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_FOL
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_DETAIL;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_ITEM;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.find;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
@@ -160,30 +160,34 @@ public class CTabFolderOperationHandler extends ControlOperationHandler<CTabFold
         folder.notifyListeners( EventTypes.CTAB_FOLDER_RESTORE, new Event() );
       } else if( EVENT_FOLDER_DETAIL_CLOSE.equals( detail ) ) {
         CTabItem item = getItem( folder, properties.get( EVENT_PARAM_ITEM ).asString() );
-        notifyCloseListeners( item );
+        notifyCloseListeners( folder, item );
       } else if( ClientMessageConst.EVENT_FOLDER_DETAIL_SHOW_LIST.equals( detail ) ) {
         notifyShowListListeners( folder );
       }
     }
   }
 
-  private static void notifyCloseListeners( final CTabItem item ) {
-    ProcessActionRunner.add( new Runnable() {
-      @Override
-      public void run() {
-        boolean doit = sendCloseEvent( item );
-        if( doit ) {
-          item.dispose();
+  private static void notifyCloseListeners( final CTabFolder folder, final CTabItem item ) {
+    if( item != null ) {
+      ProcessActionRunner.add( new Runnable() {
+        @Override
+        public void run() {
+          if( !item.isDisposed() ) {
+            boolean doit = sendCloseEvent( folder, item );
+            if( doit ) {
+              item.dispose();
+            }
+          }
         }
-      }
-    } );
+      } );
+    }
   }
 
-  private static boolean sendCloseEvent( CTabItem item ) {
+  private static boolean sendCloseEvent( CTabFolder folder, CTabItem item ) {
     Event event = new Event();
     event.item = item;
     event.doit = true;
-    item.getParent().notifyListeners( EventTypes.CTAB_FOLDER_CLOSE, event );
+    folder.notifyListeners( EventTypes.CTAB_FOLDER_CLOSE, event );
     return event.doit;
   }
 
