@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 EclipseSource and others.
+ * Copyright (c) 2014, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,8 @@
   var $ = rwt.util.RWTQuery;
   var BADGE_ELEMENT = "rwt.widgets.util.Badges.BADGE_ELEMENT";
   var BADGE = "Widget-Badge";
+  var LINE_HEIGHT_FACTOR = 1.1;
+  var PADDING = 1;
 
   rwt.define( "rwt.widgets.util.Badges", {
 
@@ -25,6 +27,8 @@
         $( badge ).text( text );
         widget.addEventListener( "appear", this._renderBadgePosition, widget );
         widget.addEventListener( "flush", this._renderBadgePosition, widget );
+        widget.addEventListener( "changeCustomVariant", this._renderBadgeStyle, widget );
+        this._renderBadgeStyle.apply( widget );
         this._renderBadgePosition.apply( widget );
       } else {
         this._removeBadge( widget );
@@ -33,27 +37,12 @@
 
     _getBadgeElement : function( widget ) {
       if( widget.getUserData( BADGE_ELEMENT ) == null ) {
-        var themeValues = new rwt.theme.ThemeValues( {} );
         widget.enableEnhancedBorder();
-        var vPadding = 1;
-        var lineHeightFactor = 1.1;
         var badge = document.createElement( "div" );
         $( badge ).css( {
           "position" : "absolute",
           "textAlign" : "center",
-          "lineHeight" : lineHeightFactor,
-          "color" : themeValues.getCssColor( BADGE, "color" ),
-          "backgroundColor" : themeValues.getCssColor( BADGE, "background-color" ),
-          "border" : themeValues.getCssBorder( BADGE, "border" ),
-          "font" : themeValues.getCssFont( BADGE, "font" )
-        } );
-        var height = parseInt( badge.style.fontSize, 10 ) * lineHeightFactor + 2 * vPadding;
-        $( badge ).css( {
-          "minWidth" : height,
-          "paddingLeft" : Math.floor( height * 0.3 ),
-          "paddingRight" : Math.floor( height * 0.3 ),
-          "paddingTop" : vPadding,
-          "paddingBottom" : vPadding
+          "lineHeight" : LINE_HEIGHT_FACTOR
         } );
         widget.setUserData( BADGE_ELEMENT, badge );
       }
@@ -84,6 +73,32 @@
           "right" : position[ 1 ],
           "bottom" : position[ 2 ],
           "left" : position[ 3 ]
+        } );
+      }
+    },
+
+    _renderBadgeStyle : function() {
+      var widget = this;
+      var badge = widget.getUserData( BADGE_ELEMENT );
+      if( badge ) {
+        var states = {};
+        if( widget._customVariant !== null ) {
+          states[ widget._customVariant ] = true;
+        }
+        var themeValues = new rwt.theme.ThemeValues( states );
+        $( badge ).css( {
+          "color" : themeValues.getCssColor( BADGE, "color" ),
+          "backgroundColor" : themeValues.getCssColor( BADGE, "background-color" ),
+          "border" : themeValues.getCssBorder( BADGE, "border" ),
+          "font" : themeValues.getCssFont( BADGE, "font" )
+        } );
+        var height = parseInt( badge.style.fontSize, 10 ) * LINE_HEIGHT_FACTOR + 2 * PADDING;
+        $( badge ).css( {
+          "minWidth" : height,
+          "paddingLeft" : Math.floor( height * 0.3 ),
+          "paddingRight" : Math.floor( height * 0.3 ),
+          "paddingTop" : PADDING,
+          "paddingBottom" : PADDING
         } );
       }
     }

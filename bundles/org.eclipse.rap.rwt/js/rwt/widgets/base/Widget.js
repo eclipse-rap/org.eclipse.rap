@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2016 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2017 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource, and others.
  *
  * All rights reserved. This program and the accompanying materials
@@ -2805,6 +2805,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
       for( var i = 0; i < subWidgets.length; i++ ) {
         subWidgets[ i ].setCustomVariant( this._customVariant );
       }
+      this.dispatchSimpleEvent( "changeCustomVariant" );
     },
 
     hasState : function( state ) {

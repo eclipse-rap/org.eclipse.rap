@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 EclipseSource and others.
+ * Copyright (c) 2014, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -84,6 +84,36 @@ describe( "Badges", function() {
       expect( element.style.borderWidth ).toBe( "2px" );
       expect( element.style.fontSize ).toBe( "6px" );
       expect( element.style.fontFamily ).toBe( "fantasy" );
+    } );
+
+    it( "respects widget custom variant in ThemeValues before badge is set", function() {
+      var themeValues = mock( rwt.theme.ThemeValues );
+      themeValues.getCssColor.andReturn( "#ff00ff" );
+      themeValues.getCssBorder.andReturn( new rwt.html.Border( 2, "solid", "#fff000", 3 ) );
+      themeValues.getCssFont.andReturn( new rwt.html.Font( 6, [ "fantasy" ] ) );
+      spyOn( rwt.theme, "ThemeValues").andCallFake( function() {
+        return themeValues;
+      } );
+
+      widget.setCustomVariant( "foo" )
+      Badges.setBadge( widget, "bar" );
+
+      expect( rwt.theme.ThemeValues ).toHaveBeenCalledWith( { "foo": true } );
+    } );
+
+    it( "respects widget custom variant in ThemeValues after badge is set", function() {
+      var themeValues = mock( rwt.theme.ThemeValues );
+      themeValues.getCssColor.andReturn( "#ff00ff" );
+      themeValues.getCssBorder.andReturn( new rwt.html.Border( 2, "solid", "#fff000", 3 ) );
+      themeValues.getCssFont.andReturn( new rwt.html.Font( 6, [ "fantasy" ] ) );
+      spyOn( rwt.theme, "ThemeValues").andCallFake( function() {
+        return themeValues;
+      } );
+
+      Badges.setBadge( widget, "bar" );
+      widget.setCustomVariant( "foo" )
+
+      expect( rwt.theme.ThemeValues ).toHaveBeenCalledWith( { "foo": true } );
     } );
 
     it( "sets min-width to estimated height", function() {
