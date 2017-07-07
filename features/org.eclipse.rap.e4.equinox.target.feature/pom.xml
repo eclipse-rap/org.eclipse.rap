@@ -17,13 +17,13 @@
   <parent>
     <groupId>org.eclipse.rap</groupId>
     <artifactId>org.eclipse.rap.runtime-parent</artifactId>
-    <version>3.2.0-SNAPSHOT</version>
+    <version>3.3.0-SNAPSHOT</version>
     <relativePath>../../releng/org.eclipse.rap.build/pom.xml</relativePath>
   </parent>
 
   <artifactId>org.eclipse.rap.e4.equinox.target.feature</artifactId>
   <packaging>eclipse-feature</packaging>
-  <version>3.2.0-SNAPSHOT</version>
+  <version>3.3.0-SNAPSHOT</version>
 
   <repositories>
     <repository>
