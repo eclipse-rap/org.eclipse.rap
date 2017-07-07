@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others.
+ * Copyright (c) 2010, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,10 +11,10 @@
 
 /* ToolTip default theme */
 
-ToolTip, 
-ToolTip[BALLOON], 
-ToolTip[ICON_ERROR], 
-ToolTip[ICON_WARNING], 
+ToolTip,
+ToolTip[BALLOON],
+ToolTip[ICON_ERROR],
+ToolTip[ICON_WARNING],
 ToolTip[ICON_INFORMATION]
 {
   cursor: default;
@@ -31,6 +31,8 @@ ToolTip[ICON_INFORMATION]
   font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   background-color: #fcfcfc;
   animation: fadeIn 200ms linear, fadeOut 600ms ease-out;
+  width: auto;
+  height: auto;
 }
 
 ToolTip-Image[ICON_ERROR] {

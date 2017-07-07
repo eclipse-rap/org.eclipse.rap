@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2017 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -69,6 +69,7 @@ public final class PropertyResolver {
   /** A thick border. */
   private static final String THICK = "thick";
   private static final String TRANSPARENT = "transparent";
+  private static final String AUTO = "auto";
   private static final Map<String,NamedColor> NAMED_COLORS = new HashMap<>();
   private static final List<String> BORDER_STYLES = new ArrayList<>();
   /** Width value for "thin" identifier. */
@@ -284,9 +285,15 @@ public final class PropertyResolver {
 
   static CssDimension readDimension( LexicalUnit unit ) {
     CssDimension result = null;
-    Integer length = readSingleLengthUnit( unit );
-    if( length != null ) {
-      result = CssDimension.create( length.intValue() );
+    if( unit.getLexicalUnitType() == LexicalUnit.SAC_IDENT ) {
+      if( AUTO.equals( unit.getStringValue() ) ) {
+        result = CssDimension.AUTO;
+      }
+    } else {
+      Integer length = readSingleLengthUnit( unit );
+      if( length != null ) {
+        result = CssDimension.create( length.intValue() );
+      }
     }
     if( result == null ) {
       throw new IllegalArgumentException( "Failed to parse dimension " + toString( unit ) );
@@ -1017,8 +1024,7 @@ public final class PropertyResolver {
     Integer result = null;
     short type = unit.getLexicalUnitType();
     if( type == LexicalUnit.SAC_INTEGER ) {
-      int value = unit.getIntegerValue();
-      if( value == 0 ) {
+      if( unit.getIntegerValue() == 0 ) {
         result = Integer.valueOf( 0 );
       }
     } else if( type == LexicalUnit.SAC_PIXEL ) {

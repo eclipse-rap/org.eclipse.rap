@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
- Copyright (c) 2011, 2014 Rüdiger Herrmann and others.
+ Copyright (c) 2011, 2017 Rüdiger Herrmann and others.
  All rights reserved. This program and the accompanying materials
  are made available under the terms of the Eclipse Public License v1.0
  which accompanies this distribution, and is available at
  http://www.eclipse.org/legal/epl-v10.html
 
  Contributors:
-     Rüdiger Herrmann - initial API and implementation
-     EclipseSource - ongoing development
+    Rüdiger Herrmann - initial API and implementation
+    EclipseSource - ongoing development
  -->
 
 <theme>
@@ -84,6 +84,20 @@
     </property>
 
     <property name="box-shadow" description="The shadow behind the tooltip." />
+
+    <property name="width">
+      <description>
+        Fixed width for the tooltip. If set to auto the tooltip width will be calculated
+        automatically.
+      </description>
+    </property>
+
+    <property name="height">
+      <description>
+        Fixed height for the tooltip. If set auto the tooltip height will be calculated
+        automatically.
+      </description>
+    </property>
 
     <element name="ToolTip-Image"
         description="The image area.">

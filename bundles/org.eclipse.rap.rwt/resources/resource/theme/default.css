@@ -2266,6 +2266,8 @@ ToolTip {
   background-color: #fcfcfc;
   animation: fadeIn 200ms linear, fadeOut 600ms ease-out;
   box-shadow: 0 0 4px #adadad;
+  width: auto;
+  height: auto;
 }
 
 ToolTip-Image[ICON_ERROR] {

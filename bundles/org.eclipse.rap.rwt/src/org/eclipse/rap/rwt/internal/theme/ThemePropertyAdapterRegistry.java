@@ -79,6 +79,9 @@ public final class ThemePropertyAdapterRegistry {
 
     @Override
     public JsonValue getValue( CssValue value ) {
+      if( CssDimension.AUTO.equals( value ) ) {
+        return JsonValue.valueOf( "auto" );
+      }
       return JsonValue.valueOf( ( ( CssDimension )value ).value );
     }
   }

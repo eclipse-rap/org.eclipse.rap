@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2017 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,8 +19,8 @@ var appearances = {
     style : function( states ) {
       var tv = new rwt.theme.ThemeValues( states );
       var result = {};
-      result.width = "auto";
-      result.height = "auto";
+      result.width = tv.getCssDimension( "ToolTip", "width" );
+      result.height = tv.getCssDimension( "ToolTip", "height" );
       result.minWidth = 36;
       result.minHeight = 36;
       result.cursor = tv.getCssCursor( "ToolTip", "cursor" );

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2017 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,6 +47,12 @@ public class CssDimension_Test {
   }
 
   @Test
+  public void testAuto() {
+    assertSame( CssDimension.AUTO, CssDimension.valueOf( "auto" ) );
+    assertEquals( Integer.MIN_VALUE, CssDimension.AUTO.value );
+  }
+
+  @Test
   public void testValid() {
     CssDimension dim23 = CssDimension.valueOf( "23" );
     assertEquals( 23, dim23.value );
@@ -59,6 +65,7 @@ public class CssDimension_Test {
   @Test
   public void testDefaultString() {
     assertEquals( "0px", CssDimension.ZERO.toDefaultString() );
+    assertEquals( "auto", CssDimension.AUTO.toDefaultString() );
     assertEquals( "23px", CssDimension.valueOf( "23" ).toDefaultString() );
   }
 

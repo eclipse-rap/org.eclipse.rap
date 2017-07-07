@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 Rüdiger Herrmann and others.
+ * Copyright (c) 2011, 2017 Rüdiger Herrmann and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 
 rwt.qx.Class.define( "rwt.widgets.ToolTip", {
+
   extend : rwt.widgets.base.Popup,
   include : rwt.animation.VisibilityAnimationMixin,
 
@@ -26,6 +27,7 @@ rwt.qx.Class.define( "rwt.widgets.ToolTip", {
     this.setMaxHeight( doc.getClientHeight() / 2 );
     this.addToDocument();
     this.addEventListener( "click", this._onClick, this );
+    this.addEventListener( "appear", this._update, this );
     this._hideAfterTimeout = false;
     this._messageFont = this._getMessageFont();
     this._contentArea = null;
@@ -89,7 +91,6 @@ rwt.qx.Class.define( "rwt.widgets.ToolTip", {
     setVisible : function( visible ) {
       this.setVisibility( visible );
       if( visible ) {
-        this._update();
         this.bringToFront();
         if( this._hideAfterTimeout ) {
           rwt.client.Timer.once( this._hide, this, 5 * 1000 );
@@ -117,6 +118,7 @@ rwt.qx.Class.define( "rwt.widgets.ToolTip", {
       this._image = new rwt.widgets.base.Image();
       this._image.setAppearance( "tool-tip-image" );
       this._image.setParent( this._contentArea );
+      this._image.addEventListener( "changeLoaded", this._update, this );
       this._textArea = new rwt.widgets.base.BoxLayout( "vertical" );
       this._textArea.setParent( this._contentArea );
       this._textArea.setHeight( "100%" );
@@ -132,19 +134,28 @@ rwt.qx.Class.define( "rwt.widgets.ToolTip", {
     },
 
     _update : function() {
-      var message = this._message.getText();
-      var textSize = this._getTextSize( this._text.getText(), -1 );
-      var messageSize = this._getTextSize( message, -1 );
-      if( !this._markupEnabled ) {
-        var width = messageSize.x;
-        while( width > 0 && !this._matchesWidthToHeightRatio( messageSize ) ) {
-          width -= 10;
-          messageSize = this._getTextSize( message, width );
+      var popupWidth = this.getWidth();
+      if( popupWidth === "auto" ) {
+        var message = this._message.getText();
+        var textSize = this._getTextSize( this._text.getText(), -1 );
+        var messageSize = this._getTextSize( message, -1 );
+        if( !this._markupEnabled ) {
+          var width = messageSize.x;
+          while( width > 0 && !this._matchesWidthToHeightRatio( messageSize ) ) {
+            width -= 10;
+            messageSize = this._getTextSize( message, width );
+          }
         }
+        messageSize.x = this._max( messageSize.x, textSize.x );
+        this._message.setWidth( messageSize.x );
+        this._message.setHeight( messageSize.y );
+      } else {
+        var messageWidth = popupWidth - this.getPaddingLeft() - this.getPaddingRight();
+        messageWidth -= this._image._computePreferredInnerWidth();
+        messageWidth -= this._contentArea.getSpacing();
+        this._message.setWidth( messageWidth );
+        this._message.setHeight( "auto" );
       }
-      messageSize.x = this._max( messageSize.x, textSize.x );
-      this._message.setWidth( messageSize.x );
-      this._message.setHeight( messageSize.y );
     },
 
     _matchesWidthToHeightRatio : function( size ) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 EclipseSource and others.
+ * Copyright (c) 2011, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,10 @@ package org.eclipse.rap.rwt.internal.theme;
 
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.eclipse.rap.rwt.internal.theme.ThemePropertyAdapterRegistry.getInstance;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.theme.ThemePropertyAdapterRegistry.BoxDimensionsPropertyAdapter;
@@ -57,10 +60,12 @@ public class ThemePropertyAdapterRegistry_Test {
   public void testDimensionPropertyAdapter() {
     ThemePropertyAdapter adapter = new DimensionPropertyAdapter();
     assertEquals( "0", adapter.getKey( CssDimension.ZERO ) );
+    assertEquals( "80000000", adapter.getKey( CssDimension.AUTO ) );
     assertEquals( "439", adapter.getKey( CssDimension.create( 23 ) ) );
     assertEquals( "ffffffd1", adapter.getKey( CssDimension.create( -1 ) ) );
     assertEquals( "dimensions", adapter.getSlot( CssDimension.ZERO ) );
     assertEquals( "0", adapter.getValue( CssDimension.ZERO ).toString() );
+    assertEquals( "auto", adapter.getValue( CssDimension.AUTO ).asString() );
     assertEquals( "23", adapter.getValue( CssDimension.create( 23 ) ).toString() );
   }
 
