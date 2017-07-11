@@ -3588,12 +3588,12 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
 
     getScrollLeft : function() {
       this._visualPropertyCheck();
-      return this._getTargetNode().scrollLeft;
+      return Math.ceil( this._getTargetNode().scrollLeft );
     },
 
     getScrollTop : function() {
       this._visualPropertyCheck();
-      return this._getTargetNode().scrollTop;
+      return Math.ceil( this._getTargetNode().scrollTop );
     },
 
     getClientWidth : function() {
