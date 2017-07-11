@@ -86,7 +86,9 @@ rwt.widgets.Display.prototype = {
   setFocusControl : function( widgetId ) {
     var widget = rwt.remote.ObjectRegistry.getObject( widgetId );
     if( widget.isSeeable() ) {
-      widget.focus();
+      setTimeout( function() { // Delay focusing, see bug 497098
+        widget.focus();
+      }, 0 );
     } else {
       widget.addEventListener( "appear", rwt.widgets.Display._onAppearFocus, widget );
     }

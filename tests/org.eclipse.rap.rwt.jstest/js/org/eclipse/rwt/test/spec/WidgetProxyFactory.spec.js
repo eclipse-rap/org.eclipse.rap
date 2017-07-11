@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 EclipseSource and others.
+ * Copyright (c) 2012, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -487,28 +487,34 @@ describe( "WidgetProxyFactory", function() {
 
     describe( "forceFocus", function() {
 
-      it( "focuses widget", function() {
+      it( "focuses widget", function( done ) {
         var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
         widget.blur();
 
         var value = widgetProxy.forceFocus();
 
-        expect( widget.isFocused() ).toBeTruthy();
-        expect( value ).toBeTruthy();
+        setTimeout(function() {
+          expect( widget.isFocused() ).toBeTruthy();
+          expect( value ).toBeTruthy();
+          done();
+        }, 10 );
       } );
 
-      it( "does not focus invisible widget", function() {
+      it( "does not focus invisible widget", function( done ) {
         var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
         widget.blur();
         widget.setVisibility( false );
 
         var value = widgetProxy.forceFocus();
 
-        expect( widget.isFocused() ).toBeFalsy();
-        expect( value ).toBeFalsy();
+        setTimeout(function() {
+          expect( widget.isFocused() ).toBeFalsy();
+          expect( value ).toBeFalsy();
+          done();
+        }, 10 );
       } );
 
-      it( "does not focus widget with invisible parent", function() {
+      it( "does not focus widget with invisible parent", function( done ) {
         var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
         widget.blur();
         widget.getParent().setVisibility( false );
@@ -516,19 +522,25 @@ describe( "WidgetProxyFactory", function() {
 
         var value = widgetProxy.forceFocus();
 
-        expect( widget.isFocused() ).toBeFalsy();
-        expect( value ).toBeFalsy();
+        setTimeout(function() {
+          expect( widget.isFocused() ).toBeFalsy();
+          expect( value ).toBeFalsy();
+          done();
+        }, 10 );
       } );
 
-      it( "does not focus disabled widget", function() {
+      it( "does not focus disabled widget", function( done ) {
         var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
         widget.blur();
         widget.setEnabled( false );
 
         var value = widgetProxy.forceFocus();
 
-        expect( widget.isFocused() ).toBeFalsy();
-        expect( value ).toBeFalsy();
+        setTimeout(function() {
+          expect( widget.isFocused() ).toBeFalsy();
+          expect( value ).toBeFalsy();
+          done();
+        }, 10 );
       } );
 
     } );
