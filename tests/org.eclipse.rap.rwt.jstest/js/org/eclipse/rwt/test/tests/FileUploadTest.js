@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 EclipseSource and others.
+ * Copyright (c) 2011, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -190,6 +190,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
       assertEquals( "file", input.getAttribute( "type" ) );
       assertEquals( "1", input.getAttribute( "size" ) );
       assertEquals( "absolute", input.style.position );
+      assertEquals( rwt.client.Client.isTrident() ? "" : " ", input.getAttribute( "title" ) );
       assertNull( input.getAttribute( "accept" ) );
       upload.destroy();
     },
