@@ -213,4 +213,19 @@ describe( "Badges", function() {
 
   } );
 
+  describe( "getBadge", function() {
+
+    it( "returns null initially", function() {
+      expect( Badges.getBadge( widget ) ).toBe( null );
+    } );
+
+    it( "returns badge element text", function() {
+      Badges.setBadge( widget, "bar" );
+      TestUtil.flush();
+
+      expect( Badges.getBadge( widget ) ).toBe( "bar" );
+    } );
+
+  } );
+
 } );

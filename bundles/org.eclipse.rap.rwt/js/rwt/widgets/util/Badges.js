@@ -33,25 +33,38 @@
       } else {
         this._removeBadge( widget );
       }
+      widget.dispatchSimpleEvent( "changeBadge" );
+    },
+
+    getBadge : function( widget ) {
+      var badge = widget.getUserData( BADGE_ELEMENT );
+      if( badge ) {
+        return $( badge ).text();
+      }
+      return null;
     },
 
     _getBadgeElement : function( widget ) {
-      if( widget.getUserData( BADGE_ELEMENT ) == null ) {
-        widget.enableEnhancedBorder();
-        var badge = document.createElement( "div" );
-        $( badge ).css( {
-          "position" : "absolute",
-          "textAlign" : "center",
-          "lineHeight" : LINE_HEIGHT_FACTOR
-        } );
-        widget.setUserData( BADGE_ELEMENT, badge );
+      var badge = widget.getUserData( BADGE_ELEMENT );
+      if( badge ) {
+        return badge;
       }
-      return widget.getUserData( BADGE_ELEMENT );
+      widget.enableEnhancedBorder();
+      badge = document.createElement( "div" );
+      $( badge ).css( {
+        "position" : "absolute",
+        "textAlign" : "center",
+        "lineHeight" : LINE_HEIGHT_FACTOR
+      } );
+      widget.setUserData( BADGE_ELEMENT, badge );
+      return badge;
     },
 
     _removeBadge : function( widget ) {
-      if( widget.getUserData( BADGE_ELEMENT ) != null ) {
-        $( widget.getUserData( BADGE_ELEMENT ) ).detach();
+      var badge = widget.getUserData( BADGE_ELEMENT );
+      if( badge ) {
+        $( badge ).text( "" );
+        $( badge ).detach();
       }
     },
 
