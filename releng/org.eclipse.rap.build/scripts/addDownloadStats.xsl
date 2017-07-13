@@ -32,6 +32,10 @@ Gregoire Dupe
 		<xsl:call-template name="artifact_properties"/>
 	</xsl:template>
 
+	<xsl:template match="artifact[@classifier='osgi.bundle' and @id='org.eclipse.rap.e4']/properties">
+		<xsl:call-template name="artifact_properties"/>
+	</xsl:template>
+
 	<xsl:template match="artifact[@classifier='osgi.bundle' and @id='org.eclipse.rap.rwt.osgi']/properties">
 		<xsl:call-template name="artifact_properties"/>
 	</xsl:template>
@@ -62,6 +66,22 @@ Gregoire Dupe
 	</xsl:template>
 
 	<xsl:template match="artifact[@classifier='org.eclipse.update.feature' and @id='org.eclipse.rap.sdk.feature']/properties">
+		<xsl:call-template name="artifact_properties_feature"/>
+	</xsl:template>
+
+	<xsl:template match="artifact[@classifier='org.eclipse.update.feature' and @id='org.eclipse.rap.e4.equinox.target.feature']/properties">
+		<xsl:call-template name="artifact_properties_feature"/>
+	</xsl:template>
+
+	<xsl:template match="artifact[@classifier='org.eclipse.update.feature' and @id='org.eclipse.rap.e4.examples.feature']/properties">
+		<xsl:call-template name="artifact_properties_feature"/>
+	</xsl:template>
+
+	<xsl:template match="artifact[@classifier='org.eclipse.update.feature' and @id='org.eclipse.rap.e4.feature']/properties">
+		<xsl:call-template name="artifact_properties_feature"/>
+	</xsl:template>
+
+	<xsl:template match="artifact[@classifier='org.eclipse.update.feature' and @id='org.eclipse.rap.e4.sdk.feature']/properties">
 		<xsl:call-template name="artifact_properties_feature"/>
 	</xsl:template>
 
