@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 Frank Appel and others.
+ * Copyright (c) 2011, 2017 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,8 +26,9 @@ import org.eclipse.swt.widgets.Shell;
 class TextSizeRecalculation {
 
   static final String TEMPORARY_RESIZE = TextSizeRecalculation.class.getName() + "#temporaryResize";
-  static final String KEY_SCROLLED_COMPOSITE_CONTENT_SIZE = "org.eclipse.rap.content-size";
+  static final String KEY_SCROLLED_COMPOSITE_SIZE = "org.eclipse.rap.sc-size";
   static final String KEY_SCROLLED_COMPOSITE_ORIGIN = "org.eclipse.rap.sc-origin";
+  static final String KEY_SCROLLED_COMPOSITE_CONTENT_SIZE = "org.eclipse.rap.content-size";
   static final int RESIZE_OFFSET = 1000;
 
   static void execute() {
@@ -42,8 +43,8 @@ class TextSizeRecalculation {
     bufferScrolledCompositeOrigins( shell );
     clearLayoutBuffers( shell );
     setTemporaryResize( true );
-    enlargeShell( shell );
     enlargeScrolledCompositeContent( shell );
+    enlargeShell( shell );
     setTemporaryResize( false );
     clearLayoutBuffers( shell );
     markLayoutNeeded( shell );

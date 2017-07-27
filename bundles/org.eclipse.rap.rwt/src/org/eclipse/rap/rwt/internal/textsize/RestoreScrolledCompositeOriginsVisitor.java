@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 Frank Appel and others.
+ * Copyright (c) 2011, 2017 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,10 +23,20 @@ class RestoreScrolledCompositeOriginsVisitor implements WidgetTreeVisitor {
   @Override
   public boolean visit( Widget widget ) {
     if( widget instanceof ScrolledComposite ) {
-      restoreContentSize( ( ScrolledComposite )widget );
-      restoreOrigin( ( ScrolledComposite )widget );
+      ScrolledComposite scrolledComposite = ( ScrolledComposite )widget;
+      restoreSize( scrolledComposite );
+      restoreContentSize( scrolledComposite );
+      restoreOrigin( scrolledComposite );
     }
     return true;
+  }
+
+  private static void restoreSize( ScrolledComposite composite ) {
+    Point oldSize = getBufferedSize( composite );
+    if( oldSize != null ) {
+      composite.setSize( oldSize );
+      composite.setData( TextSizeRecalculation.KEY_SCROLLED_COMPOSITE_SIZE, null );
+    }
   }
 
   private static void restoreOrigin( ScrolledComposite composite ) {
@@ -58,6 +68,10 @@ class RestoreScrolledCompositeOriginsVisitor implements WidgetTreeVisitor {
 
   private static Point getBufferedOrigin( ScrolledComposite composite ) {
     return ( Point )composite.getData( TextSizeRecalculation.KEY_SCROLLED_COMPOSITE_ORIGIN );
+  }
+
+  private static Point getBufferedSize( ScrolledComposite composite ) {
+    return ( Point )composite.getData( TextSizeRecalculation.KEY_SCROLLED_COMPOSITE_SIZE );
   }
 
 }

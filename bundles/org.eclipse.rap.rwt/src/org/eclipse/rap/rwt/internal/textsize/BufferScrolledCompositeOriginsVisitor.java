@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 Frank Appel and others.
+ * Copyright (c) 2011, 2017 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,10 +23,17 @@ class BufferScrolledCompositeOriginsVisitor implements WidgetTreeVisitor {
   @Override
   public boolean visit( Widget widget ) {
     if( widget instanceof ScrolledComposite ) {
-      bufferOrigin( ( ScrolledComposite )widget );
-      bufferContentSize( ( ScrolledComposite )widget );
+      ScrolledComposite scrolledComposite = ( ScrolledComposite )widget;
+      bufferSize( scrolledComposite );
+      bufferOrigin( scrolledComposite );
+      bufferContentSize( scrolledComposite );
     }
     return true;
+  }
+
+  private static void bufferSize( ScrolledComposite composite ) {
+    Point size = composite.getSize();
+    composite.setData( TextSizeRecalculation.KEY_SCROLLED_COMPOSITE_SIZE, size );
   }
 
   private static void bufferOrigin( ScrolledComposite composite ) {

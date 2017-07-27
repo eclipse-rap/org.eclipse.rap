@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 Frank Appel and others.
+ * Copyright (c) 2011, 2017 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -53,6 +53,7 @@ public class TextSizeRecalculation_Test {
 
   private Display display;
   private Shell shell;
+  private ScrolledComposite scrolledComposite;
   private Composite scrolledCompositeContent;
   private ResizeListener shellResizeListener;
   private ResizeListener scrolledCompositeContentResizeListener;
@@ -65,6 +66,7 @@ public class TextSizeRecalculation_Test {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
+    shell.setBounds( getInitialShellBounds() );
   }
 
   @After
@@ -108,6 +110,32 @@ public class TextSizeRecalculation_Test {
     TextSizeRecalculation.execute();
 
     assertEquals( getInitialContentBounds(), scrolledCompositeContentBounds );
+  }
+
+  @Test
+  public void testExecute_withExpandedContentScrolledComposite() {
+    createWidgetTree();
+    scrolledComposite.setExpandHorizontal( true );
+    scrolledComposite.setExpandVertical( true );
+    turnOnImmediateResizeEventHandling();
+    fakeMeasurementResults();
+    final Point scrolledCompositeContentMaxSize = new Point( 0, 0 );
+    scrolledCompositeContent.addListener( SWT.Resize, new Listener() {
+      @Override
+      public void handleEvent( Event event ) {
+        Point size = scrolledCompositeContent.getSize();
+        if( size.x > scrolledCompositeContentMaxSize.x ) {
+          scrolledCompositeContentMaxSize.x = size.x;
+        }
+        if( size.y > scrolledCompositeContentMaxSize.y ) {
+          scrolledCompositeContentMaxSize.y = size.y;
+        }
+      }
+    } );
+
+    TextSizeRecalculation.execute();
+
+    assertEquals( new Point( 1300, 1300 ), scrolledCompositeContentMaxSize );
   }
 
   @Test
@@ -187,7 +215,7 @@ public class TextSizeRecalculation_Test {
   }
 
   private Rectangle getInitialShellBounds() {
-    return new Shell().getBounds();
+    return new Rectangle( 10, 10, 200, 200 );
   }
 
   private void createWidgetTree() {
@@ -221,7 +249,8 @@ public class TextSizeRecalculation_Test {
   }
 
   private void createScrolledCompositeWithContent() {
-    ScrolledComposite scrolledComposite = new ScrolledComposite( shell, SWT.V_SCROLL | SWT.H_SCROLL );
+    scrolledComposite = new ScrolledComposite( shell, SWT.V_SCROLL | SWT.H_SCROLL );
+    scrolledComposite.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, true ) );
     scrolledCompositeContent = new Composite( scrolledComposite, SWT.NONE );
     scrolledCompositeContent.setBounds( getInitialContentBounds() );
     scrolledComposite.setContent( scrolledCompositeContent );
@@ -229,7 +258,7 @@ public class TextSizeRecalculation_Test {
   }
 
   private Rectangle getInitialContentBounds() {
-    return new Rectangle( -5, -5, 100, 100 );
+    return new Rectangle( -5, -5, 300, 300 );
   }
 
   private void createShellWithLayout() {
