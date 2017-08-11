@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2015 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2009, 2017 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -96,6 +96,7 @@ rwt.qx.Class.define( "rwt.widgets.util.GridDNDFeedback", {
       if( value ) {
         // draw insert-indicator above row (1px heigher)
         var location = this._getRowLocation( row );
+        location.x = location.x + row.getNextIndentOffset();
         location.y--;
         this._showInsertIndicator( location.x, location.y );
       } else {
@@ -108,6 +109,7 @@ rwt.qx.Class.define( "rwt.widgets.util.GridDNDFeedback", {
         // draw insert-indicator below row (1px heigher)
         var location = this._getRowLocation( row );
         var height = row.getHeight();
+        location.x = location.x + row.getNextIndentOffset();
         location.y = location.y + ( height - 1 );
         this._showInsertIndicator( location.x, location.y );
       } else {
