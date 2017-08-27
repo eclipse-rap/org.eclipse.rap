@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2016 EclipseSource and others.
+ * Copyright (c) 2010, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -294,16 +294,7 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
     },
 
     _toCssFont : function( fontArray ) {
-      var result = "";
-      if( fontArray[ 3 ] ) {
-        result += "italic ";
-      }
-      if( fontArray[ 2 ] ) {
-        result += "bold ";
-      }
-      result += fontArray[ 1 ] + "px ";
-      result += fontArray[ 0 ].join( "," );
-      return result;
+      return rwt.html.Font.fromArray( fontArray ).toCss();
     }
 
   }
