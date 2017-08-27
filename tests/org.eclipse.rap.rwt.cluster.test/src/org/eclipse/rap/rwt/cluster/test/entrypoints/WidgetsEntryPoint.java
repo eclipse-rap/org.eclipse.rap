@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 EclipseSource and others.
+ * Copyright (c) 2011, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package org.eclipse.rap.rwt.cluster.test.entrypoints;
 
 import org.eclipse.rap.rwt.application.EntryPoint;
+import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.custom.CBanner;
@@ -88,6 +89,7 @@ public class WidgetsEntryPoint implements EntryPoint {
     createText();
     createToolBar();
     createTree();
+    createClientListenedButton();
     obtainAccessibles();
     shell.open();
     return 0;
@@ -218,5 +220,10 @@ public class WidgetsEntryPoint implements EntryPoint {
 
   private void createBrowser() {
     new Browser( shell, SWT.NONE );
+  }
+
+  private void createClientListenedButton() {
+     Button btn = new Button( shell, SWT.PUSH );
+     btn.addListener( SWT.Selection, new ClientListener("var handleEvent = function( event ) {}" ) );
   }
 }
