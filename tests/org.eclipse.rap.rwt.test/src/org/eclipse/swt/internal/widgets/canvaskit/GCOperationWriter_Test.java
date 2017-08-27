@@ -686,7 +686,7 @@ public class GCOperationWriter_Test {
     gc.setClipping( ( Rectangle )null );
 
     JsonArray ops = getGCOperations( canvas );
-    assertEquals( "[\"restore\"]", getOperation( 0, ops ) );
+    assertEquals( "[\"resetClip\"]", getOperation( 0, ops ) );
   }
 
   @Test

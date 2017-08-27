@@ -27,6 +27,7 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
       this._addCanvasToDOM();
     }
     this._linearGradient = null;
+    this._currentGCState = {};
   },
 
   destruct : function() {
@@ -86,6 +87,7 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
             case "ellipse":
             case "drawImage":
             case "setTransform":
+            case "resetClip":
               this[ "_" + op ]( operations[ i ] );
             break;
             default:
@@ -109,6 +111,13 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
     _createCanvas : function() {
       this._canvas = document.createElement( "canvas" );
       this._context = this._canvas.getContext( "2d" );
+    },
+
+    _applyCurrentState: function(state) {
+      var operations = Object.keys( state ).map( function( opName ) {
+        return [ opName , state[ opName ] ];
+      } );
+      this.draw( operations );
     },
 
     _onControlCreate : function() {
@@ -158,6 +167,7 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
       this._context.font = this._toCssFont( font );
       this._context.textBaseline = "top";
       this._context.textAlign = "left";
+      this._currentGCState = {};
     },
 
     // See http://www.whatwg.org/specs/web-apps/current-work/multipage/the-canvas-element.html#building-paths
@@ -178,9 +188,15 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
       }
     },
 
+    _resetClip : function() {
+      this._context.restore();
+      this._applyCurrentState( this._currentGCState );
+    },
+
     _setProperty : function( operation ) {
       var property = operation[ 0 ];
       var value = operation[ 1 ];
+      this._currentGCState[ property ] = value;
       if( value === "linearGradient" ) {
         value = this._linearGradient;
       } else if( property === "fillStyle" || property === "strokeStyle" ) {
@@ -249,7 +265,10 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
     },
 
     _setTransform : function( operation ) {
-      this._context.setTransform.apply( this._context, operation.slice( 1 ) );
+      var opName = operation[ 0 ];
+      var opParam = ( operation.length == 2 ) ? operation[ 1 ] : operation.slice( 1 );
+      this._currentGCState[ opName ] = opParam;
+      this._context.setTransform.apply( this._context, opParam );
     },
 
     _createLinearGradient : function( operation ) {

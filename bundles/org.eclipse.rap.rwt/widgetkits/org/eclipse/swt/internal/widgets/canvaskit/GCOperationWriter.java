@@ -372,7 +372,7 @@ final class GCOperationWriter {
 
   private void setClipping( SetClipping operation ) {
     if( operation.isReset() ) {
-      addClientOperation( "restore" );
+      addClientOperation( "resetClip" );
     } else {
       addClientOperation( "save" );
       if( operation.isRectangular() ) {

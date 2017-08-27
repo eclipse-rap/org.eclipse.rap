@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2016 EclipseSource and others.
+ * Copyright (c) 2010, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -203,6 +203,38 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       TestUtil.flush();
     },
 
+    testSaveAndRestoreFields_afterClipReset : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var canvas = new rwt.widgets.Composite();
+      canvas.setDimension( 300, 300 );
+      canvas.addToDocument();
+      TestUtil.flush();
+      var gc = new rwt.widgets.GC( canvas );
+      gc._initFields( [ [ "Arial" ], 10, false, false ], [ 255, 255, 255, 255 ], [ 0, 0, 0, 255 ] );
+      this._setClip( gc );
+
+      this._setProperty( gc, "strokeStyle", [ 1,2,3, 255 ] );
+      this._setProperty( gc, "fillStyle", [ 4, 5, 6, 255 ] );
+      this._setProperty( gc, "globalAlpha", 0.128 );
+      this._setProperty( gc, "lineWidth", 4 );
+      this._setProperty( gc, "lineCap", "round" ); // "round"
+      this._setProperty( gc, "lineJoin", "bevel" ); // "bevel"
+      this._setProperty( gc, "font", [ [ "Arial" ], 16, true, true ] );
+      this._setTransform( gc, [ 0.9848077, 0.17364818, -0.17364818, 0.9848077, 350, 430 ] );
+
+      gc._resetClip();
+
+      assertEquals( [ 1, 2, 3 ], rwt.util.Colors.stringToRgb( gc._context.strokeStyle ) );
+      assertEquals( [ 4, 5, 6 ], rwt.util.Colors.stringToRgb( gc._context.fillStyle ) );
+      assertEquals( 128, Math.round( gc._context.globalAlpha * 1000 ) );
+      assertEquals( 4, gc._context.lineWidth );
+      assertEquals( "round", gc._context.lineCap );
+      assertEquals( "bevel", gc._context.lineJoin );
+      assertEquals( "italic bold 16px Arial", gc._context.font );
+      canvas.destroy();
+      TestUtil.flush();
+    },
+
     // Tests ported from GCOperationWriter_Test#testProcessText...
     testEscapeText : function() {
       var text = "text with \ttab, \nnew line and &mnemonic";
@@ -295,6 +327,18 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
 
     _setProperty : function( gc, property, value ) {
       gc.draw( [ [ property, value ] ] );
+    },
+
+    _setTransform : function( gc, value ) {
+      gc.draw( [ [ "setTransform" ].concat( value ) ] );
+    },
+
+    _setClip : function( gc ) {
+      gc.draw( [ [ "save" ],
+                 [ "beginPath" ],
+                 [ "rect", 150, 160, 50, 50 ],
+                 [ "closePath" ],
+                 [ "clip" ] ] );
     }
 
   }
