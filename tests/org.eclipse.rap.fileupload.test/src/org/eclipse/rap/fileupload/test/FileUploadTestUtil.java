@@ -116,7 +116,7 @@ public final class FileUploadTestUtil {
   }
 
 
-  private static String createMultipartBody( String boundary, FileData... fileData ) {
+  public static String createMultipartBody( String boundary, FileData... fileData ) {
     StringBuffer buffer = new StringBuffer();
     String newline = "\r\n";
     for( int i = 0; i < fileData.length; i++ ) {

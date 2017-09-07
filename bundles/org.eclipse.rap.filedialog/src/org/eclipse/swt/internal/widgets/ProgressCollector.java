@@ -25,16 +25,22 @@ public class ProgressCollector extends Composite {
 
   private ProgressBar progressBar;
   private final List<String> completedFiles;
+  private final List<Exception> uploadExceptions;
 
   public ProgressCollector( Composite parent ) {
     super( parent, SWT.NONE );
     setLayout( createGridLayout( 2, 0, 5 ) );
     createChildren();
     completedFiles = new ArrayList<>();
+    uploadExceptions = new ArrayList<>();
   }
 
   public String[] getCompletedFileNames() {
     return completedFiles.toArray( new String[ 0 ] );
+  }
+
+  public List<Exception> getUploadExceptions() {
+    return new ArrayList<>(uploadExceptions);
   }
 
   private void createChildren() {
@@ -52,6 +58,12 @@ public class ProgressCollector extends Composite {
   void updateCompletedFiles( List<String> fileNames ) {
     if( !isDisposed() ) {
       completedFiles.addAll( fileNames );
+    }
+  }
+
+  void addException( Exception exception ) {
+    if( !isDisposed() ) {
+      uploadExceptions.add( exception );
     }
   }
 

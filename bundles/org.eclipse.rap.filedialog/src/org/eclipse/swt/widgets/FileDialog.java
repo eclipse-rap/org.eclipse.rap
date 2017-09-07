@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2016 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.rap.fileupload.DiskFileUploadReceiver;
 import org.eclipse.rap.fileupload.FileUploadHandler;
+import org.eclipse.rap.fileupload.UploadSizeLimitExceededException;
+import org.eclipse.rap.fileupload.UploadTimeLimitExceededException;
 import org.eclipse.rap.rwt.client.ClientFile;
 import org.eclipse.rap.rwt.dnd.ClientFileTransfer;
 import org.eclipse.rap.rwt.internal.RWTMessages;
@@ -94,6 +96,8 @@ public class FileDialog extends Dialog {
   private ProgressCollector progressCollector;
   private ClientFile[] clientFiles;
   private String[] filterExtensions;
+  private long sizeLimit = -1;
+  private long timeLimit = -1;
 
   /**
    * Constructs a new instance of this class given only its parent.
@@ -216,6 +220,70 @@ public class FileDialog extends Dialog {
    */
   public void setClientFiles( ClientFile[] files ) {
     clientFiles = files;
+  }
+
+  /**
+   * Sets the maximum upload size in bytes. If upload size is bigger it will be interrupted.
+   * A value of -1 indicates no limit.
+   *
+   * @param limit the maximum upload size in bytes
+   *
+   * @see UploadSizeLimitExceededException
+   *
+   * @rwtextension This method is not available in SWT.
+   * @since 3.3
+   */
+  public void setUploadSizeLimit( long limit ) {
+    sizeLimit = limit;
+  }
+
+  /**
+   * Returns the maximum upload size in bytes. The default value of -1 indicates no limit.
+   *
+   * @rwtextension This method is not available in SWT.
+   * @since 3.3
+   */
+  public long getUploadSizeLimit() {
+    return sizeLimit;
+  }
+
+  /**
+   * Sets the maximum upload duration in milliseconds. If upload takes longer it will be
+   * interrupted. The default value of -1 indicates no limit.
+   *
+   * @param limit the maximum upload duration in milliseconds
+   *
+   * @see UploadTimeLimitExceededException
+   *
+   * @rwtextension This method is not available in SWT.
+   * @since 3.3
+   */
+  public void setUploadTimeLimit( long limit ) {
+    timeLimit = limit;
+  }
+
+  /**
+   * Returns the maximum upload duration in milliseconds. The default value of -1 indicates no
+   * limit.
+   *
+   * @rwtextension This method is not available in SWT.
+   * @since 3.3
+   */
+  public long getUploadTimeLimit() {
+    return timeLimit;
+  }
+
+  /**
+   * Returns a list with exceptions thrown during the file upload. Will never return null.
+   *
+   * @see UploadSizeLimitExceededException
+   * @see UploadTimeLimitExceededException
+   *
+   * @rwtextension This method is not available in SWT.
+   * @since 3.3
+   */
+  public java.util.List<Exception> getExceptions() {
+    return progressCollector.getUploadExceptions();
   }
 
   /**
@@ -358,6 +426,8 @@ public class FileDialog extends Dialog {
     updateScrolledComposite();
     Uploader uploader = new UploaderService( files );
     FileUploadHandler handler = new FileUploadHandler( new DiskFileUploadReceiver() );
+    handler.setMaxFileSize( sizeLimit );
+    handler.setUploadTimeLimit( timeLimit );
     FileUploadRunnable uploadRunnable = new FileUploadRunnable( uploadPanel,
                                                                 progressCollector,
                                                                 uploader,
@@ -437,6 +507,8 @@ public class FileDialog extends Dialog {
     updateButtonsArea( fileUpload );
     Uploader uploader = new UploaderWidget( fileUpload );
     FileUploadHandler handler = new FileUploadHandler( new DiskFileUploadReceiver() );
+    handler.setMaxFileSize( sizeLimit );
+    handler.setUploadTimeLimit( timeLimit );
     FileUploadRunnable uploadRunnable = new FileUploadRunnable( uploadPanel,
                                                                 progressCollector,
                                                                 uploader,

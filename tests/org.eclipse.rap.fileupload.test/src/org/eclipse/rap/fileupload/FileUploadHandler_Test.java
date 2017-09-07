@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 EclipseSource and others.
+ * Copyright (c) 2011, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -213,6 +214,39 @@ public class FileUploadHandler_Test {
   }
 
   @Test
+  public void testUploadWithTimeLimit() throws IOException, ServletException {
+    TestFileUploadReceiver receiver = new TestFileUploadReceiver();
+    FileUploadHandler handler = new FileUploadHandler( receiver );
+    handler.setUploadTimeLimit( 5000 );
+    String content = "Lorem ipsum dolor sit amet.\n";
+
+    fakeUploadRequest( handler, content, "text/plain", "short.txt" );
+    serviceHandler.service( ContextProvider.getRequest(), ContextProvider.getResponse() );
+
+    assertEquals( 0, getResponseErrorStatus() );
+    assertEquals( content.length(), receiver.getTotal() );
+  }
+
+  @Test
+  public void testUploadWithExceedTimeLimit() throws IOException, ServletException {
+    TestFileUploadReceiver receiver = new TestFileUploadReceiver();
+    FileUploadHandler handler = new FileUploadHandler( receiver );
+    handler.setUploadTimeLimit( 10 );
+    simulateSlowUpload( handler, 100 );
+    StringBuffer buffer = new StringBuffer();
+    for( int i = 0; i < 1000; i++ ) {
+      buffer.append( "Lorem ipsum dolor sit amet.\n" );
+    }
+    String content = buffer.toString();
+
+    fakeUploadRequest( handler, content, "text/plain", "short.txt" );
+    serviceHandler.service( ContextProvider.getRequest(), ContextProvider.getResponse() );
+
+    assertEquals( HttpServletResponse.SC_REQUEST_TIMEOUT, getResponseErrorStatus() );
+    assertThat( getResponseContent(), containsString( "HTTP ERROR 408" ) );
+  }
+
+  @Test
   public void testUploadWithException() throws IOException, ServletException {
     FileUploadReceiver receiver = new FileUploadReceiver() {
       @Override
@@ -261,6 +295,24 @@ public class FileUploadHandler_Test {
   private static String getResponseContent() {
     TestResponse response = ( TestResponse )ContextProvider.getResponse();
     return response.getContent();
+  }
+
+  private static void simulateSlowUpload( FileUploadHandler handler, long delay ) {
+    handler.addUploadListener( new FileUploadListener() {
+      @Override
+      public void uploadProgress( FileUploadEvent event ) {
+        try {
+          Thread.sleep( delay );
+        } catch( @SuppressWarnings( "unused" ) InterruptedException exception ) {
+        }
+      }
+      @Override
+      public void uploadFinished( FileUploadEvent event ) {
+      }
+      @Override
+      public void uploadFailed( FileUploadEvent event ) {
+      }
+    } );
   }
 
 }

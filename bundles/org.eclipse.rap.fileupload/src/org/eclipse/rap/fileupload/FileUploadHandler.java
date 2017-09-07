@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ public class FileUploadHandler {
   private final FileUploadReceiver receiver;
   private final FileUploadListenerList listeners;
   private long maxFileSize = -1;
+  private long uploadTimeLimit = -1;
 
   /**
    * Constructs a file upload handler that is associated with the given receiver. The receiver is
@@ -114,10 +115,33 @@ public class FileUploadHandler {
   /**
    * Sets the maximum file size in bytes allowed to be uploaded for this handler. A value of -1
    * indicates no limit.
+   *
    * @see #getMaxFileSize
    */
   public void setMaxFileSize( long maxFileSize ) {
     this.maxFileSize = maxFileSize;
+  }
+
+  /**
+   * Returns the maximum upload duration. If upload takes longer than this it will be interrupted.
+   * The default value of -1, indicates no limit.
+   *
+   * @since 3.3
+   */
+  public long getUploadTimeLimit() {
+    return uploadTimeLimit;
+  }
+
+  /**
+   * Sets the maximum upload duration in milliseconds. If upload takes longer than this it will be
+   * interrupted. The default value of -1, indicates no limit.
+   *
+   * @see #getUploadTimeLimit
+   *
+   * @since 3.3
+   */
+  public void setUploadTimeLimit( long timeLimit ) {
+    uploadTimeLimit = timeLimit;
   }
 
   FileUploadListenerList getListeners() {

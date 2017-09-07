@@ -200,16 +200,25 @@ public class FileUploadRunnable_Test {
 
   @Test
   public void testHandleFailed_updatesIcons() {
-    runnable.handleFailed();
+    runnable.handleFailed(null);
 
     verify( uploadPanel ).updateIcons( State.FAILED );
   }
 
   @Test
   public void testHandleFailed_resetsToolTip() {
-    runnable.handleFailed();
+    runnable.handleFailed(null);
 
     verify( progressCollector ).resetToolTip();
+  }
+
+  @Test
+  public void testHandleFailed_addsExeption() {
+    Exception exception = new Exception();
+
+    runnable.handleFailed(exception);
+
+    verify( progressCollector ).addException( exception );
   }
 
   @Test

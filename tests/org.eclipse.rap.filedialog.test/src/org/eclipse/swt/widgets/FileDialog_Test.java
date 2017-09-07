@@ -313,6 +313,25 @@ public class FileDialog_Test {
   }
 
   @Test
+  public void testGetExceptions_emptyInitialy() {
+    assertEquals( 0, dialog.getExceptions().size() );
+  }
+
+  @Test
+  public void testSetUploadSizeLimit() {
+    dialog.setUploadSizeLimit( 1234 );
+
+    assertEquals( 1234, dialog.getUploadSizeLimit() );
+  }
+
+  @Test
+  public void testSetUploadTimeLimit() {
+    dialog.setUploadTimeLimit( 1234 );
+
+    assertEquals( 1234, dialog.getUploadTimeLimit() );
+  }
+
+  @Test
   public void testSetClientFiles() {
     ClientFile[] files = { mock( ClientFile.class ) };
 

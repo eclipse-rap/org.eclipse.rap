@@ -103,10 +103,13 @@ public class FileUploadRunnable implements Runnable {
     progressCollector.updateCompletedFiles( targetFileNames );
   }
 
-  void handleFailed() {
+  void handleFailed( Exception exception ) {
     state.set( State.FAILED );
     uploadPanel.updateIcons( State.FAILED );
     progressCollector.resetToolTip();
+    if( exception != null ) {
+      progressCollector.addException( exception );
+    }
   }
 
   State getState() {
@@ -162,11 +165,11 @@ public class FileUploadRunnable implements Runnable {
     }
 
     @Override
-    public void uploadFailed( FileUploadEvent event ) {
+    public void uploadFailed( final FileUploadEvent event ) {
       asyncExec( new Runnable() {
         @Override
         public void run() {
-          handleFailed();
+          handleFailed( event.getException() );
         }
       } );
       doNotify();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 EclipseSource and others.
+ * Copyright (c) 2011, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,21 +24,29 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.eclipse.rap.fileupload.FileDetails;
 import org.eclipse.rap.fileupload.FileUploadHandler;
 import org.eclipse.rap.fileupload.FileUploadReceiver;
+import org.eclipse.rap.fileupload.UploadSizeLimitExceededException;
+import org.eclipse.rap.fileupload.UploadTimeLimitExceededException;
 
 
 final class FileUploadProcessor {
 
   private final FileUploadHandler handler;
   private final FileUploadTracker tracker;
+  private String fileName;
+  private long deadline;
 
   FileUploadProcessor( FileUploadHandler handler ) {
     this.handler = handler;
     tracker = new FileUploadTracker( handler );
+    deadline = -1;
   }
 
   void handleFileUpload( HttpServletRequest request, HttpServletResponse response )
     throws IOException
   {
+    if( handler.getUploadTimeLimit() > 0 ) {
+      deadline = System.currentTimeMillis() + handler.getUploadTimeLimit();
+    }
     try {
       ServletFileUpload upload = createUpload();
       FileItemIterator iter = upload.getItemIterator( request );
@@ -59,13 +67,19 @@ final class FileUploadProcessor {
     } catch( Exception exception ) {
       Throwable cause = exception.getCause();
       if( cause instanceof FileSizeLimitExceededException ) {
-        exception = ( Exception )cause;
+        long sizeLimit = handler.getMaxFileSize();
+        exception = new UploadSizeLimitExceededException( sizeLimit, fileName );
+      } else if( cause instanceof UploadTimeLimitExceededException ) {
+        exception = ( UploadTimeLimitExceededException )cause;
       }
       tracker.setException( exception );
       tracker.handleFailed();
-      int errorCode = exception instanceof FileSizeLimitExceededException
-                    ? HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE
-                    : HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+      int errorCode = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+      if( exception instanceof UploadSizeLimitExceededException ) {
+        errorCode = HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE;
+      } else if( exception instanceof UploadTimeLimitExceededException ) {
+        errorCode = HttpServletResponse.SC_REQUEST_TIMEOUT;
+      }
       response.sendError( errorCode, exception.getMessage() );
     }
   }
@@ -86,6 +100,11 @@ final class FileUploadProcessor {
         // this listener may be notified for every network packet, so don't notify unless there
         // is an actual increase.
         if ( totalBytesRead > prevTotalBytesRead ) {
+          if( deadline > 0 && System.currentTimeMillis() > deadline ) {
+            long timeLimit = handler.getUploadTimeLimit();
+            Exception exception = new UploadTimeLimitExceededException( timeLimit, fileName );
+            throw new RuntimeException( exception );
+          }
           prevTotalBytesRead = totalBytesRead;
           tracker.setContentLength( contentLength );
           tracker.setBytesRead( totalBytesRead );
@@ -99,7 +118,7 @@ final class FileUploadProcessor {
   private void receive( FileItemStream item ) throws IOException {
     InputStream stream = item.openStream();
     try {
-      String fileName = stripFileName( item.getName() );
+      fileName = stripFileName( item.getName() );
       String contentType = item.getContentType();
       FileDetails details = new FileDetailsImpl( fileName, contentType );
       FileUploadReceiver receiver = handler.getReceiver();
