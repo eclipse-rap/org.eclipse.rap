@@ -2,13 +2,13 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: RAP E4 Demo
 Bundle-SymbolicName: org.eclipse.rap.e4.demo
-Bundle-Version: 3.3.0.qualifier
+Bundle-Version: 3.4.0.qualifier
 Bundle-Vendor: Eclipse.org - RAP
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ClassPath: .
-Require-Bundle: org.eclipse.rap.rwt;bundle-version="[3.3.0,4.0.0)",
- org.eclipse.rap.e4;bundle-version="[3.3.0,4.0.0)",
- org.eclipse.rap.jface;bundle-version="[3.3.0,4.0.0)",
+Require-Bundle: org.eclipse.rap.rwt;bundle-version="[3.4.0,4.0.0)",
+ org.eclipse.rap.e4;bundle-version="[3.4.0,4.0.0)",
+ org.eclipse.rap.jface;bundle-version="[3.4.0,4.0.0)",
  org.eclipse.equinox.common,
  org.eclipse.e4.core.di,
  org.eclipse.e4.core.di.extensions,

@@ -17,13 +17,13 @@
   <parent>
     <groupId>org.eclipse.rap</groupId>
     <artifactId>org.eclipse.rap.runtime-parent</artifactId>
-    <version>3.3.0-SNAPSHOT</version>
+    <version>3.4.0-SNAPSHOT</version>
     <relativePath>../../releng/org.eclipse.rap.build/pom.xml</relativePath>
   </parent>
 
   <artifactId>org.eclipse.rap.rwt.cluster.test</artifactId>
   <packaging>eclipse-plugin</packaging>
-  <version>3.3.0-SNAPSHOT</version>
+  <version>3.4.0-SNAPSHOT</version>
 
   <build>
     <plugins>

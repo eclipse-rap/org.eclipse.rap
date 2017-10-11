@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.rap.e4.examples.feature"
       label="RAP E4 Examples"
-      version="3.3.0.qualifier"
+      version="3.4.0.qualifier"
       provider-name="Eclipse.org - RAP"
       license-feature="org.eclipse.license"
       license-feature-version="0.0.0">
@@ -20,7 +20,7 @@
    </license>
 
    <requires>
-      <import feature="org.eclipse.rap.e4.feature" version="3.3.0" match="compatible"/>
+      <import feature="org.eclipse.rap.e4.feature" version="3.4.0" match="compatible"/>
    </requires>
 
    <plugin
