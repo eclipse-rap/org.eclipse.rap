@@ -307,7 +307,8 @@ public class FileDialog extends Dialog {
     checkOperationMode();
     prepareOpen();
     runEventLoop( shell );
-    return returnCode == SWT.OK ? getFileName() : null;
+    String fileName = getFileName();
+    return returnCode == SWT.CANCEL || "".equals( fileName ) ? null : fileName;
   }
 
   @Override
