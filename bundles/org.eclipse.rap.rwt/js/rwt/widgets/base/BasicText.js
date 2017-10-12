@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright: 2004, 2015 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright: 2004, 2017 1&1 Internet AG, Germany, http://www.1und1.de,
  *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -577,14 +577,30 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
       }
     },
 
-    _applyBrowserFixesOnCreate  : rwt.util.Variant.select( "qx.client", {
+    _applyBrowserFixesOnCreate : rwt.util.Variant.select( "qx.client", {
       "default" : function() {},
       "webkit|blink" : function() {
         this.addEventListener( "keydown", this._preventEnter, this );
         this.addEventListener( "keypress", this._preventEnter, this );
         this.addEventListener( "keyup", this._preventEnter, this );
+        this._applyIOSFixes();
       }
     } ),
+
+    _applyIOSFixes : function() {
+      if( rwt.client.Client.getPlatform() === "ios" ) {
+        var onfocus = rwt.util.Functions.bind( function() {
+          var control = rwt.remote.WidgetManager.getInstance().findControl( this );
+          control.getFocusRoot().setFocusedChild( control );
+        }, this );
+        this._inputElement.addEventListener( "focus", onfocus, false );
+        this.addEventListener( "dispose", function() {
+          if( this._inputElement != null ) {
+            this._inputElement.removeEventListener( "focus", onfocus, false );
+          }
+        } );
+      }
+    },
 
     _preventEnter : function( event ) {
       if( event.getKeyIdentifier() === "Enter" ) {
