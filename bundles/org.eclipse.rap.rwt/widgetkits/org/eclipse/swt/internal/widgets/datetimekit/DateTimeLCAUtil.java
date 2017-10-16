@@ -16,6 +16,7 @@ import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenDefaultSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
@@ -51,6 +52,7 @@ final class DateTimeLCAUtil {
   private static final String PROP_SUB_WIDGETS_BOUNDS = "subWidgetsBounds";
   private static final String PROP_MINIMUM = "minimum";
   private static final String PROP_MAXIMUM = "maximum";
+  private static final String PROP_DATE = "date";
 
   private DateTimeLCAUtil() {
     // prevent instantiation
@@ -102,6 +104,16 @@ final class DateTimeLCAUtil {
   static void renderDatePattern( DateTime dateTime ) {
     String datePattern = getDateTimeAdapter( dateTime ).getDatePattern();
     getRemoteObject( dateTime ).set( PROP_DATE_PATTERN, datePattern );
+  }
+
+  static void preserveDate( DateTime dateTime ) {
+    int[] date = { dateTime.getYear(), dateTime.getMonth(), dateTime.getDay() };
+    preserveProperty( dateTime, PROP_DATE, date );
+  }
+
+  static void renderDate( DateTime dateTime ) {
+    int[] date = { dateTime.getYear(), dateTime.getMonth(), dateTime.getDay() };
+    renderProperty( dateTime, PROP_DATE, date, new int[ 0 ] );
   }
 
   static void preserveMinMaxLimit( DateTime dateTime ) {

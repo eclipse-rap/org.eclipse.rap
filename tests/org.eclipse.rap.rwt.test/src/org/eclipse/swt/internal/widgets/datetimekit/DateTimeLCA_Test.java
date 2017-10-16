@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2017 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -315,25 +315,26 @@ public class DateTimeLCA_Test {
   }
 
   @Test
-  public void testRenderInitialYear() throws IOException {
+  public void testRenderInitialDate() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.DATE );
 
     lca.render( dateTime );
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
-    assertTrue( operation.getProperties().names().contains( "year" ) );
+    assertTrue( operation.getProperties().names().contains( "date" ) );
   }
 
   @Test
-  public void testRenderYear() throws IOException {
+  public void testRenderDate() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.DATE );
 
-    dateTime.setYear( 2000 );
+    dateTime.setDate( 1974, 5, 6 );
     lca.renderChanges( dateTime );
 
     TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( 2000, message.findSetProperty( dateTime, "year" ).asInt() );
+    JsonArray expected = new JsonArray().add( 1974 ).add( 5 ).add( 6 );
+    assertEquals( expected, message.findSetProperty( dateTime, "date" ).asArray() );
   }
 
   @Test
@@ -342,86 +343,12 @@ public class DateTimeLCA_Test {
     Fixture.markInitialized( display );
     Fixture.markInitialized( dateTime );
 
-    dateTime.setYear( 2000 );
+    dateTime.setDate( 1974, 5, 6 );
     Fixture.preserveWidgets();
     lca.renderChanges( dateTime );
 
     TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( dateTime, "year" ) );
-  }
-
-  @Test
-  public void testRenderInitialMonth() throws IOException {
-    DateTime dateTime = new DateTime( shell, SWT.DATE );
-
-    lca.render( dateTime );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    CreateOperation operation = message.findCreateOperation( dateTime );
-    assertTrue( operation.getProperties().names().contains( "month" ) );
-  }
-
-  @Test
-  public void testRenderMonth() throws IOException {
-    DateTime dateTime = new DateTime( shell, SWT.DATE );
-
-    // Note: we have to use a month with 31 days, otherwise it is rejected on a 31th
-    dateTime.setMonth( 2 ); // 2 == March!
-    lca.renderChanges( dateTime );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( 2, message.findSetProperty( dateTime, "month" ).asInt() );
-  }
-
-  @Test
-  public void testRenderMonthUnchanged() throws IOException {
-    DateTime dateTime = new DateTime( shell, SWT.DATE );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( dateTime );
-
-    // Note: we have to use a month with 31 days, otherwise it is rejected on a 31th
-    dateTime.setMonth( 2 );
-    Fixture.preserveWidgets();
-    lca.renderChanges( dateTime );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( dateTime, "month" ) );
-  }
-
-  @Test
-  public void testRenderInitialDay() throws IOException {
-    DateTime dateTime = new DateTime( shell, SWT.DATE );
-
-    lca.render( dateTime );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    CreateOperation operation = message.findCreateOperation( dateTime );
-    assertTrue( operation.getProperties().names().contains( "day" ) );
-  }
-
-  @Test
-  public void testRenderDay() throws IOException {
-    DateTime dateTime = new DateTime( shell, SWT.DATE );
-
-    dateTime.setDay( 3 );
-    lca.renderChanges( dateTime );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( 3, message.findSetProperty( dateTime, "day" ).asInt() );
-  }
-
-  @Test
-  public void testRenderDayUnchanged() throws IOException {
-    DateTime dateTime = new DateTime( shell, SWT.DATE );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( dateTime );
-
-    dateTime.setDay( 3 );
-    Fixture.preserveWidgets();
-    lca.renderChanges( dateTime );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( dateTime, "day" ) );
+    assertNull( message.findSetOperation( dateTime, "date" ) );
   }
 
   @Test
@@ -707,25 +634,26 @@ public class DateTimeLCA_Test {
   }
 
   @Test
-  public void testRenderInitialYear_Calendar() throws IOException {
+  public void testRenderInitialDate_Calendar() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.CALENDAR );
 
     lca.render( dateTime );
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
-    assertTrue( operation.getProperties().names().contains( "year" ) );
+    assertTrue( operation.getProperties().names().contains( "date" ) );
   }
 
   @Test
   public void testRenderYear_Calendar() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.CALENDAR );
 
-    dateTime.setYear( 2000 );
+    dateTime.setDate( 1974, 5, 6 );
     lca.renderChanges( dateTime );
 
     TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( 2000, message.findSetProperty( dateTime, "year" ).asInt() );
+    JsonArray expected = new JsonArray().add( 1974 ).add( 5 ).add( 6 );
+    assertEquals( expected, message.findSetProperty( dateTime, "date" ).asArray() );
   }
 
   @Test
@@ -734,86 +662,12 @@ public class DateTimeLCA_Test {
     Fixture.markInitialized( display );
     Fixture.markInitialized( dateTime );
 
-    dateTime.setYear( 2000 );
+    dateTime.setDate( 1974, 5, 6 );
     Fixture.preserveWidgets();
     lca.renderChanges( dateTime );
 
     TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( dateTime, "year" ) );
-  }
-
-  @Test
-  public void testRenderInitialMonth_Calendar() throws IOException {
-    DateTime dateTime = new DateTime( shell, SWT.CALENDAR );
-
-    lca.render( dateTime );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    CreateOperation operation = message.findCreateOperation( dateTime );
-    assertTrue( operation.getProperties().names().contains( "month" ) );
-  }
-
-  @Test
-  public void testRenderMonth_Calendar() throws IOException {
-    DateTime dateTime = new DateTime( shell, SWT.CALENDAR );
-
-    // Note: we have to use a month with 31 days, otherwise it is rejected on a 31th
-    dateTime.setMonth( 2 ); // 2 == March!
-    lca.renderChanges( dateTime );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( 2, message.findSetProperty( dateTime, "month" ).asInt() );
-  }
-
-  @Test
-  public void testRenderMonthUnchanged_Calendar() throws IOException {
-    DateTime dateTime = new DateTime( shell, SWT.CALENDAR );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( dateTime );
-
-    // Note: we have to use a month with 31 days, otherwise it is rejected on a 31th
-    dateTime.setMonth( 2 ); // 2 == March!
-    Fixture.preserveWidgets();
-    lca.renderChanges( dateTime );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( dateTime, "month" ) );
-  }
-
-  @Test
-  public void testRenderInitialDay_Calendar() throws IOException {
-    DateTime dateTime = new DateTime( shell, SWT.CALENDAR );
-
-    lca.render( dateTime );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    CreateOperation operation = message.findCreateOperation( dateTime );
-    assertTrue( operation.getProperties().names().contains( "day" ) );
-  }
-
-  @Test
-  public void testRenderDay_Calendar() throws IOException {
-    DateTime dateTime = new DateTime( shell, SWT.CALENDAR );
-
-    dateTime.setDay( 3 );
-    lca.renderChanges( dateTime );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( 3, message.findSetProperty( dateTime, "day" ).asInt() );
-  }
-
-  @Test
-  public void testRenderDayUnchanged_Calendar() throws IOException {
-    DateTime dateTime = new DateTime( shell, SWT.CALENDAR );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( dateTime );
-
-    dateTime.setDay( 3 );
-    Fixture.preserveWidgets();
-    lca.renderChanges( dateTime );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( dateTime, "day" ) );
+    assertNull( message.findSetOperation( dateTime, "date" ) );
   }
 
 }

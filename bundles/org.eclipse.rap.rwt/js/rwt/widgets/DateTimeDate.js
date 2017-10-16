@@ -668,6 +668,10 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
       rwt.remote.EventUtil.notifySelected( this );
     },
 
+    setDate : function( year, month, day ) {
+      this._setDate( new Date( year, month, day ) );
+    },
+
     setMonth : function( value ) {
       this._monthInt = value + 1;
       if( this._medium ) {

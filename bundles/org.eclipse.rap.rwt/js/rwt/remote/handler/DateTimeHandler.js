@@ -54,9 +54,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.DateTime", {
   getDestroyableChildren : rwt.remote.HandlerUtil.getDestroyableChildrenFinder(),
 
   properties : rwt.remote.HandlerUtil.extendControlProperties( [
-    "year",
-    "month",
-    "day",
+    "date",
     "hours",
     "minutes",
     "seconds",
@@ -66,6 +64,9 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.DateTime", {
   ] ),
 
   propertyHandler : rwt.remote.HandlerUtil.extendControlPropertyHandler( {
+    "date" : function( widget, value ) {
+      widget.setDate.apply( widget, value );
+    },
     "subWidgetsBounds" : function( widget, value ) {
       for( var i = 0; i < value.length; i++ ) {
         widget.setBounds.apply( widget, value[ i ] );

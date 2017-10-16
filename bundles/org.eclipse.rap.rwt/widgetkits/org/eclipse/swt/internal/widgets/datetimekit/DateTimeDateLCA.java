@@ -11,12 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.datetimekit;
 
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
-
 import java.io.IOException;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.IDateTimeAdapter;
 import org.eclipse.swt.internal.widgets.datetimekit.DateTimeLCAUtil.SubWidgetBounds;
 import org.eclipse.swt.widgets.DateTime;
@@ -26,15 +22,9 @@ final class DateTimeDateLCA extends AbstractDateTimeLCADelegate {
 
   static final DateTimeDateLCA INSTANCE = new DateTimeDateLCA();
 
-  private static final String PROP_YEAR = "year";
-  private static final String PROP_MONTH = "month";
-  private static final String PROP_DAY = "day";
-
   @Override
   void preserveValues( DateTime dateTime ) {
-    preserveProperty( dateTime, PROP_YEAR, dateTime.getYear() );
-    preserveProperty( dateTime, PROP_MONTH, dateTime.getMonth() );
-    preserveProperty( dateTime, PROP_DAY, dateTime.getDay() );
+    DateTimeLCAUtil.preserveDate( dateTime );
     DateTimeLCAUtil.preserveSubWidgetsBounds( dateTime, getSubWidgetsBounds( dateTime ) );
     DateTimeLCAUtil.preserveMinMaxLimit( dateTime );
   }
@@ -53,9 +43,7 @@ final class DateTimeDateLCA extends AbstractDateTimeLCADelegate {
   @Override
   void renderChanges( DateTime dateTime ) throws IOException {
     DateTimeLCAUtil.renderChanges( dateTime );
-    renderProperty( dateTime, PROP_YEAR, dateTime.getYear(), SWT.DEFAULT );
-    renderProperty( dateTime, PROP_MONTH, dateTime.getMonth(), SWT.DEFAULT );
-    renderProperty( dateTime, PROP_DAY, dateTime.getDay(), SWT.DEFAULT );
+    DateTimeLCAUtil.renderDate( dateTime );
     DateTimeLCAUtil.renderSubWidgetsBounds( dateTime, getSubWidgetsBounds( dateTime ) );
     DateTimeLCAUtil.renderMinMaxLimit( dateTime );
   }

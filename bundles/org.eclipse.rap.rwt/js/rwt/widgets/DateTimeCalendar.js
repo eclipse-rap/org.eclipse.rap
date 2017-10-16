@@ -91,6 +91,10 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeCalendar", {
       rwt.remote.EventUtil.notifyDefaultSelected( this );
     },
 
+    setDate : function( year, month, day ) {
+      this._calendar.setDate( new Date( year, month, day ) );
+    },
+
     setMonth : function( value ) {
       var date = this._calendar.getDate();
       date.setMonth( value );
