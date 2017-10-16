@@ -30,17 +30,17 @@ public class FormsResources {
 
 	public static Cursor getBusyCursor() {
 		if (busyCursor==null)
-			busyCursor = new Cursor(Display.getCurrent(), SWT.CURSOR_WAIT);
+			busyCursor = Display.getCurrent().getSystemCursor(SWT.CURSOR_WAIT);
 		return busyCursor;
 	}
 	public static Cursor getHandCursor() {
 		if (handCursor==null)
-			handCursor = new Cursor(Display.getCurrent(), SWT.CURSOR_HAND);
+			handCursor = Display.getCurrent().getSystemCursor(SWT.CURSOR_HAND);
 		return handCursor;
 	}
 	public static Cursor getTextCursor() {
 		if (textCursor==null)
-			textCursor = new Cursor(Display.getCurrent(), SWT.CURSOR_IBEAM);
+			textCursor = Display.getCurrent().getSystemCursor(SWT.CURSOR_IBEAM);
 		return textCursor;
 	}
 
