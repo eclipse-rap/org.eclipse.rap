@@ -279,7 +279,7 @@ rwt.qx.Class.define( "rwt.remote.Connection", {
     } ),
 
     _isJsonResponse : function( event ) {
-      var contentType = event.responseHeaders[ "Content-Type" ];
+      var contentType = event.responseHeaders[ "content-type" ];
       return contentType.indexOf( "application/json" ) !== -1;
     },
 
