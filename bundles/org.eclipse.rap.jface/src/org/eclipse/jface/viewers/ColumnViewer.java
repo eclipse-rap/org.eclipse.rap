@@ -406,9 +406,9 @@ public abstract class ColumnViewer extends StructuredViewer {
 	/**
 	 * Apply the value of the active cell editor if one is active.
 	 *
-	 * @since 1.2
+	 * @since 3.4 (public - protected since 1.2)
 	 */
-	protected void applyEditorValue() {
+	public void applyEditorValue() {
 		if (viewerEditor != null) {
 			viewerEditor.applyEditorValue();
 		}
