@@ -2299,6 +2299,20 @@ public class Grid extends Composite {
     return autoHeight;
   }
 
+  /**
+   * Recalculate the height of the header
+   *
+   * @since 3.4
+   */
+  public void recalculateHeader() {
+    int previous = getHeaderHeight();
+    layoutCache.headerHeight = computeHeaderHeight();
+    if( previous != layoutCache.headerHeight ) {
+      scrollValuesObsolete = true;
+      scheduleRedraw();
+    }
+  }
+
   @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
