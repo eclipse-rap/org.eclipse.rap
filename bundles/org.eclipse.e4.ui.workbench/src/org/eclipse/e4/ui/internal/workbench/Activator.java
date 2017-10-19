@@ -20,7 +20,6 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.log.LogService;
 import org.osgi.util.tracker.BundleTracker;
 import org.osgi.util.tracker.ServiceTracker;
@@ -169,48 +168,14 @@ public class Activator implements BundleActivator {
 			logService = logTracker.getService();
 		} else {
 			if (context != null) {
-				logTracker = new ServiceTracker<LogService, LogService>(context,
+				logTracker = new ServiceTracker<>(context,
 						LogService.class.getName(), null);
 				logTracker.open();
 				logService = logTracker.getService();
 			}
 		}
 		if (logService == null) {
-			logService = new LogService() {
-				@Override
-				public void log(int level, String message) {
-					log(null, level, message, null);
-				}
-
-				@Override
-				public void log(int level, String message, Throwable exception) {
-					log(null, level, message, exception);
-				}
-
-				@Override
-				public void log(ServiceReference sr, int level, String message) {
-					log(sr, level, message, null);
-				}
-
-				@Override
-				public void log(ServiceReference sr, int level, String message, Throwable exception) {
-					if (level == LogService.LOG_ERROR) {
-						System.err.print("ERROR: "); //$NON-NLS-1$
-					} else if (level == LogService.LOG_WARNING) {
-						System.err.print("WARNING: "); //$NON-NLS-1$
-					} else if (level == LogService.LOG_INFO) {
-						System.err.print("INFO: "); //$NON-NLS-1$
-					} else if (level == LogService.LOG_DEBUG) {
-						System.err.print("DEBUG: "); //$NON-NLS-1$
-					} else {
-						System.err.print("log level " + level + ": "); //$NON-NLS-1$ //$NON-NLS-2$
-					}
-					System.err.println(message);
-					if (exception != null) {
-						exception.printStackTrace(System.err);
-					}
-				}
-			};
+			throw new IllegalStateException("No LogService is available."); //$NON-NLS-1$
 		}
 		return logService;
 	}
