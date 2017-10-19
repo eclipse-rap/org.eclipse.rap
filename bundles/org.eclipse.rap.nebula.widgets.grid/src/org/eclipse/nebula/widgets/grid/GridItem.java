@@ -1242,6 +1242,7 @@ public class GridItem extends Item {
   public void setColumnSpan( int index, int span ) {
     checkWidget();
     getCellData( index ).columnSpan = span;
+    parent.setHasSpanning( true );
   }
 
   /**

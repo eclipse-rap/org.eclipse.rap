@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2016 EclipseSource and others.
+ * Copyright (c) 2012, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -103,6 +103,7 @@ public class Grid extends Composite {
   private boolean bottomIndexShownCompletely;
   private final IGridAdapter gridAdapter;
   boolean hasDifferingHeights;
+  private boolean hasSpanning;
   LayoutCache layoutCache;
 
   /**
@@ -635,6 +636,66 @@ public class Grid extends Composite {
       SWT.error( SWT.ERROR_INVALID_RANGE );
     }
     return columns.get( index );
+  }
+
+  /**
+   * Returns the column at the given point in the receiver or null if no such
+   * column exists. The point is in the coordinate system of the receiver.
+   *
+   * @param point the point used to locate the column
+   * @return the column at the given point
+   * @throws IllegalArgumentException
+   * <ul>
+   * <li>ERROR_NULL_ARGUMENT - if the point is null</li>
+   * </ul>
+   * @throws org.eclipse.swt.SWTException
+   * <ul>
+   * <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   * <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that
+   * created the receiver</li>
+   * </ul>
+   */
+  public GridColumn getColumn( Point point ) {
+    checkWidget();
+    if( point == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    GridColumn overThis = null;
+    int x2 = 0;
+    x2 -= hScroll.getSelection();
+    for( GridColumn column : displayOrderedColumns ) {
+      if( !column.isVisible() ) {
+        continue;
+      }
+      if( point.x >= x2 && point.x < x2 + column.getWidth() ) {
+        overThis = column;
+        break;
+      }
+      x2 += column.getWidth();
+    }
+    if( overThis == null ) {
+      return null;
+    }
+    if( hasSpanning ) {
+      // special logic for column spanning
+      GridItem item = getItem( point );
+      if( item != null ) {
+        int displayColIndex = displayOrderedColumns.indexOf( overThis );
+        // track back all previous columns and check their spanning
+        for( int i = 0; i < displayColIndex; i++ ) {
+          if( !displayOrderedColumns.get( i ).isVisible() ) {
+            continue;
+          }
+          int colIndex = indexOf( displayOrderedColumns.get( i ) );
+          int span = item.getColumnSpan( colIndex );
+          if( i + span >= displayColIndex ) {
+            overThis = displayOrderedColumns.get( i );
+            break;
+          }
+        }
+      }
+    }
+    return overThis;
   }
 
   /**
@@ -3081,6 +3142,10 @@ public class Grid extends Composite {
 
   void invalidateScrollBars() {
     scrollValuesObsolete = true;
+  }
+
+  void setHasSpanning( boolean hasSpanning ) {
+    this.hasSpanning = hasSpanning;
   }
 
   ////////////////

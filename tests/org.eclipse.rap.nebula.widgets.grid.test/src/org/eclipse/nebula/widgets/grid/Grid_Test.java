@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2016 EclipseSource and others.
+ * Copyright (c) 2012, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -307,6 +307,30 @@ public class Grid_Test {
     createGridColumns( grid, 3, SWT.NONE );
 
     grid.getColumn( 10 );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testGetColumnByPoint_NullArgument() {
+    createGridColumns( grid, 5, SWT.NONE );
+
+    grid.getColumn( null );
+  }
+
+  @Test
+  public void testGetColumnByPoint() {
+    GridColumn[] columns = createGridColumns( grid, 5, SWT.NONE );
+
+    assertSame( columns[ 1 ], grid.getColumn( new Point( 30, 10 ) ) );
+    assertSame( columns[ 4 ], grid.getColumn( new Point( 240, 10 ) ) );
+  }
+
+  @Test
+  public void testGetColumnByPoint_WithSpanning() {
+    GridColumn[] columns = createGridColumns( grid, 5, SWT.NONE );
+    GridItem[] items = createGridItems( grid, 3, 0 );
+    items[ 0 ].setColumnSpan( 1, 1 );
+
+    assertSame( columns[ 1 ], grid.getColumn( new Point( 100, 10 ) ) );
   }
 
   @Test
