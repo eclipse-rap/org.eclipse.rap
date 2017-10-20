@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 EclipseSource and others.
+ * Copyright (c) 2012, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.nebula.widgets.grid.internal.gridcolumnkit;
 
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
@@ -19,6 +20,7 @@ import static org.eclipse.rap.rwt.remote.JsonMapping.toJson;
 
 import java.io.IOException;
 
+import org.eclipse.nebula.widgets.grid.Grid;
 import org.eclipse.nebula.widgets.grid.GridColumn;
 import org.eclipse.nebula.widgets.grid.GridColumnGroup;
 import org.eclipse.nebula.widgets.grid.internal.IGridAdapter;
@@ -26,6 +28,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
+import org.eclipse.rap.rwt.theme.ControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
@@ -116,9 +119,10 @@ public class GridColumnLCA extends WidgetLCA<GridColumn> {
   // Helping methods to render widget properties
 
   private static void renderFont( GridColumn column, String property, Font newValue ) {
-    if( WidgetLCAUtil.hasChanged( column, property, newValue, column.getParent().getFont() ) ) {
-      RemoteObject remoteObject = getRemoteObject( column );
-      remoteObject.set( property, toJson( newValue ) );
+    Grid grid = column.getParent();
+    Font defaultFont = grid.getAdapter( ControlThemeAdapter.class ).getFont( grid );
+    if( hasChanged( column, property, newValue, defaultFont ) ) {
+      getRemoteObject( column ).set( property, toJson( newValue ) );
     }
   }
 

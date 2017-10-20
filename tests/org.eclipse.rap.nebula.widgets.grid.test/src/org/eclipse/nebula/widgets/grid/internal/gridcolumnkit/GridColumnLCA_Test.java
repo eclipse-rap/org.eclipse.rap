@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 EclipseSource and others.
+ * Copyright (c) 2012, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -640,6 +640,17 @@ public class GridColumnLCA_Test {
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( column );
     assertTrue( operation.getProperties().names().indexOf( "font" ) == -1 );
+  }
+
+  @Test
+  public void testRenderParentFont() throws IOException {
+    grid.setFont( new Font( display, "Arial", 20, SWT.BOLD ) );
+
+    lca.render( column );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    JsonValue actual = message.findCreateProperty( column, "font" );
+    assertEquals( JsonArray.readFrom( "[[\"Arial\"], 20, true, false]" ), actual );
   }
 
   @Test
