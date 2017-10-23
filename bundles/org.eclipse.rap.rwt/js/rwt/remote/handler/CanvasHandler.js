@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 EclipseSource and others.
+ * Copyright (c) 2011, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -67,12 +67,14 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Canvas", {
       var height = this.getInnerHeight();
       var fillStyle = this.getBackgroundColor();
       var strokeStyle = this.getTextColor();
-      var font = [[]];
+      var font = null;
       if( this.getFont() ) {
-        font[ 0 ] = this.getFont().getFamily();
-        font[ 1 ] = this.getFont().getSize();
-        font[ 2 ] = this.getFont().getBold();
-        font[ 3 ] = this.getFont().getItalic();
+        font = [
+          this.getFont().getFamily(),
+          this.getFont().getSize(),
+          this.getFont().getBold(),
+          this.getFont().getItalic()
+        ];
       }
       gc.init(
         0,

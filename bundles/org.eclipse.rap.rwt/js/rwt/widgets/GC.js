@@ -294,6 +294,9 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
     },
 
     _toCssFont : function( fontArray ) {
+      if( fontArray === null ) {
+        return "";
+      }
       return rwt.html.Font.fromArray( fontArray ).toCss();
     }
 
