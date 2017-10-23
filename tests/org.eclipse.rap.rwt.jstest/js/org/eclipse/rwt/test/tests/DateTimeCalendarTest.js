@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2015 EclipseSource and others.
+ * Copyright (c) 2010, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -67,23 +67,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
       widget.destroy();
     },
 
-    testSetYearByProtocol : function() {
+    testSetDateByProtocol : function() {
       var widget = this._createDefaultDateTimeByProtocol( "w3", "w2" );
-      TestUtil.protocolSet( "w3", { "year" : 2000 } );
+      TestUtil.protocolSet( "w3", { "date" : [ 2000, 6, 10 ] } );
       assertEquals( 2000, widget._calendar.getDate().getFullYear() );
-      widget.destroy();
-    },
-
-    testSetMonthByProtocol : function() {
-      var widget = this._createDefaultDateTimeByProtocol( "w3", "w2" );
-      TestUtil.protocolSet( "w3", { "month" : 6 } );
       assertEquals( 6, widget._calendar.getDate().getMonth() );
-      widget.destroy();
-    },
-
-    testSetDayByProtocol : function() {
-      var widget = this._createDefaultDateTimeByProtocol( "w3", "w2" );
-      TestUtil.protocolSet( "w3", { "day" : 10 } );
       assertEquals( 10, widget._calendar.getDate().getDate() );
       widget.destroy();
     },
