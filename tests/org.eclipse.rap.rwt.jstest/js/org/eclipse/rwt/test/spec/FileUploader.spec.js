@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 EclipseSource and others.
+ * Copyright (c) 2014, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -67,7 +67,10 @@ describe( "FileUploader", function() {
           fileUploader.addFile( files[ 1 ] )
         ];
         formDataMock = mock( FormData );
-        xhrMock = mock( XMLHttpRequest );
+        xhrMock = {
+          open : jasmine.createSpy(),
+          send : jasmine.createSpy()
+        };
         spyOn( rwt.client.FileUploader, "createFormData" ).andReturn( formDataMock );
         spyOn( rwt.remote.Request, "createXHR" ).andReturn( xhrMock );
       } );
@@ -81,8 +84,8 @@ describe( "FileUploader", function() {
       it( "adds files to FormData", function() {
         fileUploader.submit( { "fileIds" : fileIds, "url" : "http://www.foo.bar/" } );
 
-        expect( formDataMock.append ).toHaveBeenCalledWith( "file1.txt", same( files[ 0 ] ) );
-        expect( formDataMock.append ).toHaveBeenCalledWith( "file2.txt", same( files[ 1 ] ) );
+        expect( formDataMock.append ).toHaveBeenCalledWith( "file", same( files[ 0 ] ) );
+        expect( formDataMock.append ).toHaveBeenCalledWith( "file", same( files[ 1 ] ) );
       } );
 
       it( "sends the Request", function() {

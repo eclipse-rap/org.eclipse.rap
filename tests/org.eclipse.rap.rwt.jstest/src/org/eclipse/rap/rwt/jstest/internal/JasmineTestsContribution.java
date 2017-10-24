@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2015 EclipseSource and others.
+ * Copyright (c) 2014, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,12 +51,15 @@ public class JasmineTestsContribution implements TestContribution {
     "spec/ScrollBarsActivator.spec.js",
     "spec/System.spec.js",
     "spec/MultiCellWidget.spec.js",
+    "spec/FileUploader.spec.js"
   };
 
+  @Override
   public String getName() {
     return "jasmine-tests";
   }
 
+  @Override
   public String[] getResources() {
     String[] result = new String[ TEST_FILES.length ];
     for( int i = 0; i < TEST_FILES.length; i++ ) {
@@ -65,6 +68,7 @@ public class JasmineTestsContribution implements TestContribution {
     return result;
   }
 
+  @Override
   public InputStream getResourceAsStream( String resource ) throws IOException {
     return JasmineTestsContribution.class.getResourceAsStream( resource );
   }
