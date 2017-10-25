@@ -23,7 +23,7 @@
 
   <artifactId>org.eclipse.rap.equinox.target.feature</artifactId>
   <packaging>eclipse-feature</packaging>
-  <version>3.3.0-SNAPSHOT</version>
+  <version>3.3.1-SNAPSHOT</version>
 
   <repositories>
     <repository>

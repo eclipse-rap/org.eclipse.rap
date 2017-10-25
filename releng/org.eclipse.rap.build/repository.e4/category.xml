@@ -11,7 +11,7 @@
 -->
 <site>
    <stats location="http://download.eclipse.org/stats/rt/rap">
-      <feature url="features/org.eclipse.rap.e4.equinox.target.feature_3.3.0.qualifier.jar" id="org.eclipse.rap.e4.equinox.target.feature" version="3.3.0.qualifier"/>
+      <feature url="features/org.eclipse.rap.e4.equinox.target.feature_3.3.1.qualifier.jar" id="org.eclipse.rap.e4.equinox.target.feature" version="3.3.0.qualifier"/>
       <feature url="features/org.eclipse.rap.e4.examples.feature_3.3.0.qualifier.jar" id="org.eclipse.rap.e4.examples.feature" version="3.3.0.qualifier"/>
       <feature url="features/org.eclipse.rap.e4.feature_3.3.0.qualifier.jar" id="org.eclipse.rap.e4.feature" version="3.3.0.qualifier"/>
       <feature url="features/org.eclipse.rap.e4.sdk.feature_3.3.0.qualifier.jar" id="org.eclipse.rap.e4.sdk.feature" version="3.3.0.qualifier"/>
@@ -38,7 +38,7 @@
 
   <feature url="http://eclipse.org/rap"
       id="org.eclipse.rap.e4.equinox.target.feature"
-      version="3.3.0.qualifier">
+      version="3.3.1.qualifier">
     <category name="org.eclipse.rap.e4.category"/>
   </feature>
 
