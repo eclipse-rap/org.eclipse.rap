@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2017 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -83,7 +83,11 @@ var appearances = {
         height : "auto",
         marginTop : 3,
         marginBottom : 2,
-        padding : tv.getCssBoxDimensions( "MenuItem", "padding" )
+        padding : tv.getCssBoxDimensions( "MenuItem", "padding" ),
+        backgroundImage : tv.getCssImage( "MenuItem", "background-image" ),
+        backgroundGradient : tv.getCssGradient( "MenuItem", "background-image" ),
+        backgroundColor : tv.getCssColor( "MenuItem", "background-color" ),
+        opacity : tv.getCssFloat( "MenuItem", "opacity" )
       };
     }
   },
