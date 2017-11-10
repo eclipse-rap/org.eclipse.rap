@@ -13,13 +13,11 @@ package org.eclipse.rap.e4;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import org.eclipse.e4.core.contexts.ContextInjectionFactory;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.ui.internal.workbench.E4Workbench;
 import org.eclipse.e4.ui.internal.workbench.swt.E4Application;
 import org.eclipse.e4.ui.workbench.IWorkbench;
-import org.eclipse.e4.ui.workbench.lifecycle.PreSave;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.rap.rwt.application.EntryPoint;
@@ -30,10 +28,6 @@ import org.eclipse.swt.widgets.Shell;
 
 @SuppressWarnings("restriction")
 public class E4EntryPointFactory implements EntryPointFactory {
-
-	private static final String PLUGIN_ID = "org.eclipse.e4.ui.workbench.rap";
-
-	private String productName;
 
 	private E4ApplicationConfig config;
 
@@ -156,7 +150,7 @@ public class E4EntryPointFactory implements EntryPointFactory {
 			@Override
 			public Map getArguments() {
 				Map<Object, Object> rv = new HashMap<Object, Object>();
-				rv.put(IApplicationContext.APPLICATION_ARGS, new String[0]);
+				rv.put(IApplicationContext.APPLICATION_ARGS, Platform.getApplicationArgs());
 				return rv;
 			}
 
