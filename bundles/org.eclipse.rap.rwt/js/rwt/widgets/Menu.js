@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2015 EclipseSource and others.
+ * Copyright (c) 2009, 2017 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -90,11 +90,15 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
         case "rwt.widgets.base.GridRowContainer":
         case "rwt.widgets.ListItem":
         case "rwt.widgets.base.BasicText":
-        case "qx.ui.form.TextArea":
           // NOTE: "enabled" can be "inherit", so it is not always a boolean
           if( target.getEnabled() !== false ) {
             if( rwt.widgets.Menu._hasNativeMenu( domTarget ) ) {
-              result = target.getContextMenu() == null;
+              var control = rwt.widgets.util.WidgetUtil.getControl( target );
+              if( control !== null ) {
+                result = control.getContextMenu() == null;
+              } else {
+                result = target.getContextMenu() == null;
+              }
             }
           }
         break;
