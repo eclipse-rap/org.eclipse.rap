@@ -27,6 +27,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
       var adapter = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Display" );
       rwt.remote.ObjectRegistry.add( "w1", display, adapter );
       display.setHasResizeListener( false );
+      display._attachListener();
     },
 
     testSetFocusControlByProtocol : function() {
@@ -122,7 +123,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
     },
 
     testSendCursorLocation : function() {
-      display._attachListener();
       TestUtil.clickDOM( document.body, 10, 20 );
       rwt.remote.Connection.getInstance().send();
 

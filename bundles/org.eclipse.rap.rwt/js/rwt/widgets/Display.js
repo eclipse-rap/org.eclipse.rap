@@ -13,9 +13,10 @@ namespace( "rwt.widgets" );
 
 rwt.widgets.Display = function() {
   this._document = rwt.widgets.base.ClientDocument.getInstance();
-  this._server = rwt.remote.Connection.getInstance();
+  this._connection = rwt.remote.Connection.getInstance();
   this._exitConfirmation = null;
   this._hasResizeListener = false;
+  this._sendResizeDelayed = false;
   this._initialized = false;
   if( rwt.widgets.Display._current !== undefined ) {
     throw new Error( "Display can not be created twice" );
@@ -51,7 +52,7 @@ rwt.widgets.Display.prototype = {
     this._appendTimezoneOffset();
     this._appendStartupParameters();
     this._attachListener();
-    this._server.send();
+    this._connection.send();
     this._initialized = true;
   },
 
@@ -130,7 +131,7 @@ rwt.widgets.Display.prototype = {
   _attachListener : function() {
     this._document.addEventListener( "windowresize", this._onResize, this );
     this._document.addEventListener( "keypress", this._onKeyPress, this );
-    this._server.addEventListener( "send", this._onSend, this );
+    this._connection.addEventListener( "send", this._onSend, this );
     rwt.remote.KeyEventSupport.getInstance(); // adds global KeyListener
     rwt.runtime.System.getInstance().addEventListener( "beforeunload", this._onBeforeUnload, this );
     rwt.runtime.System.getInstance().addEventListener( "unload", this._onUnload, this );
@@ -138,8 +139,9 @@ rwt.widgets.Display.prototype = {
 
   _onResize : function() {
     this._appendWindowSize();
-    if( this._hasResizeListener ) {
-      rwt.remote.Connection.getInstance().getRemoteObject( this ).notify( "Resize", null, 500 );
+    if( this._hasResizeListener && !this._sendResizeDelayed ) {
+      this._sendResizeDelayed = true;
+      this._connection.sendDelayed( 500 );
     }
   },
 
@@ -154,7 +156,16 @@ rwt.widgets.Display.prototype = {
     var pageX = rwt.event.MouseEvent.getPageX();
     var pageY = rwt.event.MouseEvent.getPageY();
     var location = [ Math.round( pageX ), Math.round( pageY ) ];
-    rwt.remote.Connection.getInstance().getRemoteObject( this ).set( "cursorLocation", location );
+    var remoteObject = this._connection.getRemoteObject( this );
+    remoteObject.set( "cursorLocation", location );
+    if( this._bounds ) {
+      remoteObject.set( "bounds", this._bounds );
+      delete this._bounds;
+    }
+    if( this._sendResizeDelayed ) {
+      this._sendResizeDelayed = false;
+      remoteObject.notify( "Resize" );
+    }
   },
 
   _onBeforeUnload : function( event ) {
@@ -167,7 +178,7 @@ rwt.widgets.Display.prototype = {
   _onUnload : function() {
     this._document.removeEventListener( "windowresize", this._onResize, this );
     this._document.removeEventListener( "keypress", this._onKeyPress, this );
-    this._server.removeEventListener( "send", this._onSend, this );
+    this._connection.removeEventListener( "send", this._onSend, this );
     rwt.client.ServerPush.getInstance().setActive( false );
     this._sendShutdown();
   },
@@ -176,19 +187,17 @@ rwt.widgets.Display.prototype = {
   // client to server
 
   _sendShutdown : function() {
-    var server = rwt.remote.Connection.getInstance();
-    server.getMessageWriter().appendHead( "shutdown", true );
-    server.sendImmediate( false );
+    this._connection.getMessageWriter().appendHead( "shutdown", true );
+    this._connection.sendImmediate( false );
   },
 
   _appendWindowSize : function() {
-    var bounds = [ 0, 0, window.innerWidth, window.innerHeight ];
-    rwt.remote.Connection.getInstance().getRemoteObject( this ).set( "bounds", bounds );
+    this._bounds = [ 0, 0, window.innerWidth, window.innerHeight ];
   },
 
   _appendSystemDPI : function() {
     var dpi = this.getDPI();
-    rwt.remote.Connection.getInstance().getRemoteObject( this ).set( "dpi", dpi );
+    this._connection.getRemoteObject( this ).set( "dpi", dpi );
   },
 
   _appendColorDepth : function() {
@@ -200,7 +209,7 @@ rwt.widgets.Display.prototype = {
       // Firefox detects 24bit and 32bit as 24bit, but 32bit is more likely
       depth = depth == 24 ? 32 : depth;
     }
-    rwt.remote.Connection.getInstance().getRemoteObject( this ).set( "colorDepth", depth );
+    this._connection.getRemoteObject( this ).set( "colorDepth", depth );
   },
 
   _appendInitialHistoryEvent : function() {
@@ -211,7 +220,7 @@ rwt.widgets.Display.prototype = {
       var handler = rwt.remote.HandlerRegistry.getHandler( type );
       // TODO: Temporary workaround for 388835
       rwt.remote.ObjectRegistry.add( type, history, handler );
-      rwt.remote.Connection.getInstance().getRemoteObject( history ).notify( "Navigation", {
+      this._connection.getRemoteObject( history ).notify( "Navigation", {
         "state" : decodeURIComponent( state.substr( 1 ) )
       } );
     }
@@ -219,14 +228,14 @@ rwt.widgets.Display.prototype = {
 
   _appendTimezoneOffset : function() {
     var timezoneOffset = rwt.client.Client.getTimezoneOffset();
-    var writer = rwt.remote.Connection.getInstance().getMessageWriter();
+    var writer = this._connection.getMessageWriter();
     writer.appendSet( "rwt.client.ClientInfo", "timezoneOffset", timezoneOffset );
   },
 
   _appendStartupParameters : function() {
     var parameters = rwt.runtime.System.getInstance().getStartupParameters();
     if( parameters ) {
-      var writer = rwt.remote.Connection.getInstance().getMessageWriter();
+      var writer = this._connection.getMessageWriter();
       writer.appendSet( "rwt.client.StartupParameters", "parameters", parameters );
     }
   }
