@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.rap.e4.sdk.feature"
       label="RAP E4 SDK"
-      version="3.4.0.qualifier"
+      version="3.5.0.qualifier"
       provider-name="Eclipse.org - RAP"
       license-feature="org.eclipse.license"
       license-feature-version="0.0.0">
