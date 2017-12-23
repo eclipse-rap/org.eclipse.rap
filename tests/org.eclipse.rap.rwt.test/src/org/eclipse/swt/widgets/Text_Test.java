@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2018 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -611,6 +611,16 @@ public class Text_Test {
   @Test
   public void testIsSerializable() throws Exception {
     text.setText( "foo" );
+
+    Text deserializedText = serializeAndDeserialize( text );
+
+    assertEquals( text.getText(), deserializedText.getText() );
+  }
+
+  @Test
+  public void testIsSerializable_withCreatedTextAdapter() throws Exception {
+    text.setText( "foo" );
+    text.getAdapter( ITextAdapter.class );
 
     Text deserializedText = serializeAndDeserialize( text );
 
