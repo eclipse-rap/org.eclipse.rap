@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2016 EclipseSource and others.
+ * Copyright (c) 2012, 2018 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,13 +21,14 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.eclipse.rap.rwt.SingletonUtil;
+import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.widgets.Widget;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.helpers.DefaultHandler;
 
 
-public class MarkupValidator {
+public class MarkupValidator implements SerializableCompatibility {
 
   // Used by Eclipse Scout project
   public static final String MARKUP_VALIDATION_DISABLED
@@ -35,7 +36,7 @@ public class MarkupValidator {
 
   private static final String DTD = createDTD();
   private static final Map<String, String[]> SUPPORTED_ELEMENTS = createSupportedElementsMap();
-  private final SAXParser saxParser;
+  private transient final SAXParser saxParser;
 
   public static MarkupValidator getInstance() {
     return SingletonUtil.getSessionInstance( MarkupValidator.class );

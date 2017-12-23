@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2018 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -203,6 +203,17 @@ public class Label_Test {
   @Test
   public void testIsSerializable() throws Exception {
     String text = "labelText";
+    label.setText( text );
+
+    Label deserializedLabel = serializeAndDeserialize( label );
+
+    assertEquals( text, deserializedLabel.getText() );
+  }
+
+  @Test
+  public void testIsSerializable_withMarkup() throws Exception {
+    String text = "<i>labelText</i>";
+    label.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
     label.setText( text );
 
     Label deserializedLabel = serializeAndDeserialize( label );
