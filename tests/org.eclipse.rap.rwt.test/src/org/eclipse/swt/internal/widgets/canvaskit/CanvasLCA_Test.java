@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2015 EclipseSource and others.
+ * Copyright (c) 2010, 2018 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.internal.protocol.Operation.CallOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.scripting.ClientListener;
@@ -89,6 +90,19 @@ public class CanvasLCA_Test {
     CreateOperation gcCreate = message.findCreateOperation( getGcId( canvas ) );
     assertEquals( "rwt.widgets.GC", gcCreate.getType() );
     assertEquals( canvasId, gcCreate.getProperties().get( "parent" ).asString() );
+  }
+
+  @Test
+  public void testRenderDispose_disposesRemoteObjects() throws IOException {
+    lca.renderInitialization( canvas );
+    RemoteObjectImpl canvasRemoteObject = ( RemoteObjectImpl )getRemoteObject( getId( canvas ) );
+    RemoteObjectImpl canvasGCRemoteObject = ( RemoteObjectImpl )getRemoteObject( getGcId( canvas ) );
+
+    canvas.dispose();
+    lca.renderDispose( canvas );
+
+    assertTrue( canvasRemoteObject.isDestroyed() );
+    assertTrue( canvasGCRemoteObject.isDestroyed() );
   }
 
   @Test
