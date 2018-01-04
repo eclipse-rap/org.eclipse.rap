@@ -116,7 +116,7 @@ public class MarkupValidator implements SerializableCompatibility {
     result.put( "dfn", new String[] { "style", "class", "id" } );
     result.put( "q", new String[] { "style", "class", "id" } );
     result.put( "abbr", new String[] { "style", "class", "id", "title" } );
-    result.put( "span", new String[] { "style", "class", "id" } );
+    result.put( "span", new String[] { "style", "class", "id", "title" } );
     result.put( "img",
                 new String[] { "style", "class", "id", "src", "width", "height", "title", "alt" } );
     result.put( "a", new String[] { "style", "class", "id", "href", "target", "title" } );
