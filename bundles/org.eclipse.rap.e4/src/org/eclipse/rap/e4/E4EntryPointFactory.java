@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2017 EclipseSource and others.
+ * Copyright (c) 2012, 2018 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,7 @@
  * Contributors:
  *    Ralf Sternberg - initial API and implementation
  *    EclipseSource - ongoing development
+ *    Benjamin Leipold - allow definition of custom IModelResourceHandler
  *******************************************************************************/
 package org.eclipse.rap.e4;
 
@@ -113,8 +114,10 @@ public class E4EntryPointFactory implements EntryPointFactory {
 					return config.getXmiURI();
 				} else if( IWorkbench.LIFE_CYCLE_URI_ARG.equals(key) ) {
 					return config.getLifecycleURI();
-				} else if( IWorkbench.PRESENTATION_URI_ARG .equals(key)) {
+				} else if( IWorkbench.PRESENTATION_URI_ARG .equals(key) ) {
 					return config.getPresentationURI();
+				} else if( IWorkbench.MODEL_RESOURCE_HANDLER.equals(key) ) {
+					return config.getModelResourceHandlerURI();
 				} else if( IWorkbench.CLEAR_PERSISTED_STATE.equals(key) ) {
 					return config.isClearPersistedState() + "";
 				} else if( IWorkbench.PERSIST_STATE.equals(key) ) {
