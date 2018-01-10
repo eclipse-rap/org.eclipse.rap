@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2015 EclipseSource and others.
+ * Copyright (c) 2009, 2018 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 
 import java.io.IOException;
 
@@ -39,6 +40,7 @@ public class ControlDecoratorLCA extends WidgetLCA<ControlDecorator> {
   private static final String PROP_IMAGE = "image";
   private static final String PROP_VISIBLE = "visible";
   private static final String PROP_SHOW_HOVER = "showHover";
+  private static final String PROP_MARKUP_ENABLED = "markupEnabled";
 
   @Override
   public void preserveValues( ControlDecorator decorator ) {
@@ -55,6 +57,7 @@ public class ControlDecoratorLCA extends WidgetLCA<ControlDecorator> {
     remoteObject.setHandler( new ControlDecoratorOperationHandler( decorator ) );
     remoteObject.set( "parent", getId( decorator.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( decorator, ALLOWED_STYLES ) ) );
+    renderProperty( decorator, PROP_MARKUP_ENABLED, isMarkupEnabledFor( decorator ), false );
   }
 
   @Override

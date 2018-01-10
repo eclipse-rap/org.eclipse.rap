@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2015 EclipseSource and others.
+ * Copyright (c) 2009, 2018 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import java.util.List;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.protocol.Operation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.DestroyOperation;
@@ -125,6 +126,17 @@ public class ControlDecoratorLCA_Test {
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( decorator );
     assertEquals( getId( decorator.getParent() ), getParent( operation ) );
+  }
+
+  @Test
+  public void testRenderCreateWithMarkupEnabled() throws IOException {
+    decorator.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+
+    lca.renderInitialization( decorator );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( decorator );
+    assertEquals( JsonValue.TRUE, operation.getProperties().get( "markupEnabled" ) );
   }
 
   @Test

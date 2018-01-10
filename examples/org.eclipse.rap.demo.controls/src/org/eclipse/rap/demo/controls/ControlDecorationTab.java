@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2018 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,10 +31,12 @@ public class ControlDecorationTab extends ExampleTab {
 
   private final class LoggingSelectionListener implements SelectionListener {
 
+    @Override
     public void widgetSelected( SelectionEvent event ) {
       log( "widgetSelected: " + event.toString() );
     }
 
+    @Override
     public void widgetDefaultSelected( SelectionEvent event ) {
       log( "widgetDefaultSelected: " + event.toString() );
     }
@@ -44,7 +46,8 @@ public class ControlDecorationTab extends ExampleTab {
 
   private boolean showOnlyOnFocus;
   private boolean showHover = true;
-  private String description = "Description";
+  private boolean markupEnabled;
+  private String description = "<i>Description</i> with<br/>second line";
   private final ControlDecoration[] decorations = new ControlDecoration[ 2 ];
 
   private final SelectionListener listener;
@@ -52,6 +55,7 @@ public class ControlDecorationTab extends ExampleTab {
   public ControlDecorationTab() {
     super( "ControlDecoration" );
     listener = new LoggingSelectionListener();
+    markupEnabled = true;
   }
 
   @Override
@@ -60,6 +64,7 @@ public class ControlDecorationTab extends ExampleTab {
     createStyleButton( "BOTTOM", SWT.BOTTOM );
     createStyleButton( "LEFT", SWT.LEFT );
     createStyleButton( "RIGHT", SWT.RIGHT );
+    createMarkupButton();
     createChangeDescriptionButton( parent );
     createShowOnlyOnFocus( parent );
     createShowHover( parent );
@@ -111,6 +116,7 @@ public class ControlDecorationTab extends ExampleTab {
     dynDecoration.setMarginWidth( 3 );
     dynDecoration.hide();
     text.addModifyListener( new ModifyListener() {
+      @Override
       public void modifyText( ModifyEvent event ) {
         if( text.getText().length() > 0 ) {
           dynDecoration.hide();
@@ -121,6 +127,20 @@ public class ControlDecorationTab extends ExampleTab {
 
     } );
     return dynDecoration;
+  }
+
+  private Button createMarkupButton() {
+    final Button button = new Button( styleComp, SWT.CHECK );
+    button.setText( "Enable Markup" );
+    button.setSelection( markupEnabled );
+    button.addSelectionListener( new SelectionAdapter() {
+      @Override
+      public void widgetSelected( final SelectionEvent event ) {
+        markupEnabled = button.getSelection();
+        createNew();
+      }
+    } );
+    return button;
   }
 
   private void createChangeDescriptionButton( Composite parent ) {
@@ -178,6 +198,9 @@ public class ControlDecorationTab extends ExampleTab {
     decoration.setShowHover( showHover );
     decoration.setShowOnlyOnFocus( showOnlyOnFocus );
     decoration.setDescriptionText( description );
+    if( markupEnabled ) {
+      decoration.enableMarkup();
+    }
     if( hasCreateProperty( PROP_SELECTION_LISTENER ) ) {
       decoration.addSelectionListener( listener );
     } else {

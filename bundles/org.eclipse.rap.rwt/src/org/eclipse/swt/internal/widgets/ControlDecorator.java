@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2015 EclipseSource and others.
+ * Copyright (c) 2009, 2018 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,10 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
+import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
+import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
+
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -69,10 +73,17 @@ public class ControlDecorator extends Decorator {
 
   public void setText( String text ) {
     checkWidget();
-    if( text == null ) {
-      this.text = "";
-    } else {
-      this.text = text;
+    String newText = text == null ? "" : text;
+    if( isMarkupEnabledFor( this ) && !isValidationDisabledFor( this ) ) {
+      MarkupValidator.getInstance().validate( newText );
+    }
+    this.text = newText;
+  }
+
+  @Override
+  public void setData( String key, Object value ) {
+    if( !RWT.MARKUP_ENABLED.equals( key ) || !isMarkupEnabledFor( this ) ) {
+      super.setData( key, value );
     }
   }
 
