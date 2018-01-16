@@ -64,6 +64,9 @@
     </trimBars>
   </children>
   <handlers xmi:id="_bbwZ8KJDEeSqSpaGLeFO-g" elementId="org.eclipse.rap.e4.demo.handler.0" contributionURI="bundleclass://org.eclipse.rap.e4.demo/org.eclipse.rap.e4.demo.handlers.HelloWorldHandler" command="_Zs-j8KJDEeSqSpaGLeFO-g"/>
+  <bindingTables xmi:id="_BB3EkPqvEeeXS-BL6s9lSQ" elementId="org.eclipse.rap.e4.demo.bindingtable.0" bindingContext="_-j-tkKBNEeODEs7-bWqIxA">
+    <bindings xmi:id="_Bnwm8PqvEeeXS-BL6s9lSQ" elementId="org.eclipse.rap.e4.demo.keybinding.0" keySequence="M1+H" command="_Zs-j8KJDEeSqSpaGLeFO-g"/>
+  </bindingTables>
   <rootContext xmi:id="_-j-tkKBNEeODEs7-bWqIxA" elementId="org.eclipse.ui.contexts.dialogAndWindow" name="In Dialog and Windows">
     <children xmi:id="_-j-tkaBNEeODEs7-bWqIxA" elementId="org.eclipse.ui.contexts.window" name="In Windows"/>
     <children xmi:id="_-j-tkqBNEeODEs7-bWqIxA" elementId="org.eclipse.ui.contexts.dialog" name="In Dialogs"/>

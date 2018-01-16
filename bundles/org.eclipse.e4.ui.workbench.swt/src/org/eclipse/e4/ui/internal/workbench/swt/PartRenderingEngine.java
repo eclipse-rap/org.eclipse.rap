@@ -10,7 +10,10 @@
  *******************************************************************************/
 package org.eclipse.e4.ui.internal.workbench.swt;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
@@ -28,6 +31,7 @@ import org.eclipse.e4.core.services.contributions.IContributionFactory;
 import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.e4.core.services.log.Logger;
 import org.eclipse.e4.core.services.statusreporter.StatusReporter;
+import org.eclipse.e4.ui.bindings.EBindingService;
 import org.eclipse.e4.ui.bindings.keys.KeyBindingDispatcher;
 //import org.eclipse.e4.ui.css.core.util.impl.resources.OSGiResourceLocator;
 //import org.eclipse.e4.ui.css.swt.dom.WidgetElement;
@@ -62,10 +66,15 @@ import org.eclipse.e4.ui.workbench.swt.factories.IRendererFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.eclipse.jface.bindings.Binding;
+import org.eclipse.jface.bindings.keys.KeyBinding;
+import org.eclipse.jface.bindings.keys.KeySequence;
+import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.bindings.keys.SWTKeySupport;
 import org.eclipse.jface.bindings.keys.formatting.KeyFormatterFactory;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.widgets.Composite;
@@ -1008,6 +1017,10 @@ public class PartRenderingEngine implements IPresentationEngine {
 				keyListener = dispatcher.getKeyDownFilter();
 				display.addFilter(SWT.KeyDown, keyListener);
 				display.addFilter(SWT.Traverse, keyListener);
+				// RAP [if]
+				EBindingService bindingService = (EBindingService) runContext.get(EBindingService.class.getName());
+				updateKeyBindingList(display, bindingService.getActiveBindings());
+				// ENDRAP [if]
 
 				// Show the initial UI
 
@@ -1213,6 +1226,27 @@ public class PartRenderingEngine implements IPresentationEngine {
 				CSSRenderingUtils.class, appContext);
 		appContext.set(CSSRenderingUtils.class, cssUtils);
 	}
+
+	// RAP [if] Update client key binding list
+	private void updateKeyBindingList(Display display, Collection<Binding> activeBindings) {
+		List<String> keyBindingList = new ArrayList<String>();
+		for (Iterator<Binding> iterator = activeBindings.iterator(); iterator.hasNext();) {
+			Binding binding = iterator.next();
+			if (binding instanceof KeyBinding) {
+				KeyBinding keyBinding = (KeyBinding) binding;
+				KeySequence keySequence = keyBinding.getKeySequence();
+				KeyStroke[] keyStroke = keySequence.getKeyStrokes();
+				if (keyStroke.length > 0) {
+					keyBindingList.add(keyStroke[0].toString());
+				}
+			}
+		}
+		String[] array = new String[keyBindingList.size()];
+		keyBindingList.toArray(array);
+		display.setData(RWT.ACTIVE_KEYS, array);
+		display.setData(RWT.CANCEL_KEYS, array);
+	}
+	// ENDRAP [if]
 
 	// FIXME RAP unsupported
 	// public static void initializeStyling(Display display,
