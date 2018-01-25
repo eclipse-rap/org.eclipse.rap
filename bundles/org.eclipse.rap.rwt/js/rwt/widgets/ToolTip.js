@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Rüdiger Herrmann and others.
+ * Copyright (c) 2011, 2018 Rüdiger Herrmann and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,8 +23,8 @@ rwt.qx.Class.define( "rwt.widgets.ToolTip", {
     this.setVisibility( false );
     this.setAppearance( "tool-tip" );
     var doc = rwt.widgets.base.ClientDocument.getInstance();
-    this.setMaxWidth( doc.getClientWidth() / 2 );
-    this.setMaxHeight( doc.getClientHeight() / 2 );
+    this.setMaxWidth( Math.floor( doc.getClientWidth() * 0.9 ) );
+    this.setMaxHeight( Math.floor( doc.getClientHeight() * 0.9 ) );
     this.addToDocument();
     this.addEventListener( "click", this._onClick, this );
     this.addEventListener( "appear", this._update, this );
@@ -147,6 +147,9 @@ rwt.qx.Class.define( "rwt.widgets.ToolTip", {
           }
         }
         messageSize.x = this._max( messageSize.x, textSize.x );
+        if( messageSize.x >= this.getMaxWidth() ) {
+          messageSize = this._adjustMessageSizeToMaxWidth( message );
+        }
         this._message.setWidth( messageSize.x );
         this._message.setHeight( messageSize.y );
       } else {
@@ -156,6 +159,14 @@ rwt.qx.Class.define( "rwt.widgets.ToolTip", {
         this._message.setWidth( messageWidth );
         this._message.setHeight( "auto" );
       }
+    },
+
+    _adjustMessageSizeToMaxWidth : function( message ) {
+      var preferredMaxWidth = Math.floor( this.getMaxWidth() * 0.9 );
+      var messageWidth = preferredMaxWidth - this.getPaddingLeft() - this.getPaddingRight();
+      messageWidth -= this._image._computePreferredInnerWidth();
+      messageWidth -= this._contentArea.getSpacing();
+      return this._getTextSize( message, messageWidth );
     },
 
     _matchesWidthToHeightRatio : function( size ) {
