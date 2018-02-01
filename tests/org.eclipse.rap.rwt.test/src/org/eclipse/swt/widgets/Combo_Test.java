@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2018 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -405,6 +405,42 @@ public class Combo_Test {
     combo.remove( 0, 1 );
 
     assertEquals( 0, combo.getSelectionIndex() );
+  }
+
+  @Test
+  public void testSelection_AddAtIndexAfterSelection() {
+    combo.add( "test0" );
+    combo.add( "test1" );
+    combo.add( "test2" );
+    combo.select( 1 );
+
+    combo.add( "foo", 2 );
+
+    assertEquals( 1, combo.getSelectionIndex() );
+  }
+
+  @Test
+  public void testSelection_AddAtIndexBeforeSelection() {
+    combo.add( "test0" );
+    combo.add( "test1" );
+    combo.add( "test2" );
+    combo.select( 2 );
+
+    combo.add( "foo", 1 );
+
+    assertEquals( 3, combo.getSelectionIndex() );
+  }
+
+  @Test
+  public void testSelection_AddAtIndexAtSelection() {
+    combo.add( "test0" );
+    combo.add( "test1" );
+    combo.add( "test2" );
+    combo.select( 1 );
+
+    combo.add( "foo", 1 );
+
+    assertEquals( 2, combo.getSelectionIndex() );
   }
 
   @Test

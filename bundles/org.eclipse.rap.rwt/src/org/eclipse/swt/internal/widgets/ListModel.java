@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2018 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,7 +29,7 @@ public final class ListModel implements SerializableCompatibility {
 
   public ListModel( boolean single ) {
     this.single = single;
-    items = new ArrayList<String>();
+    items = new ArrayList<>();
     selection = EMPTY_SELECTION;
   }
 
@@ -118,7 +118,7 @@ public final class ListModel implements SerializableCompatibility {
     deselectAll();
     int length = selection.length;
     if( ( single && length == 1 ) || ( !single && length > 0 ) ) {
-      List<String> alreadySelected = new ArrayList<String>();
+      List<String> alreadySelected = new ArrayList<>();
       int[] newSelection = new int[ getItemCount() ];
       int newLength = 0;
       for( int i = 0; i < length; i++ ) {
@@ -187,12 +187,13 @@ public final class ListModel implements SerializableCompatibility {
       checkIndex( index );
     }
     items.add( index, string );
+    adjustSelectionIdicesAfterAdd( index );
   }
 
   public void remove( int index ) {
     checkIndex( index );
     items.remove( index );
-    adjustSelectionIdices( index );
+    adjustSelectionIdicesAfterRemove( index );
   }
 
   public void remove( int start, int end ) {
@@ -284,7 +285,7 @@ public final class ListModel implements SerializableCompatibility {
   //////////////////
   // Helping methods
 
-  private void adjustSelectionIdices( int indexToRemove ) {
+  private void adjustSelectionIdicesAfterRemove( int indexToRemove ) {
     int counter = 0;
     int[] newSelection = new int[ selection.length ];
     for( int index : selection ) {
@@ -300,9 +301,26 @@ public final class ListModel implements SerializableCompatibility {
     System.arraycopy( newSelection, 0, selection, 0, selection.length );
   }
 
+  private void adjustSelectionIdicesAfterAdd( int indexToAdd ) {
+    int counter = 0;
+    int[] newSelection = new int[ selection.length ];
+    for( int index : selection ) {
+      if( indexToAdd <= index ) {
+        newSelection[ counter ] = index + 1;
+        counter++;
+      } else if( indexToAdd > index ) {
+        newSelection[ counter ] = index;
+        counter++;
+      }
+    }
+    selection = new int[ counter ];
+    System.arraycopy( newSelection, 0, selection, 0, selection.length );
+  }
+
   private void checkIndex( int index ) {
     if( index < 0 || index >= getItemCount() ) {
       SWT.error( SWT.ERROR_INVALID_RANGE );
     }
   }
+
 }
