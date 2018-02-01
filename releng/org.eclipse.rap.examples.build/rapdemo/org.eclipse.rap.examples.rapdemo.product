@@ -54,11 +54,9 @@
       <plugin id="org.eclipse.rap.rwt.osgi"/>
 <!-- external bundles
       <plugin id="com.eclipsesource.widgets.gmaps"/>
-      <plugin id="org.eclipse.rap.addons.d3chart"/>
-      <plugin id="org.eclipse.rap.addons.d3chart.demo"/>
       <plugin id="org.eclipse.rap.demo.enrondata"/>
       <plugin id="org.eclipse.rap.demo.gmaps"/>
-      -->
+-->
    </plugins>
 
    <configurations>
@@ -68,10 +66,10 @@
       <plugin id="org.eclipse.equinox.http.servletbridge" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.osgi.services" autoStart="true" startLevel="1" />
       <plugin id="org.eclipse.rap.addons.dropdown.demo.examples" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.rap.demo.clientscripting" autoStart="true" startLevel="0" />
+<!-- external bundles
       <plugin id="org.eclipse.rap.demo.enrondata" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.rap.demo.gmaps" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.rap.addons.d3chart.demo" autoStart="true" startLevel="0" />
+-->
       <plugin id="org.eclipse.rap.examples" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.rap.examples.pages" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.rap.filedialog.demo.examples" autoStart="true" startLevel="0" />
