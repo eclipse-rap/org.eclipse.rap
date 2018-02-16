@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2016 EclipseSource and others.
+ * Copyright (c) 2013, 2018 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -412,7 +412,7 @@ public class DropDown extends Widget {
       if( SELECTION.equals( type ) || DEFAULT_SELECTION.equals( type )) {
         Event event = new Event();
         event.index = properties.get( "index" ).asInt();
-        event.text = properties.get( "text" ).asString();
+        event.text = items.get( event.index );
         notifyListeners( stringToEventType( type ), event );
       }
     }

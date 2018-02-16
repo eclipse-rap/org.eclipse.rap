@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 EclipseSource and others.
+ * Copyright (c) 2014, 2018 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,7 +34,7 @@ rwt.widgets.util.DropDownSynchronizer.prototype = {
       var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( dropdown );
       remoteObject.set( "selectionIndex", dropdown.getSelectionIndex() );
       // TODO : merge multiple changes? How long?
-      remoteObject.notify( event.type, { "text" : event.text, "index" : event.index } );
+      remoteObject.notify( event.type, { "index" : event.index } );
     }
   }
 

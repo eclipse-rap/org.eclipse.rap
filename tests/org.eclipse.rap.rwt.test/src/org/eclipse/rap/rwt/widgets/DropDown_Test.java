@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2016 EclipseSource.
+ * Copyright (c) 2013, 2018 EclipseSource.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -546,6 +546,7 @@ public class DropDown_Test {
   public void testFireSelectionEvent() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final List<Event> log = new ArrayList<Event>();
+    dropDown.setItems( FOUR_ITEMS );
     dropDown.addListener( SWT.Selection, new Listener() {
       @Override
       public void handleEvent( Event event ) {
@@ -553,20 +554,18 @@ public class DropDown_Test {
       }
     } );
 
-    handler.handleNotify( "Selection", new JsonObject()
-      .add( "index", 2 )
-      .add( "text", "foo" )
-    );
+    handler.handleNotify( "Selection", new JsonObject().add( "index", 2 ) );
 
     assertEquals( 1, log.size() );
     assertEquals( 2, log.get( 0 ).index );
-    assertEquals( "foo", log.get( 0 ).text );
+    assertEquals( "c", log.get( 0 ).text );
   }
 
   @Test
   public void testFireDefaultSelectionEvent() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final List<Event> log = new ArrayList<Event>();
+    dropDown.setItems( FOUR_ITEMS );
     dropDown.addListener( SWT.DefaultSelection, new Listener() {
       @Override
       public void handleEvent( Event event ) {
@@ -574,14 +573,11 @@ public class DropDown_Test {
       }
     } );
 
-    handler.handleNotify( "DefaultSelection", new JsonObject()
-      .add( "index", 2 )
-      .add( "text", "foo" )
-    );
+    handler.handleNotify( "DefaultSelection", new JsonObject().add( "index", 2 ) );
 
     assertEquals( 1, log.size() );
     assertEquals( 2, log.get( 0 ).index );
-    assertEquals( "foo", log.get( 0 ).text );
+    assertEquals( "c", log.get( 0 ).text );
   }
 
 }
