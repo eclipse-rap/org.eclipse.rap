@@ -412,7 +412,7 @@ public class DropDown extends Widget {
       if( SELECTION.equals( type ) || DEFAULT_SELECTION.equals( type )) {
         Event event = new Event();
         event.index = properties.get( "index" ).asInt();
-        event.text = items.get( event.index );
+        event.text = event.index >= 0 ? items.get( event.index ) : "";
         notifyListeners( stringToEventType( type ), event );
       }
     }
