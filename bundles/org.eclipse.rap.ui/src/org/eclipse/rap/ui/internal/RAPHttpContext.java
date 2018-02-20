@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2018 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,9 @@
  ******************************************************************************/
 package org.eclipse.rap.ui.internal;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,15 +26,15 @@ import org.osgi.service.http.HttpContext;
 //       the workbench bundle before the context is established. The latter
 //       uses the context already on startup
 public final class RAPHttpContext implements HttpContext {
-  
+
   private final Bundle bundle;
 
   public RAPHttpContext() {
     bundle = Platform.getBundle( "org.eclipse.rap.ui" ); //$NON-NLS-1$
   }
 
-  public boolean handleSecurity( final HttpServletRequest request,
-                                 final HttpServletResponse response )
+  @Override
+  public boolean handleSecurity( HttpServletRequest request, HttpServletResponse response )
     throws IOException
   {
     // default behaviour assumes the container has already performed
@@ -40,11 +42,25 @@ public final class RAPHttpContext implements HttpContext {
     return true;
   }
 
-  public URL getResource( final String name ) {
-    return bundle.getResource( name );
+  @Override
+  public URL getResource( String name ) {
+    URL result = null;
+    try {
+      File file = new File( name );
+      if( file.exists() && !file.isDirectory() ) {
+        result = file.toURI().toURL();
+      } else {
+        result = bundle.getResource( name );
+      }
+    } catch( MalformedURLException shouldNotHappen ) {
+      throw new RuntimeException( shouldNotHappen );
+    }
+    return result;
   }
 
-  public String getMimeType( final String name ) {
+  @Override
+  public String getMimeType( String name ) {
     return null;
   }
+
 }

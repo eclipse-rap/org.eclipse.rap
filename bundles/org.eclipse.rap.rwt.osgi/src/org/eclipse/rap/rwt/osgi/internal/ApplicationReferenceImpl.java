@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 Frank Appel and others.
+ * Copyright (c) 2011, 2018 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@ class ApplicationReferenceImpl implements ApplicationReference {
 
   static final String SERVLET_CONTEXT_FINDER_ALIAS = "/servlet_context_finder";
   static final String DEFAULT_ALIAS = "/rap";
+  static final String RAP_HTTP_CONTEXT_CLASS_NAME = "org.eclipse.rap.ui.internal.RAPHttpContext";
 
   private ApplicationConfiguration configuration;
   private HttpService httpService;
@@ -52,7 +53,7 @@ class ApplicationReferenceImpl implements ApplicationReference {
   {
     this.configuration = configuration;
     this.httpService = httpService;
-    this.httpContext = wrapHttpContext( httpContext );
+    this.httpContext = isRAPContext( httpContext ) ? httpContext : wrapHttpContext( httpContext );
     this.contextLocation = contextLocation;
     this.contextName = contextName;
     this.applicationLauncher = applicationLauncher;
@@ -156,6 +157,13 @@ class ApplicationReferenceImpl implements ApplicationReference {
   private HttpContext wrapHttpContext( HttpContext context ) {
     HttpContext wrapped = context != null ? context : httpService.createDefaultHttpContext();
     return new HttpContextWrapper( wrapped );
+  }
+
+  private static boolean isRAPContext( HttpContext context ) {
+    if( context != null ) {
+      return RAP_HTTP_CONTEXT_CLASS_NAME.equals( context.getClass().getName() );
+    }
+    return false;
   }
 
   private HttpServlet registerServletContextProviderServlet() {
