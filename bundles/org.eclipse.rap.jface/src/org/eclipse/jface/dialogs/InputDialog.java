@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     EclipseSource - ongoing development
  *******************************************************************************/
 package org.eclipse.jface.dialogs;
 
@@ -64,7 +65,7 @@ public class InputDialog extends Dialog {
      * Error message label widget.
      */
     private Text errorMessageText;
-    
+
     /**
      * Error message string.
      */
@@ -76,7 +77,7 @@ public class InputDialog extends Dialog {
      * <p>
      * Note that the <code>open</code> method blocks for input dialogs.
      * </p>
-     * 
+     *
      * @param parentShell
      *            the parent shell, or <code>null</code> to create a top-level
      *            shell
@@ -96,16 +97,17 @@ public class InputDialog extends Dialog {
         this.title = dialogTitle;
         message = dialogMessage;
         if (initialValue == null) {
-			value = "";//$NON-NLS-1$
-		} else {
-			value = initialValue;
-		}
+            value = "";//$NON-NLS-1$
+        } else {
+            value = initialValue;
+        }
         this.validator = validator;
     }
 
     /*
      * (non-Javadoc) Method declared on Dialog.
      */
+    @Override
     protected void buttonPressed(int buttonId) {
         if (buttonId == IDialogConstants.OK_ID) {
             value = text.getText();
@@ -117,21 +119,23 @@ public class InputDialog extends Dialog {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell)
      */
+    @Override
     protected void configureShell(Shell shell) {
         super.configureShell(shell);
         if (title != null) {
-			shell.setText(title);
-		}
+            shell.setText(title);
+        }
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)
      */
+    @Override
     protected void createButtonsForButtonBar(Composite parent) {
         // create OK and Cancel buttons by default
         okButton = createButton(parent, IDialogConstants.OK_ID,
@@ -150,6 +154,7 @@ public class InputDialog extends Dialog {
     /*
      * (non-Javadoc) Method declared on Dialog.
      */
+    @Override
     protected Control createDialogArea(Composite parent) {
         // create composite
         Composite composite = (Composite) super.createDialogArea(parent);
@@ -168,6 +173,7 @@ public class InputDialog extends Dialog {
         text.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
                 | GridData.HORIZONTAL_ALIGN_FILL));
         text.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent e) {
                 validateInput();
             }
@@ -175,8 +181,9 @@ public class InputDialog extends Dialog {
         errorMessageText = new Text(composite, SWT.READ_ONLY | SWT.WRAP);
         errorMessageText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
                 | GridData.HORIZONTAL_ALIGN_FILL));
-        errorMessageText.setBackground(errorMessageText.getDisplay()
-                .getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
+        // [RAP] See https://bugs.eclipse.org/bugs/show_bug.cgi?id=527124
+        // errorMessageText.setBackground(errorMessageText.getDisplay()
+        //        .getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
         // Set the error message text
         // See https://bugs.eclipse.org/bugs/show_bug.cgi?id=66292
         setErrorMessage(errorMessage);
@@ -187,17 +194,18 @@ public class InputDialog extends Dialog {
 
     /**
      * Returns the error message label.
-     * 
+     *
      * @return the error message label
      * @deprecated use setErrorMessage(String) instead
      */
+    @Deprecated
     protected Label getErrorMessageLabel() {
         return null;
     }
 
     /**
      * Returns the ok button.
-     * 
+     *
      * @return the ok button
      */
     protected Button getOkButton() {
@@ -206,7 +214,7 @@ public class InputDialog extends Dialog {
 
     /**
      * Returns the text area.
-     * 
+     *
      * @return the text area
      */
     protected Text getText() {
@@ -215,7 +223,7 @@ public class InputDialog extends Dialog {
 
     /**
      * Returns the validator.
-     * 
+     *
      * @return the validator
      */
     protected IInputValidator getValidator() {
@@ -224,7 +232,7 @@ public class InputDialog extends Dialog {
 
     /**
      * Returns the string typed into this input dialog.
-     * 
+     *
      * @return the input string
      */
     public String getValue() {
@@ -253,41 +261,42 @@ public class InputDialog extends Dialog {
     /**
      * Sets or clears the error message.
      * If not <code>null</code>, the OK button is disabled.
-     * 
+     *
      * @param errorMessage
      *            the error message, or <code>null</code> to clear
      */
     public void setErrorMessage(String errorMessage) {
-    	this.errorMessage = errorMessage;
-    	if (errorMessageText != null && !errorMessageText.isDisposed()) {
-    		errorMessageText.setText(errorMessage == null ? " \n " : errorMessage); //$NON-NLS-1$
-    		// Disable the error message text control if there is no error, or
-    		// no error text (empty or whitespace only).  Hide it also to avoid
-    		// color change.
-    		// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=130281
-    		boolean hasError = errorMessage != null && (StringConverter.removeWhiteSpaces(errorMessage)).length() > 0;
-    		errorMessageText.setEnabled(hasError);
-    		errorMessageText.setVisible(hasError);
-    		errorMessageText.getParent().update();
-    		// Access the ok button by id, in case clients have overridden button creation.
-    		// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=113643
-    		Control button = getButton(IDialogConstants.OK_ID);
-    		if (button != null) {
-    			button.setEnabled(errorMessage == null);
-    		}
-    	}
+        this.errorMessage = errorMessage;
+        if (errorMessageText != null && !errorMessageText.isDisposed()) {
+            errorMessageText.setText(errorMessage == null ? " \n " : errorMessage); //$NON-NLS-1$
+            // Disable the error message text control if there is no error, or
+            // no error text (empty or whitespace only).  Hide it also to avoid
+            // color change.
+            // See https://bugs.eclipse.org/bugs/show_bug.cgi?id=130281
+            boolean hasError = errorMessage != null && (StringConverter.removeWhiteSpaces(errorMessage)).length() > 0;
+            errorMessageText.setEnabled(hasError);
+            errorMessageText.setVisible(hasError);
+            errorMessageText.getParent().update();
+            // Access the ok button by id, in case clients have overridden button creation.
+            // See https://bugs.eclipse.org/bugs/show_bug.cgi?id=113643
+            Control button = getButton(IDialogConstants.OK_ID);
+            if (button != null) {
+                button.setEnabled(errorMessage == null);
+            }
+        }
     }
-    
-	/**
-	 * Returns the style bits that should be used for the input text field.
-	 * Defaults to a single line entry. Subclasses may override.
-	 * 
-	 * @return the integer style bits that should be used when creating the
-	 *         input text
-	 * 
-	 * @since 1.1
-	 */
-	protected int getInputTextStyle() {
-		return SWT.SINGLE | SWT.BORDER;
-	}
+
+    /**
+     * Returns the style bits that should be used for the input text field.
+     * Defaults to a single line entry. Subclasses may override.
+     *
+     * @return the integer style bits that should be used when creating the
+     *         input text
+     *
+     * @since 1.1
+     */
+    protected int getInputTextStyle() {
+      return SWT.SINGLE | SWT.BORDER;
+    }
+
 }
