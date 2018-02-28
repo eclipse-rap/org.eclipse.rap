@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2010 IBM Corporation and others.
+ * Copyright (c) 2003, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,10 +7,13 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     EclipseSource - ongoing development
  *     Teddy Walker <teddy.walker@googlemail.com>
  *     		- Fix for Bug 151204 [Progress] Blocked status of jobs are not applied/reported
  *******************************************************************************/
 package org.eclipse.ui.internal.progress;
+
+import static org.eclipse.jface.resource.ImageDescriptor.createFromURL;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -51,6 +54,7 @@ import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.SingletonUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.ui.internal.progress.ProgressUtil;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.graphics.Image;
@@ -94,34 +98,35 @@ public class ProgressManager extends ProgressProvider implements
 
 // RAP [fappel]: ProgressManager needs to be session aware	
 //	private static ProgressManager singleton;
-    Display display;
-    public static class ProgressManagerProvider {
-      public static ProgressManager getInstance() {
-    	ProgressManager instance = SingletonUtil.getSessionInstance( ProgressManager.class );
-    	if( instance.display == null ) {
-    	  Dialog.setBlockedHandler(new WorkbenchDialogBlockedHandler());
-    	  instance.display = Display.getCurrent();
-    	  // TODO [fappel]: find a better place for initialization...
-    	  ProgressInfoItem.init();
-    
-    	  URL iconsRoot = ProgressManagerUtil.getIconsRoot();
-    	  try {
-    	    instance.setUpImage(iconsRoot, SLEEPING_JOB, SLEEPING_JOB_KEY);
-    	    instance.setUpImage(iconsRoot, WAITING_JOB, WAITING_JOB_KEY);
-    	    instance.setUpImage(iconsRoot, BLOCKED_JOB, BLOCKED_JOB_KEY);
-    	    // Let the error manager set up its own icons
-			ImageDescriptor errorImage = ImageDescriptor
-							.createFromURL(new URL(iconsRoot, ERROR_JOB));
-			JFaceResources.getImageRegistry().put(ERROR_JOB_KEY,
-							errorImage);
-
-    	  } catch (MalformedURLException e) {
-    	    ProgressManagerUtil.logException(e);
-    	  }
-    	}
-    	return instance;
+  Display display;
+  public static class ProgressManagerProvider {
+    public static ProgressManager getInstance() {
+      ProgressManager instance = SingletonUtil.getSessionInstance( ProgressManager.class );
+      if( instance.display == null ) {
+        Dialog.setBlockedHandler(new WorkbenchDialogBlockedHandler());
+        instance.display = LifeCycleUtil.getSessionDisplay();
+        // TODO [fappel]: find a better place for initialization...
+        instance.display.syncExec( new Runnable() {
+          @Override
+          public void run() {
+            ProgressInfoItem.init();
+          }
+        } );
+        URL iconsRoot = ProgressManagerUtil.getIconsRoot();
+        try {
+          instance.setUpImage( iconsRoot, SLEEPING_JOB, SLEEPING_JOB_KEY );
+          instance.setUpImage( iconsRoot, WAITING_JOB, WAITING_JOB_KEY );
+          instance.setUpImage( iconsRoot, BLOCKED_JOB, BLOCKED_JOB_KEY );
+          // Let the error manager set up its own icons
+          ImageDescriptor errorImage = createFromURL( new URL( iconsRoot, ERROR_JOB ) );
+          JFaceResources.getImageRegistry().put( ERROR_JOB_KEY, errorImage );
+        } catch (MalformedURLException e) {
+          ProgressManagerUtil.logException(e);
+        }
       }
+      return instance;
     }
+  }
 
 	final private Map jobs = Collections.synchronizedMap(new HashMap());
 
