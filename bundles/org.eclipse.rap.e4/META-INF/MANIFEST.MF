@@ -29,5 +29,5 @@ Import-Package: javax.annotation;version="1.2.0",
 Export-Package: org.eclipse.rap.e4;version="3.5.0",
  org.eclipse.rap.e4.preferences;version="3.5.0"
 Service-Component: OSGI-INF/rapeventbroker.xml,OSGI-INF/rapeventobjectsupplier.xml,OSGI-INF/rapuieventobjectsupplier.xml,OSGI-INF/rappreferenceobjectsupplier.xml,
- OSGI-INF/preferenceserviceCF.xml
+ OSGI-INF/preferenceserviceCF.xml,OSGI-INF/raptranslationobjectsupplier.xml
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
