@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Copyright (C) 2011, 2017 EclipseSource and others.
+  Copyright (C) 2011, 2018 EclipseSource and others.
   All rights reserved. This program and the accompanying materials
   are made available under the terms of the Eclipse Public License v1.0
   which accompanies this distribution, and is available at
@@ -11,7 +11,7 @@
 -->
 <site>
    <stats location="http://download.eclipse.org/stats/rt/rap">
-      <feature url="features/org.eclipse.rap.equinox.target.feature_3.4.0.qualifier.jar" id="org.eclipse.rap.equinox.target.feature" version="3.4.0.qualifier"/>
+      <feature url="features/org.eclipse.rap.equinox.target.feature_3.4.1.qualifier.jar" id="org.eclipse.rap.equinox.target.feature" version="3.4.1.qualifier"/>
       <feature url="features/org.eclipse.rap.examples.feature_3.4.0.qualifier.jar" id="org.eclipse.rap.examples.feature" version="3.4.0.qualifier"/>
       <feature url="features/org.eclipse.rap.feature_3.4.0.qualifier.jar" id="org.eclipse.rap.feature" version="3.4.0.qualifier"/>
       <feature url="features/org.eclipse.rap.sdk.feature_3.4.0.qualifier.jar" id="org.eclipse.rap.sdk.feature" version="3.4.0.qualifier"/>
@@ -40,7 +40,7 @@
 
   <feature url="http://eclipse.org/rap"
       id="org.eclipse.rap.equinox.target.feature"
-      version="3.4.0.qualifier">
+      version="3.4.1.qualifier">
     <category name="org.eclipse.rap.category"/>
   </feature>
   
