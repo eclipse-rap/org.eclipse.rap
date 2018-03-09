@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@
  *     Michael Schneider, bug 210747
  *     Bruce Sutton, bug 221768
  *     Matthew Hall, bug 221988
+ *     EclipseSource - ongoing development
  *******************************************************************************/
 
 package org.eclipse.jface.viewers;
@@ -2899,6 +2900,29 @@ public abstract class AbstractTreeViewer extends ColumnViewer {
 		return new TreeSelection((TreePath[]) list.toArray(new TreePath[list
 				.size()]), getComparer());
 	}
+	
+	/**
+   * Returns the <code>ITreeSelection</code> of this viewer.
+   * <p>
+   * Subclasses whose {@link #getSelection()} specifies to return a more
+   * specific type should also override this method and return that type.
+   * </p>
+   *
+   * @return ITreeSelection
+   * @throws ClassCastException
+   *             if the selection of the viewer is not an instance of
+   *             ITreeSelection
+   * @since 3.5
+   */
+  @Override
+  public ITreeSelection getStructuredSelection() throws ClassCastException {
+    ISelection selection = getSelection();
+    if (selection instanceof ITreeSelection) {
+      return (ITreeSelection) selection;
+    }
+    throw new ClassCastException(
+        getClass().getName() + " should return an instance of ITreeSelection from its getSelection() method."); //$NON-NLS-1$
+  }
 
 	protected void setSelectionToWidget(ISelection selection, boolean reveal) {
 		if (selection instanceof ITreeSelection) {
