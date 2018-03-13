@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 EclipseSource and others.
+ * Copyright (c) 2013, 2018 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -235,6 +235,19 @@ public class AcceleratorBinding_Test {
     display.sendEvent( SWT.KeyDown, mockKeyDownEvent( SWT.ALT, SWT.F4 ) );
 
     verify( menuItem ).handleAcceleratorActivation();
+  }
+
+  @Test
+  public void testKeyDownEvent_triggersHandleAcceleratorActivation_withF4InAccelerator() {
+    acceleratorSupport.setAccelerator( SWT.F4 );
+    when( Boolean.valueOf( menuItem.isEnabled() ) ).thenReturn( Boolean.TRUE );
+
+    display.sendEvent( SWT.KeyDown, mockKeyDownEvent( 0, SWT.F4 ) );
+
+    // Enter (CR) should not invoke this accelerator.
+    display.sendEvent( SWT.KeyDown, mockKeyDownEvent( 0, SWT.CR ) );
+
+    verify( menuItem, times( 1 ) ).handleAcceleratorActivation();
   }
 
   @Test
