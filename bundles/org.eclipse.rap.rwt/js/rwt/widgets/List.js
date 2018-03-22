@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright: 2004, 2016 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright: 2004, 2018 1&1 Internet AG, Germany, http://www.1und1.de,
  *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -390,8 +390,10 @@ rwt.qx.Class.define( "rwt.widgets.List", {
 
     _updateScrollDimension : function() {
       var itemCount = this.getItems().length;
+      this._internalChangeFlag = true;
       this._horzScrollBar.setMaximum( this._itemWidth );
       this._vertScrollBar.setMaximum( this._itemHeight * itemCount );
+      this._internalChangeFlag = false;
     },
 
     setCustomVariant : function( value ) {
