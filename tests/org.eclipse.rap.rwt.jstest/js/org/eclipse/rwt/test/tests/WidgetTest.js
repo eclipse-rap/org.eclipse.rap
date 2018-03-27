@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 EclipseSource and others.
+ * Copyright (c) 2011, 2018 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -444,7 +444,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
         } else {
           var expected1 = "3px 5px 1px rgba(9, 8, 7, 0.4)";
           var expected2 = "3px 5px 1px rgba(9,8,7,0.4)";
-          assertTrue( result === expected1 || result === expected2 );
+          var expected3 = "rgba(9, 8, 7, 0.4) 3px 5px 1px";
+          assertTrue( result === expected1 || result === expected2 || result === expected3 );
         }
         widget.destroy();
       }

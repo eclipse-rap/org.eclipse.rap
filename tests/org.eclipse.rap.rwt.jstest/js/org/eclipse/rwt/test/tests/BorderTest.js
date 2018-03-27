@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2018 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -202,10 +202,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
       assertEquals( colorOuter, this._getBorderColors( widget._style ) );
       if( rwt.client.Client.isGecko() ) {
         assertEquals( [ 2, 2, 2, 2 ], this._getBorderWidths( widget._style ) );
-        assertEquals( "rgb(255, 0, 239) rgb(221, 0, 239)", widget._style.MozBorderTopColors );
-        assertEquals( "rgb(255, 0, 238) rgb(221, 0, 238)", widget._style.MozBorderRightColors );
-        assertEquals( "rgb(255, 14, 255) rgb(221, 14, 255)", widget._style.MozBorderBottomColors );
-        assertEquals( "rgb(255, 224, 255) rgb(221, 224, 255)", widget._style.MozBorderLeftColors );
+        assertEquals( "#FF00EF #DD00EF", widget._style.MozBorderTopColors );
+        assertEquals( "#FF00EE #DD00EE", widget._style.MozBorderRightColors );
+        assertEquals( "#FF0EFF #DD0EFF", widget._style.MozBorderBottomColors );
+        assertEquals( "#FFE0FF #DDE0FF", widget._style.MozBorderLeftColors );
       } else {
         assertEquals( [ 1, 1, 1, 1 ], this._getBorderWidths( widget._style ) );
         assertEquals( solidStyles, this._getBorderStyles( widget._innerStyle ) );

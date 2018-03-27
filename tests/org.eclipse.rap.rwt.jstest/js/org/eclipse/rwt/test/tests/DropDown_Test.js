@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2016 EclipseSource and others.
+ * Copyright (c) 2013, 2018 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1029,7 +1029,6 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
       dropdown.setSelectionIndex( -1 );
 
       var message = TestUtil.getMessageObject();
-      assertEquals( "", message.findNotifyProperty( "w3", "Selection", "text" ) );
       assertEquals( -1, message.findNotifyProperty( "w3", "Selection", "index" ) );
     },
 
@@ -1041,7 +1040,6 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
       dropdown.setSelectionIndex( 1 );
 
       var message = TestUtil.getMessageObject();
-      assertEquals( "b", message.findNotifyProperty( "w3", "Selection", "text" ) );
       assertEquals( 1, message.findNotifyProperty( "w3", "Selection", "index" ) );
     },
 

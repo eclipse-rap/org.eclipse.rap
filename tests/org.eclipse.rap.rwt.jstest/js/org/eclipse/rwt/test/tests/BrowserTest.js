@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2016 EclipseSource and others.
+ * Copyright (c) 2010, 2018 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
   members : {
 
     BLANK : "../rwt-resources/resource/static/html/blank.html",
-    URL1 : "http://www.eclipse.org/rap",
+    URL1 : "https://eclipsesource.com/",
 
     testCreateBrowserByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
@@ -506,7 +506,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         var error = null;
         try{
           browser.createFunction( "abc" );
-        }catch( ex ) {
+        } catch( ex ) {
           error = ex;
         }
         assertNotNull( error );
