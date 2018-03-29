@@ -1,5 +1,5 @@
   /*******************************************************************************
- * Copyright (c) 2010, 2017 EclipseSource and others.
+ * Copyright (c) 2010, 2018 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1175,7 +1175,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var node = row.$el.get( 0 ).childNodes[ 1 ];
       var color = node.style.borderRightColor;
       var bounds = getElementBounds( node );
-      assertEquals( "", node.style.backgroundColor );
+      assertEquals( Client.isTrident() ? "rgba(0, 0, 0, 0)" : "", node.style.backgroundColor );
       assertEquals( 4, bounds.left );
       assertEquals( 15, bounds.height );
       assertEquals( 66, bounds.width );
@@ -1216,7 +1216,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var node = row.$el.get( 0 ).childNodes[ 1 ];
       var color = node.style.borderRightColor;
       var bounds = getElementBounds( node );
-      assertEquals( "", node.style.backgroundColor );
+      assertEquals( Client.isTrident() ? "rgba(0, 0, 0, 0)" : "", node.style.backgroundColor );
       assertEquals( 330, bounds.left );
       assertEquals( 15, bounds.height );
       assertEquals( 66, bounds.width );
@@ -1237,7 +1237,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var node = row.$el.get( 0 ).childNodes[ 1 ];
       var color = node.style.borderRightColor;
       var bounds = getElementBounds( node );
-      assertEquals( "", node.style.backgroundColor );
+      assertEquals( Client.isTrident() ? "rgba(0, 0, 0, 0)" : "", node.style.backgroundColor );
       assertEquals( 330, bounds.left );
       assertEquals( 15, bounds.height );
       assertEquals( 66, bounds.width );
