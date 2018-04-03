@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2017 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2010, 2018 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -149,11 +149,13 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     getWidth : function() {
       // Do NOT use anything like offsetWidth/outerWidth/clientRectBounds for this, it would
       // force rendering and potentially impact performance!
-      return parseInt( this.$el.css( "width" ) || "0" );
+      return Math.round( parseFloat( this.$el.css( "width" ) || "0" ) );
     },
 
     getHeight : function() {
-      return parseInt( this.$el.css( "height" ) || "0" );
+      // Note: Recent versions of Chrome return float value.
+      // To avoid 1px precision lost parse it first as float and than round it.
+      return Math.round( parseFloat( this.$el.css( "height" ) || "0" ) );
     },
 
     getNextIndentOffset : function() {
