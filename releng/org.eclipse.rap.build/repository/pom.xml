@@ -22,7 +22,7 @@
 
   <artifactId>org.eclipse.rap.runtime-aggregation-repository</artifactId>
   <packaging>eclipse-repository</packaging>
-  <version>3.4.1-SNAPSHOT</version>
+  <version>3.4.2-SNAPSHOT</version>
 
   <repositories>
     <repository>
