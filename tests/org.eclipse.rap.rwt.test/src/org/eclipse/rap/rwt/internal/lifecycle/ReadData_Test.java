@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 EclipseSource and others.
+ * Copyright (c) 2011, 2018 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.swt.internal.widgets.ControlRemoteAdapter;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
@@ -23,7 +24,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-@SuppressWarnings( "deprecation" )
 public class ReadData_Test {
 
   private ReadData readData;
@@ -61,7 +61,8 @@ public class ReadData_Test {
 
     readData.execute( display );
 
-    assertEquals( LoggingWidgetLCA.READ_DATA, log.toString() );
+    assertEquals( LoggingWidgetLCA.READ_DATA +
+                  LoggingWidgetRemoteAdapter.CLEAR_PRESERVED, log.toString() );
   }
 
   @Test
@@ -73,7 +74,9 @@ public class ReadData_Test {
 
     readData.execute( display );
 
-    assertEquals( LoggingWidgetLCA.READ_DATA + LoggingWidgetLCA.PRESERVE_VALUES, log.toString() );
+    assertEquals( LoggingWidgetLCA.READ_DATA +
+                  LoggingWidgetRemoteAdapter.CLEAR_PRESERVED +
+                  LoggingWidgetLCA.PRESERVE_VALUES, log.toString() );
   }
 
   private final class TestWidget extends Shell {
@@ -88,6 +91,8 @@ public class ReadData_Test {
       Object result = null;
       if( adapter == WidgetLCA.class ) {
         result = new LoggingWidgetLCA( log );
+      } else if( adapter == RemoteAdapter.class ) {
+        result = new LoggingWidgetRemoteAdapter( "testId", log );
       } else {
         result = super.getAdapter( adapter );
       }
@@ -125,6 +130,21 @@ public class ReadData_Test {
     public void renderDispose( Widget widget ) throws IOException {
       log.append( RENDER_DISPOSE );
     }
+  }
+
+  private static class LoggingWidgetRemoteAdapter extends ControlRemoteAdapter {
+    private static final String CLEAR_PRESERVED = "clearPreserved";
+    private final StringBuilder log;
+    public LoggingWidgetRemoteAdapter( String id, StringBuilder log ) {
+      super( id );
+      this.log = log;
+    }
+
+    @Override
+    public void clearPreserved() {
+      log.append( CLEAR_PRESERVED );
+    }
+
   }
 
 }
