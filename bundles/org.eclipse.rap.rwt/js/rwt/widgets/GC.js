@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2017 EclipseSource and others.
+ * Copyright (c) 2010, 2018 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,9 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
     }
     this._linearGradient = null;
     this._currentGCState = {};
+    this._paused = false;
+    this._pendingOperations = null;
+    this._pendingImages = [];
   },
 
   destruct : function() {
@@ -67,9 +70,16 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
      *  - ellipse is not a W3C standard, only WHATWG, but we need it for SWT arc to work.
      */
     draw : function( operations ) {
-      for( var i = 0; i < operations.length; i++ ) {
+      this._paused = false;
+      this._cleanPendingImages();
+      this._draw( operations, 0 );
+    },
+
+    _draw : function( operations, startOffset ) {
+      var offset = startOffset;
+      while( offset < operations.length ) {
         try {
-          var op = operations[ i ][ 0 ];
+          var op = operations[ offset ][ 0 ];
           switch( op ) {
             case "fillStyle":
             case "strokeStyle":
@@ -78,7 +88,7 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
             case "lineCap":
             case "lineJoin":
             case "font":
-              this._setProperty( operations[ i ] );
+              this._setProperty( operations[ offset ] );
             break;
             case "createLinearGradient":
             case "addColorStop":
@@ -88,15 +98,20 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
             case "drawImage":
             case "setTransform":
             case "resetClip":
-              this[ "_" + op ]( operations[ i ] );
+              this[ "_" + op ]( operations[ offset ] );
             break;
             default:
-              this._context[ op ].apply( this._context, operations[ i ].slice( 1 ) );
+              this._context[ op ].apply( this._context, operations[ offset ].slice( 1 ) );
             break;
           }
         } catch( ex ) {
-          var opArrStr = "[ " + operations[ i ].join( ", " ) + " ]";
+          var opArrStr = "[ " + operations[ offset ].join( ", " ) + " ]";
           throw new Error( "Drawing operation failed: " + opArrStr + " :" + ex.message );
+        }
+        offset++;
+        if( this._paused ) {
+          this._suspendDrawing( operations, offset );
+          return;
         }
       }
     },
@@ -107,6 +122,30 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
 
     ////////////
     // Internals
+
+    _suspendDrawing : function( operations, offset ) {
+      if( this._pendingOperations != null ) {
+        throw new Error( "A drawing is already suspended" );
+      }
+      this._pendingOperations = [ operations, offset ];
+    },
+
+    _continueDrawing : function() {
+      if( this._paused ) {
+        this._paused = false;
+        var resumingOperations = this._pendingOperations;
+        this._pendingOperations = null;
+        this._draw.apply( this, resumingOperations );
+      }
+    },
+
+    _cleanPendingImages : function() {
+      for( var i = 0; i < this._pendingImages.length; i++ ) {
+        this._pendingImages[ i ].onload = null;
+        this._pendingImages[ i ].onerror = null;
+      }
+      this._pendingImages = [];
+    },
 
     _createCanvas : function() {
       this._canvas = document.createElement( "canvas" );
@@ -252,15 +291,19 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
       if( image.complete ) {
         this._context.drawImage.apply( this._context, args );
       } else {
+        this._paused = true;
+        this._pendingImages.push( image );
         var alpha = this._context.globalAlpha;
-        var context = this._context;
-        image.onload = function() {
-          // TODO [tb] : The z-order will be wrong in this case.
-          context.save();
-          context.globalAlpha = alpha;
-          context.drawImage.apply( context, args );
-          context.restore();
-        };
+        image.onload = rwt.util.Functions.bind( function() {
+          this._context.save();
+          this._context.globalAlpha = alpha;
+          this._context.drawImage.apply( this._context, args );
+          this._context.restore();
+          this._continueDrawing();
+        }, this );
+        image.onerror = rwt.util.Functions.bind( function() {
+          this._continueDrawing();
+        }, this );
       }
     },
 
