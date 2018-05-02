@@ -7,8 +7,8 @@ Bundle-Version: 3.5.0.qualifier
 Require-Bundle: org.eclipse.rap.rwt;bundle-version="[3.5.0,4.0.0)"
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: javax.servlet;version="[2.3.0,4.0.0)",
- javax.servlet.http;version="[2.3.0,4.0.0)"
+Import-Package: javax.servlet;version="[2.3.0,5.0.0)",
+ javax.servlet.http;version="[2.3.0,5.0.0)"
 Export-Package: org.eclipse.nebula.widgets.grid,
  org.eclipse.nebula.widgets.grid.internal;x-friends:="org.eclipse.rap.nebula.widgets.grid.test",
  org.eclipse.nebula.widgets.grid.internal.gridcolumngroupkit;x-friends:="org.eclipse.rap.nebula.widgets.grid.test",
