@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2017 EclipseSource and others.
+ * Copyright (c) 2012, 2018 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -314,7 +314,7 @@ describe( "WidgetProxyFactory", function() {
 
       widgetProxy.setBackground( [ 1, 2, 3 ] );
 
-      expect( widgetProxy.getBackground() ).toEqual( [ 1, 2, 3 ] );
+      expect( widgetProxy.getBackground() ).toEqual( [ 1, 2, 3, 255 ] );
     } );
 
     it( "delegates setForeground and getForeground", function() {

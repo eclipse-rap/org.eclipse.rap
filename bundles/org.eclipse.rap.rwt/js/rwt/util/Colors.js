@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2015 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2018 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -42,7 +42,8 @@ var NAMED = {
 var REGEXP = {
   hex3 : /^#([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/,
   hex6 : /^#([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/,
-  rgb : /^rgb\(\s*([0-9]{1,3}\.{0,1}[0-9]*)\s*,\s*([0-9]{1,3}\.{0,1}[0-9]*)\s*,\s*([0-9]{1,3}\.{0,1}[0-9]*)\s*\)$/
+  rgb : /^rgb\(\s*([0-9]{1,3}\.{0,1}[0-9]*)\s*,\s*([0-9]{1,3}\.{0,1}[0-9]*)\s*,\s*([0-9]{1,3}\.{0,1}[0-9]*)\s*\)$/,
+  rgba : /^rgba\(\s*([0-9]{1,3}\.{0,1}[0-9]*)\s*,\s*([0-9]{1,3}\.{0,1}[0-9]*)\s*,\s*([0-9]{1,3}\.{0,1}[0-9]*)\s*,\s*([0-9]{1,3}\.{0,1}[0-9]*)\s*\)$/
 };
 
 /**
@@ -54,7 +55,7 @@ rwt.util.Colors = {
    * Detects if a string is a valid color.
    */
   isValid : function( str ) {
-    return isNamedColor( str ) || isHex3String( str ) || isHex6String( str ) || isRgbString( str );
+    return isNamedColor( str ) || isHex3String( str ) || isHex6String( str ) || isRgbString( str ) || isRgbaString( str );
   },
 
   /**
@@ -65,6 +66,8 @@ rwt.util.Colors = {
       return NAMED[str];
     } else if( isRgbString( str ) ) {
       return rgbStringToRgb();
+    } else if( isRgbaString( str ) ) {
+      return rgbaStringToRgba();
     } else if( isHex3String( str ) ) {
       return hex3StringToRgb();
     } else if( isHex6String( str ) ) {
@@ -78,6 +81,11 @@ rwt.util.Colors = {
    */
   rgbToRgbString : function( rgb ) {
     return "rgb(" + rgb[0] + "," + rgb[1] + "," + rgb[2] + ")";
+  },
+
+  rgbaToRgbaString : function( rgba ) {
+    var alpha = ( rgba[3] || 255 ) / 255;
+    return "rgba(" + rgba[0] + "," + rgba[1] + "," + rgba[2] + "," + alpha + ")";
   },
 
   /**
@@ -110,6 +118,10 @@ function isRgbString( str ) {
   return REGEXP.rgb.test( str );
 }
 
+function isRgbaString( str ) {
+  return REGEXP.rgba.test( str );
+}
+
 function hex3StringToRgb() {
   var r = parseInt( RegExp.$1, 16 ) * 17;
   var g = parseInt( RegExp.$2, 16 ) * 17;
@@ -129,6 +141,14 @@ function rgbStringToRgb() {
   var g = parseInt( RegExp.$2, 10 );
   var b = parseInt( RegExp.$3, 10 );
   return [r, g, b];
+}
+
+function rgbaStringToRgba() {
+  var r = parseInt( RegExp.$1, 10 );
+  var g = parseInt( RegExp.$2, 10 );
+  var b = parseInt( RegExp.$3, 10 );
+  var a = Math.round( parseFloat( RegExp.$4 ) * 255 );
+  return [r, g, b, a ];
 }
 
 })();

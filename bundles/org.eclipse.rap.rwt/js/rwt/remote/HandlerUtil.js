@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 EclipseSource and others.
+ * Copyright (c) 2011, 2018 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -167,7 +167,7 @@ rwt.remote.HandlerUtil = {
         if( widget.__user$backgroundGradient == null ) {
           widget.setBackgroundGradient( null );
         }
-        var color = value[ 3 ] === 0 ? "transparent" : rwt.util.Colors.rgbToRgbString( value );
+        var color = value[ 3 ] === 0 ? "transparent" : rwt.util.Colors.rgbaToRgbaString( value );
         widget.setBackgroundColor( color );
       }
     },

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 EclipseSource and others.
+ * Copyright (c) 2014, 2018 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,10 @@ describe( "util.Colors", function() {
       expect( Colors.isValid( "rgb(255, 128, 0)" ) ).toBe( true );
     });
 
+    it( "accepts rgba(...) style colors", function() {
+      expect( Colors.isValid( "rgba(255, 128, 0, 0.25)" ) ).toBe( true );
+    });
+
     it( "rejects unsupported strings", function() {
       expect( Colors.isValid( "unknown" ) ).toBe( false );
     });
@@ -55,6 +59,10 @@ describe( "util.Colors", function() {
       expect( Colors.stringToRgb( "rgb(255, 128, 0)" ) ).toEqual( [255, 128, 0] );
     });
 
+    it( "accepts rgba(...) style colors", function() {
+      expect( Colors.stringToRgb( "rgba(255, 128, 0, 0.25)" ) ).toEqual( [255, 128, 0, 64] );
+    });
+
     it( "rejects unsupported strings", function() {
       expect( function() {
         Colors.stringToRgb( "unknown" );
@@ -67,6 +75,14 @@ describe( "util.Colors", function() {
 
     it( "converts rgb array into rgb string", function() {
       expect( Colors.rgbToRgbString( [255, 128, 0] ) ).toEqual( "rgb(255,128,0)" );
+    });
+
+  });
+
+  describe( "rgbaToRgbaString", function() {
+
+    it( "converts rgba array into rgba string", function() {
+      expect( Colors.rgbaToRgbaString( [255, 128, 0, 255] ) ).toEqual( "rgba(255,128,0,1)" );
     });
 
   });

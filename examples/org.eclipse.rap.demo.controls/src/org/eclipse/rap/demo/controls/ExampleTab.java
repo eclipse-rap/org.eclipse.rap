@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2018 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -247,7 +247,7 @@ abstract class ExampleTab implements Serializable {
       null,
       new Color( display, 154, 205, 50 ),
       new Color( display, 105, 89, 205 ),
-      new Color( display, 192, 172, 137 )
+      new Color( display, 192, 172, 137, 128 )
     };
     fgColors = new Color[] {
       null,

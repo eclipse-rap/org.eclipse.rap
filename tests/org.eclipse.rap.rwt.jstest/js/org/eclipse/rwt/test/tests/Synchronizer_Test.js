@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 EclipseSource and others.
+ * Copyright (c) 2012, 2018 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,7 +44,7 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.Synchronizer_Test", {
 
       rwt.remote.Connection.getInstance().send();
       var msg = TestUtil.getMessageObject();
-      assertEquals( [ 1, 2, 3 ], msg.findSetProperty( "w3", "background" ) );
+      assertEquals( [ 1, 2, 3, 255 ], msg.findSetProperty( "w3", "background" ) );
     },
 
     testSetBackground_noSyncIfNotChangedbyProxy : function() {
@@ -67,7 +67,7 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.Synchronizer_Test", {
       text.setBackgroundColor( "rgb( 1, 2, 3 )" );
       rwt.remote.Connection.getInstance().send();
       var msg = TestUtil.getMessageObject();
-      assertEquals( [ 3, 2, 1 ], msg.findSetProperty( "w3", "background" ) );
+      assertEquals( [ 3, 2, 1, 255 ], msg.findSetProperty( "w3", "background" ) );
     },
 
     testSetBackground_syncToNull : function() {

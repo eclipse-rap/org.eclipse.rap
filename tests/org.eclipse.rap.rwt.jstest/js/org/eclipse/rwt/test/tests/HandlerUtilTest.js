@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 EclipseSource and others.
+ * Copyright (c) 2011, 2018 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -57,7 +57,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.HandlerUtilTest", {
       var handler = rwt.remote.HandlerUtil.getControlPropertyHandler( "background" );
       var widget = new rwt.widgets.Composite();
       handler( widget, [ 1, 2, 3, 255 ] );
-      assertEquals( "rgb(1,2,3)", widget.getBackgroundColor() );
+      assertEquals( "rgba(1,2,3,1)", widget.getBackgroundColor() );
     },
 
     testBackgroundHandlerTransparent : function() {
