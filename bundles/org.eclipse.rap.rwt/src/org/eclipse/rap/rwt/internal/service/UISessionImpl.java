@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2018 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -130,8 +130,13 @@ public class UISessionImpl
 
   public void shutdown() {
     // Removing the object from the httpSession will trigger the valueUnbound method,
-    // which actually kills the session
-    getHttpSession().removeAttribute( getUISessionAttributeName( connectionId ) );
+    // which actually kills the session. If httpSession is not resident (like in Jetty 9.4.10+),
+    // call valueUnbound manually
+    try {
+      getHttpSession().removeAttribute( getUISessionAttributeName( connectionId ) );
+    } catch ( @SuppressWarnings( "unused" ) IllegalStateException exception ) {
+      valueUnbound( null );
+    }
   }
 
   @Override
