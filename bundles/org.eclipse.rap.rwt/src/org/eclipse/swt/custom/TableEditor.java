@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2014 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -116,18 +116,22 @@ Rectangle computeBounds () {
 	if (item == null || column == -1 || item.isDisposed()) return new Rectangle(0, 0, 0, 0);
 	Rectangle cell = item.getBounds(column);
 	Rectangle rect = item.getImageBounds(column);
-  // [rst] Fix for bug 269065: [TableEditor] Cell editors misaligned when cell
-  // padding is set on table
-  // https://bugs.eclipse.org/bugs/show_bug.cgi?id=269065
-  if( rect.width > 0 ) {
-    cell.width -= rect.width + rect.x - cell.x;
-    cell.x = rect.x + rect.width;
-  }
+    // [rst] Fix for bug 269065: [TableEditor] Cell editors misaligned when cell
+    // padding is set on table
+    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=269065
+    if( rect.width > 0 ) {
+      cell.width -= rect.width + rect.x - cell.x;
+      cell.x = rect.x + rect.width;
+    }
 	Rectangle area = table.getClientArea();
 	if (cell.x < area.x + area.width) {
 		if (cell.x + cell.width > area.x + area.width) {
 			cell.width = area.x + area.width - cell.x;
 		}
+	}
+	if (table.getLinesVisible()) {
+	  cell.width--;
+	  cell.height--;
 	}
 	Rectangle editorRect = new Rectangle(cell.x, cell.y, minimumWidth, minimumHeight);
 
