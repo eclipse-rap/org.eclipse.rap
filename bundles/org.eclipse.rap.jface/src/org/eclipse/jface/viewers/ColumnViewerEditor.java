@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2009 IBM Corporation and others.
+ * Copyright (c) 2006, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -248,7 +248,7 @@ public abstract class ColumnViewerEditor implements Serializable {
 					tabeditingListener = new TraverseListener() {
 
 						public void keyTraversed(TraverseEvent e) {
-							if ((feature & DEFAULT) != DEFAULT) {
+							if ((feature & DEFAULT) != DEFAULT && e.doit) {
 								processTraverseEvent(cell.getColumnIndex(),
 										viewer.getViewerRowFromItem(cell
 												.getItem()), e);
@@ -259,7 +259,7 @@ public abstract class ColumnViewerEditor implements Serializable {
 
 				control.addTraverseListener(tabeditingListener);
 // RAP [if] Use CANCEL_KEYS instead of doit = false
-                updateCancelKeys( control, true, new String[] { "TAB", "SHIFT+TAB" } ); //$NON-NLS-1$ //$NON-NLS-2$
+        updateCancelKeys( control, true, new String[] { "TAB", "SHIFT+TAB" } ); //$NON-NLS-1$ //$NON-NLS-2$
 // ENDRAP
 
 				if (editorActivationListener != null
@@ -294,7 +294,7 @@ public abstract class ColumnViewerEditor implements Serializable {
 	    } else {
 	      cancelKeys.remove( keysToUpdate[ i ] );
 	    }
-      }
+    }
 	  control.setData( RWT.CANCEL_KEYS, cancelKeys.toArray( new String[ 0 ] ) );
 	}
 // ENDRAP
@@ -426,7 +426,7 @@ public abstract class ColumnViewerEditor implements Serializable {
 						if (tabeditingListener != null) {
 							control.removeTraverseListener(tabeditingListener);
 // RAP [if] Use CANCEL_KEYS instead of doit = false
-                            updateCancelKeys( control, false, new String[] { "TAB", "SHIFT+TAB" } ); //$NON-NLS-1$ //$NON-NLS-2$
+              updateCancelKeys( control, false, new String[] { "TAB", "SHIFT+TAB" } ); //$NON-NLS-1$ //$NON-NLS-2$
 // ENDRAP
 						}
 					}
