@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2010 IBM Corporation and others.
+ * Copyright (c) 2007, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ package org.eclipse.jface.viewers;
 
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
 
 /**
  * This class is responsible to provide the concept of cells for {@link Table}.
@@ -67,10 +68,12 @@ public class TableViewerFocusCellManager extends SWTFocusCellManager {
 	ViewerCell getInitialFocusCell() {
 		Table table = (Table) getViewer().getControl();
 
-		if (!table.isDisposed() && table.getItemCount() > 0
-				&& !table.getItem(table.getTopIndex()).isDisposed()) {
-			final ViewerRow aViewerRow = getViewer().getViewerRowFromItem(
-					table.getItem(table.getTopIndex()));
+		if (table.isDisposed() || table.getItemCount() == 0) {
+		  return null;
+		}
+		TableItem topItem = table.getItem(table.getTopIndex());
+		if (topItem != null && !topItem.isDisposed()) {
+			final ViewerRow aViewerRow = getViewer().getViewerRowFromItem(topItem);
 			if (table.getColumnCount() == 0) {
 				return aViewerRow.getCell(0);
 			}
