@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2009, 2018 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -66,7 +66,11 @@ rwt.qx.Class.define( "rwt.widgets.util.MenuManager", {
               hide = true;
             }
             // 6. Execute of an menuItem
-            if ( isMouseUp && menu.isSubElement( target, true ) && target.isEnabled() ) {
+            if (    isMouseUp
+                 && menu.isSubElement( target, true )
+                 && target.isEnabled()
+                 && menu.isPressed() )
+            {
               hide = true;
             }
           }
