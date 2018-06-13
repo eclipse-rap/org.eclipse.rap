@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2011, 2018 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -135,6 +135,18 @@ rwt.qx.Class.define( "rwt.widgets.base.GridHeader", {
       } else {
         label.resetFont();
       }
+      if( this._config.headerForeground != null ) {
+        label.setTextColor( this._config.headerForeground );
+      } else {
+        label.resetTextColor();
+      }
+      if( this._config.headerBackground != null ) {
+        label.setBackgroundGradient( null );
+        label.setBackgroundColor( this._config.headerBackground );
+      } else {
+        label.resetBackgroundGradient();
+        label.resetBackgroundColor();
+      }
       label.setText( column.getText() );
       label.setImage( column.getImage() );
       label.setToolTipText( column.getToolTipText() );
@@ -185,6 +197,18 @@ rwt.qx.Class.define( "rwt.widgets.base.GridHeader", {
       this._dummyColumn.setLeft( dummyLeft );
       this._dummyColumn.setWidth( dummyWidth );
       this._dummyColumn.setCustomVariant( this._config.variant );
+      if( this._config.headerForeground != null ) {
+        this._dummyColumn.setTextColor( this._config.headerForeground );
+      } else {
+        this._dummyColumn.resetTextColor();
+      }
+      if( this._config.headerBackground != null ) {
+        this._dummyColumn.setBackgroundGradient( null );
+        this._dummyColumn.setBackgroundColor( this._config.headerBackground );
+      } else {
+        this._dummyColumn.resetBackgroundGradient();
+        this._dummyColumn.resetBackgroundColor();
+      }
     },
 
     _getDummyColumnLeft : function() {

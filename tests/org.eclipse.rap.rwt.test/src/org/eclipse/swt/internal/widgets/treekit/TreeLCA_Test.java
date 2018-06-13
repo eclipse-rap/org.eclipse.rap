@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2018 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,6 +47,7 @@ import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
@@ -839,6 +840,72 @@ public class TreeLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( tree, "headerVisible" ) );
+  }
+
+  @Test
+  public void testRenderInitialHeaderBackground() throws IOException {
+    lca.render( tree );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( tree );
+    assertFalse( operation.getProperties().names().contains( "headerBackground" ) );
+  }
+
+  @Test
+  public void testRenderHeaderBackground() throws IOException {
+    Color color = new Color( display, 1, 2, 3 );
+    tree.setHeaderBackground( color );
+    lca.renderChanges( tree );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    JsonArray expected = new JsonArray().add( 1 ).add( 2 ).add( 3 ).add( 255 );
+    assertEquals( expected, message.findSetProperty( tree, "headerBackground" ) );
+  }
+
+  @Test
+  public void testRenderHeaderBackgroundUnchanged() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( tree );
+
+    tree.setHeaderBackground( new Color( display, 1, 2, 3 ) );
+    Fixture.preserveWidgets();
+    lca.renderChanges( tree );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( tree, "headerBackground" ) );
+  }
+
+  @Test
+  public void testRenderInitialHeaderForeground() throws IOException {
+    lca.render( tree );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( tree );
+    assertFalse( operation.getProperties().names().contains( "headerForeground" ) );
+  }
+
+  @Test
+  public void testRenderHeaderForeground() throws IOException {
+    Color color = new Color( display, 1, 2, 3 );
+    tree.setHeaderForeground( color );
+    lca.renderChanges( tree );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    JsonArray expected = new JsonArray().add( 1 ).add( 2 ).add( 3 ).add( 255 );
+    assertEquals( expected, message.findSetProperty( tree, "headerForeground" ) );
+  }
+
+  @Test
+  public void testRenderHeaderForegroundUnchanged() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( tree );
+
+    tree.setHeaderForeground( new Color( display, 1, 2, 3 ) );
+    Fixture.preserveWidgets();
+    lca.renderChanges( tree );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( tree, "headerForeground" ) );
   }
 
   @Test

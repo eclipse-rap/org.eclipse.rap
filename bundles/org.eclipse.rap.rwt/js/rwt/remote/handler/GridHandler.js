@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 EclipseSource and others.
+ * Copyright (c) 2011, 2018 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -64,6 +64,8 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Grid", {
     "fixedColumns",
     "headerHeight",
     "headerVisible",
+    "headerForeground",
+    "headerBackground",
     "footerHeight",
     "footerVisible",
     "linesVisible",
@@ -116,6 +118,14 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Grid", {
     },
     "scrollBarsVisible" : function( widget, value ) {
       widget.setScrollBarsVisible( value[ 0 ], value[ 1 ] );
+    },
+    "headerForeground" : function( widget, value ) {
+      var color = value === null ? null : rwt.util.Colors.rgbaToRgbaString( value );
+      widget.setHeaderForeground( color );
+    },
+    "headerBackground" : function( widget, value ) {
+      var color = value === null ? null : rwt.util.Colors.rgbaToRgbaString( value );
+      widget.setHeaderBackground( color );
     }
   } ),
 

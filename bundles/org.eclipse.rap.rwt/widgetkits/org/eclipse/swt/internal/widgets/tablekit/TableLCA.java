@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2018 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,8 +27,8 @@ import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 import java.io.IOException;
 
 import org.eclipse.rap.json.JsonArray;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.internal.template.TemplateLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
@@ -72,6 +72,8 @@ public final class TableLCA extends WidgetLCA<Table> {
   private static final String PROP_FIXED_COLUMNS = "fixedColumns";
   private static final String PROP_HEADER_HEIGHT = "headerHeight";
   private static final String PROP_HEADER_VISIBLE = "headerVisible";
+  private static final String PROP_HEADER_FOREGROUND = "headerForeground";
+  private static final String PROP_HEADER_BACKGROUND = "headerBackground";
   private static final String PROP_LINES_VISIBLE = "linesVisible";
   private static final String PROP_TOP_ITEM_INDEX = "topItemIndex";
   private static final String PROP_FOCUS_ITEM = "focusItem";
@@ -100,6 +102,8 @@ public final class TableLCA extends WidgetLCA<Table> {
     preserveProperty( table, PROP_FIXED_COLUMNS, getFixedColumns( table ) );
     preserveProperty( table, PROP_HEADER_HEIGHT, table.getHeaderHeight() );
     preserveProperty( table, PROP_HEADER_VISIBLE, table.getHeaderVisible() );
+    preserveProperty( table, PROP_HEADER_FOREGROUND, table.getHeaderForeground() );
+    preserveProperty( table, PROP_HEADER_BACKGROUND, table.getHeaderBackground() );
     preserveProperty( table, PROP_LINES_VISIBLE, table.getLinesVisible() );
     preserveProperty( table, PROP_TOP_ITEM_INDEX, table.getTopIndex() );
     preserveProperty( table, PROP_FOCUS_ITEM, getFocusItem( table ) );
@@ -148,6 +152,8 @@ public final class TableLCA extends WidgetLCA<Table> {
     renderProperty( table, PROP_FIXED_COLUMNS, getFixedColumns( table ), -1 );
     renderProperty( table, PROP_HEADER_HEIGHT, table.getHeaderHeight(), ZERO );
     renderProperty( table, PROP_HEADER_VISIBLE, table.getHeaderVisible(), false );
+    renderProperty( table, PROP_HEADER_FOREGROUND, table.getHeaderForeground(), null );
+    renderProperty( table, PROP_HEADER_BACKGROUND, table.getHeaderBackground(), null );
     renderProperty( table, PROP_LINES_VISIBLE, table.getLinesVisible(), false );
     renderProperty( table, PROP_SORT_DIRECTION, getSortDirection( table ), DEFAULT_SORT_DIRECTION );
     renderAfterItems( table, new Runnable() {

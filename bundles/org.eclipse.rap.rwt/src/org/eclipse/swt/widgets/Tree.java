@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2018 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.TreeListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -131,6 +132,8 @@ public class Tree extends Composite {
   private TreeColumn sortColumn;
   private int sortDirection;
   private boolean headerVisible;
+  private Color headerBackground;
+  private Color headerForeground;
   private final ITreeAdapter treeAdapter;
   private int scrollLeft;
   private int topItemIndex;
@@ -1226,6 +1229,82 @@ public class Tree extends Composite {
   public boolean getHeaderVisible() {
     checkWidget();
     return headerVisible;
+  }
+
+  /**
+   * Sets the header background color to the color specified
+   * by the argument, or to the default system color if the argument is null.
+   * @param color the new color (or null)
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * @since 3.6
+   */
+  public void setHeaderBackground( Color color ) {
+    checkWidget();
+    if( color != null && color.isDisposed() ) {
+      error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    headerBackground = color;
+  }
+
+  /**
+   * Returns the header background color.
+   *
+   * @return the receiver's header background color.
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * @since 3.6
+   */
+  public Color getHeaderBackground() {
+    checkWidget();
+    return headerBackground;
+  }
+
+  /**
+   * Sets the header foreground color to the color specified
+   * by the argument, or to the default system color if the argument is null.
+   * @param color the new color (or null)
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * @since 3.6
+   */
+  public void setHeaderForeground( Color color ) {
+    checkWidget();
+    if( color != null && color.isDisposed() ) {
+      error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    headerForeground = color;
+  }
+
+  /**
+   * Returns the header foreground color.
+   *
+   * @return the receiver's header foreground color.
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * @since 3.6
+   */
+  public Color getHeaderForeground() {
+    checkWidget();
+    return headerForeground;
   }
 
   /**

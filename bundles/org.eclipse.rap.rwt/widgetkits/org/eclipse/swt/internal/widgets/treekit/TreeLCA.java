@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2018 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,8 +27,8 @@ import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 import java.io.IOException;
 
 import org.eclipse.rap.json.JsonArray;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.internal.template.TemplateLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
@@ -70,6 +70,8 @@ public final class TreeLCA extends WidgetLCA<Tree> {
   private static final String PROP_TREE_COLUMN = "treeColumn";
   private static final String PROP_HEADER_HEIGHT = "headerHeight";
   private static final String PROP_HEADER_VISIBLE = "headerVisible";
+  private static final String PROP_HEADER_FOREGROUND = "headerForeground";
+  private static final String PROP_HEADER_BACKGROUND = "headerBackground";
   private static final String PROP_LINES_VISIBLE = "linesVisible";
   private static final String PROP_TOP_ITEM_INDEX = "topItemIndex";
   private static final String PROP_FOCUS_ITEM = "focusItem";
@@ -100,6 +102,8 @@ public final class TreeLCA extends WidgetLCA<Tree> {
     preserveProperty( tree, PROP_TREE_COLUMN, getTreeColumn( tree ) );
     preserveProperty( tree, PROP_HEADER_HEIGHT, tree.getHeaderHeight() );
     preserveProperty( tree, PROP_HEADER_VISIBLE, tree.getHeaderVisible() );
+    preserveProperty( tree, PROP_HEADER_FOREGROUND, tree.getHeaderForeground() );
+    preserveProperty( tree, PROP_HEADER_BACKGROUND, tree.getHeaderBackground() );
     preserveProperty( tree, PROP_LINES_VISIBLE, tree.getLinesVisible() );
     preserveProperty( tree, PROP_TOP_ITEM_INDEX, getTopItemIndex( tree ) );
     preserveProperty( tree, PROP_FOCUS_ITEM, getFocusItem( tree ) );
@@ -158,6 +162,8 @@ public final class TreeLCA extends WidgetLCA<Tree> {
     renderProperty( tree, PROP_TREE_COLUMN, getTreeColumn( tree ), ZERO );
     renderProperty( tree, PROP_HEADER_HEIGHT, tree.getHeaderHeight(), ZERO );
     renderProperty( tree, PROP_HEADER_VISIBLE, tree.getHeaderVisible(), false );
+    renderProperty( tree, PROP_HEADER_FOREGROUND, tree.getHeaderForeground(), null );
+    renderProperty( tree, PROP_HEADER_BACKGROUND, tree.getHeaderBackground(), null );
     renderProperty( tree, PROP_LINES_VISIBLE, tree.getLinesVisible(), false );
     renderProperty( tree, PROP_SORT_DIRECTION, getSortDirection( tree ), DEFAULT_SORT_DIRECTION );
     renderAfterItems( tree, new Runnable() {

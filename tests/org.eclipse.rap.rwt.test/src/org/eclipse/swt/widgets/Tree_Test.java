@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2018 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,6 +45,7 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.TreeEvent;
 import org.eclipse.swt.events.TreeListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -727,6 +728,60 @@ public class Tree_Test {
 
     tree.setHeaderVisible( false );
     assertFalse( tree.getHeaderVisible() );
+  }
+
+  @Test
+  public void testSetHeaderBackground() {
+    Color color = new Color( display, 1, 2, 3 );
+
+    tree.setHeaderBackground( color );
+
+    assertEquals( color, tree.getHeaderBackground() );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetHeaderBackground_withDisposedColor() {
+    Color color = new Color( display, 1, 2, 3 );
+    color.dispose();
+
+    tree.setHeaderBackground( color );
+  }
+
+  @Test
+  public void testSetHeaderBackground_nullValue() {
+    Color color = new Color( display, 1, 2, 3 );
+    tree.setHeaderBackground( color );
+
+    tree.setHeaderBackground( null );
+
+    assertNull( tree.getHeaderBackground() );
+  }
+
+  @Test
+  public void testSetHeaderForeground() {
+    Color color = new Color( display, 1, 2, 3 );
+
+    tree.setHeaderForeground( color );
+
+    assertEquals( color, tree.getHeaderForeground() );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetHeaderForeground_withDisposedColor() {
+    Color color = new Color( display, 1, 2, 3 );
+    color.dispose();
+
+    tree.setHeaderForeground( color );
+  }
+
+  @Test
+  public void testSetHeaderForeground_nullValue() {
+    Color color = new Color( display, 1, 2, 3 );
+    tree.setHeaderForeground( color );
+
+    tree.setHeaderForeground( null );
+
+    assertNull( tree.getHeaderForeground() );
   }
 
   @Test

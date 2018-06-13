@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2017 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2018 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,6 +47,7 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -160,6 +161,60 @@ public class Table_Test {
     assertEquals( 0, column0.getWidth() );
     column0.setWidth( 100 );
     assertEquals( 100, column0.getWidth() );
+  }
+
+  @Test
+  public void testSetHeaderBackground() {
+    Color color = new Color( display, 1, 2, 3 );
+
+    table.setHeaderBackground( color );
+
+    assertEquals( color, table.getHeaderBackground() );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetHeaderBackground_withDisposedColor() {
+    Color color = new Color( display, 1, 2, 3 );
+    color.dispose();
+
+    table.setHeaderBackground( color );
+  }
+
+  @Test
+  public void testSetHeaderBackground_nullValue() {
+    Color color = new Color( display, 1, 2, 3 );
+    table.setHeaderBackground( color );
+
+    table.setHeaderBackground( null );
+
+    assertNull( table.getHeaderBackground() );
+  }
+
+  @Test
+  public void testSetHeaderForeground() {
+    Color color = new Color( display, 1, 2, 3 );
+
+    table.setHeaderForeground( color );
+
+    assertEquals( color, table.getHeaderForeground() );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetHeaderForeground_withDisposedColor() {
+    Color color = new Color( display, 1, 2, 3 );
+    color.dispose();
+
+    table.setHeaderForeground( color );
+  }
+
+  @Test
+  public void testSetHeaderForeground_nullValue() {
+    Color color = new Color( display, 1, 2, 3 );
+    table.setHeaderForeground( color );
+
+    table.setHeaderForeground( null );
+
+    assertNull( table.getHeaderForeground() );
   }
 
   @Test

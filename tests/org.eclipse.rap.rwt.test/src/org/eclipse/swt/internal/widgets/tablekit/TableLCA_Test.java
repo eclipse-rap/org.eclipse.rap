@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2018 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,6 +48,7 @@ import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.CellToolTipUtil;
@@ -806,6 +807,72 @@ public class TableLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( table, "linesVisible" ) );
+  }
+
+  @Test
+  public void testRenderInitialHeaderBackground() throws IOException {
+    lca.render( table );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( table );
+    assertFalse( operation.getProperties().names().contains( "headerBackground" ) );
+  }
+
+  @Test
+  public void testRenderHeaderBackground() throws IOException {
+    Color color = new Color( display, 1, 2, 3 );
+    table.setHeaderBackground( color );
+    lca.renderChanges( table );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    JsonArray expected = new JsonArray().add( 1 ).add( 2 ).add( 3 ).add( 255 );
+    assertEquals( expected, message.findSetProperty( table, "headerBackground" ) );
+  }
+
+  @Test
+  public void testRenderHeaderBackgroundUnchanged() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( table );
+
+    table.setHeaderBackground( new Color( display, 1, 2, 3 ) );
+    Fixture.preserveWidgets();
+    lca.renderChanges( table );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( table, "headerBackground" ) );
+  }
+
+  @Test
+  public void testRenderInitialHeaderForeground() throws IOException {
+    lca.render( table );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( table );
+    assertFalse( operation.getProperties().names().contains( "headerForeground" ) );
+  }
+
+  @Test
+  public void testRenderHeaderForeground() throws IOException {
+    Color color = new Color( display, 1, 2, 3 );
+    table.setHeaderForeground( color );
+    lca.renderChanges( table );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    JsonArray expected = new JsonArray().add( 1 ).add( 2 ).add( 3 ).add( 255 );
+    assertEquals( expected, message.findSetProperty( table, "headerForeground" ) );
+  }
+
+  @Test
+  public void testRenderHeaderForegroundUnchanged() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( table );
+
+    table.setHeaderForeground( new Color( display, 1, 2, 3 ) );
+    Fixture.preserveWidgets();
+    lca.renderChanges( table );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( table, "headerForeground" ) );
   }
 
   @Test

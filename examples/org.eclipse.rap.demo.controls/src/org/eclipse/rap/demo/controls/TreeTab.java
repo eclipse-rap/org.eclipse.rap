@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2018 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -81,6 +81,8 @@ public class TreeTab extends ExampleTab {
     createVisibilityButton();
     createEnablementButton();
     createHeaderVisibleButton();
+    createHeaderForegroundControl();
+    createHeaderBackgroundControl();
     createLinesVisibleButton();
     createColumnsMoveableButton();
     createColumnImagesButton();
@@ -310,6 +312,28 @@ public class TreeTab extends ExampleTab {
       public void handleEvent( Event event ) {
         headerVisible = button.getSelection();
         tree.setHeaderVisible( headerVisible );
+      }
+    } );
+  }
+
+  private void createHeaderForegroundControl() {
+    final Button button = createPropertyButton( "Header Foreground", SWT.TOGGLE );
+    button.addListener( SWT.Selection, new Listener() {
+      @Override
+      public void handleEvent( Event event ) {
+        Color color = button.getSelection() ? fgColors[ FG_COLOR_RED ]  : null;
+        tree.setHeaderForeground( color );
+      }
+    } );
+  }
+
+  private void createHeaderBackgroundControl() {
+    final Button button = createPropertyButton( "Header Background", SWT.TOGGLE );
+    button.addListener( SWT.Selection, new Listener() {
+      @Override
+      public void handleEvent( Event event ) {
+        Color color = button.getSelection() ? bgColors[ BG_COLOR_GREEN ]  : null;
+        tree.setHeaderBackground( color );
       }
     } );
   }
