@@ -31,7 +31,7 @@
     <cbi-plugins.version>1.1.2</cbi-plugins.version>
     <jetty-repo.url>http://download.eclipse.org/jetty/updates/jetty-bundles-9.x/9.4.10.v20180503/</jetty-repo.url>
     <orbit-repo.url>http://download.eclipse.org/tools/orbit/downloads/drops/R20180606145124/repository/</orbit-repo.url>
-    <platform-repo.url>http://download.eclipse.org/eclipse/updates/4.8milestones/S-4.8RC4a-201806110500/</platform-repo.url>
+    <platform-repo.url>http://download.eclipse.org/eclipse/updates/4.8/R-4.8-201806110500/</platform-repo.url>
     <rap-extra-repo.url>http://build.eclipse.org/rt/rap/base-platforms/3.5/extra-dependencies/</rap-extra-repo.url>
     <license-repo.url>http://download.eclipse.org/cbi/updates/license/</license-repo.url>
     <!-- The build type, N for nighty builds, S for stable builds. S-builds will be signed. -->
