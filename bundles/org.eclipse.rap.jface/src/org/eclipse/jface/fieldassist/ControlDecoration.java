@@ -231,7 +231,9 @@ public class ControlDecoration implements Serializable {
    *            <code>null</code> if none has been set.
    */
   public void setDescriptionText( String text ) {
-    decorator.setText( text );
+    if( !decorator.isDisposed() ) {
+      decorator.setText( text );
+    }
   }
 
   /**
@@ -253,7 +255,9 @@ public class ControlDecoration implements Serializable {
    *            <code>null</code>.
    */
   public void setImage( Image image ) {
-    decorator.setImage( image );
+    if( !decorator.isDisposed() ) {
+      decorator.setImage( image );
+    }
   }
 
   /**
