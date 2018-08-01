@@ -71,6 +71,7 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
      */
     draw : function( operations ) {
       this._paused = false;
+      this._pendingOperations = null;
       this._cleanPendingImages();
       this._draw( operations, 0 );
     },
