@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2018 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2016 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource, and others.
  *
  * All rights reserved. This program and the accompanying materials
@@ -251,7 +251,10 @@ rwt.event.EventHandlerUtil = {
     // - for non-printable keys: keydown, keydown, keyup
     var result;
     if( event.type === "keydown" ) {
-      var asPrintable = !this.isNonPrintableKeyCode( keyCode );
+      // in Firefox ONLY modifier keys behave like non-printable
+      var asPrintable = rwt.client.Client.isGecko()
+                      ? !this.isModifier( keyCode )
+                      : !this.isNonPrintableKeyCode( keyCode );
       if( this.isFirstKeyDown( keyCode ) ) {
         // add a "keypress" for non-printable keys:
         result = asPrintable ? [ "keydown" ] : [ "keydown", "keypress" ];
@@ -259,14 +262,6 @@ rwt.event.EventHandlerUtil = {
         // convert non-printable "keydown" to "keypress", suppress other:
         result = asPrintable ? [] : [ "keypress" ];
       }
-    } else if( event.type === "keypress" && rwt.client.Client.isGecko() ) {
-      // Some versions of Gecko fire keypress events for various non-printable
-      // keys so we need to detect such events and skip them in order to match
-      // the behavior of other browsers.
-      result =    this.isNonPrintableKeyCode( keyCode )
-               || ( event.ctrlKey && event.key !== "Enter" )
-               || ( event.altKey && rwt.client.Client.getPlatform() !== "mac" )
-               || event.metaKey ? [] : [ "keypress" ];
     } else {
       result = [ event.type ];
     }
