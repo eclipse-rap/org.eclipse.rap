@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 EclipseSource and others.
+ * Copyright (c) 2011, 2018 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,9 @@ rwt.qx.Class.define( "rwt.widgets.FileUpload", {
   },
 
   destruct : function() {
+    if( this._inputElement ) {
+      this._inputElement.value = "";
+    }
     this._formElement = null;
     this._inputElement = null;
   },
