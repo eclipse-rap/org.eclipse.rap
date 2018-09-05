@@ -69,7 +69,7 @@ rwt.qx.Class.define( "rwt.widgets.util.MenuManager", {
             if (    isMouseUp
                  && menu.isSubElement( target, true )
                  && target.isEnabled()
-                 && menu.isPressed() )
+                 && target.getParentMenu().isPressed() )
             {
               hide = true;
             }
