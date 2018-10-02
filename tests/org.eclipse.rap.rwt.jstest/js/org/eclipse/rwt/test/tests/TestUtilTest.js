@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2016 EclipseSource and others.
+ * Copyright (c) 2010, 2018 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -405,8 +405,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       widget.destroy();
     },
 
-    testSendKeyPress : rwt.util.Variant.select("qx.client",  {
-      "gecko" : function() {
+    testSendKeyPress : function() {
+      if( rwt.client.Client.isGecko() && rwt.client.Client.getMajor() < 64 ) {
         assertTrue( TestUtil._sendKeyPress( "a" ) );
         assertTrue( TestUtil._sendKeyPress( "A" ) );
         assertTrue( TestUtil._sendKeyPress( 65 ) );
@@ -434,8 +434,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
         assertFalse( TestUtil._sendKeyPress( 17 ) );
         assertFalse( TestUtil._sendKeyPress( "Alt" ) );
         assertFalse( TestUtil._sendKeyPress( 18 ) );
-      },
-      "default" : function() {
+      } else {
         assertTrue( TestUtil._sendKeyPress( "a" ) );
         assertTrue( TestUtil._sendKeyPress( "A" ) );
         assertTrue( TestUtil._sendKeyPress( 65 ) );
@@ -469,7 +468,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
         assertFalse( TestUtil._sendKeyPress( "Alt" ) );
         assertFalse( TestUtil._sendKeyPress( 18 ) );
       }
-    } ),
+    },
 
     testPressPrintable : function() {
       var widget = new rwt.widgets.base.Terminator();

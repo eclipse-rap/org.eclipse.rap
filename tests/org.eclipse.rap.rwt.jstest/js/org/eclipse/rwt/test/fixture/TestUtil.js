@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2016 EclipseSource and others.
+ * Copyright (c) 2009, 2018 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -350,10 +350,6 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     "Pause" : 19,
     "Win" : 91,
     "Apps" : 93,
-    "Enter" : rwt.util.Variant.select("qx.client", {
-      "default" : null,
-      "gecko" : 13
-    } ),
     "Escape" : 27
   },
 
@@ -362,10 +358,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     "Tab" : 9,
     "Escape" : 27,
     "Space" : 32,
-    "Enter" : rwt.util.Variant.select("qx.client", {
-      "default" : 13,
-      "gecko" : null
-    } )
+    "Enter": 13
   },
 
   pressOnce : function( target, key, mod ) {
@@ -400,7 +393,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
                      ? rwt.event.EventHandlerUtil.wasStopped( keyDownEvent )
                      : false;
     if( rwt.client.Client.isGecko() ) {
-      return !this._isModifier( key ) && !wasStopped;
+      return !this._isFirefoxNonPrintable( keyDownEvent, key ) && !wasStopped;
     }
     return this._isPrintable( key ) && !wasStopped;
   },
@@ -435,7 +428,11 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     "gecko" : function( type, stringOrKeyCode ) {
       var result;
       if( type === "keypress" && this._isPrintable( stringOrKeyCode ) ) {
-        result = this._isEscape( stringOrKeyCode ) ? 27 : 0;
+        if( stringOrKeyCode === 13 || stringOrKeyCode === "Enter" ) {
+          result = this._convertToKeyCode( stringOrKeyCode );
+        } else {
+          result = this._isEscape( stringOrKeyCode ) ? 27 : 0;
+        }
       } else {
         result = this._convertToKeyCode( stringOrKeyCode );
       }
@@ -447,7 +444,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     "default" : function() {
       return undefined;
     },
-    "gecko|webkit|blink" : function( type, stringOrKeyCode ) {
+    "webkit|blink" : function( type, stringOrKeyCode ) {
       // NOTE [tb] : this is never called with keypress for webkit
       var result;
       if(    type === "keypress"
@@ -455,6 +452,22 @@ org.eclipse.rwt.test.fixture.TestUtil = {
           && !this._isEscape( stringOrKeyCode )
       ) {
         result = this._convertToCharCode( stringOrKeyCode );
+      } else {
+        result = 0;
+      }
+      return result;
+    },
+    "gecko" : function( type, stringOrKeyCode ) {
+      var result;
+      if(    type === "keypress"
+          && this._isPrintable( stringOrKeyCode )
+          && !this._isEscape( stringOrKeyCode )
+      ) {
+        if( stringOrKeyCode === 13 || stringOrKeyCode === "Enter" ) {
+          result = 0;
+        } else {
+          result = this._convertToCharCode( stringOrKeyCode );
+        }
       } else {
         result = 0;
       }
@@ -484,6 +497,22 @@ org.eclipse.rwt.test.fixture.TestUtil = {
       result = false;
     }
     return result;
+  },
+
+  _isFirefoxNonPrintable : function( keyEvent, stringOrKeyCode ) {
+    if( rwt.client.Client.getMajor() < 64 ) {
+      return this._isModifier( stringOrKeyCode );
+    }
+    if( keyEvent && keyEvent.ctrlKey && keyEvent.key !== "Enter" ) {
+      return true;
+    }
+    if( keyEvent && keyEvent.altKey && rwt.client.Client.getPlatform() !== "mac" ) {
+      return true;
+    }
+    if( keyEvent && keyEvent.metaKey ) {
+      return true;
+    }
+    return !this._isPrintable( stringOrKeyCode );
   },
 
   _isEscape : function( stringOrKeyCode ) {

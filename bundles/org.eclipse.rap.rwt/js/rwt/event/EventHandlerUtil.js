@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2016 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2018 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource, and others.
  *
  * All rights reserved. This program and the accompanying materials
@@ -251,9 +251,8 @@ rwt.event.EventHandlerUtil = {
     // - for non-printable keys: keydown, keydown, keyup
     var result;
     if( event.type === "keydown" ) {
-      // in Firefox ONLY modifier keys behave like non-printable
       var asPrintable = rwt.client.Client.isGecko()
-                      ? !this.isModifier( keyCode )
+                      ? !this.isNonPrintableFirefoxKeyEvent( event, keyCode )
                       : !this.isNonPrintableKeyCode( keyCode );
       if( this.isFirstKeyDown( keyCode ) ) {
         // add a "keypress" for non-printable keys:
@@ -335,6 +334,23 @@ rwt.event.EventHandlerUtil = {
       return ( this._keyCodeToIdentifierMap[ keyCode ] || keyCode === 27 ) ? true : false;
     }
   } ),
+
+  isNonPrintableFirefoxKeyEvent : function( keyEvent, keyCode ) {
+    // in Firefox < 64 ONLY modifier keys behave like non-printable
+    if( rwt.client.Client.getMajor() < 64 ) {
+      return this.isModifier( keyCode );
+    }
+    if( keyEvent.ctrlKey && keyEvent.key !== "Enter" ) {
+      return true;
+    }
+    if( keyEvent.altKey && rwt.client.Client.getPlatform() !== "mac" ) {
+      return true;
+    }
+    if( keyEvent.metaKey ) {
+      return true;
+    }
+    return this._keyCodeToIdentifierMap[ keyCode ] ? true : false;
+  },
 
   isSpecialKeyCode : function( keyCode ) {
     return this._specialCharCodeMap[ keyCode ] ? true : false;
