@@ -500,7 +500,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   },
 
   _isFirefoxNonPrintable : function( keyEvent, stringOrKeyCode ) {
-    if( rwt.client.Client.getMajor() < 64 ) {
+    if( rwt.client.Client.getMajor() < 65 ) {
       return this._isModifier( stringOrKeyCode );
     }
     if( keyEvent && keyEvent.ctrlKey && keyEvent.key !== "Enter" ) {
