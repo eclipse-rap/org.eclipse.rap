@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2016 EclipseSource and others.
+ * Copyright (c) 2013, 2018 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -55,7 +56,8 @@ public class FileDialog_Test {
   private ThreadPoolExecutor singleThreadExecutor;
   private String[] completedFileNames;
 
-  @Rule public TestContext context = new TestContext();
+  @Rule
+  public TestContext context = new TestContext();
 
   @Before
   public void setUp() {
@@ -397,6 +399,14 @@ public class FileDialog_Test {
     dialog.shell.close();
     dialog.setClientFiles( new ClientFile[] { mock( ClientFile.class ) } );
     dialog.open( callback );
+  }
+
+  @Test
+  public void testSetUploadDirectory() {
+    dialog = new FileDialog( shell );
+    File file = new File( "myFile" );
+    dialog.setUploadDirectory( file );
+    assertSame( "Expected that the file set is returned now", file, dialog.getUploadDirectory() );
   }
 
   private DropTarget getDropTarget() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 EclipseSource and others.
+ * Copyright (c) 2011, 2018 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,6 +35,8 @@ public class DiskFileUploadReceiver extends FileUploadReceiver {
   private final List<File> targetFiles;
   private File contentTypeFile;
 
+
+  private File uploadDirectory;
   public DiskFileUploadReceiver() {
     targetFiles = new ArrayList<>();
   }
@@ -101,6 +103,27 @@ public class DiskFileUploadReceiver extends FileUploadReceiver {
   }
 
   /**
+   * Set the directory to upload to. If none is set,
+   * the default directory will be used
+   *
+   *  @param directory the directory to use
+   *  @since 3.7
+   */
+  public void setUploadDirectory( File directory ) {
+    uploadDirectory = directory;
+  }
+
+  /**
+   * Return the directory where the file should be uploaded to, or <code>null</code>
+   * when a temporary directory is used.
+   *
+   *  @since 3.7
+   */
+  public File getUploadDirectory() {
+    return uploadDirectory;
+  }
+
+  /**
    * Creates a file to save the received data to. Subclasses may override.
    *
    * @param details the details of the uploaded file like file name, content-type and size
@@ -111,7 +134,7 @@ public class DiskFileUploadReceiver extends FileUploadReceiver {
     if( details != null && details.getFileName() != null ) {
       fileName = details.getFileName();
     }
-    File result = new File( createTempDirectory(), fileName );
+    File result = new File( internalGetUploadDirectory(), fileName );
     result.createNewFile();
     return result;
   }
@@ -134,6 +157,18 @@ public class DiskFileUploadReceiver extends FileUploadReceiver {
     return result;
   }
 
+  File internalGetUploadDirectory() throws IOException  {
+    if( uploadDirectory != null ) {
+      if( !uploadDirectory.isDirectory() ) {
+       if( !uploadDirectory.mkdir() ) {
+         String message = "Failed to create upload directory: " + uploadDirectory.getAbsolutePath();
+         throw new IOException( message );
+       }
+      }
+      return uploadDirectory;
+    }
+    return createTempDirectory();
+  }
 
   private static File createTempDirectory() throws IOException {
     File result = File.createTempFile( TEMP_DIRECTORY_PREFIX, "" );

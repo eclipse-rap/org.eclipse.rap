@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2017 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -98,7 +98,7 @@ public class FileDialog extends Dialog {
   private String[] filterExtensions;
   private long sizeLimit = -1;
   private long timeLimit = -1;
-
+  private File uploadDirectory;
   /**
    * Constructs a new instance of this class given only its parent.
    *
@@ -245,6 +245,29 @@ public class FileDialog extends Dialog {
    */
   public long getUploadSizeLimit() {
     return sizeLimit;
+  }
+
+  /**
+   * Set the directory where the files should be uploaded to. If no directory is set or it is set to
+   * <code>null</code> a temporary directory is used.
+   *
+   *  @param directory the directory to upload to
+   *  @rwtextension This method is not available in SWT.
+   *  @since 3.7
+   */
+  public void setUploadDirectory( File directory ) {
+    uploadDirectory = directory;
+  }
+
+  /**
+   * Returns the directory where the files should be uploaded to, or <code>null</code>
+   * when a temporary directory is used.
+   *
+   *  @rwtextension This method is not available in SWT.
+   *  @since 3.7
+   */
+  public File getUploadDirectory() {
+    return uploadDirectory;
   }
 
   /**
@@ -426,7 +449,9 @@ public class FileDialog extends Dialog {
     UploadPanel uploadPanel = createUploadPanel( getFileNames( files ) );
     updateScrolledComposite();
     Uploader uploader = new UploaderService( files );
-    FileUploadHandler handler = new FileUploadHandler( new DiskFileUploadReceiver() );
+    DiskFileUploadReceiver receiver = new DiskFileUploadReceiver();
+    receiver.setUploadDirectory( uploadDirectory );
+    FileUploadHandler handler = new FileUploadHandler(receiver);
     handler.setMaxFileSize( sizeLimit );
     handler.setUploadTimeLimit( timeLimit );
     FileUploadRunnable uploadRunnable = new FileUploadRunnable( uploadPanel,
@@ -507,7 +532,9 @@ public class FileDialog extends Dialog {
     updateScrolledComposite();
     updateButtonsArea( fileUpload );
     Uploader uploader = new UploaderWidget( fileUpload );
-    FileUploadHandler handler = new FileUploadHandler( new DiskFileUploadReceiver() );
+    DiskFileUploadReceiver receiver = new DiskFileUploadReceiver();
+    receiver.setUploadDirectory( uploadDirectory );
+    FileUploadHandler handler = new FileUploadHandler( receiver );
     handler.setMaxFileSize( sizeLimit );
     handler.setUploadTimeLimit( timeLimit );
     FileUploadRunnable uploadRunnable = new FileUploadRunnable( uploadPanel,
