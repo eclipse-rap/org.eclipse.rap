@@ -17,6 +17,8 @@ namespace( "rwt.event" );
 
 rwt.event.EventHandlerUtil = {
 
+  FIREFOX_NEW_KEY_EVENTS_VERSION : 65,
+
   _lastUpDownType : {},
   _lastKeyCode : null,
 
@@ -337,7 +339,7 @@ rwt.event.EventHandlerUtil = {
 
   isNonPrintableFirefoxKeyEvent : function( keyEvent, keyCode ) {
     // in Firefox < 65 ONLY modifier keys behave like non-printable
-    if( rwt.client.Client.getMajor() < 65 ) {
+    if( rwt.client.Client.getMajor() < this.FIREFOX_NEW_KEY_EVENTS_VERSION ) {
       return this.isModifier( keyCode );
     }
     if( keyEvent.ctrlKey && keyEvent.key !== "Enter" ) {

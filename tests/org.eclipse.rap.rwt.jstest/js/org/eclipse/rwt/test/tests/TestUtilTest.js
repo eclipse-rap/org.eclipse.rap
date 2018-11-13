@@ -406,7 +406,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
 
     testSendKeyPress : function() {
-      if( rwt.client.Client.isGecko() && rwt.client.Client.getMajor() < 65 ) {
+      var version = rwt.event.EventHandlerUtil.FIREFOX_NEW_KEY_EVENTS_VERSION;
+      if( rwt.client.Client.isGecko() && rwt.client.Client.getMajor() < version ) {
         assertTrue( TestUtil._sendKeyPress( "a" ) );
         assertTrue( TestUtil._sendKeyPress( "A" ) );
         assertTrue( TestUtil._sendKeyPress( 65 ) );
