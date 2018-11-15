@@ -128,9 +128,19 @@ public class ServerPush_Test {
     getServerPushManager().setRequestCheckInterval( 100 );
 
     asyncSendServerPushRequest();
-    Thread.sleep( SessionTimeoutEntryPoint.SESSION_SWEEP_INTERVAL );
+    
+    final long startToWait = System.currentTimeMillis();
+    final short checkInterval = 100; 
+    final short maxWaitPeriod = 30000;
+    boolean invalidated = SessionTimeoutEntryPoint.isSessionInvalidated(); 
+    // expect the session to be invalidated within 30 Seconds
+    while( System.currentTimeMillis() - startToWait < maxWaitPeriod && !invalidated ) {
+      Thread.sleep( checkInterval );
+      invalidated = SessionTimeoutEntryPoint.isSessionInvalidated();
+    } 
 
-    assertTrue( SessionTimeoutEntryPoint.isSessionInvalidated() );
+
+    assertTrue( "The session was not invalidated after " + maxWaitPeriod +" ms", invalidated );
   }
 
   @Test

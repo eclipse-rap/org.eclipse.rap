@@ -21,7 +21,6 @@ import org.eclipse.swt.widgets.Display;
 
 public class SessionTimeoutEntryPoint implements EntryPoint {
 
-  public static int SESSION_SWEEP_INTERVAL = 3000;
 
   private static volatile boolean sessionInvalidated;
 
