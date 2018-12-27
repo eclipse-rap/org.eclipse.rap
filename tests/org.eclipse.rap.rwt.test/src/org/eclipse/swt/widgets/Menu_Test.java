@@ -19,7 +19,10 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
 
@@ -320,4 +323,14 @@ public class Menu_Test {
     assertSame( menu.getAdapter( WidgetLCA.class ), menu.getAdapter( WidgetLCA.class ) );
   }
 
+  @Test
+  public void testLocation() {
+    Menu popupMenu = spy( new Menu( shell, SWT.POP_UP ) );
+    popupMenu.setLocation( 10, 10 );
+    popupMenu.setVisible( true );
+    verify( popupMenu ).setLocation( 10, 10 );
+
+    popupMenu.setVisible( true );
+    verify( popupMenu ).setLocation( anyInt(), anyInt() );
+  }
 }

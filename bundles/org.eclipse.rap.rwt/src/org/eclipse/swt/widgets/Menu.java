@@ -49,6 +49,7 @@ public class Menu extends Widget {
   private int x;
   private int y;
   private boolean visible = false;
+  private boolean hasLocation = false;
   MenuItem cascade;
 
   /**
@@ -264,6 +265,7 @@ public class Menu extends Widget {
     if( ( style & ( SWT.BAR | SWT.DROP_DOWN ) ) == 0 ) {
       this.x = x;
       this.y = y;
+      hasLocation = true;
     }
   }
 
@@ -387,6 +389,10 @@ public class Menu extends Widget {
       if( this.visible != visible ) {
         this.visible = visible;
         if( visible ) {
+          if ( !hasLocation ) {
+            setLocation( getDisplay().getCursorLocation() );
+          }
+          hasLocation = false;
           notifyListeners( SWT.Show, new Event() );
         }
       }
