@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2017 EclipseSource and others.
+ * Copyright (c) 2013, 2019 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,12 +19,14 @@ import java.util.List;
 
 import org.eclipse.rap.fileupload.UploadSizeLimitExceededException;
 import org.eclipse.rap.fileupload.UploadTimeLimitExceededException;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.FileUploadRunnable.State;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 
 
@@ -35,6 +37,7 @@ public class UploadPanel extends Composite {
   private static long MB = 1000 * 1000;
   private static long SEC = 1000;
   private static long MIN = 60 * 1000;
+  private static String FILENAME_KEY = "filename";
 
   private final String[] fileNames;
   private Image emptyIcon;
@@ -43,6 +46,7 @@ public class UploadPanel extends Composite {
   private Image finishedIcon;
   private Image failedIcon;
   private final List<Label> icons;
+  private final List<Label> labels;
 
   public UploadPanel( Composite parent, String[] fileNames ) {
     super( parent, SWT.NONE );
@@ -50,6 +54,7 @@ public class UploadPanel extends Composite {
     initImages();
     setLayout( createGridLayout( 1, 0, 5 ) );
     icons = new ArrayList<>();
+    labels = new ArrayList<>();
     createChildren();
   }
 
@@ -69,11 +74,15 @@ public class UploadPanel extends Composite {
         container.setLayout( createContainerLayout() );
         container.setLayoutData( createHorizontalFillData() );
         Label icon = new Label( container, SWT.NONE );
+        icon.setData( FILENAME_KEY, fileName );
         icon.setImage( emptyIcon );
         icons.add( icon );
         Label name = new Label( container, SWT.NONE );
+        name.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+        name.setData( FILENAME_KEY, fileName );
         name.setLayoutData( createHorizontalFillData() );
         name.setText( fileName );
+        labels.add( name );
       }
     }
   }
@@ -84,6 +93,12 @@ public class UploadPanel extends Composite {
     return layout;
   }
 
+  void updateTexts( Exception exception ) {
+    updateToolTips( exception );
+    updateLabels( exception );
+    getParent().getParent().notifyListeners( SWT.Resize, new Event() );
+  }
+
   void updateIcons( State state ) {
     for( Label icon : icons ) {
       if( !icon.isDisposed() ) {
@@ -92,10 +107,20 @@ public class UploadPanel extends Composite {
     }
   }
 
-  void updateToolTips( Exception exception ) {
+  private void updateToolTips( Exception exception ) {
     for( Label icon : icons ) {
       if( !icon.isDisposed() ) {
-        icon.setToolTipText( getToolTip( exception ) );
+        String fileName = ( String )icon.getData( FILENAME_KEY );
+        icon.setToolTipText( getErrorToolTip( fileName, exception ) );
+      }
+    }
+  }
+
+  private void updateLabels( Exception exception ) {
+    for( Label label : labels ) {
+      if( !label.isDisposed() ) {
+        String fileName = ( String )label.getData( FILENAME_KEY );
+        label.setText( prepareText( fileName, exception ) );
       }
     }
   }
@@ -114,14 +139,47 @@ public class UploadPanel extends Composite {
     return image;
   }
 
-  private String getToolTip( Exception exception ) {
+  private static String prepareText( String fileName, Exception exception ) {
+    String errorMessage = getErrorMessage( fileName, exception );
+    if( errorMessage != null ) {
+      return fileName + "<br/><small style=\"color: red;\">" + errorMessage + "</small>";
+    }
+    return fileName;
+  }
+
+  private static String getErrorToolTip( String fileName, Exception exception ) {
     if( exception instanceof UploadSizeLimitExceededException ) {
-      long size = ( ( UploadSizeLimitExceededException )exception ).getSizeLimit();
-      String key = "SWT_UploadFailed_SizeLimitExceeded";
-      key += icons.size() == 1 ? "_Single" : "_Multi";
-      return getMessage( key, new Object[] {
-        formatSize( size )
+      UploadSizeLimitExceededException usle = ( UploadSizeLimitExceededException )exception;
+      if( fileName.equals( usle.getFileName() ) ) {
+        long size = usle.getSizeLimit();
+        String key = "SWT_UploadFailed_SizeLimitExceeded";
+        return getMessage( key, new Object[] {
+          formatSize( size )
+        } );
+      }
+      return SWT.getMessage( "SWT_UploadFailed" );
+    } else if( exception instanceof UploadTimeLimitExceededException ) {
+      long time = ( ( UploadTimeLimitExceededException )exception ).getTimeLimit();
+      return getMessage( "SWT_UploadFailed_TimeLimitExceeded", new Object[] {
+        formatTime( time )
       } );
+    } else if( exception != null ) {
+      return SWT.getMessage( "SWT_UploadFailed" );
+    }
+    return null;
+  }
+
+  private static String getErrorMessage( String fileName, Exception exception ) {
+    if( exception instanceof UploadSizeLimitExceededException ) {
+      UploadSizeLimitExceededException usle = ( UploadSizeLimitExceededException )exception;
+      if( fileName.equals( usle.getFileName() ) ) {
+        long size = usle.getSizeLimit();
+        String key = "SWT_UploadFailed_SizeLimitExceeded";
+        return getMessage( key, new Object[] {
+          formatSize( size )
+        } );
+      }
+      return null;
     } else if( exception instanceof UploadTimeLimitExceededException ) {
       long time = ( ( UploadTimeLimitExceededException )exception ).getTimeLimit();
       return getMessage( "SWT_UploadFailed_TimeLimitExceeded", new Object[] {
