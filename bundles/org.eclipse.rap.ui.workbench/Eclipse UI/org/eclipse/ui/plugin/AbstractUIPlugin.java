@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2012 IBM Corporation and others.
+ * Copyright (c) 2000, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,6 @@ import java.net.URL;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.jface.dialogs.DialogSettings;
@@ -149,31 +148,6 @@ public abstract class AbstractUIPlugin extends Plugin {
      */
     private BundleListener bundleListener;
     
-    /**
-     * Creates an abstract UI plug-in runtime object for the given plug-in
-     * descriptor.
-     * <p>
-     * Note that instances of plug-in runtime classes are automatically created
-     * by the platform in the course of plug-in activation.
-     * <p>
-     * 
-     * @param descriptor the plug-in descriptor
-     * @see Plugin#Plugin(org.eclipse.core.runtime.IPluginDescriptor descriptor)
-     * @deprecated
-     * In Eclipse 3.0 this constructor has been replaced by
-     * {@link #AbstractUIPlugin()}. Implementations of
-     * <code>MyPlugin(IPluginDescriptor descriptor)</code> should be changed to 
-     * <code>MyPlugin()</code> and call <code>super()</code> instead of
-     * <code>super(descriptor)</code>.
-     * The <code>MyPlugin(IPluginDescriptor descriptor)</code> constructor is
-     * called only for plug-ins which explicitly require the
-     * org.eclipse.core.runtime.compatibility plug-in (or, as in this case,
-     * subclasses which might).
-     */
-    public AbstractUIPlugin(IPluginDescriptor descriptor) {
-        super(descriptor);
-    }
-
     /**
      * Creates an abstract UI plug-in runtime object.
      * <p>
