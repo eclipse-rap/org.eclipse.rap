@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2014 EclipseSource and others.
+ * Copyright (c) 2006, 2019 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,7 +52,9 @@ import org.eclipse.rap.ui.resources.IResource;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpService;
 
@@ -89,6 +91,7 @@ public class WorkbenchApplicationConfiguration implements ApplicationConfigurati
     this.httpServiceReference = httpServiceReference;
   }
 
+  @Override
   public void configure( Application application ) {
     application.setOperationMode( OperationMode.SWT_COMPATIBILITY );
     registerSettingStoreFactory( application );
@@ -143,7 +146,9 @@ public class WorkbenchApplicationConfiguration implements ApplicationConfigurati
   }
 
   private static String getOSGiProperty( String name ) {
-    Bundle systemBundle = Platform.getBundle( Constants.SYSTEM_BUNDLE_SYMBOLICNAME );
+    Bundle bundle = FrameworkUtil.getBundle( WorkbenchApplicationConfiguration.class );
+    BundleContext bundleContext = bundle.getBundleContext();
+    Bundle systemBundle = bundleContext.getBundle( Constants.SYSTEM_BUNDLE_ID );
     return systemBundle.getBundleContext().getProperty( name );
   }
 
@@ -201,6 +206,7 @@ public class WorkbenchApplicationConfiguration implements ApplicationConfigurati
     createApplicationEntryPointFactory( final Class<? extends IApplication> applicationClass )
   {
     return new EntryPointFactory() {
+      @Override
       public EntryPoint create() {
         return new EntryPointApplicationWrapper( applicationClass );
       }
@@ -278,6 +284,7 @@ public class WorkbenchApplicationConfiguration implements ApplicationConfigurati
 
   private static ResourceLoader createThemeResourceLoader( final Bundle bundle ) {
     ResourceLoader result = new ResourceLoader() {
+      @Override
       public InputStream getResourceAsStream( final String resourceName ) throws IOException {
         InputStream result = null;
         IPath path = new Path( resourceName );
