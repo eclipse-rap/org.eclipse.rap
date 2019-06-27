@@ -4,7 +4,7 @@ Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.rap.nebula.widgets.richtext.demo.examples
 Bundle-Version: 3.10.0.qualifier
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: %Bundle-Vendor
 Bundle-Activator: org.eclipse.rap.nebula.widgets.richtext.demo.examples.Activator
 Import-Package: org.eclipse.nebula.widgets.richtext;version="[3.2.0,4.0.0)",

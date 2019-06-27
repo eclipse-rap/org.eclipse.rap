@@ -113,4 +113,4 @@ Import-Package: com.ibm.icu.text,
  org.eclipse.rap.rwt.osgi;version="[3.10.0,4.0.0)",
  org.w3c.dom,
  org.xml.sax
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
