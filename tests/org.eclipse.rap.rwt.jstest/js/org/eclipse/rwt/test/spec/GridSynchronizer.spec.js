@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 EclipseSource and others.
+ * Copyright (c) 2014, 2019 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -99,7 +99,8 @@ describe( "GridSynchronizer", function() {
         "text" : "rap",
         "shiftKey" : false,
         "ctrlKey" : false,
-        "altKey" : false
+        "altKey" : false,
+        "button": 0
       };
       expect( gridRemoteObject.notify ).toHaveBeenCalledWith( "Selection", properties );
       expect( gridRemoteObject.notify ).not.toHaveBeenCalledWith( "DefaultSelection", properties );
@@ -121,7 +122,8 @@ describe( "GridSynchronizer", function() {
         "item" : "foo#0",
         "shiftKey" : false,
         "ctrlKey" : false,
-        "altKey" : false
+        "altKey" : false,
+        "button": 0
       };
       expect( gridRemoteObject.notify ).toHaveBeenCalledWith( "Selection", properties );
     } );
@@ -135,7 +137,8 @@ describe( "GridSynchronizer", function() {
         "detail" : "check",
         "shiftKey" : false,
         "ctrlKey" : false,
-        "altKey" : false
+        "altKey" : false,
+        "button": 0
       };
       expect( gridRemoteObject.notify ).toHaveBeenCalledWith( "Selection", properties );
     } );
@@ -150,7 +153,8 @@ describe( "GridSynchronizer", function() {
         "index" : 1,
         "shiftKey" : false,
         "ctrlKey" : false,
-        "altKey" : false
+        "altKey" : false,
+        "button": 0
       };
       expect( gridRemoteObject.notify ).toHaveBeenCalledWith( "Selection", properties );
     } );
@@ -165,7 +169,8 @@ describe( "GridSynchronizer", function() {
         "text" : "bar",
         "shiftKey" : false,
         "ctrlKey" : false,
-        "altKey" : false
+        "altKey" : false,
+        "button": 0
       };
       expect( gridRemoteObject.notify ).toHaveBeenCalledWith( "Selection", properties );
     } );
@@ -180,7 +185,8 @@ describe( "GridSynchronizer", function() {
         "text" : "bar",
         "shiftKey" : false,
         "ctrlKey" : false,
-        "altKey" : false
+        "altKey" : false,
+        "button": 0
       };
       expect( gridRemoteObject.notify ).toHaveBeenCalledWith( "Selection", properties );
     } );
@@ -193,7 +199,8 @@ describe( "GridSynchronizer", function() {
         "item" : "foo",
         "shiftKey" : false,
         "ctrlKey" : false,
-        "altKey" : false
+        "altKey" : false,
+        "button": 0
       };
       expect( gridRemoteObject.notify ).not.toHaveBeenCalledWith( "Selection", properties );
       expect( gridRemoteObject.notify ).toHaveBeenCalledWith( "DefaultSelection", properties );

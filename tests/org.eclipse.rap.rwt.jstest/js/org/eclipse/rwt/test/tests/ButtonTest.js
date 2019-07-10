@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2015 EclipseSource and others.
+ * Copyright (c) 2009, 2019 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -652,14 +652,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       assertEquals( 1, message.findNotifyProperty( "w11", "Selection", "button" ) );
     },
 
-    testExecutePushButton_byKeyboard_doesNotSendButton : function() {
+    testExecutePushButton_byKeyboard_sendsButtonZero : function() {
       var button = this.createButton( "w11", "push" );
       TestUtil.fakeListener( button, "Selection", true );
 
       TestUtil.press( button, "Enter" );
 
       var message = TestUtil.getMessageObject();
-      assertEquals( undefined, message.findNotifyProperty( "w11", "Selection", "button" ) );
+      assertEquals( 0, message.findNotifyProperty( "w11", "Selection", "button" ) );
     },
 
     testWrap : function() {
