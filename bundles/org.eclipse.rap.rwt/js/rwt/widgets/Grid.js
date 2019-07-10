@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2018 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2010, 2019 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -983,7 +983,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     _updateScrollHeight : function() {
       var max = this.getRootItem().getVisibleChildrenCount();
       if( this._altScrollingEnabled ) {
-        max = max - this._getLastPageRowCount() + 1;
+        max = Math.min( max,  max - this._getLastPageRowCount() + 1 );
         this._setVerticalScrollBarVisible( max > 1 );
       }
       if( !this._vertScrollBar.getDisposed() && ( this._vertScrollBar.getMaximum() !== max ) ) {
