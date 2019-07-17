@@ -30,9 +30,9 @@
      -->
     <cbi-plugins.version>1.1.2</cbi-plugins.version>
     <jetty-repo.url>http://download.eclipse.org/jetty/updates/jetty-bundles-9.x/9.4.18.v20190429/</jetty-repo.url>
-    <orbit-repo.url>http://download.eclipse.org/tools/orbit/downloads/drops/R20190602212107/repository/</orbit-repo.url>
-    <platform-repo.url>http://download.eclipse.org/eclipse/updates/4.12/R-4.12-201906051800/</platform-repo.url>
-    <rap-extra-repo.url>http://build.eclipse.org/rt/rap/base-platforms/3.9/extra-dependencies/</rap-extra-repo.url>
+    <orbit-repo.url>http://download.eclipse.org/tools/orbit/downloads/drops/S20190709113129/repository/</orbit-repo.url>
+    <platform-repo.url>http://download.eclipse.org/eclipse/updates/4.13milestones/S-4.13M1-201907111805/</platform-repo.url>
+    <rap-extra-repo.url>http://build.eclipse.org/rt/rap/base-platforms/3.10/extra-dependencies/</rap-extra-repo.url>
     <license-repo.url>http://download.eclipse.org/cbi/updates/license/</license-repo.url>
     <!-- The build type, N for nighty builds, S for stable builds. S-builds will be signed. -->
     <buildType>N</buildType>
