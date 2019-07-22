@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2015 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2019 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -73,7 +73,7 @@ rwt.qx.Class.define( "rwt.runtime.System", {
 
     _parseQueryString : function( queryString ) {
       var parameters = {};
-      queryString.split( "&" ).forEach( function( pair ) {
+      queryString.replace( /\+/g, "%20" ).split( "&" ).forEach( function( pair ) {
         var parts = pair.split( "=" );
         var name = decodeURIComponent( parts[ 0 ] );
         var value = parts.length === 1 ? "" : decodeURIComponent( parts[ 1 ] );

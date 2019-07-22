@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 EclipseSource and others.
+ * Copyright (c) 2015, 2019 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,6 +51,12 @@ describe( "System", function() {
       var parameters = system._parseQueryString( "param1=value%2F1" );
 
       expect( parameters.param1 ).toEqual( [ "value/1" ] );
+    } );
+
+    it( "decodes parameter with + sign (space)", function() {
+      var parameters = system._parseQueryString( "param+1=value+1%2B" );
+
+      expect( parameters[ "param 1" ] ).toEqual( [ "value 1+" ] );
     } );
 
   } );
