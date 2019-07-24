@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2017 EclipseSource and others.
+ * Copyright (c) 2014, 2019 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ namespace( "rwt.client" );
 rwt.client.FileUploader = function() {
   this._sequenceId = 0;
   this._holder = {};
+  this._pendingUploads = {};
 };
 
 
@@ -42,6 +43,7 @@ rwt.client.FileUploader.prototype = {
   submit : function( callProperties ) {
     var url = callProperties.url;
     var fileIds = callProperties.fileIds;
+    var uploadId = callProperties.uploadId;
     var formData = rwt.client.FileUploader.createFormData();
     for( var i = 0; i < fileIds.length; i++ ) {
       var file = this._holder[ fileIds[ i ] ];
@@ -50,9 +52,25 @@ rwt.client.FileUploader.prototype = {
       }
       formData.append( "file", file );
     }
+    var that = this;
     var xhr = rwt.remote.Request.createXHR();
+    this._pendingUploads[ uploadId ] = xhr;
     xhr.open( "POST", url );
+    xhr.onreadystatechange = function () {
+      if( xhr.readyState === 4 ) {
+        delete that._pendingUploads[ uploadId ];
+      }
+    };
     xhr.send( formData );
+  },
+
+  abort : function( abortProperties ) {
+    var id = abortProperties.uploadId;
+    var upload = this._pendingUploads[ id ];
+    if ( upload ) {
+      delete this._pendingUploads[ id ];
+      upload.abort();
+    }
   }
 
 };

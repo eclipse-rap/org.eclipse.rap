@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2015 EclipseSource and others.
+ * Copyright (c) 2014, 2019 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
@@ -41,8 +43,21 @@ public class UploaderService_Test {
     verify( clientService ).submit( eq( "foo" ), same( clientFiles ) );
   }
 
+  @Test
+  public void testDispose_callsClientFileUploaderService() {
+    ClientFileUploader clientService = mockClientFileUploaderService();
+    ClientFile[] clientFiles = new ClientFile[] { new ClientFileImpl( "fileId", "", "", 0 ) };
+    UploaderService uploader = new UploaderService( clientFiles );
+
+    uploader.submit( "foo" );
+    uploader.dispose();
+
+    verify( clientService ).abort( anyString() );
+  }
+
   private ClientFileUploader mockClientFileUploaderService() {
     ClientFileUploader service = mock( ClientFileUploader.class );
+    when( service.submit( anyString(), any() ) ).thenReturn( "uploadId" );
     Client client = mock( Client.class );
     when( client.getService( ClientFileUploader.class ) ).thenReturn( service );
     context.replaceClient( client );

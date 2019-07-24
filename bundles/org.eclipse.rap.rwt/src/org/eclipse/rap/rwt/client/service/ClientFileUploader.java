@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 EclipseSource and others.
+ * Copyright (c) 2014, 2019 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,8 +27,20 @@ public interface ClientFileUploader extends ClientService {
    *
    * @param url the URL to upload to, must not be <code>null</code> or empty
    * @param clientFiles client-side files, must not be <code>null</code>
+   * @return the upload id that can be used to abort it.
    * @see ClientFileTransfer
+   * @since 3.10
    */
-  public void submit( String url, ClientFile[] clientFiles );
+  public String submit( String url, ClientFile[] clientFiles );
+
+
+  /**
+   * Abort the upload with the given id. If such upload does not exists or already finished, nothing
+   * happens.
+   *
+   * @param uploadId the upload id returned by <code>submit</code> method.
+   * @since 3.10
+   */
+  public void abort( String uploadId );
 
 }

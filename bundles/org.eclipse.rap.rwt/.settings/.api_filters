@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <component id="org.eclipse.rap.rwt" version="2">
+    <resource path="src/org/eclipse/rap/rwt/client/service/ClientFileUploader.java" type="org.eclipse.rap.rwt.client.service.ClientFileUploader">
+        <filter id="405901410">
+            <message_arguments>
+                <message_argument value="org.eclipse.rap.rwt.client.service.ClientFileUploader"/>
+                <message_argument value="submit(String, ClientFile[])"/>
+            </message_arguments>
+        </filter>
+    </resource>
     <resource path="src/org/eclipse/swt/dnd/DragSourceEvent.java" type="org.eclipse.swt.dnd.DragSourceEvent">
         <filter id="643850349">
             <message_arguments>

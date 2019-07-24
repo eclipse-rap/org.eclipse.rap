@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 EclipseSource and others.
+ * Copyright (c) 2014, 2019 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,11 +10,13 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.client;
 
+import static org.junit.Assert.assertNotEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -95,8 +97,53 @@ public class ClientFileUploaderImpl_Test {
 
     JsonObject expected = new JsonObject()
       .add( "url", "fooURL" )
-      .add( "fileIds", new JsonArray().add( "fileId1" ).add( "fileId2" ) );
+      .add( "fileIds", new JsonArray().add( "fileId1" ).add( "fileId2" ) )
+      .add( "uploadId", "upload_0" );
     verify( remoteObject ).call( eq( "submit" ), eq( expected ) );
+  }
+
+  @Test
+  public void testSubmit_returnsDifferentIds() {
+    RemoteObject remoteObject = mock( RemoteObject.class );
+    fakeConnection( remoteObject );
+    ClientFile[] files = new ClientFile[]{
+      new ClientFileImpl( "fileId1", "", "", 0 ),
+      new ClientFileImpl( "fileId2", "", "", 0 )
+    };
+
+    uploader = new ClientFileUploaderImpl();
+    String id1 = uploader.submit( "fooURL", files );
+    String id2 = uploader.submit( "fooURL", files );
+
+    assertNotEquals( id1, id2 );
+  }
+
+  @Test( expected = NullPointerException.class )
+  public void testAbort_failsWithNullId() {
+    uploader.abort( null );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testAbort_failsWithEmptyId() {
+    uploader.abort( "" );
+  }
+
+  @Test
+  public void testAbort_createsCallOperation() {
+    RemoteObject remoteObject = mock( RemoteObject.class );
+    fakeConnection( remoteObject );
+    ClientFile[] files = new ClientFile[]{
+      new ClientFileImpl( "fileId1", "", "", 0 ),
+      new ClientFileImpl( "fileId2", "", "", 0 )
+    };
+
+    uploader = new ClientFileUploaderImpl();
+    String id = uploader.submit( "fooURL", files );
+    reset( remoteObject );
+    uploader.abort( id );
+
+    JsonObject expected = new JsonObject().add( "uploadId", "upload_0" );
+    verify( remoteObject ).call( eq( "abort" ), eq( expected ) );
   }
 
   private static ConnectionImpl fakeConnection( RemoteObject remoteObject ) {
