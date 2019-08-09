@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 EclipseSource and others.
+ * Copyright (c) 2011, 2019 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,6 +38,9 @@ import org.eclipse.swt.widgets.Text;
 public class FileUploadExamplePage implements IExamplePage {
 
   private static final String INITIAL_TEXT = "no files uploaded.";
+  private static final String NO_FILES_SELECTED = "no file selected";
+  private static final String UPLOAD = "Upload";
+  private static final String ABORT = "Abort";
   private FileUpload fileUpload;
   private Label fileNameLabel;
   private Button uploadButton;
@@ -86,18 +89,42 @@ public class FileUploadExamplePage implements IExamplePage {
     Composite area = new Composite( parent, SWT.NONE );
     area.setLayout( ExampleUtil.createGridLayout( 2, true, true, true ) );
     ExampleUtil.createHeading( area, "FileUpload widget", 2 );
-    fileUpload = new FileUpload( area, SWT.NONE );
-    fileUpload.setText( "Select File" );
-    fileUpload.setFilterExtensions( new String[] { ".gif", ".png", ".jpg" } );
-    fileUpload.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, false, false ) );
     fileNameLabel = new Label( area, SWT.NONE );
-    fileNameLabel.setText( "no file selected" );
+    fileNameLabel.setText( NO_FILES_SELECTED );
     fileNameLabel.setLayoutData( ExampleUtil.createHorzFillData() );
     fileNameLabel.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, true, false ) );
     uploadButton = new Button( area, SWT.PUSH );
-    uploadButton.setText( "Upload" );
+    uploadButton.setText( UPLOAD );
     uploadButton.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, false, false ) );
     new Label( area, SWT.NONE );
+    final String url = startUploadReceiver();
+    pushSession = new ServerPushSession();
+    uploadButton.addSelectionListener( new SelectionAdapter() {
+      @Override
+      public void widgetSelected( SelectionEvent e ) {
+        if( UPLOAD.equals( uploadButton.getText() ) ) {
+          uploadButton.setText( ABORT );
+          pushSession.start();
+          fileUpload.submit( url );
+        } else {
+          fileNameLabel.setText( NO_FILES_SELECTED );
+          uploadButton.setText( UPLOAD );
+          createFileUpload( area );
+        }
+      }
+    } );
+    createFileUpload( area );
+    return area;
+  }
+
+  private void createFileUpload( Composite parent ) {
+    if( fileUpload != null ) {
+      fileUpload.dispose();
+    }
+    fileUpload = new FileUpload( parent, SWT.NONE );
+    fileUpload.setText( "Select File" );
+    fileUpload.setFilterExtensions( new String[] { ".gif", ".png", ".jpg" } );
+    fileUpload.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, false, false ) );
     fileUpload.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent e ) {
@@ -105,16 +132,8 @@ public class FileUploadExamplePage implements IExamplePage {
         fileNameLabel.setText( fileName == null ? "" : fileName );
       }
     } );
-    final String url = startUploadReceiver();
-    pushSession = new ServerPushSession();
-    uploadButton.addSelectionListener( new SelectionAdapter() {
-      @Override
-      public void widgetSelected( SelectionEvent e ) {
-        pushSession.start();
-        fileUpload.submit( url );
-      }
-    } );
-    return area;
+    fileUpload.moveAbove( fileNameLabel );
+    parent.layout();
   }
 
   private String startUploadReceiver() {
@@ -130,6 +149,7 @@ public class FileUploadExamplePage implements IExamplePage {
       @Override
       public void uploadFailed( FileUploadEvent event ) {
         addToLog( "upload failed: " + event.getException() );
+        resetUploadButton();
       }
 
       @Override
@@ -137,9 +157,21 @@ public class FileUploadExamplePage implements IExamplePage {
         for( FileDetails file : event.getFileDetails() ) {
           addToLog( "received: " + file.getFileName() );
         }
+        resetUploadButton();
       }
     } );
     return uploadHandler.getUploadUrl();
+  }
+
+  private void resetUploadButton() {
+    if( !uploadButton.isDisposed() ) {
+      uploadButton.getDisplay().asyncExec( new Runnable() {
+        @Override
+        public void run() {
+          uploadButton.setText( UPLOAD );
+        }
+      } );
+    }
   }
 
   private void addToLog( final String message ) {
