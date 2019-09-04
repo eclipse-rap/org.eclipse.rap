@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -141,7 +141,7 @@ public abstract class WorkbenchPart extends EventManager implements
      * should invoke the method on their superclass to ensure that the
      * Platform's adapter manager is consulted).
      */
-    public Object getAdapter(Class adapter) {
+    public <T> T getAdapter(Class<T> adapter) {
 
         /**
          * This implementation of the method declared by <code>IAdaptable</code>
