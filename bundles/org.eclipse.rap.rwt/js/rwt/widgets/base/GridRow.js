@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2018 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2010, 2019 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -191,7 +191,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         "borderBottomWidth" : lines.horizontal ? "1px" : "0px"
       } );
       for( var cell = 0; cell < this.$cellBackgrounds.length; cell++ ) {
-        this._renderVericalGridLine( cell );
+        this._renderVerticalGridLine( cell );
       }
     },
 
@@ -202,7 +202,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     setMirror : function( mirror ) {
       this._mirror = mirror;
       for( var cell = 0; cell < this.$cellBackgrounds.length; cell++ ) {
-        this._renderVericalGridLine( cell );
+        this._renderVerticalGridLine( cell );
       }
     },
 
@@ -866,17 +866,20 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
           "borderStyle" : "solid"
         } );
         this.$cellBackgrounds[ cell ] = result;
-        this._renderVericalGridLine( cell );
+        this._renderVerticalGridLine( cell );
       }
       return result;
     },
 
-    _renderVericalGridLine : function( cell ) {
-      this.$cellBackgrounds[ cell ].css( {
-        "borderRightWidth" : !this._mirror && this._gridLines.vertical ? "1px" : "0px",
-        "borderLeftWidth" : this._mirror && this._gridLines.vertical ? "1px" : "0px",
-        "borderColor" : this._gridLines.vertical || ""
-      } );
+    _renderVerticalGridLine : function( cell ) {
+      var target = this.$cellBackgrounds[ cell ];
+      if( target ) {
+        target.css( {
+          "borderRightWidth" : !this._mirror && this._gridLines.vertical ? "1px" : "0px",
+          "borderLeftWidth" : this._mirror && this._gridLines.vertical ? "1px" : "0px",
+          "borderColor" : this._gridLines.vertical || ""
+        } );
+      }
     },
 
     _getIndentImageElement : function() {
