@@ -24,6 +24,7 @@ import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineCluster;
 import org.eclipse.rap.rwt.cluster.testfixture.server.JettyFactory;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -48,6 +49,7 @@ public class SessionSerialization_Test {
     cluster.stop();
   }
 
+  @Ignore
   @Test
   public void testWidgetsAreSerializable() throws Exception {
     Response response = sendRequestToPrimary();
