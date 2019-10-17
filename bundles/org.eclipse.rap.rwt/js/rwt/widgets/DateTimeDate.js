@@ -800,7 +800,9 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
     _onCalendarDateChange : function() {
       if( !this._internalDateChanged ) {
         var milliseconds = this._calendar.getDate().getTime();
-        if( milliseconds >= this._minimum.getTime() && milliseconds <= this._maximum.getTime() ) {
+        var min = this._minimum ? this._minimum.getTime() : Number.MIN_VALUE;
+        var max = this._maximum ? this._maximum.getTime() : Number.MAX_VALUE;
+        if( milliseconds >= min && milliseconds <= max ) {
           this._setDate( this._calendar.getDate() );
           this._sendChanges();
         }
