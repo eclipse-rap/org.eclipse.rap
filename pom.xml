@@ -60,9 +60,6 @@
     <module>tests/org.eclipse.rap.fileupload.test</module>
     <module>tests/org.eclipse.rap.nebula.widgets.grid.test</module>
     <module>tests/org.eclipse.rap.nebula.widgets.richtext.test</module>
-    <module>tests/org.eclipse.rap.rwt.cluster.testfixture</module>
-    <module>tests/org.eclipse.rap.rwt.cluster.testfixture.test</module>
-    <module>tests/org.eclipse.rap.rwt.cluster.test</module>
     <module>tests/org.eclipse.rap.rwt.osgi.test</module>
     <module>tests/org.eclipse.rap.rwt.testfixture</module>
     <module>tests/org.eclipse.rap.rwt.test</module>

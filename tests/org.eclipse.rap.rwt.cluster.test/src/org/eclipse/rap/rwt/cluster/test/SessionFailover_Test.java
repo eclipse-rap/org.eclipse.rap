@@ -59,7 +59,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -99,7 +98,6 @@ public class SessionFailover_Test {
     cluster.stop();
   }
 
-  @Ignore
   @Test
   public void testButtonEntryPoint() throws Exception {
     initializeClient( ButtonEntryPoint.class );
@@ -124,7 +122,6 @@ public class SessionFailover_Test {
     assertNotSame( primaryDisplay, secondaryDisplay );
   }
 
-  @Ignore
   @Test
   public void testResourcesEntryPoint() throws Exception {
     initializeClient( ResourcesEntryPoint.class );
@@ -143,7 +140,6 @@ public class SessionFailover_Test {
     assertSame( secondaryShell.getDisplay(), secondaryFont.getDevice() );
   }
 
-  @Ignore
   @Test
   public void testImageEntryPoint() throws Exception {
     initializeClient( ImageEntryPoint.class );
@@ -163,7 +159,6 @@ public class SessionFailover_Test {
     assertSame( secondaryShell.getDisplay(), secondaryImage.getDevice() );
   }
 
-  @Ignore
   @Test
   public void testAsyncExecEntryPoint() throws Exception {
     initializeClient( AsyncExecEntryPoint.class );
@@ -178,7 +173,6 @@ public class SessionFailover_Test {
     assertTrue( AsyncExecEntryPoint.wasRunnableExecuted( secondaryUiSession ) );
   }
 
-  @Ignore
   @Test
   public void testSyncExecEntryPoint() throws Exception {
     initializeClient( AsyncExecEntryPoint.class );
@@ -193,7 +187,6 @@ public class SessionFailover_Test {
     assertTrue( AsyncExecEntryPoint.wasRunnableExecuted( secondaryUiSession ) );
   }
 
-  @Ignore
   @Test
   public void testTimerExecEntryPoint() throws Exception {
     initializeClient( TimerExecEntryPoint.class );
@@ -212,7 +205,6 @@ public class SessionFailover_Test {
     assertTrue( TimerExecEntryPoint.wasRunnableExecuted( secondaryUiSession ) );
   }
 
-  @Ignore
   @Test
   public void testDNDEntryPoint() throws Exception {
     initializeClient( DNDEntryPoint.class );
@@ -231,7 +223,6 @@ public class SessionFailover_Test {
     assertTrue( DNDEntryPoint.isDropFinished( secondaryUiSession ) );
   }
 
-  @Ignore
   @Test
   public void testDialogEntryPoint() throws Exception {
     initializeClient( DialogEntryPoint.class );
