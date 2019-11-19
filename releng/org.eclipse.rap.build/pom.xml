@@ -30,7 +30,7 @@
      -->
     <cbi-plugins.version>1.1.2</cbi-plugins.version>
     <jetty-repo.url>http://download.eclipse.org/jetty/updates/jetty-bundles-9.x/9.4.22.v20191022/</jetty-repo.url>
-    <orbit-repo.url>http://download.eclipse.org/tools/orbit/downloads/drops/S20191025144108/repository/</orbit-repo.url>
+    <orbit-repo.url>http://download.eclipse.org/tools/orbit/downloads/drops/S20191118194249/repository/</orbit-repo.url>
     <platform-repo.url>http://download.eclipse.org/eclipse/updates/4.14-I-builds/I20191101-0300/</platform-repo.url>
     <rap-extra-repo.url>http://build.eclipse.org/rt/rap/base-platforms/3.11/extra-dependencies/</rap-extra-repo.url>
     <license-repo.url>http://download.eclipse.org/cbi/updates/license/</license-repo.url>
