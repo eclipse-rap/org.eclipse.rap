@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2019 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1314,6 +1314,9 @@ public class TreeItem extends Item {
    */
   public TreeItem getItem( int index ) {
     checkWidget();
+    if( !parent.checkData( this, this.index ) ) {
+      error( SWT.ERROR_WIDGET_DISPOSED );
+    }
     if( index < 0 || index >= itemCount ) {
       SWT.error( SWT.ERROR_INVALID_RANGE );
     }

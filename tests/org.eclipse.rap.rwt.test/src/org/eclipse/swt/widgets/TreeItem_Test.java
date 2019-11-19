@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2019 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1172,14 +1172,32 @@ public class TreeItem_Test {
   }
 
   @Test
-  public void testVirtualGetItemDoesNotFireSetDataEvent() {
+  public void testVirtualGetItem_onTree_doesNotFireSetDataEvent() {
     final LoggingListener log = new LoggingListener();
     tree = new Tree( shell, SWT.VIRTUAL );
     tree.setItemCount( 100 );
     tree.setSize( 100, 100 );
     tree.addListener( SWT.SetData, log );
+
     tree.getItem( 99 );
+
     assertEquals( 0, log.size() );
+  }
+
+  @Test
+  public void testVirtualGetItem_onItem_firesSetDataEvent() {
+    final LoggingListener log = new LoggingListener();
+    tree = new Tree( shell, SWT.VIRTUAL );
+    tree.setSize( 100, 100 );
+    tree.setItemCount( 100 );
+    TreeItem treeItem = tree.getItem( 50 );
+    treeItem.setItemCount( 10 );
+    tree.addListener( SWT.SetData, log );
+
+    treeItem.getItem( 5 );
+
+    assertEquals( 1, log.size() );
+    assertSame( treeItem, log.get( 0 ).item );
   }
 
   @Test
