@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2018 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2019 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,6 +38,7 @@ import org.eclipse.rap.rwt.template.Template;
 import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.DisposeEvent;
@@ -1712,8 +1713,9 @@ public class Tree_Test {
     item.setText( "<b>foo</b>" );
     int width1 = tree.getPreferredCellWidth( item, 0 );
 
-    item.clearPreferredWidthBuffers( false );
+    item.dispose();
     tree.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+    item = new TreeItem( tree, SWT.NONE );
     int width2 = tree.getPreferredCellWidth( item, 0 );
 
     assertTrue( width1 > width2 );
@@ -1725,8 +1727,9 @@ public class Tree_Test {
     item.setText( "<b>foo</b>" );
     int width1 = tree.getVisualCellWidth( item, 0 );
 
-    item.clearPreferredWidthBuffers( false );
+    item.dispose();
     tree.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+    item = new TreeItem( tree, SWT.NONE );
     int width2 = tree.getVisualCellWidth( item, 0 );
 
     assertTrue( width1 > width2 );
@@ -1738,8 +1741,9 @@ public class Tree_Test {
     item.setText( "<b>foo</b>" );
     int width1 = tree.getVisualTextWidth( item, 0 );
 
-    item.clearPreferredWidthBuffers( false );
+    item.dispose();
     tree.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+    item = new TreeItem( tree, SWT.NONE );
     int width2 = tree.getVisualTextWidth( item, 0 );
 
     assertTrue( width1 > width2 );
@@ -1912,6 +1916,26 @@ public class Tree_Test {
     } catch( IllegalArgumentException notExpected ) {
       fail();
     }
+  }
+
+  @Test
+  public void testSetMarkupEnabled_onDirtyWidget() {
+    new TreeItem( tree, SWT.NONE );
+
+    try {
+      tree.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+      fail();
+    } catch( SWTException expected ) {
+      assertTrue( expected.throwable instanceof IllegalStateException );
+    }
+  }
+
+  @Test
+  public void testSetMarkupEnabled_onDirtyWidget_onceEnabledBefore() {
+    tree.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+    new TreeItem( tree, SWT.NONE );
+
+    tree.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
   }
 
   @Test

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 EclipseSource and others.
+ * Copyright (c) 2012, 2019 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1125,10 +1125,13 @@ public class GridItem_Test {
   public void testGetPreferredWidth_WithMarkup() {
     createGridColumns( grid, 2, SWT.NONE );
     GridItem item = new GridItem( grid, SWT.NONE );
-    item.setText( "<b>foo</bar>" );
+    item.setText( "<b>foo</b>" );
     int width1 = item.getPreferredWidth( 0 );
 
+    item.dispose();
     grid.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+    item = new GridItem( grid, SWT.NONE );
+    item.setText( "<b>foo</b>" );
     int width2 = item.getPreferredWidth( 0 );
 
     assertTrue( width1 > width2 );

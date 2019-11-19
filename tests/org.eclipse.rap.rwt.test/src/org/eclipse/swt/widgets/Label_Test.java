@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2018 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2019 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
@@ -192,6 +193,7 @@ public class Label_Test {
     label.setText( "foo bar" );
     Point textExtent = label.computeSize( SWT.DEFAULT, SWT.DEFAULT );
 
+    label.setText( "" );
     label.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
     label.setText( "<span>foo</span>" );
     Point markupExtent = label.computeSize( SWT.DEFAULT, SWT.DEFAULT );
@@ -253,6 +255,26 @@ public class Label_Test {
     } catch( IllegalArgumentException notExpected ) {
       fail();
     }
+  }
+
+  @Test
+  public void testSetMarkupEnabled_onDirtyWidget() {
+    label.setText( "something" );
+
+    try {
+      label.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+      fail();
+    } catch( SWTException expected ) {
+      assertTrue( expected.throwable instanceof IllegalStateException );
+    }
+  }
+
+  @Test
+  public void testSetMarkupEnabled_onDirtyWidget_onceEnabledBefore() {
+    label.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+    label.setText( "something" );
+
+    label.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
   }
 
   @Test

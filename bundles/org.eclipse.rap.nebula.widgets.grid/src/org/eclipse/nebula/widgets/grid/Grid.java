@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2017 EclipseSource and others.
+ * Copyright (c) 2012, 2019 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.nebula.widgets.grid;
 
+import static org.eclipse.swt.internal.widgets.MarkupUtil.checkWidgetState;
 import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 
 import java.util.ArrayList;
@@ -2331,6 +2332,7 @@ public class Grid extends Composite {
   @Override
   public void setData( String key, Object value ) {
     if( !RWT.MARKUP_ENABLED.equals( key ) || !isMarkupEnabledFor( this ) ) {
+      checkWidgetState( key, () -> items.size() == 0 );
       super.setData( key, value );
     }
   }

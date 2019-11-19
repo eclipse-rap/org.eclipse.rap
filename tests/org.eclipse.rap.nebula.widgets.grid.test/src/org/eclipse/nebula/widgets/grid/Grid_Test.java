@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2017 EclipseSource and others.
+ * Copyright (c) 2012, 2019 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,6 +40,7 @@ import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionListener;
@@ -2766,6 +2767,26 @@ public class Grid_Test {
     } catch( IllegalArgumentException notExpected ) {
       fail();
     }
+  }
+
+  @Test
+  public void testSetMarkupEnabled_onDirtyWidget() {
+    new GridItem( grid, SWT.NONE );
+
+    try {
+      grid.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+      fail();
+    } catch( SWTException expected ) {
+      assertTrue( expected.throwable instanceof IllegalStateException );
+    }
+  }
+
+  @Test
+  public void testSetMarkupEnabled_onDirtyWidget_onceEnabledBefore() {
+    grid.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+    new GridItem( grid, SWT.NONE );
+
+    grid.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
   }
 
   @Test

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 Rüdiger Herrmann and others.
+ * Copyright (c) 2011, 2019 Rüdiger Herrmann and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.IToolTipAdapter;
@@ -239,6 +240,26 @@ public class ToolTip_Test {
     } catch( IllegalArgumentException notExpected ) {
       fail();
     }
+  }
+
+  @Test
+  public void testSetMarkupEnabled_onDirtyWidget() {
+    toolTip.setText( "something" );
+
+    try {
+      toolTip.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+      fail();
+    } catch( SWTException expected ) {
+      assertTrue( expected.throwable instanceof IllegalStateException );
+    }
+  }
+
+  @Test
+  public void testSetMarkupEnabled_onDirtyWidget_onceEnabledBefore() {
+    toolTip.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+    toolTip.setText( "something" );
+
+    toolTip.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
   }
 
   @Test

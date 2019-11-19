@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2019 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -1338,9 +1339,11 @@ public class List_Test {
   public void testItemDimensions_withMarkupEnabled() {
     List list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     list.add( "<b>123</b>" );
-
     int dim1 = list.getItemDimensions().x;
+
+    list.removeAll();
     list.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+    list.add( "<b>123</b>" );
     int dim2 = list.getItemDimensions().x;
 
     assertTrue( dim1 > dim2 );
@@ -1491,6 +1494,26 @@ public class List_Test {
     } catch( IllegalArgumentException notExpected ) {
       fail();
     }
+  }
+
+  @Test
+  public void testSetMarkupEnabled_onDirtyWidget() {
+    list.setItems( new String[] { "something" } );
+
+    try {
+      list.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+      fail();
+    } catch( SWTException expected ) {
+      assertTrue( expected.throwable instanceof IllegalStateException );
+    }
+  }
+
+  @Test
+  public void testSetMarkupEnabled_onDirtyWidget_onceEnabledBefore() {
+    list.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+    list.setItems( new String[] { "something" } );
+
+    list.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
   }
 
   @Test
