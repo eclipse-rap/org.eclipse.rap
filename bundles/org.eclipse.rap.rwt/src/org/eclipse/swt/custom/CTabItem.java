@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2016 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2019 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,9 @@
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
+import static org.eclipse.swt.internal.widgets.MarkupUtil.checkMarkupPrecondition;
 import static org.eclipse.swt.internal.widgets.MarkupUtil.isToolTipMarkupEnabledFor;
+import static org.eclipse.swt.internal.widgets.MarkupUtil.MarkupTarget.TOOLTIP;
 import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
 
 import org.eclipse.rap.rwt.RWT;
@@ -129,7 +131,7 @@ public class CTabItem extends Item {
    */
   public CTabItem( CTabFolder parent, int style, int index ) {
     super( parent, checkStyle( style ) );
-    this.showClose = ( style & SWT.CLOSE ) != 0;
+    showClose = ( style & SWT.CLOSE ) != 0;
     this.parent = parent;
     parent.createItem( this, index );
   }
@@ -142,7 +144,7 @@ public class CTabItem extends Item {
         widgetFontAdapter = new IWidgetFontAdapter() {
           @Override
           public Font getUserFont() {
-            return CTabItem.this.font;
+            return font;
           }
         };
       }
@@ -444,6 +446,7 @@ public class CTabItem extends Item {
   public void setData( String key, Object value ) {
     handleBadge( key, value );
     if( !RWT.TOOLTIP_MARKUP_ENABLED.equals( key ) || !isToolTipMarkupEnabledFor( this ) ) {
+      checkMarkupPrecondition( key, TOOLTIP, () -> toolTipText == null );
       super.setData( key, value );
     }
   }

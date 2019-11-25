@@ -12,9 +12,10 @@
 package org.eclipse.swt.widgets;
 
 import static org.eclipse.rap.rwt.internal.textsize.TextSizeUtil.stringExtent;
-import static org.eclipse.swt.internal.widgets.MarkupUtil.checkWidgetState;
+import static org.eclipse.swt.internal.widgets.MarkupUtil.checkMarkupPrecondition;
 import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 import static org.eclipse.swt.internal.widgets.MarkupUtil.isToolTipMarkupEnabledFor;
+import static org.eclipse.swt.internal.widgets.MarkupUtil.MarkupTarget.TEXT;
 import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
 
 import java.util.ArrayList;
@@ -1712,7 +1713,7 @@ public class Tree extends Composite {
       setPreloadedItems( value );
     }
     if( !RWT.MARKUP_ENABLED.equals( key ) || !isMarkupEnabledFor( this ) ) {
-      checkWidgetState( key, () -> itemCount == 0 );
+      checkMarkupPrecondition( key, TEXT, () -> itemCount == 0 );
       super.setData( key, value );
     }
   }

@@ -10,8 +10,9 @@
  ******************************************************************************/
 package org.eclipse.nebula.widgets.grid;
 
-import static org.eclipse.swt.internal.widgets.MarkupUtil.checkWidgetState;
+import static org.eclipse.swt.internal.widgets.MarkupUtil.checkMarkupPrecondition;
 import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
+import static org.eclipse.swt.internal.widgets.MarkupUtil.MarkupTarget.TEXT;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -2332,7 +2333,7 @@ public class Grid extends Composite {
   @Override
   public void setData( String key, Object value ) {
     if( !RWT.MARKUP_ENABLED.equals( key ) || !isMarkupEnabledFor( this ) ) {
-      checkWidgetState( key, () -> items.size() == 0 );
+      checkMarkupPrecondition( key, TEXT, () -> items.size() == 0 );
       super.setData( key, value );
     }
   }

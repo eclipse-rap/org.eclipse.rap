@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2015 EclipseSource and others.
+ * Copyright (c) 2009, 2019 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
 import org.eclipse.swt.internal.widgets.toolitemkit.ToolItemLCA;
@@ -302,6 +303,26 @@ public class ToolItem_Test {
     } catch( IllegalArgumentException notExpected ) {
       fail();
     }
+  }
+
+  @Test
+  public void testSetToolTipMarkupEnabled_onDirtyWidget() {
+    toolItem.setToolTipText( "something" );
+
+    try {
+      toolItem.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+      fail();
+    } catch( SWTException expected ) {
+      assertTrue( expected.throwable instanceof IllegalStateException );
+    }
+  }
+
+  @Test
+  public void testSetToolTipMarkupEnabled_onDirtyWidget_onceEnabledBefore() {
+    toolItem.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+    toolItem.setToolTipText( "something" );
+
+    toolItem.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
   }
 
   @Test

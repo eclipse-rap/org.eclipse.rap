@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2017 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2009, 2019 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1584,6 +1584,26 @@ public class Control_Test {
     } catch( IllegalArgumentException notExpected ) {
       fail();
     }
+  }
+
+  @Test
+  public void testSetToolTipMarkupEnabled_onDirtyWidget() {
+    shell.setToolTipText( "something" );
+
+    try {
+      shell.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+      fail();
+    } catch( SWTException expected ) {
+      assertTrue( expected.throwable instanceof IllegalStateException );
+    }
+  }
+
+  @Test
+  public void testSetToolTipMarkupEnabled_onDirtyWidget_onceEnabledBefore() {
+    shell.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+    shell.setToolTipText( "something" );
+
+    shell.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
   }
 
   @Test

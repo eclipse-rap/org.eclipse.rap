@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
+import static org.eclipse.swt.internal.widgets.MarkupUtil.MarkupTarget.TOOLTIP;
+
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Widget;
@@ -17,7 +19,12 @@ import org.eclipse.swt.widgets.Widget;
 
 public class MarkupUtil {
 
-  public interface WidgetStateChecker {
+  public enum MarkupTarget {
+    TEXT,
+    TOOLTIP
+  }
+
+  public interface MarkupPreconditionChecker {
     public boolean check();
   }
 
@@ -29,10 +36,15 @@ public class MarkupUtil {
     return Boolean.TRUE.equals( widget.getData( RWT.TOOLTIP_MARKUP_ENABLED ) );
   }
 
-  public static void checkWidgetState( String key, WidgetStateChecker checker ) {
-    if( RWT.MARKUP_ENABLED.equals( key ) && !checker.check() ) {
+  public static void checkMarkupPrecondition( String key,
+                                              MarkupTarget target,
+                                              MarkupPreconditionChecker checker )
+  {
+    String dataKey = TOOLTIP.equals( target ) ? RWT.TOOLTIP_MARKUP_ENABLED : RWT.MARKUP_ENABLED;
+    String dataKeyName = TOOLTIP.equals( target ) ? "RWT.TOOLTIP_MARKUP_ENABLED" : "RWT.MARKUP_ENABLED";
+    if( dataKey.equals( key ) && !checker.check() ) {
       SWTException exception = new SWTException();
-      String message = "RWT.MARKUP_ENABLED must be set before any widget data.";
+      String message = dataKeyName + " must be set before any widget data.";
       exception.throwable = new IllegalStateException( message );
       throw exception;
     }
