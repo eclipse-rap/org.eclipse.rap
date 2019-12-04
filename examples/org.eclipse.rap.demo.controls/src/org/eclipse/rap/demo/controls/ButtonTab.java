@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2019 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -99,8 +99,8 @@ public class ButtonTab extends ExampleTab {
     parent.setLayout( new GridLayout( 1, false ) );
     int style = getStyle();
     pushButton = new Button( parent, style | SWT.PUSH );
-    pushButton.setText( markupEnabled ? "<b>Push</b> <i>Button</i>" : "Push\n Button" );
     pushButton.setData( RWT.MARKUP_ENABLED, markupEnabled ? Boolean.TRUE : null );
+    pushButton.setText( markupEnabled ? "<b>Push</b> <i>Button</i>" : "Push\n Button" );
     updateButtonImage( pushButton );
     toggleButton = new Button( parent, style | SWT.TOGGLE );
     toggleButton.setText( "Toggle" );
@@ -117,8 +117,8 @@ public class ButtonTab extends ExampleTab {
     radioButton3 = new Button( parent, style | SWT.RADIO );
     radioButton3.setText( "Radio 3" );
     arrowButton = new Button( parent, style | SWT.ARROW );
-    arrowButton.setToolTipText( getToolTipText() );
     arrowButton.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+    arrowButton.setToolTipText( getToolTipText() );
     if( hasCreateProperty( PROP_SELECTION_LISTENER ) ) {
       Listener listener = new Listener() {
         @Override
@@ -177,7 +177,7 @@ public class ButtonTab extends ExampleTab {
   private String getToolTipText() {
     StringBuilder builder = new StringBuilder();
     builder.append( "<span style='color:yellow; font-weight:bold;'>" );
-    builder.append( "This is tooltip with markup <br/> &#38 <br/> <i>additional line</i>" );
+    builder.append( "This is tooltip with markup <br/> &#38; <br/> <i>additional line</i>" );
     builder.append( "</span>" );
     return builder.toString();
   }
