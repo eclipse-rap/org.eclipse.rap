@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2015 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2020 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource, and others.
  *
  * All rights reserved. This program and the accompanying materials
@@ -543,7 +543,7 @@ rwt.event.EventHandler = {
       // 'window', so there we use the 'body' element
       var el = rwt.client.Client.isGecko() ? window : document.body;
       for( var i=0, l=vEventTypes.length; i<l; i++ ) {
-        el.addEventListener( vEventTypes[ i ], vFunctionPointer, false );
+        el.addEventListener( vEventTypes[ i ], vFunctionPointer, { passive: false } );
       }
     }
     catch( ex ) {
@@ -555,7 +555,7 @@ rwt.event.EventHandler = {
     try {
       var el = rwt.client.Client.isGecko() ? window : document.body;
       for(var i=0, l=vEventTypes.length; i<l; i++) {
-        el.removeEventListener( vEventTypes[ i ], vFunctionPointer, false );
+        el.removeEventListener( vEventTypes[ i ], vFunctionPointer, { passive: false } );
       }
     } catch( ex ) {
       throw new Error( "EventHandler: Failed to detach window event types: " + vEventTypes + ": " + ex );
