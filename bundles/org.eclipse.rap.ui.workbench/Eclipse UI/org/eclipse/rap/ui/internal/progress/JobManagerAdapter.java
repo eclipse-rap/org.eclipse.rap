@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2020 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -103,16 +103,19 @@ public class JobManagerAdapter extends ProgressProvider implements IJobChangeLis
   ///////////////////////////////
   // interface IJobChangeListener
 
+  @Override
   public void aboutToRun( final IJobChangeEvent event ) {
     ProgressManager manager = findProgressManager( event.getJob() );
     manager.changeListener.aboutToRun( event );
   }
 
+  @Override
   public void awake( final IJobChangeEvent event ) {
     ProgressManager manager = findProgressManager( event.getJob() );
     manager.changeListener.awake( event );
   }
 
+  @Override
   public void done( final IJobChangeEvent event ) {
     final ProgressManager[] manager = new ProgressManager[ 1 ];
     Display display = null;
@@ -126,6 +129,7 @@ public class JobManagerAdapter extends ProgressProvider implements IJobChangeLis
     }
     if( display != null && !display.isDisposed() ) {
       display.asyncExec( new Runnable() {
+        @Override
         public void run() {
           ServerPushManager.getInstance().deactivateServerPushFor( event.getJob() );
           manager[ 0 ].changeListener.done( event );
@@ -133,24 +137,26 @@ public class JobManagerAdapter extends ProgressProvider implements IJobChangeLis
       } );
     } else {
       // RAP [rh] fixes bug 283595
-      event.getJob().cancel();
       manager[ 0 ].changeListener.done( event );
     }
   }
 
+  @Override
   public void running( final IJobChangeEvent event ) {
     ProgressManager manager = findProgressManager( event.getJob() );
     manager.changeListener.running( event );
   }
 
+  @Override
   public void scheduled( final IJobChangeEvent event ) {
     ProgressManager manager;
     Display display = findDisplay( event.getJob() );
     synchronized( lock ) {
-      if( display != null ) {
+      if( display != null && !display.isDisposed() ) {
         jobs.put( event.getJob(), display );
         Runnable runnable = new Runnable() {
 
+          @Override
           public void run() {
             bindToSession( event.getJob() );
             ServerPushManager.getInstance().activateServerPushFor( event.getJob() );
@@ -163,6 +169,7 @@ public class JobManagerAdapter extends ProgressProvider implements IJobChangeLis
     manager.changeListener.scheduled( event );
   }
 
+  @Override
   public void sleeping( final IJobChangeEvent event ) {
     ProgressManager manager = findProgressManager( event.getJob() );
     manager.changeListener.sleeping( event );
@@ -185,6 +192,7 @@ public class JobManagerAdapter extends ProgressProvider implements IJobChangeLis
       Display display = ( Display )jobs.get( job );
       if( display != null ) {
         RWT.getUISession( display ).exec( new Runnable() {
+          @Override
           public void run() {
             result[ 0 ] = ProgressManager.getInstance();
           }
@@ -224,6 +232,7 @@ public class JobManagerAdapter extends ProgressProvider implements IJobChangeLis
     final UISession uiSession = RWT.getUISession();
     final UISessionListener cleanupListener = new UISessionListener() {
 
+      @Override
       public void beforeDestroy( UISessionEvent event ) {
         if( !jobDone.get() ) {
           try {
@@ -247,6 +256,7 @@ public class JobManagerAdapter extends ProgressProvider implements IJobChangeLis
         Display display = ( Display )jobs.get( jobToRemove );
         if( display != null ) {
           RWT.getUISession( display ).exec( new Runnable() {
+            @Override
             public void run() {
               jobToRemove.cancel();
               jobToRemove.addJobChangeListener( new JobCanceler() );
@@ -266,7 +276,7 @@ public class JobManagerAdapter extends ProgressProvider implements IJobChangeLis
             Object[] runningJobs = set.toArray();
             for( int i = 0; i < runningJobs.length; i++ ) {
               Job toCheck = ( Job )runningJobs[ i ];
-              IJobMarker marker = ( IJobMarker )toCheck.getAdapter( IJobMarker.class );
+              IJobMarker marker = toCheck.getAdapter( IJobMarker.class );
               if( marker != null && marker.canBeRemoved() ) {
                 set.remove( toCheck );
               }
