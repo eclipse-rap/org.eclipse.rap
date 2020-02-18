@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright: 2004, 2017 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright: 2004, 2020 1&1 Internet AG, Germany, http://www.1und1.de,
  *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -142,22 +142,15 @@ rwt.client.Client = {
    * @description Returns the language part from the browser locale.
    */
   getLanguage : function() {
-    var locale = this.getLocale();
-    var language;
-    var pos = locale.indexOf( "_" );
-    if( pos == -1 ) {
-      language = locale;
-    } else {
-      language = locale.substring( 0, pos );
-    }
-    return language;
+    return this.getLocale().split( "-" )[ 0 ];
   },
 
   /**
    * @description Returns the region part from the browser locale.
    */
   getTerritory : function() {
-    return this.getLocale().split( "_" )[ 1 ] || "";
+    var parts = this.getLocale().split( "-" );
+    return parts[ 2 ] || parts[ 1 ] || "";
   },
 
   /**
@@ -440,12 +433,7 @@ rwt.client.Client = {
 
   _initLocale : function() {
     var language = navigator.userLanguage || navigator.language;
-    var browserLocale = language.toLowerCase();
-    var browserLocaleVariantIndex = browserLocale.indexOf( "-" );
-    if( browserLocaleVariantIndex != -1 ) {
-      browserLocale = browserLocale.substr( 0, browserLocaleVariantIndex );
-    }
-    this._browserLocale = browserLocale;
+    this._browserLocale = language.replace( "_", "-" );
   },
 
   _initPlatform : function() {
