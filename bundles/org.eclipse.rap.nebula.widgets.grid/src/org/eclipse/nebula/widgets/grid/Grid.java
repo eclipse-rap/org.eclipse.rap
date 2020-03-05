@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 EclipseSource and others.
+ * Copyright (c) 2012, 2020 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1132,6 +1132,63 @@ public class Grid extends Composite {
   }
 
   /**
+   * Returns true if the cells are selectable in the reciever.
+   *
+   * @return cell selection enablement status.
+   * @throws org.eclipse.swt.SWTException
+   *           <ul>
+   *           <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *           <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the
+   *           receiver</li>
+   *           </ul>
+   *
+   * @since 3.13
+   */
+  public boolean getCellSelectionEnabled() {
+    checkWidget();
+    return cellSelectionEnabled;
+  }
+
+  /**
+   * Sets whether cells are selectable in the receiver.
+   *
+   * @param cellSelection the cellSelection to set
+   * @throws org.eclipse.swt.SWTException
+   *           <ul>
+   *           <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *           <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the
+   *           receiver</li>
+   *           </ul>
+   *
+   * @since 3.13
+   */
+  public void setCellSelectionEnabled( boolean cellSelection ) {
+    checkWidget();
+    if( cellSelection ) {
+      if( ( getStyle() & SWT.SINGLE ) == 0 ) {
+        // To keep compatibility, one can selected multiple cells
+        selectionType = SWT.MULTI;
+      }
+      selectedItems.clear();
+    } else {
+      selectedCells.clear();
+    }
+    redraw();
+    cellSelectionEnabled = cellSelection;
+  }
+
+  /**
+   * Returns true if the cells are selectable in the reciever.
+   *
+   * @return cell selection enablement status.
+   *
+   * @since 3.13
+   */
+  public boolean isCellSelectionEnabled() {
+    return cellSelectionEnabled;
+  }
+
+  /**
    * Selects the item at the given zero-relative index in the receiver. If the
    * item at the index was already selected, it remains selected. Indices that
    * are out of range are ignored.
@@ -1249,13 +1306,100 @@ public class Grid extends Composite {
     checkWidget();
     if( selectionEnabled && selectionType != SWT.SINGLE ) {
       if( cellSelectionEnabled ) {
-// TODO: [if] Implement cell selection
-//        selectAllCells();
+        selectAllCells();
       } else {
         selectedItems.clear();
         selectedItems.addAll( items );
       }
     }
+  }
+
+  /**
+   * Selects the given cell. Invalid cells are ignored.
+   *
+   * @param cell
+   *            point whose x values is a column index and y value is an item
+   *            index
+   * @throws IllegalArgumentException
+   *             <ul>
+   *             <li>ERROR_NULL_ARGUMENT - if the item is null</li>
+   *             </ul>
+   * @throws org.eclipse.swt.SWTException
+   *             <ul>
+   *             <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+   *             disposed</li>
+   *             <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread
+   *             that created the receiver</li>
+   *             </ul>
+   *
+   * @since 3.13
+   */
+  public void selectCell( Point cell ) {
+    checkWidget();
+    if( cellSelectionEnabled ) {
+      if( cell == null ) {
+        SWT.error( SWT.ERROR_NULL_ARGUMENT );
+      }
+      addToCellSelection( cell );
+      redraw();
+    }
+  }
+
+  /**
+   * Selects the given cells. Invalid cells are ignored.
+   *
+   * @param cells
+   *            an arry of points whose x value is a column index and y value is
+   *            an item index
+   * @throws IllegalArgumentException
+   *             <ul>
+   *             <li>ERROR_NULL_ARGUMENT - if the set of cells or an individual
+   *             cell is null</li>
+   *             </ul>
+   * @throws org.eclipse.swt.SWTException
+   *             <ul>
+   *             <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+   *             disposed</li>
+   *             <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread
+   *             that created the receiver</li>
+   *             </ul>
+   *
+   * @since 3.13
+   */
+  public void selectCells( Point[] cells ) {
+    checkWidget();
+    if( cellSelectionEnabled ) {
+      if( cells == null ) {
+        SWT.error( SWT.ERROR_NULL_ARGUMENT );
+      }
+      for( Point cell : cells ) {
+        if( cell == null ) {
+          SWT.error( SWT.ERROR_NULL_ARGUMENT );
+        }
+      }
+      for( Point cell : cells ) {
+        addToCellSelection( cell );
+      }
+      redraw();
+    }
+  }
+
+  /**
+   * Selects all cells in the receiver.
+   *
+   * @throws org.eclipse.swt.SWTException
+   *             <ul>
+   *             <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+   *             disposed</li>
+   *             <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread
+   *             that created the receiver</li>
+   *             </ul>
+   *
+   * @since 3.13
+   */
+  public void selectAllCells() {
+    checkWidget();
+    internalSelectAll();
   }
 
   /**
@@ -1350,6 +1494,91 @@ public class Grid extends Composite {
   public void deselectAll() {
     checkWidget();
     internalDeselectAll();
+  }
+
+  /**
+   * Deselects the given cell in the receiver. If the given cell is already
+   * deselected it remains deselected. Invalid cells are ignored.
+   *
+   * @param cell
+   *            cell to deselect.
+   * @throws IllegalArgumentException
+   *             <ul>
+   *             <li>ERROR_NULL_ARGUMENT - if the cell is null</li>
+   *             </ul>
+   * @throws org.eclipse.swt.SWTException
+   *             <ul>
+   *             <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+   *             disposed</li>
+   *             <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread
+   *             that created the receiver</li>
+   *             </ul>
+   *
+   * @since 3.13
+   */
+  public void deselectCell( Point cell ) {
+    checkWidget();
+    if( cell == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    selectedCells.remove( cell );
+    redraw();
+  }
+
+  /**
+   * Deselects the given cells. Invalid cells are ignored.
+   *
+   * @param cells
+   *            the cells to deselect.
+   *
+   * @throws IllegalArgumentException
+   *             <ul>
+   *             <li>ERROR_NULL_ARGUMENT - if the set of cells or any cell is
+   *             null</li>
+   *             </ul>
+   * @throws org.eclipse.swt.SWTException
+   *             <ul>
+   *             <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+   *             disposed</li>
+   *             <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread
+   *             that created the receiver</li>
+   *             </ul>
+   *
+   * @since 3.13
+   */
+  public void deselectCells( Point[] cells ) {
+    checkWidget();
+    if( cells == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    for( Point cell : cells ) {
+      if( cell == null ) {
+        SWT.error( SWT.ERROR_NULL_ARGUMENT );
+      }
+    }
+    for( Point cell : cells ) {
+      selectedCells.remove( cell );
+    }
+    redraw();
+  }
+
+  /**
+   * Deselects all selected cells in the receiver.
+   *
+   * @throws org.eclipse.swt.SWTException
+   *             <ul>
+   *             <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+   *             disposed</li>
+   *             <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread
+   *             that created the receiver</li>
+   *             </ul>
+   *
+   * @since 3.13
+   */
+  public void deselectAllCells() {
+    checkWidget();
+    selectedCells.clear();
+    redraw();
   }
 
   /**
@@ -1508,25 +1737,20 @@ public class Grid extends Composite {
    */
   public GridItem[] getSelection() {
     checkWidget();
-    GridItem[] result = new GridItem[ 0 ];
     if( cellSelectionEnabled ) {
-// TODO: [if] Implement cell selection
-//      List<GridItem> items = new ArrayList<GridItem>();
-//      int itemCount = getItemCount();
-//      for( Iterator iterator = selectedCells.iterator(); iterator.hasNext(); ) {
-//        Point cell = ( Point )iterator.next();
-//        if( cell.y >= 0 && cell.y < itemCount ) {
-//          GridItem item = getItem( cell.y );
-//          if( !items.contains( item ) ) {
-//            items.add( item );
-//          }
-//        }
-//      }
-//      result = items.toArray( new GridItem[ 0 ] );
-    } else {
-      result = selectedItems.toArray( new GridItem[ selectedItems.size() ] );
+      List<GridItem> items = new ArrayList<>();
+      int itemCount = getItemCount();
+      for( Point cell : selectedCells ) {
+        if( cell.y >= 0 && cell.y < itemCount ) {
+          GridItem item = getItem( cell.y );
+          if( !items.contains( item ) ) {
+            items.add( item );
+          }
+        }
+      }
+      return items.toArray( new GridItem[] {} );
     }
-    return result;
+    return selectedItems.toArray( new GridItem[ selectedItems.size() ] );
   }
 
   /**
@@ -1543,22 +1767,141 @@ public class Grid extends Composite {
    */
   public int getSelectionCount() {
     checkWidget();
-    int result = 0;
     if( cellSelectionEnabled ) {
-// TODO: [if] Implement cell selection
-//      List<GridItem> items = new ArrayList<GridItem>();
-//      for( Iterator iterator = selectedCells.iterator(); iterator.hasNext(); ) {
-//        Point cell = ( Point )iterator.next();
-//        GridItem item = getItem( cell.y );
-//        if( !items.contains( item ) ) {
-//          items.add( item );
-//        }
-//      }
-//      result = items.size();
-    } else {
-      result = selectedItems.size();
+      List<GridItem> items = new ArrayList<>();
+      for( Point cell : selectedCells ) {
+        GridItem item = getItem( cell.y );
+        if( !items.contains( item ) ) {
+          items.add( item );
+        }
+      }
+      return items.size();
     }
-    return result;
+    return selectedItems.size();
+  }
+
+  /**
+   * Returns the number of selected cells contained in the receiver.
+   *
+   * @return the number of selected cells
+   * @throws org.eclipse.swt.SWTException
+   *             <ul>
+   *             <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+   *             disposed</li>
+   *             <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread
+   *             that created the receiver</li>
+   *             </ul>
+   *
+   * @since 3.13
+   */
+  public int getCellSelectionCount() {
+    checkWidget();
+    return selectedCells.size();
+  }
+
+  /**
+   * Selects the selection to the given cell. The existing selection is cleared
+   * before selecting the given cell.
+   *
+   * @param cell
+   *            point whose x values is a column index and y value is an item
+   *            index
+   * @throws IllegalArgumentException
+   *             <ul>
+   *             <li>ERROR_NULL_ARGUMENT - if the item is null</li>
+   *             <li>ERROR_INVALID_ARGUMENT - if the cell is invalid</li>
+   *             </ul>
+   * @throws org.eclipse.swt.SWTException
+   *             <ul>
+   *             <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+   *             disposed</li>
+   *             <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread
+   *             that created the receiver</li>
+   *             </ul>
+   *
+   * @since 3.13
+   */
+  public void setCellSelection( Point cell ) {
+    checkWidget();
+    if( cellSelectionEnabled ) {
+      if( cell == null ) {
+        SWT.error( SWT.ERROR_NULL_ARGUMENT );
+      }
+      if( !isValidCell( cell ) ) {
+        SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+      }
+      selectedCells.clear();
+      addToCellSelection( cell );
+      redraw();
+    }
+  }
+
+  /**
+   * Selects the selection to the given set of cell. The existing selection is
+   * cleared before selecting the given cells.
+   *
+   * @param cells
+   *            point array whose x values is a column index and y value is an
+   *            item index
+   * @throws IllegalArgumentException
+   *             <ul>
+   *             <li>ERROR_NULL_ARGUMENT - if the cell array or an individual cell
+   *             is null</li>
+   *             <li>ERROR_INVALID_ARGUMENT - if the a cell is invalid</li>
+   *             </ul>
+   * @throws org.eclipse.swt.SWTException
+   *             <ul>
+   *             <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+   *             disposed</li>
+   *             <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread
+   *             that created the receiver</li>
+   *             </ul>
+   *
+   * @since 3.13
+   */
+  public void setCellSelection( Point[] cells ) {
+    checkWidget();
+    if( cellSelectionEnabled ) {
+      if( cells == null ) {
+        SWT.error( SWT.ERROR_NULL_ARGUMENT );
+      }
+      for( Point cell : cells ) {
+        if( cell == null ) {
+          SWT.error( SWT.ERROR_NULL_ARGUMENT );
+        }
+        if( !isValidCell( cell ) ) {
+          SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+        }
+      }
+      selectedCells.clear();
+      for( Point cell : cells ) {
+        addToCellSelection( cell );
+      }
+      redraw();
+    }
+  }
+
+  /**
+   * Returns an array of cells that are currently selected in the receiver. The order of the items
+   * is unspecified. An empty array indicates that no items are selected.
+   * <p>
+   * Note: This is not the actual structure used by the receiver to maintain its selection, so
+   * modifying the array will not affect the receiver.
+   * </p>
+   *
+   * @return an array representing the cell selection
+   * @throws org.eclipse.swt.SWTException
+   *           <ul>
+   *           <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *           <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the
+   *           receiver</li>
+   *           </ul>
+   *
+   * @since 3.13
+   */
+  public Point[] getCellSelection() {
+    checkWidget();
+    return selectedCells.toArray( new Point[ selectedCells.size() ] );
   }
 
   /**
@@ -2381,11 +2724,10 @@ public class Grid extends Composite {
     GridItem item = items.remove( index );
     if( !disposing ) {
       selectedItems.remove (item );
-// TODO: [if] Implement cell selection
-//      Point[] cells = getCells( item );
-//      for( int i = 0; i < cells.length; i++ ) {
-//        selectedCells.remove( cells[ i ] );
-//      }
+      Point[] cells = getCells( item );
+      for( int i = 0; i < cells.length; i++ ) {
+        selectedCells.remove( cells[ i ] );
+      }
       if( focusItem == item ) {
         focusItem = null;
       }
@@ -2743,19 +3085,24 @@ public class Grid extends Composite {
     if( isValidItemIndex( index ) ) {
       GridItem item = items.get( index );
       if( cellSelectionEnabled ) {
-// TODO: [if] Implement cell selection
-//        selectCells( getCells( item ) );
+        selectCells( getCells( item ) );
       } else if( !selectedItems.contains( item ) ) {
         selectedItems.add( item );
       }
     }
   }
+
+  private void internalSelectAll() {
+    for( int i = 0; i < items.size(); i++  ) {
+      internalSelect( i );
+    }
+  }
+
   private void internalDeselect( int index ) {
     if( isValidItemIndex( index ) ) {
       GridItem item = items.get( index );
       if( cellSelectionEnabled ) {
-// TODO: [if] Implement cell selection
-//        deselectCells( getCells( item ) );
+        deselectCells( getCells( item ) );
       } else if( selectedItems.contains( item ) ) {
         selectedItems.remove( item );
       }
@@ -2764,10 +3111,51 @@ public class Grid extends Composite {
 
   private void internalDeselectAll() {
     if( cellSelectionEnabled ) {
-// TODO: [if] Implement cell selection
-//      selectedCells.clear();
+      selectedCells.clear();
     } else {
       selectedItems.clear();
+    }
+  }
+
+  private Point[] getCells( GridItem item ) {
+    List<Point> cells = new ArrayList<>();
+    int itemIndex = items.indexOf( item );
+    int span = 0;
+    for( GridColumn nextCol : displayOrderedColumns ) {
+      if( span > 0 ) {
+        span-- ;
+        continue;
+      }
+      if( !nextCol.isVisible() ) {
+        continue;
+      }
+      span = item.getColumnSpan( indexOf( nextCol ) );
+      cells.add( new Point( indexOf( nextCol ), itemIndex ) );
+    }
+    return cells.toArray( new Point[] {} );
+  }
+
+  private void addToCellSelection( Point newCell ) {
+    if( newCell.x < 0 || newCell.x >= columns.size() ) {
+      return;
+    }
+    if( newCell.y < 0 || newCell.y >= items.size() ) {
+      return;
+    }
+    Iterator<Point> it = selectedCells.iterator();
+    boolean found = false;
+    while( it.hasNext() ) {
+      Point p = it.next();
+      if( newCell.equals( p ) ) {
+        found = true;
+        break;
+      }
+    }
+    if( !found ) {
+      if( selectionType == SWT.SINGLE && selectedCells.size() > 0 ) {
+        return;
+      }
+      selectedCells.add( newCell );
     }
   }
 
@@ -3140,6 +3528,16 @@ public class Grid extends Composite {
 
   private boolean isValidItemIndex( int index ) {
     return index >= 0 && index < items.size();
+  }
+
+  private boolean isValidCell( Point cell ) {
+    if( cell.x < 0 || cell.x >= columns.size() ) {
+      return false;
+    }
+    if( cell.y < 0 || cell.y >= items.size() ) {
+      return false;
+    }
+    return true;
   }
 
   int internalIndexOf( GridItem item ) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2015 EclipseSource and others.
+ * Copyright (c) 2014, 2020 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -91,6 +91,26 @@ public class JsonMapping {
    */
   public static JsonValue toJson( Point point ) {
     return point == null ? JsonValue.NULL : new JsonArray().add( point.x ).add( point.y );
+  }
+
+  /**
+   * Returns the JSON representation for the given array Point. This method accepts <code>null</code>,
+   * which will be mapped to <code>JsonValue.NULL</code>.
+   *
+   * @param points the array Point to encode or <code>null</code>
+   * @return a JSON value that represents the given point
+   *
+   * @since 3.13
+   */
+  public static JsonValue toJson( Point[] points ) {
+    if( points == null ) {
+      return JsonValue.NULL;
+    }
+    JsonArray jsonPoints = new JsonArray();
+    for( Point point : points ) {
+      jsonPoints.add( toJson( point ) );
+    }
+    return jsonPoints;
   }
 
   /**

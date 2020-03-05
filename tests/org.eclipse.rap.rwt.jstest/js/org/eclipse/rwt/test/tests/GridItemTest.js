@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2016 EclipseSource and others.
+ * Copyright (c) 2010, 2020 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1581,6 +1581,75 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
 
       assertEquals( {}, item.getHtmlAttributes() );
       item.dispose();
+    },
+
+    testGetCellSelectionInitial : function() {
+      var item = new rwt.widgets.GridItem();
+
+      assertEquals( 0, item.getCellSelection().length );
+    },
+
+    testGetCellSelection : function() {
+      var item = new rwt.widgets.GridItem();
+
+      item.setCellSelection( [ 1, 3, 5 ] );
+
+      assertEquals( [ 1, 3, 5 ], item.getCellSelection() );
+    },
+
+    testIsCellSelected : function() {
+      var item = new rwt.widgets.GridItem();
+
+      item.setCellSelection( [ 1, 3, 5 ] );
+
+      assertFalse( item.isCellSelected( 0 ) );
+      assertTrue( item.isCellSelected( 1 ) );
+      assertFalse( item.isCellSelected( 2 ) );
+      assertTrue( item.isCellSelected( 3 ) );
+      assertFalse( item.isCellSelected( 4 ) );
+      assertTrue( item.isCellSelected( 5 ) );
+    },
+
+    testSelectCell : function() {
+      var item = new rwt.widgets.GridItem();
+      item.setCellSelection( [ 1, 3, 5 ] );
+
+      item.selectCell( 2 );
+
+      assertFalse( item.isCellSelected( 0 ) );
+      assertTrue( item.isCellSelected( 1 ) );
+      assertTrue( item.isCellSelected( 2 ) );
+      assertTrue( item.isCellSelected( 3 ) );
+      assertFalse( item.isCellSelected( 4 ) );
+      assertTrue( item.isCellSelected( 5 ) );
+    },
+
+    testSelectCells : function() {
+      var item = new rwt.widgets.GridItem();
+      item.setCellSelection( [ 1 ] );
+
+      item.selectCells( 3, 5 );
+
+      assertFalse( item.isCellSelected( 0 ) );
+      assertTrue( item.isCellSelected( 1 ) );
+      assertFalse( item.isCellSelected( 2 ) );
+      assertTrue( item.isCellSelected( 3 ) );
+      assertTrue( item.isCellSelected( 4 ) );
+      assertTrue( item.isCellSelected( 5 ) );
+    },
+
+    testDeselectCell : function() {
+      var item = new rwt.widgets.GridItem();
+      item.setCellSelection( [ 1, 3, 5 ] );
+
+      item.deselectCell( 1 );
+
+      assertFalse( item.isCellSelected( 0 ) );
+      assertFalse( item.isCellSelected( 1 ) );
+      assertFalse( item.isCellSelected( 2 ) );
+      assertTrue( item.isCellSelected( 3 ) );
+      assertFalse( item.isCellSelected( 4 ) );
+      assertTrue( item.isCellSelected( 5 ) );
     },
 
     //////////////////////

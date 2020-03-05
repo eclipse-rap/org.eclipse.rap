@@ -480,6 +480,16 @@ public final class WidgetLCAUtil {
 
   public static void renderProperty( Widget widget,
                                      String property,
+                                     Point[] newValue,
+                                     Point[] defaultValue )
+  {
+    if( hasChanged( widget, property, newValue, defaultValue ) ) {
+      getRemoteObject( widget ).set( property, toJson( newValue ) );
+    }
+  }
+
+  public static void renderProperty( Widget widget,
+                                     String property,
                                      Rectangle newValue,
                                      Rectangle defaultValue )
   {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 EclipseSource and others.
+ * Copyright (c) 2014, 2020 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -87,6 +87,20 @@ public class JsonMapping_Test {
   @Test
   public void testToJson_Point_null() {
     JsonValue result = JsonMapping.toJson( (Point) null );
+
+    assertEquals( JsonValue.NULL, result );
+  }
+
+  @Test
+  public void testToJson_PointsArray() {
+    JsonValue result = JsonMapping.toJson( new Point[] { new Point( 1, 2 ), new Point( 3, 4 ) } );
+
+    assertEquals( JsonValue.readFrom( "[[1, 2],[3, 4]]" ), result );
+  }
+
+  @Test
+  public void testToJson_PointsArray_null() {
+    JsonValue result = JsonMapping.toJson( (Point[]) null );
 
     assertEquals( JsonValue.NULL, result );
   }

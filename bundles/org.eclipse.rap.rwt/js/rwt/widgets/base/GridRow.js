@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2019 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2010, 2020 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -96,7 +96,9 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     },
 
     identify : function( node ) {
-      var result = [ "other" ];
+      var cell = $( node ).attr( "data-cell-index" );
+      cell = cell !== undefined ? parseInt( cell, 10 ) : -1;
+      var result = [ "other", cell ];
       var match = function( candidate ) {
         return candidate != null && candidate.is( node );
       };
@@ -110,7 +112,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       } else {
         while( !this.$el.is( node ) && result[ 0 ] === "other" ) { // Can be removed?
           if( this.$treeColumnParts.some( match ) ) {
-            result = [ "treeColumn" ]; // TODO [tb] : now should be [ "label", 0 ] / [ "image", 0 ]
+            result = [ "treeColumn", cell ]; // TODO [tb] : now should be [ "label", 0 ] / [ "image", 0 ]
           } else if( this._templateRenderer ) {
             if( this._templateRenderer.isCellSelectable( node ) ) {
               result = [ "selectableCell", this._templateRenderer.getCellName( node ) ];
@@ -394,7 +396,11 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       }
       for( var cell = 0; cell < columns; cell++ ) {
         if( this._layout.cellWidth[ cell ] > 0 ) {
-          this._renderCellBackground( cell );
+          if( this._gridConfig.cellSelection && this._item && this._item.isCellSelected( cell ) ) {
+            this._renderCellSelectionColor( cell );
+          } else {
+            this._renderCellBackground( cell );
+          }
           this._renderCellCheckBox( cell );
           this._renderCellImage( cell );
           this._renderCellLabel( cell );
@@ -406,6 +412,19 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         }
       }
       this._cellsRendered = columns;
+    },
+
+    _renderCellSelectionColor : function( cell ) {
+      var gradient = this._overlayStyleMap.backgroundGradient;
+      if( gradient ) {
+        this._getCellBackgroundElement( cell ).css( "backgroundGradient", gradient || "" );
+      } else {
+        this._getCellBackgroundElement( cell ).css( {
+          "backgroundColor" : this._overlayStyleMap.background,
+          "opacity" : this._overlayStyleMap.backgroundAlpha
+        } );
+      }
+      this._renderCellBackgroundBounds( cell );
     },
 
     _renderCellBackground : function( cell ) {
@@ -825,6 +844,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
           "textOverflow": "inherit",
           "backgroundColor" : ""
         } );
+        result.attr( { "data-cell-index" : cell } );
         this.$cellLabels[ cell ] = result;
       }
       return result;
@@ -835,6 +855,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       if( !result ) {
         result = this._createElement( 3 );
         result.css( { "backgroundRepeat" : "no-repeat", "backgroundPosition" : "center" } );
+        result.attr( { "data-cell-index" : cell } );
         this.$cellImages[ cell ] = result;
       }
       return result;
@@ -865,6 +886,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
           "borderWidth" : "0px",
           "borderStyle" : "solid"
         } );
+        result.attr( { "data-cell-index" : cell } );
         this.$cellBackgrounds[ cell ] = result;
         this._renderVerticalGridLine( cell );
       }
@@ -981,7 +1003,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     },
 
     _hasOverlayBackground : function( gridConfig ) {
-      if( !gridConfig.fullSelection && gridConfig.rowTemplate ) {
+      if( !gridConfig.fullSelection && gridConfig.rowTemplate || gridConfig.cellSelection ) {
         return false;
       }
       return    this._overlayStyleMap.background !== "undefined"

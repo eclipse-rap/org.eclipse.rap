@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2012, 2016 EclipseSource and others.
+ * Copyright (c) 2012, 2020 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.internal.template.TemplateLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.CellToolTipUtil;
 import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
 import org.eclipse.swt.widgets.Control;
@@ -70,6 +71,8 @@ public class GridLCA extends WidgetLCA<Grid> {
   private static final String PROP_FOCUS_ITEM = "focusItem";
   private static final String PROP_SCROLL_LEFT = "scrollLeft";
   private static final String PROP_SELECTION = "selection";
+  private static final String PROP_CELL_SELECTION = "cellSelection";
+  private static final String PROP_CELL_SELECTION_ENABLED = "cellSelectionEnabled";
   private static final String PROP_AUTO_HEIGHT = "autoHeight";
   private static final String PROP_INDENTION_WIDTH = "indentionWidth";
   // TODO: [if] Sync sortDirection and sortColumn in GridColumnLCA when multiple sort columns are
@@ -128,6 +131,8 @@ public class GridLCA extends WidgetLCA<Grid> {
     preserveProperty( grid, PROP_SORT_COLUMN, getSortColumn( grid ) );
     preserveProperty( grid, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( grid ) );
     preserveProperty( grid, PROP_CELL_TOOLTIP_TEXT, null );
+    preserveProperty( grid, PROP_CELL_SELECTION_ENABLED, grid.isCellSelectionEnabled() );
+    preserveProperty( grid, PROP_CELL_SELECTION, getCellSelection( grid ) );
   }
 
   @Override
@@ -157,6 +162,8 @@ public class GridLCA extends WidgetLCA<Grid> {
     renderListenDefaultSelection( grid );
     renderProperty( grid, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( grid ), false );
     renderProperty( grid, PROP_CELL_TOOLTIP_TEXT, getAndResetCellToolTipText( grid ), null );
+    renderProperty( grid, PROP_CELL_SELECTION_ENABLED, grid.isCellSelectionEnabled(), false );
+    renderProperty( grid, PROP_CELL_SELECTION, getCellSelection( grid ), DEFAULT_SELECTION );
   }
 
   @Override
@@ -206,6 +213,15 @@ public class GridLCA extends WidgetLCA<Grid> {
     String[] result = new String[ selection.length ];
     for( int i = 0; i < result.length; i++ ) {
       result[ i ] = getId( selection[ i ] );
+    }
+    return result;
+  }
+
+  private static String[] getCellSelection( Grid grid ) {
+    Point[] selection = grid.getCellSelection();
+    String[] result = new String[ selection.length ];
+    for( int i = 0; i < result.length; i++ ) {
+      result[ i ] = getId( grid.getItem( selection[ i ].y ) ) + "#" + selection[ i ].x;
     }
     return result;
   }

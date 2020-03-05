@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 EclipseSource and others.
+ * Copyright (c) 2013, 2020 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.protocol.ControlOperationHandler;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.CellToolTipUtil;
 import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
 import org.eclipse.swt.internal.widgets.ICellToolTipProvider;
@@ -38,6 +39,7 @@ import org.eclipse.swt.widgets.ScrollBar;
 public class GridOperationHandler extends ControlOperationHandler<Grid> {
 
   private static final String PROP_SELECTION = "selection";
+  private static final String PROP_CELL_SELECTION = "cellSelection";
   private static final String PROP_SCROLL_LEFT = "scrollLeft";
   private static final String PROP_TOP_ITEM_INDEX = "topItemIndex";
   private static final String PROP_FOCUS_ITEM = "focusItem";
@@ -51,6 +53,7 @@ public class GridOperationHandler extends ControlOperationHandler<Grid> {
   public void handleSet( Grid grid, JsonObject properties ) {
     super.handleSet( grid, properties );
     handleSetSelection( grid, properties );
+    handleSetCellSelection( grid, properties );
     handleSetScrollLeft( grid, properties );
     handleSetTopItemIndex( grid, properties );
     handleSetFocusItem( grid, properties );
@@ -101,6 +104,27 @@ public class GridOperationHandler extends ControlOperationHandler<Grid> {
         selectedItems = new GridItem[ 0 ];
       }
       grid.setSelection( selectedItems );
+    }
+  }
+
+  /*
+   * PROTOCOL SET cellSelection
+   *
+   * @param cellSelection ([[string, int]]) array with item/cell ids of selected cells
+   */
+  public void handleSetCellSelection( Grid grid, JsonObject properties ) {
+    JsonValue values = properties.get( PROP_CELL_SELECTION );
+    if( values != null ) {
+      JsonArray cells = values.asArray();
+      Point[] selectedCells = new Point[ cells.size() ];
+      for( int i = 0; i < cells.size(); i++ ) {
+        JsonArray currentCell = cells.get( i ).asArray();
+        GridItem item = getItem( grid, currentCell.get( 0 ).asString() );
+        if( item != null ) {
+          selectedCells[ i ] = new Point( currentCell.get( 1 ).asInt(), grid.indexOf( item ) );
+        }
+      }
+      grid.setCellSelection( selectedCells );
     }
   }
 

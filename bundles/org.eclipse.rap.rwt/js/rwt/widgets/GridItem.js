@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2017 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2010, 2020 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
     this._level = -1;
     this._height = null;
     this._children = [];
+    this._cellSelection = [];
     this._indexCache = {};
     this._visibleChildrenCount = 0;
     this._expandedItems = {};
@@ -54,6 +55,7 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
     this._parent = null;
     this._height = null;
     this._children = null;
+    this._cellSelection = null;
     this._indexCache = null;
     this._expandedItems = null;
     this._customHeightItems = null;
@@ -360,6 +362,41 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
 
     getParent : function() {
       return this._parent;
+    },
+
+    getCellSelection : function() {
+      return this._cellSelection;
+    },
+
+    setCellSelection : function( selection ) {
+      this._cellSelection = [];
+      for( var i = 0; i < selection.length; i++ ) {
+        if( selection[ i ] >= 0 ) {
+          this._cellSelection.push( selection[ i ] );
+        }
+      }
+    },
+
+    selectCell : function( cell ) {
+      if( !this.isCellSelected( cell ) && cell >= 0 ) {
+        this._cellSelection.push( cell );
+      }
+    },
+
+    deselectCell : function( cell ) {
+      if( this.isCellSelected( cell ) ) {
+        this._cellSelection.splice( this._cellSelection.indexOf( cell ), 1 );
+      }
+    },
+
+    selectCells : function( start, end ) {
+      for( var i = start; i <= end; i++ ) {
+        this._cellSelection.push( i );
+      }
+    },
+
+    isCellSelected : function( cell ) {
+      return this._cellSelection.indexOf( cell ) != -1;
     },
 
     setExpanded : function( value ) {

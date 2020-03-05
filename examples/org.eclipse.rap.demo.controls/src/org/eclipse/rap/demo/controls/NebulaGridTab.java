@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2015 EclipseSource and others.
+ * Copyright (c) 2014, 2020 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,8 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
+
+import java.util.Arrays;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.grid.Grid;
@@ -24,6 +26,7 @@ import org.eclipse.swt.events.TreeEvent;
 import org.eclipse.swt.events.TreeListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -43,7 +46,7 @@ public class NebulaGridTab extends ExampleTab {
   private Image image;
   private boolean headerVisible = true;
   private boolean footerVisible = true;
-
+  private boolean cellSelectionEnabled;
   public NebulaGridTab() {
     super( "Nebula Grid" );
     setDefaultStyle( SWT.CHECK | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL );
@@ -74,6 +77,11 @@ public class NebulaGridTab extends ExampleTab {
     createWordWrapButton( parent );
     createHeaderWordWrapButton( parent );
     createQueryFocusItem( parent );
+    createEnableCellSelection( parent );
+    createSetCellSelection( parent );
+    createAddCellsToSelection( parent );
+    createGetCellsSelection( parent );
+    createSetColumnOrder( parent );
   }
 
   @Override
@@ -95,6 +103,7 @@ public class NebulaGridTab extends ExampleTab {
     grid.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, true, 1, 20 ) );
     grid.setHeaderVisible( headerVisible );
     grid.setFooterVisible( footerVisible );
+    grid.setCellSelectionEnabled( cellSelectionEnabled );
     addGridListeners();
     createGridColumns();
     createGridItems();
@@ -207,6 +216,7 @@ public class NebulaGridTab extends ExampleTab {
         }
       }
     }
+    grid.getItem( 0 ).setExpanded( true );
   }
 
   private void createAddRemoveItemButton( Composite parent ) {
@@ -471,6 +481,62 @@ public class NebulaGridTab extends ExampleTab {
         Shell shell = grid.getShell();
         String msg = "Current focusItem: " + grid.getFocusItem();
         MessageDialog.openInformation( shell, "Information", msg );
+      }
+    } );
+  }
+
+  private void createEnableCellSelection( Composite parent ) {
+    final Button button = new Button( parent, SWT.CHECK );
+    button.setText( "Enable cell selection" );
+    button.addSelectionListener( new SelectionAdapter() {
+      @Override
+      public void widgetSelected( SelectionEvent event ) {
+        cellSelectionEnabled = button.getSelection();
+        grid.setCellSelectionEnabled( cellSelectionEnabled );
+      }
+    } );
+  }
+
+  private void createSetCellSelection( Composite parent ) {
+    Button button = new Button( parent, SWT.PUSH );
+    button.setText( "Set cell selection" );
+    button.addSelectionListener( new SelectionAdapter() {
+      @Override
+      public void widgetSelected( SelectionEvent e ) {
+        grid.setCellSelection( new Point[] { new Point( 0, 3 ), new Point( 1, 5 ), new Point( 4, 0 ) } );
+      }
+    } );
+  }
+
+  private void createAddCellsToSelection( Composite parent ) {
+    Button button = new Button( parent, SWT.PUSH );
+    button.setText( "Add to cell selection" );
+    button.addSelectionListener( new SelectionAdapter() {
+      @Override
+      public void widgetSelected( SelectionEvent e ) {
+        grid.selectCells( new Point[] { new Point( 0, 5 ), new Point( 2, 7 ) } );
+      }
+    } );
+  }
+
+  private void createGetCellsSelection( Composite parent ) {
+    Button button = new Button( parent, SWT.PUSH );
+    button.setText( "Get cell selection" );
+    button.addSelectionListener( new SelectionAdapter() {
+      @Override
+      public void widgetSelected( SelectionEvent e ) {
+        log( "Selected cells: " + Arrays.toString( grid.getCellSelection() ) );
+      }
+    } );
+  }
+
+  private void createSetColumnOrder( Composite parent ) {
+    Button button = new Button( parent, SWT.PUSH );
+    button.setText( "Change column order" );
+    button.addSelectionListener( new SelectionAdapter() {
+      @Override
+      public void widgetSelected( SelectionEvent e ) {
+        grid.setColumnOrder( new int[] { 4, 2, 1, 3, 0 } );
       }
     } );
   }

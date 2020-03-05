@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2017 EclipseSource and others.
+ * Copyright (c) 2010, 2020 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -502,6 +502,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       widget.destroy();
     },
 
+    testSetSellSelectionEnabledByProtocol : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
+      TestUtil.protocolSet( "w3", { "cellSelectionEnabled" : true } );
+      assertTrue( 3, widget.getRenderConfig().cellSelection );
+      shell.destroy();
+      widget.destroy();
+    },
+
     testSetSelectionByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultTreeByProtocol( "w3", "w2", [ "MULTI" ] );
@@ -535,6 +544,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.flush();
 
       assertTrue( item1.isDisposed() );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetCellSelectionByProtocol : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var widget = this._createDefaultTreeByProtocol( "w3", "w2", [ "MULTI" ] );
+      widget.setItemCount( 2 );
+      widget.getRenderConfig().cellSelection = true;
+      var item1 = this._createTreeItemByProtocol( "w4", "w3", 0 );
+      var item2 = this._createTreeItemByProtocol( "w5", "w3", 1 );
+      widget.selectItem( item1 );
+      TestUtil.protocolSet( "w3", { "cellSelection" : [ "w4#2", "w4#4" ] } );
+      assertTrue( item1.isCellSelected( 2 ) );
+      assertTrue( item1.isCellSelected( 4 ) );
       shell.destroy();
       widget.destroy();
     },

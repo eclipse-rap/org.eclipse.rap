@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 EclipseSource and others.
+ * Copyright (c) 2014, 2020 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ describe( "GridSynchronizer", function() {
     grid = mock( rwt.widgets.Grid, "grid" );
     rootItem = mock( rwt.widgets.GridItem, "gridItem" );
     grid.getRootItem.andReturn( rootItem );
+    grid.getRenderConfig.andReturn( {} );
     gridRemoteObject = mock( rwt.remote.RemoteObject, "gridRemoteObject" );
     synchronizer = new rwt.widgets.util.GridSynchronizer( grid );
     connection = rwt.remote.Connection.getInstance();
@@ -64,6 +65,16 @@ describe( "GridSynchronizer", function() {
       notifyListener( "selectionChanged", { "item" : item, "type" : "selection" } );
 
       expect( gridRemoteObject.set ).toHaveBeenCalledWith( "selection", [ "foo#0" ] );
+    } );
+
+    it( "sets cellSelection property", function() {
+      grid.getRenderConfig.andReturn( { cellSelection: true } );
+      grid.getSelection.andReturn( [ item ] );
+      item.getCellSelection.andReturn( [ 1, 3 ] );
+
+      notifyListener( "selectionChanged", { "item" : item, "type" : "selection" } );
+
+      expect( gridRemoteObject.set ).toHaveBeenCalledWith( "cellSelection", [ [ "foo", 1 ], [ "foo", 3 ] ] );
     } );
 
     it( "sets checked property", function() {

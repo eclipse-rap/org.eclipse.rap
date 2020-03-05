@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2016 EclipseSource and others.
+ * Copyright (c) 2012, 2020 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -762,6 +762,87 @@ public class GridLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( grid, "selection" ) );
+  }
+
+  @Test
+  public void testRenderInitialCellSelection() throws IOException {
+    grid.setCellSelectionEnabled( true );
+
+    lca.render( grid );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( grid );
+    assertTrue( operation.getProperties().names().indexOf( "cellSelection" ) == -1 );
+  }
+
+  @Test
+  public void testRenderCellSelection() throws IOException {
+    grid.setCellSelectionEnabled( true );
+    createGridColumns( grid, 3, SWT.NONE );
+    createGridItems( grid, 3, 3 );
+
+    grid.setSelection( new int[] { 0, 4 } );
+    lca.renderChanges( grid );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    String item0Id = getId( grid.getItem( 0 ) );
+    String item4Id = getId( grid.getItem( 4 ) );
+    Object expected = new JsonArray()
+      .add( item0Id + "#0" )
+      .add( item0Id + "#1" )
+      .add( item0Id + "#2" )
+      .add( item4Id + "#0")
+      .add( item4Id + "#1" )
+      .add( item4Id + "#2" );
+    assertEquals( expected, message.findSetProperty( grid, "cellSelection" ) );
+  }
+
+  @Test
+  public void testRenderCellSelectionUnchanged() throws IOException {
+    grid.setCellSelectionEnabled( true );
+    createGridColumns( grid, 3, SWT.NONE );
+    createGridItems( grid, 3, 3 );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( grid );
+
+    grid.setSelection( new int[] { 0, 4 } );
+    Fixture.preserveWidgets();
+    lca.renderChanges( grid );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( grid, "cellSelection" ) );
+  }
+
+  @Test
+  public void testRenderInitialCellSelectionEnabled() throws IOException {
+    lca.render( grid );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( grid );
+    assertTrue( operation.getProperties().names().indexOf( "cellSelectionEnabled" ) == -1 );
+  }
+
+  @Test
+  public void testRenderCellSelectionEnabled() throws IOException {
+    Fixture.markInitialized( grid );
+    grid.setCellSelectionEnabled( true );
+    lca.renderChanges( grid );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( JsonValue.TRUE, message.findSetProperty( grid, "cellSelectionEnabled" ) );
+  }
+
+  @Test
+  public void testRenderCellSelectionEnabledUnchanged() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( grid );
+
+    grid.setCellSelectionEnabled( true );
+    Fixture.preserveWidgets();
+    lca.renderChanges( grid );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( grid, "cellSelectionEnabled" ) );
   }
 
   @Test

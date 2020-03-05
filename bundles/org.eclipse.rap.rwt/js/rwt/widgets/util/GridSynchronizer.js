@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 EclipseSource and others.
+ * Copyright (c) 2014, 2020 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,9 @@ rwt.widgets.util.GridSynchronizer.prototype = {
       var connection = rwt.remote.Connection.getInstance();
       if( type === "selection" ) {
         connection.getRemoteObject( this._grid ).set( "selection", this._getSelectionList() );
+        if( this._grid.getRenderConfig().cellSelection ) {
+          connection.getRemoteObject( this._grid ).set( "cellSelection", this._getCellSelectionList() );
+        }
       } else if( type === "check" ) {
         connection.getRemoteObject( item ).set( "checked", item.isChecked() );
       } else if( type === "cellCheck" ) {
@@ -127,6 +130,19 @@ rwt.widgets.util.GridSynchronizer.prototype = {
     var selection = this._grid.getSelection();
     for( var i = 0; i < selection.length; i++ ) {
       result.push( this._getItemId( selection[ i ] ) );
+    }
+    return result;
+  },
+
+  _getCellSelectionList : function() {
+    var result = [];
+    var selection = this._grid.getSelection();
+    for( var i = 0; i < selection.length; i++ ) {
+      var itemId = this._getItemId( selection[ i ] );
+      var cellSelection = selection[ i ].getCellSelection();
+      for( var j = 0; j < cellSelection.length; j++ ) {
+        result.push( [ itemId, cellSelection[ j ] ] );
+      }
     }
     return result;
   },

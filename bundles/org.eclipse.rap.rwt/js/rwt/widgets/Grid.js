@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2019 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2010, 2020 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,10 +19,12 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     this._rootItem = new rwt.widgets.GridItem();
     this._hasMultiSelection = false;
     this._leadItem = null;
+    this._leadCell = null;
     this._topItemIndex = 0;
     this._topItem = null;
     this._selection = [];
     this._focusItem = null;
+    this._focusCell = 0;
     this._renderQueue = {};
     this._resizeLine = null;
     this._selectionTimestamp = null;
@@ -65,6 +67,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     this._horzScrollBar = null;
     this._vertScrollBar = null;
     this._leadItem = null;
+    this._leadCell = null;
     this._focusItem = null;
     this._sortColumn = null;
     this._resizeLine = null;
@@ -287,6 +290,20 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       this._scheduleItemUpdate( item );
     },
 
+    selectItemCell : function( item, cell ) {
+      if( this._config.cellSelection ) {
+        item.selectCell( cell );
+        this._scheduleItemUpdate( item );
+      }
+    },
+
+    deselectItemCell : function( item, cell ) {
+      if( this._config.cellSelection ) {
+        item.deselectCell( cell );
+        this._scheduleItemUpdate( item );
+      }
+    },
+
     setFocusItem : function( item ) {
       this._focusItem = item;
       this.dispatchSimpleEvent( "focusItemChanged" );
@@ -294,6 +311,15 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
 
     getFocusItem : function() {
       return this._focusItem;
+    },
+
+    setFocusCell : function( cell ) {
+      this._focusCell = cell;
+      this.dispatchSimpleEvent( "focusCellChanged" );
+    },
+
+    getFocusCell : function() {
+      return this._focusCell;
     },
 
     setSortDirection : function( direction ) {
@@ -580,13 +606,14 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
         } else if( identifier[ 0 ] === "selectableCell" ) {
           this._fireSelectionChanged( item, "cell", null, identifier[ 1 ] );
         } else if( identifier[ 0 ] === "treeColumn" || this._acceptsGlobalSelection() ) {
-          this._onSelectionClick( event, item );
+          var cell = this._config.cellOrder.indexOf( identifier[ 1 ] );
+          this._onSelectionClick( event, item, cell);
         }
       }
     },
 
     _acceptsGlobalSelection : function() {
-      return this._config.fullSelection || this._config.rowTemplate;
+      return this._config.fullSelection || this._config.rowTemplate || this._config.cellSelection;
     },
 
     _checkAndProcessHyperlink : function( event ) {
@@ -632,16 +659,16 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
        item.setExpanded( expanded );
     },
 
-    _onSelectionClick : function( event, item ) {
+    _onSelectionClick : function( event, item, cell ) {
       // NOTE: Using a listener for "dblclick" does not work because the
       //       item is re-rendered on mousedown which prevents the dom-event.
       var doubleClick = this._isDoubleClicked( event, item );
       if( doubleClick ) {
         this._fireSelectionChanged( item, "defaultSelection" );
       } else if( !this._hasMultiSelection ) {
-        this._singleSelectItem( event, item );
+        this._singleSelectItem( event, item, cell );
       } else if( !this._delayMultiSelect( event, item ) ) {
-        this._multiSelectItem( event, item );
+        this._multiSelectItem( event, item, cell );
       }
     },
 
@@ -766,7 +793,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
         // NOTE: When space does not change the selection, the SWT Tree still fires an selection
         //       event, while the Table doesnt. Table behavior is used since it makes more sense.
         var itemIndex = this._focusItem.getFlatIndex();
-        this._handleKeyboardSelect( event, this._focusItem, itemIndex );
+        this._handleKeyboardSelect( event, this._focusItem, itemIndex, false, this._focusCell );
       }
       if( this._config.hasCheckBoxes ) {
         this._toggleCheckSelection( this._focusItem );
@@ -777,7 +804,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       var item = this._focusItem.getPreviousItem();
       if( item != null ) {
         var itemIndex = item.getFlatIndex();
-        this._handleKeyboardSelect( event, item, itemIndex );
+        this._handleKeyboardSelect( event, item, itemIndex, false, this._focusCell );
       }
     },
 
@@ -785,7 +812,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       var item = this._focusItem.getNextItem();
       if( item != null ) {
         var itemIndex = item.getFlatIndex();
-        this._handleKeyboardSelect( event, item, itemIndex );
+        this._handleKeyboardSelect( event, item, itemIndex, false, this._focusCell );
       }
     },
 
@@ -798,7 +825,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
         item = item.getNextItem();
       }
       var itemIndex = item.getFlatIndex();
-      this._handleKeyboardSelect( event, item, itemIndex );
+      this._handleKeyboardSelect( event, item, itemIndex, false, this._focusCell );
     },
 
     _handleKeyPageDown : function( event ) {
@@ -811,29 +838,38 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
         item = item.getPreviousItem();
       }
       var itemIndex = item.getFlatIndex();
-      this._handleKeyboardSelect( event, item, itemIndex );
+      this._handleKeyboardSelect( event, item, itemIndex, false, this._focusCell );
     },
 
     _handleKeyHome : function( event ) {
       var item = this.getRootItem().getChild( 0 );
-      this._handleKeyboardSelect( event, item, 0 );
+      this._handleKeyboardSelect( event, item, 0, false, this._focusCell );
     },
 
     _handleKeyEnd : function( event ) {
       var item = this.getRootItem().getLastChild();
       var itemIndex = this.getRootItem().getVisibleChildrenCount() - 1;
-      this._handleKeyboardSelect( event, item, itemIndex );
+      this._handleKeyboardSelect( event, item, itemIndex, false, this._focusCell );
     },
 
     _handleKeyLeft : function( event ) {
       if( event.isCtrlPressed() ) {
         this._scrollLeft();
+      } else if( this._config.cellSelection ) {
+        var item = this._focusItem;
+        var cell = this._focusCell;
+        while( cell - 1 > 0  && !this._columnOrder[ cell - 1 ].getVisibility() ) {
+          cell--;
+        }
+        cell = Math.max( 0, cell - 1 );
+        var itemIndex = item.getFlatIndex();
+        this._handleKeyboardSelect( event, item, itemIndex, false, cell );
       } else if( this._focusItem.isExpanded() ) {
         this._focusItem.setExpanded( false );
       } else if( !this._focusItem.getParent().isRootItem() ) {
         var item = this._focusItem.getParent();
         var itemIndex = item.getFlatIndex();
-        this._handleKeyboardSelect( event, item, itemIndex, true );
+        this._handleKeyboardSelect( event, item, itemIndex, true, this._focusCell );
       } else {
         this._scrollLeft();
       }
@@ -842,24 +878,33 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     _handleKeyRight : function( event ) {
       if( event.isCtrlPressed() ) {
         this._scrollRight();
+      } else if( this._config.cellSelection ) {
+        var item = this._focusItem;
+        var cell = this._focusCell;
+        while( cell + 1 < this._config.columnCount - 1 && !this._columnOrder[ cell + 1 ].getVisibility() ) {
+          cell++;
+        }
+        cell = Math.min( this._config.columnCount - 1, cell + 1 );
+        var itemIndex = item.getFlatIndex();
+        this._handleKeyboardSelect( event, item, itemIndex, false, cell );
       } else if( this._focusItem.hasChildren() ) {
         if( !this._focusItem.isExpanded() ) {
           this._focusItem.setExpanded( true );
         } else {
           var item = this._focusItem.getChild( 0 );
           var itemIndex = item.getFlatIndex();
-          this._handleKeyboardSelect( event, item, itemIndex, true );
+          this._handleKeyboardSelect( event, item, itemIndex, true, this._focusCell );
         }
       } else {
         this._scrollRight();
       }
     },
 
-    _handleKeyboardSelect : function( event, item, itemIndex, suppressMulti ) {
+    _handleKeyboardSelect : function( event, item, itemIndex, suppressMulti, cell ) {
       if( this._hasMultiSelection && !suppressMulti ) {
-        this._multiSelectItem( event, item );
+        this._multiSelectItem( event, item, cell );
       } else {
-        this._singleSelectItem( event, item );
+        this._singleSelectItem( event, item, cell );
       }
       this._scrollIntoView( itemIndex, item );
     },
@@ -1115,61 +1160,83 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     ////////////////////
     // focus & selection
 
-    _singleSelectItem : function( event, item ) {
+    _singleSelectItem : function( event, item, cell ) {
       if( event.isCtrlPressed() && this.isItemSelected( item ) ) {
         // NOTE: Apparently in SWT this is only supported by Table, not Tree.
         //       No reason not to support it in RAP though.
-        this._ctrlSelectItem( item );
+        this._ctrlSelectItem( item, cell );
       } else {
-        this._exclusiveSelectItem( item );
+        this._exclusiveSelectItem( item, cell );
       }
     },
 
-    _multiSelectItem : function( event, item ) {
+    _multiSelectItem : function( event, item, cell ) {
       if( event instanceof rwt.event.MouseEvent && event.isRightButtonPressed() ) {
         if( !this.isItemSelected( item ) ) {
-          this._exclusiveSelectItem( item );
+          this._exclusiveSelectItem( item, cell );
         }
       } else if( event.isCtrlPressed() ) {
         if( event instanceof rwt.event.KeyEvent && item != this._focusItem  ) {
           this.setFocusItem( item );
         } else {
-          this._ctrlSelectItem( item );
+          this._ctrlSelectItem( item, cell );
         }
       } else if( event.isShiftPressed() ) {
         if( this._focusItem != null ) {
-          this._shiftSelectItem( item );
+          this._shiftSelectItem( item, cell );
         } else {
-          this._exclusiveSelectItem( item );
+          this._exclusiveSelectItem( item, cell );
         }
       } else {
-        this._exclusiveSelectItem( item );
+        this._exclusiveSelectItem( item, cell );
       }
     },
 
-    _exclusiveSelectItem : function( item ) {
+    _exclusiveSelectItem : function( item, cell ) {
+      var actualCell = this._config.cellOrder[ cell ];
       this.deselectAll();
       this._leadItem = null;
+      this._leadCell = null;
+      item.setCellSelection( [ actualCell ] );
       this._selectItem( item, true );
       this._fireSelectionChanged( item, "selection" );
       this.setFocusItem( item );
+      this.setFocusCell( cell );
     },
 
-    _ctrlSelectItem : function( item ) {
+    _ctrlSelectItem : function( item, cell ) {
+      var actualCell = this._config.cellOrder[ cell ];
       if( !this.isItemSelected( item ) ) {
+        item.setCellSelection( [ actualCell ] );
         this._selectItem( item, true );
+      } else if( this._config.cellSelection ) {
+        if( !item.isCellSelected( actualCell ) ) {
+          item.selectCell( actualCell );
+          this._rowContainer.renderItem( item );
+        } else {
+          item.deselectCell( actualCell );
+          if( item.getCellSelection().length === 0 ) {
+            this._deselectItem( item, true );
+          } else {
+            this._rowContainer.renderItem( item );
+          }
+        }
       } else {
         this._deselectItem( item, true );
       }
       this._fireSelectionChanged( item, "selection" );
       this.setFocusItem( item );
+      this.setFocusCell( cell );
     },
 
-    _shiftSelectItem : function( item ) {
+    _shiftSelectItem : function( item, cell ) {
       this.deselectAll();
       var currentItem = this._leadItem != null ? this._leadItem : this._focusItem;
       this._leadItem = currentItem;
+      var currentCell = this._leadCell != null ? this._leadCell : this._focusCell;
+      this._leadCell = currentCell;
       var targetItem = item;
+      var targetCell = cell;
       var startIndex = currentItem.getFlatIndex();
       var endIndex = targetItem.getFlatIndex();
       if( startIndex > endIndex ) {
@@ -1177,13 +1244,31 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
         currentItem = targetItem;
         targetItem = temp;
       }
+      if( currentCell > targetCell ) {
+        var temp = currentCell;
+        currentCell = targetCell;
+        targetCell = temp;
+      }
+      this._selectCells( currentItem, currentCell, targetCell );
       this._selectItem( currentItem, true );
       while( currentItem !== targetItem ) {
         currentItem = currentItem.getNextItem();
+        this._selectCells( currentItem, currentCell, targetCell );
         this._selectItem( currentItem, true );
       }
       this._fireSelectionChanged( item, "selection" );
       this.setFocusItem( item );
+      this.setFocusCell( cell );
+    },
+
+    _selectCells : function( item, start, end ) {
+      if( this._config.cellSelection && start >= 0 ) {
+        for( var i = start; i <= end; i++ ) {
+          if( this._columnOrder[ i ].getVisibility() ) {
+            item.selectCell( this._config.cellOrder[ i ] );
+          }
+        }
+      }
     },
 
     _selectItem : function( item, render ) {
@@ -1209,6 +1294,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       var oldSelection = this._selection;
       this._selection = [];
       for( var i = 0; i < oldSelection.length; i++ ) {
+        oldSelection[ i ].setCellSelection( [] );
         this._rowContainer.renderItem( oldSelection[ i ] );
       }
     },
@@ -1251,9 +1337,11 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       //        always the case (depending on the server-side widget), we also do it here.
       if( this._focusItem && this._focusItem.isDisposed() ) {
         this._focusItem = null;
+        this._focusCell = null;
       }
       if( this._leadItem && this._leadItem.isDisposed() ) {
         this._leadItem = null;
+        this._leadCell = null;
       }
       var i = 0;
       while( i < this._selection.length ) {

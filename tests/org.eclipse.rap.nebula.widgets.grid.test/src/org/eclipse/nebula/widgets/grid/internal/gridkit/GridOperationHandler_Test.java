@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 EclipseSource and others.
+ * Copyright (c) 2013, 2020 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.nebula.widgets.grid.internal.gridkit;
 
+import static org.eclipse.nebula.widgets.grid.GridTestUtil.createGridColumns;
 import static org.eclipse.nebula.widgets.grid.GridTestUtil.createGridItems;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_COLLAPSE;
@@ -32,6 +33,7 @@ import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.CellToolTipUtil;
 import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
 import org.eclipse.swt.internal.widgets.ICellToolTipProvider;
@@ -97,6 +99,25 @@ public class GridOperationHandler_Test {
   }
 
   @Test
+  public void testHandleSetCellSelection() {
+    grid.setCellSelectionEnabled( true );
+    createGridItems( grid, 3, 3 );
+    createGridColumns( grid, 3, SWT.NONE );
+    GridItem item1 = grid.getItem( 0 );
+    GridItem item2 = grid.getItem( 2 );
+
+    JsonArray cellSelection = new JsonArray()
+      .add( new JsonArray().add( getId( item1 ) ).add( 1 ) )
+      .add( new JsonArray().add( getId( item2 ) ).add( 2 ) );
+    handler.handleSet( new JsonObject().add( "cellSelection", cellSelection ) );
+
+    Point[] selectedCells = grid.getCellSelection();
+    assertEquals( 2, selectedCells.length );
+    assertEquals( new Point( 1, 0 ), selectedCells[ 0 ] );
+    assertEquals( new Point( 2, 2 ), selectedCells[ 1 ] );
+  }
+
+  @Test
   public void testHandleSetSelection_disposedItem() {
     createGridItems( grid, 3, 3 );
     GridItem item1 = grid.getItem( 0 );
@@ -147,6 +168,7 @@ public class GridOperationHandler_Test {
     GridItem item = new GridItem( grid, SWT.NONE );
     final ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( grid );
     adapter.setCellToolTipProvider( new ICellToolTipProvider() {
+      @Override
       public void getToolTipText( Item item, int columnIndex ) {
         StringBuilder buffer = new StringBuilder();
         buffer.append( getId( item ) );

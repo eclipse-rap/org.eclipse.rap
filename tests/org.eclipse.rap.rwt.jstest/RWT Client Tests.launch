@@ -20,10 +20,34 @@
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Declipse.ignoreApp=true -Dosgi.noShutdown=true&#13;&#10;-Dorg.osgi.service.http.port=8081&#13;&#10;-Dorg.eclipse.rap.rwt.developmentMode=true"/>
 <stringAttribute key="pde.version" value="3.3"/>
+<setAttribute key="selected_target_bundles">
+<setEntry value="javax.servlet@default:default"/>
+<setEntry value="org.apache.felix.gogo.command@default:default"/>
+<setEntry value="org.apache.felix.gogo.runtime@default:default"/>
+<setEntry value="org.apache.felix.gogo.shell@default:default"/>
+<setEntry value="org.apache.felix.scr@1:true"/>
+<setEntry value="org.eclipse.equinox.common@2:true"/>
+<setEntry value="org.eclipse.equinox.console@default:default"/>
+<setEntry value="org.eclipse.equinox.http.jetty@default:default"/>
+<setEntry value="org.eclipse.equinox.http.servlet@default:default"/>
+<setEntry value="org.eclipse.jetty.continuation@default:default"/>
+<setEntry value="org.eclipse.jetty.http@default:default"/>
+<setEntry value="org.eclipse.jetty.io@default:default"/>
+<setEntry value="org.eclipse.jetty.security@default:default"/>
+<setEntry value="org.eclipse.jetty.server@default:default"/>
+<setEntry value="org.eclipse.jetty.servlet@default:default"/>
+<setEntry value="org.eclipse.jetty.util@default:default"/>
+<setEntry value="org.eclipse.osgi.services@default:default"/>
+<setEntry value="org.eclipse.osgi.util@default:default"/>
+<setEntry value="org.eclipse.osgi@-1:true"/>
+</setAttribute>
+<setAttribute key="selected_workspace_bundles">
+<setEntry value="org.eclipse.rap.rwt.jstest@default:default"/>
+<setEntry value="org.eclipse.rap.rwt.osgi@default:default"/>
+<setEntry value="org.eclipse.rap.rwt@default:default"/>
+</setAttribute>
 <booleanAttribute key="show_selected_only" value="true"/>
-<stringAttribute key="target_bundles" value="javax.servlet@default:default,org.apache.felix.gogo.command@default:default,org.apache.felix.gogo.runtime@default:default,org.apache.felix.gogo.shell@default:default,org.eclipse.equinox.common@2:true,org.eclipse.equinox.console@default:default,org.apache.felix.scr@1:true,org.eclipse.equinox.http.jetty@default:default,org.eclipse.equinox.http.servlet@default:default,org.eclipse.osgi.util@default:default,org.eclipse.jetty.continuation@default:default,org.eclipse.jetty.http@default:default,org.eclipse.jetty.io@default:default,org.eclipse.jetty.security@default:default,org.eclipse.jetty.server@default:default,org.eclipse.jetty.servlet@default:default,org.eclipse.jetty.util@default:default,org.eclipse.osgi.services@default:default,org.eclipse.osgi@-1:true"/>
 <booleanAttribute key="tracing" value="false"/>
 <booleanAttribute key="useCustomFeatures" value="false"/>
 <booleanAttribute key="useDefaultConfigArea" value="false"/>
-<stringAttribute key="workspace_bundles" value="org.eclipse.rap.rwt.jstest@default:default,org.eclipse.rap.rwt.osgi@default:default,org.eclipse.rap.rwt@default:default"/>
 </launchConfiguration>
