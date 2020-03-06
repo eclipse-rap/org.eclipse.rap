@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2016 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2020 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -132,6 +132,16 @@ rwt.qx.Class.define( "rwt.remote.Connection", {
         request.send();
         this._removeSendListeners();
       }
+    },
+
+    sendBeacon : function() {
+      var cid = "";
+      if( this._connectionId ) {
+        cid = ( this._url.indexOf( "?" ) === -1 ? "?cid=" : "&cid=" ) + this._connectionId;
+      }
+      var body = this.getMessageWriter().createMessage();
+      var headers = { type: 'application/json' };
+      navigator.sendBeacon( this._url + cid, new Blob( [body], headers ) );
     },
 
     getMessageWriter : function() {

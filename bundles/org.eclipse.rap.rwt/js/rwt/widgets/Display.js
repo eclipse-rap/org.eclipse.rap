@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 EclipseSource and others.
+ * Copyright (c) 2011, 2020 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -180,16 +180,28 @@ rwt.widgets.Display.prototype = {
     this._document.removeEventListener( "keypress", this._onKeyPress, this );
     this._connection.removeEventListener( "send", this._onSend, this );
     rwt.client.ServerPush.getInstance().setActive( false );
+    this._connection.getMessageWriter().appendHead( "shutdown", true );
     this._sendShutdown();
   },
 
   ///////////////////
   // client to server
 
-  _sendShutdown : function() {
-    this._connection.getMessageWriter().appendHead( "shutdown", true );
-    this._connection.sendImmediate( false );
-  },
+  _sendShutdown : rwt.util.Variant.select( "qx.client", {
+    "gecko" : function() {
+      this._connection.sendBeacon();
+    },
+    "trident" : function() {
+      if( navigator.sendBeacon ) {
+        this._connection.sendBeacon();
+      } else {
+        this._connection.sendImmediate( true );
+      }
+    },
+    "default" : function() {
+      this._connection.sendImmediate( true );
+    }
+  } ),
 
   _appendWindowSize : function() {
     this._bounds = [ 0, 0, window.innerWidth, window.innerHeight ];
