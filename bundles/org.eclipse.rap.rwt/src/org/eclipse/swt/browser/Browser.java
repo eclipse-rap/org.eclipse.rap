@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2016 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2020 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -509,6 +509,18 @@ public class Browser extends Composite {
   public Object getWebBrowser() {
     checkWidget();
     return null;
+  }
+
+  /**
+   * Returns the type of native browser being used by this instance.
+   *
+   * @return the type of the native browser
+   *
+   * @since 3.13
+   */
+  public String getBrowserType() {
+    checkWidget();
+    return "iframe";
   }
 
   private static int checkStyle( int style ) {
