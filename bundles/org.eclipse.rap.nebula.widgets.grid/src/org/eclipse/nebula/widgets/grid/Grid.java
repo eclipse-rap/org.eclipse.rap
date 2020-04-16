@@ -50,10 +50,6 @@ import org.eclipse.swt.widgets.TypedListener;
 
 
 /**
- * <p>
- * NOTE:  THIS WIDGET AND ITS API ARE STILL UNDER DEVELOPMENT.  THIS IS A PRE-RELEASE ALPHA
- * VERSION.  USERS SHOULD EXPECT API CHANGES IN FUTURE VERSIONS.
- * </p>
  * Instances of this class implement a selectable user interface object that
  * displays a list of images and strings and issue notification when selected.
  * <p>
@@ -1318,7 +1314,7 @@ public class Grid extends Composite {
    * Selects the given cell. Invalid cells are ignored.
    *
    * @param cell
-   *            point whose x values is a column index and y value is an item
+   *            point whose x value is a column index and y value is an item
    *            index
    * @throws IllegalArgumentException
    *             <ul>
@@ -1804,7 +1800,7 @@ public class Grid extends Composite {
    * before selecting the given cell.
    *
    * @param cell
-   *            point whose x values is a column index and y value is an item
+   *            point whose x value is a column index and y value is an item
    *            index
    * @throws IllegalArgumentException
    *             <ul>

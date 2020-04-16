@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,11 +24,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
 /**
- * <p>
- * NOTE:  THIS WIDGET AND ITS API ARE STILL UNDER DEVELOPMENT.  THIS IS A PRE-RELEASE ALPHA
- * VERSION.  USERS SHOULD EXPECT API CHANGES IN FUTURE VERSIONS.
- * </p>
- *
  * A GridEditor is a manager for a Control that appears above a cell in a Grid
  * and tracks with the moving and resizing of that cell. It can be used to
  * display a text widget above a cell in a Grid so that the user can edit the
@@ -70,19 +65,27 @@ public class GridEditor extends ControlEditor
         treeListener = new TreeListener () {
             final Runnable runnable = new Runnable() {
                 public void run() {
-                    if (getEditor() == null || getEditor().isDisposed()) return;
-                    if (table.isDisposed()) return;
+                    if (getEditor() == null || getEditor().isDisposed()) {
+                      return;
+                    }
+                    if (table.isDisposed()) {
+                      return;
+                    }
                     layout();
                     getEditor().setVisible(true);
                 }
             };
             public void treeCollapsed(TreeEvent e) {
-                if (getEditor() == null || getEditor().isDisposed ()) return;
+                if (getEditor() == null || getEditor().isDisposed ()) {
+                  return;
+                }
                 getEditor().setVisible(false);
                 e.display.asyncExec(runnable);
             }
             public void treeExpanded(TreeEvent e) {
-                if (getEditor() == null || getEditor().isDisposed ()) return;
+                if (getEditor() == null || getEditor().isDisposed ()) {
+                  return;
+                }
                 getEditor().setVisible(false);
                 e.display.asyncExec(runnable);
             }
@@ -107,7 +110,9 @@ public class GridEditor extends ControlEditor
           public void handleEvent(Event event)
             {
               getEditor().setVisible(((GridColumn)event.widget).isVisible());
-              if (getEditor().isVisible()) layout();
+              if (getEditor().isVisible()) {
+                layout();
+              }
             }
         };
 
@@ -134,9 +139,13 @@ public class GridEditor extends ControlEditor
         {
             public void handleEvent(Event event)
             {
-                if (getEditor() == null || getEditor().isDisposed()) return;
+                if (getEditor() == null || getEditor().isDisposed()) {
+                  return;
+                }
                 getEditor().setVisible(table.getColumn(getColumn()).isVisible());
-                if (getEditor().isVisible()) layout();
+                if (getEditor().isVisible()) {
+                  layout();
+                }
             }
         };
 
@@ -166,8 +175,9 @@ public class GridEditor extends ControlEditor
      */
     protected Rectangle computeBounds()
     {
-        if (item == null || column == -1 || item.isDisposed())
-            return new Rectangle(0, 0, 0, 0);
+        if (item == null || column == -1 || item.isDisposed()) {
+          return new Rectangle(0, 0, 0, 0);
+        }
         Rectangle cell = item.getBounds(column);
         Rectangle area = table.getClientArea();
         if (cell.x < area.x + area.width)
@@ -247,11 +257,13 @@ public class GridEditor extends ControlEditor
         {
             table.removeListener(SWT.Resize, resizeListener);
 
-            if (table.getVerticalScrollBarProxy() != null)
-                table.getVerticalScrollBarProxy().removeSelectionListener(scrollListener);
+            if (table.getVerticalScrollBarProxy() != null) {
+              table.getVerticalScrollBarProxy().removeSelectionListener(scrollListener);
+            }
 
-            if (table.getHorizontalScrollBarProxy() != null)
-                table.getHorizontalScrollBarProxy().removeSelectionListener(scrollListener);
+            if (table.getHorizontalScrollBarProxy() != null) {
+              table.getHorizontalScrollBarProxy().removeSelectionListener(scrollListener);
+            }
         }
 
         columnListener = null;
@@ -313,8 +325,9 @@ public class GridEditor extends ControlEditor
             this.column = -1;
         }
 
-        if (column < 0 || column >= table.getColumnCount())
-            return;
+        if (column < 0 || column >= table.getColumnCount()) {
+          return;
+        }
 
         this.column = column;
         GridColumn tableColumn = table.getColumn(this.column);
@@ -368,20 +381,25 @@ public class GridEditor extends ControlEditor
     public void layout()
     {
 
-        if (table.isDisposed())
-            return;
-        if (item == null || item.isDisposed())
-            return;
+        if (table.isDisposed()) {
+          return;
+        }
+        if (item == null || item.isDisposed()) {
+          return;
+        }
         int columnCount = table.getColumnCount();
-        if (columnCount == 0 && column != 0)
-            return;
-        if (columnCount > 0 && (column < 0 || column >= columnCount))
-            return;
+        if (columnCount == 0 && column != 0) {
+          return;
+        }
+        if (columnCount > 0 && (column < 0 || column >= columnCount)) {
+          return;
+        }
 
         boolean hadFocus = false;
 
-        if (getEditor() == null || getEditor().isDisposed())
-            return;
+        if (getEditor() == null || getEditor().isDisposed()) {
+          return;
+        }
         if (getEditor().getVisible())
         {
             hadFocus = getEditor().isFocusControl();
@@ -391,8 +409,9 @@ public class GridEditor extends ControlEditor
         getEditor().setBounds(computeBounds());
         if (hadFocus)
         {
-            if (getEditor() == null || getEditor().isDisposed())
-                return;
+            if (getEditor() == null || getEditor().isDisposed()) {
+              return;
+            }
             getEditor().setFocus();
         }
 
