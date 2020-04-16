@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2020 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,7 @@ public class NebulaGridExamplePage implements IExamplePage {
 
   private List<CompanyData> data;
 
+  @Override
   public void createControl( Composite parent ) {
     initData();
     parent.setLayout( ExampleUtil.createGridLayout( 1, true, true, true ) );
@@ -88,7 +89,7 @@ public class NebulaGridExamplePage implements IExamplePage {
   }
 
   private Grid createGrid( Composite parent ) {
-    Grid grid = new Grid( parent, SWT.V_SCROLL | SWT.BORDER );
+    Grid grid = new Grid( parent, SWT.V_SCROLL | SWT.BORDER | SWT.MULTI );
     grid.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
     GridData tableLayoutData = ExampleUtil.createFillData();
     tableLayoutData.verticalIndent = 10;
@@ -96,6 +97,7 @@ public class NebulaGridExamplePage implements IExamplePage {
     grid.setHeaderVisible( true );
     grid.setFooterVisible( true );
     grid.setLinesVisible( true );
+    grid.setCellSelectionEnabled( true );
     return grid;
   }
 
