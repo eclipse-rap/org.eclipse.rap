@@ -1161,9 +1161,12 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     // focus & selection
 
     _singleSelectItem : function( event, item, cell ) {
-      if( event.isCtrlPressed() && this.isItemSelected( item ) ) {
+      var cellSelection = this._config.cellSelection;
+      if( event.isCtrlPressed() && !cellSelection && this.isItemSelected( item ) ) {
         // NOTE: Apparently in SWT this is only supported by Table, not Tree.
         //       No reason not to support it in RAP though.
+        this._ctrlSelectItem( item, cell );
+      } else if( event.isCtrlPressed() && cellSelection && item.isCellSelected( cell ) ) {
         this._ctrlSelectItem( item, cell );
       } else {
         this._exclusiveSelectItem( item, cell );
