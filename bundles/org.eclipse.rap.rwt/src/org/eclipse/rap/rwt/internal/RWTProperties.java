@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2016 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2021 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ package org.eclipse.rap.rwt.internal;
 public final class RWTProperties {
 
   public static final String SERVICE_HANDLER_BASE_URL = "org.eclipse.rap.rwt.serviceHandlerBaseURL";
+  public static final String SERVICE_HANDLER_USE_RELATIVE_URL = "org.eclipse.rap.rwt.serviceHandlerUseRelativeURL"; 
   public static final String DEVELOPMEMT_MODE = "org.eclipse.rap.rwt.developmentMode";
   public static final String TEXT_SIZE_STORE_SIZE = "org.eclipse.rap.rwt.textSizeStoreSize";
 
@@ -30,6 +31,10 @@ public final class RWTProperties {
 
   public static String getServiceHandlerBaseUrl() {
     return System.getProperty( SERVICE_HANDLER_BASE_URL );
+  }
+  
+  public static boolean isUseRelativeURL() {
+    return getBooleanProperty( SERVICE_HANDLER_USE_RELATIVE_URL, false );
   }
 
   public static boolean isDevelopmentMode() {
