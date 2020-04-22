@@ -1285,6 +1285,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
 
     _deselectItem : function( item, render ) {
       if( this.isItemSelected( item ) ) {
+        item.setCellSelection( [] );
         this._selection.splice( this._selection.indexOf( item ), 1 );
       }
       if( render ) {
