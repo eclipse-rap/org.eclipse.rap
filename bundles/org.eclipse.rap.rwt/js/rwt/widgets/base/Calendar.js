@@ -613,7 +613,7 @@ rwt.qx.Class.define("rwt.widgets.base.Calendar", {
 
         var dayLabel = this._weekdayLabelArr[i];
 
-        helpDate.setDate(firstSundayInMonth + day);
+        helpDate = new Date(this.getShownYear(), this.getShownMonth(), firstSundayInMonth + day);
 
         var weekdayName = rwt.widgets.base.Calendar.WEEKDAY_NAMES[ helpDate.getDay() + 1 ];
 
