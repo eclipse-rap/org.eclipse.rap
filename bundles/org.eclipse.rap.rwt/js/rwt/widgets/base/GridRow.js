@@ -432,7 +432,11 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       var renderBounds = false;
       if( background !== "undefined" && background != this._styleMap.backgroundColor ) {
         renderBounds = !this._scrolling || !this.$cellBackgrounds[ cell ];
-        this._getCellBackgroundElement( cell ).css( "backgroundColor", background );
+        this._getCellBackgroundElement( cell ).css( {
+          "backgroundGradient" : "",
+          "backgroundColor" : background,
+          "opacity" : ""
+        } );
       } else if( this.$cellBackgrounds[ cell ] || this._gridLines.vertical ) {
         this._getCellBackgroundElement( cell ).css( "backgroundColor", "" );
         renderBounds = !this._scrolling;
