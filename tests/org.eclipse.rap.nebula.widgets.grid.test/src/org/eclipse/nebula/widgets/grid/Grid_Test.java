@@ -1663,6 +1663,74 @@ public class Grid_Test {
   }
 
   @Test
+  public void testGetFocusColumn_Initial() {
+    assertNull( grid.getFocusColumn() );
+  }
+
+  @Test
+  public void testSetFocusColumn() {
+    grid.setCellSelectionEnabled( true );
+    GridColumn[] columns = createGridColumns( grid, 3, SWT.NONE );
+
+    grid.setFocusColumn( columns[ 1 ] );
+
+    assertSame( columns[ 1 ], grid.getFocusColumn() );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetFocusColumn_NullArgument() {
+    grid.setFocusColumn( null );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetFocusColumn_DisposedItem() {
+    GridColumn column = new GridColumn( grid, SWT.NONE );
+    column.dispose();
+
+    grid.setFocusColumn( column );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetFocusColumn_WithOtherParent() {
+    Grid otherGrid = new Grid( shell, SWT.NONE );
+    GridColumn column = new GridColumn( otherGrid, SWT.NONE );
+
+    grid.setFocusColumn( column );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetFocusColumn_InvisibleItem() {
+    GridColumn[] columns = createGridColumns( grid, 3, SWT.NONE );
+    columns[ 1 ].setVisible( false );
+
+    grid.setFocusColumn( columns[ 1 ] );
+  }
+
+  @Test
+  public void testGetFocusCell_DisabledCellSelection() {
+    assertNull( grid.getFocusCell() );
+  }
+
+  @Test
+  public void testGetFocusCell_initial() {
+    grid.setCellSelectionEnabled( true );
+
+    assertEquals( new Point( -1, -1 ), grid.getFocusCell() );
+  }
+
+  @Test
+  public void testGetFocusCell() {
+    grid.setCellSelectionEnabled( true );
+    GridColumn[] columns = createGridColumns( grid, 3, SWT.NONE );
+    GridItem[] items = createGridItems( grid, 3, 0 );
+
+    grid.setFocusItem( items[ 1 ] );
+    grid.setFocusColumn( columns[ 1 ] );
+
+    assertEquals( new Point( 1, 1 ), grid.getFocusCell() );
+  }
+
+  @Test
   public void testGetColumnOrder_Initial() {
     createGridColumns( grid, 5, SWT.NONE );
 

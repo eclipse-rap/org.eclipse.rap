@@ -75,6 +75,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Grid", {
     "cellSelectionEnabled",
     "cellSelection",
     "focusItem",
+    "focusCell",
     "sortDirection",
     "sortColumn",
     "alwaysHideSelection",

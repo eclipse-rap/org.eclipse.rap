@@ -27,6 +27,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import org.eclipse.nebula.widgets.grid.Grid;
+import org.eclipse.nebula.widgets.grid.GridColumn;
 import org.eclipse.nebula.widgets.grid.GridItem;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
@@ -161,6 +162,16 @@ public class GridOperationHandler_Test {
     handler.handleSet( new JsonObject().add( "focusItem", getId( items[ 2 ] ) ) );
 
     assertSame( items[ 2 ], grid.getFocusItem() );
+  }
+
+  @Test
+  public void testHandleSetFocusColumn() {
+    grid.setCellSelectionEnabled( true );
+    GridColumn[] columns = createGridColumns( grid, 3, SWT.NONE );
+
+    handler.handleSet( new JsonObject().add( "focusCell", 2 ) );
+
+    assertSame( columns[ 2 ], grid.getFocusColumn() );
   }
 
   @Test

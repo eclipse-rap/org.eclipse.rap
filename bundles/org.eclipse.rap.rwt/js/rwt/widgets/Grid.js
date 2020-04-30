@@ -24,7 +24,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     this._topItem = null;
     this._selection = [];
     this._focusItem = null;
-    this._focusCell = 0;
+    this._focusCell = -1;
     this._renderQueue = {};
     this._resizeLine = null;
     this._selectionTimestamp = null;
@@ -1341,7 +1341,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       //        always the case (depending on the server-side widget), we also do it here.
       if( this._focusItem && this._focusItem.isDisposed() ) {
         this._focusItem = null;
-        this._focusCell = null;
+        this._focusCell = -1;
       }
       if( this._leadItem && this._leadItem.isDisposed() ) {
         this._leadItem = null;

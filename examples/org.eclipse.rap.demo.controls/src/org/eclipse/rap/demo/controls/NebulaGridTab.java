@@ -77,6 +77,7 @@ public class NebulaGridTab extends ExampleTab {
     createWordWrapButton( parent );
     createHeaderWordWrapButton( parent );
     createQueryFocusItem( parent );
+    createQueryFocusColumn( parent );
     createEnableCellSelection( parent );
     createSetCellSelection( parent );
     createAddCellsToSelection( parent );
@@ -480,6 +481,19 @@ public class NebulaGridTab extends ExampleTab {
       public void widgetSelected( SelectionEvent e ) {
         Shell shell = grid.getShell();
         String msg = "Current focusItem: " + grid.getFocusItem();
+        MessageDialog.openInformation( shell, "Information", msg );
+      }
+    } );
+  }
+
+  private void createQueryFocusColumn( Composite parent ) {
+    Button button = new Button( parent, SWT.PUSH );
+    button.setText( "Query focusColumn" );
+    button.addSelectionListener( new SelectionAdapter() {
+      @Override
+      public void widgetSelected( SelectionEvent e ) {
+        Shell shell = grid.getShell();
+        String msg = "Current focusColumn: " + grid.getFocusColumn();
         MessageDialog.openInformation( shell, "Information", msg );
       }
     } );

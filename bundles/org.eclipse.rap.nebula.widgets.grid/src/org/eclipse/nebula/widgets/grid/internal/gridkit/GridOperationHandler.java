@@ -19,6 +19,7 @@ import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SEL
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SET_DATA;
 
 import org.eclipse.nebula.widgets.grid.Grid;
+import org.eclipse.nebula.widgets.grid.GridColumn;
 import org.eclipse.nebula.widgets.grid.GridItem;
 import org.eclipse.nebula.widgets.grid.internal.IGridAdapter;
 import org.eclipse.rap.json.JsonArray;
@@ -43,6 +44,7 @@ public class GridOperationHandler extends ControlOperationHandler<Grid> {
   private static final String PROP_SCROLL_LEFT = "scrollLeft";
   private static final String PROP_TOP_ITEM_INDEX = "topItemIndex";
   private static final String PROP_FOCUS_ITEM = "focusItem";
+  private static final String PROP_FOCUS_CELL = "focusCell";
   private static final String METHOD_RENDER_TOOLTIP_TEXT = "renderToolTipText";
 
   public GridOperationHandler( Grid grid ) {
@@ -57,6 +59,7 @@ public class GridOperationHandler extends ControlOperationHandler<Grid> {
     handleSetScrollLeft( grid, properties );
     handleSetTopItemIndex( grid, properties );
     handleSetFocusItem( grid, properties );
+    handleSetFocusCell( grid, properties );
   }
 
   @Override
@@ -164,6 +167,21 @@ public class GridOperationHandler extends ControlOperationHandler<Grid> {
       GridItem item = getItem( grid, value.asString() );
       if( item != null ) {
         grid.setFocusItem( item );
+      }
+    }
+  }
+
+  /*
+   * PROTOCOL SET focusCell
+   *
+   * @param focusCell (int) index of focus column
+   */
+  public void handleSetFocusCell( Grid grid, JsonObject properties ) {
+    JsonValue value = properties.get( PROP_FOCUS_CELL );
+    if( value != null ) {
+      GridColumn column = grid.getColumn( value.asInt() );
+      if( column != null ) {
+        grid.setFocusColumn( column );
       }
     }
   }

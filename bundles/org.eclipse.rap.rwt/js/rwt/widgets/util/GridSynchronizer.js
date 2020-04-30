@@ -15,6 +15,7 @@ rwt.widgets.util.GridSynchronizer = function( grid ) {
   this._grid = grid;
   this._grid.addEventListener( "selectionChanged", this._onSelectionChanged, this );
   this._grid.addEventListener( "focusItemChanged", this._onFocusItemChanged, this );
+  this._grid.addEventListener( "focusCellChanged", this._onFocusCellChanged, this );
   this._grid.addEventListener( "topItemChanged", this._onTopItemChanged, this );
   this._grid.addEventListener( "scrollLeftChanged", this._onScrollLeftChanged, this );
   this._grid.getRootItem().addEventListener( "update", this._onItemUpdate, this );
@@ -69,6 +70,14 @@ rwt.widgets.util.GridSynchronizer.prototype = {
       var connection = rwt.remote.Connection.getInstance();
       var itemId = this._getItemId( this._grid.getFocusItem() );
       connection.getRemoteObject( this._grid ).set( "focusItem", itemId );
+    }
+  },
+
+  _onFocusCellChanged : function() {
+    if( !rwt.remote.EventUtil.getSuspended() ) {
+      var connection = rwt.remote.Connection.getInstance();
+      var focusCell = this._grid.getRenderConfig().cellOrder[ this._grid.getFocusCell() ];
+      connection.getRemoteObject( this._grid ).set( "focusCell", focusCell );
     }
   },
 

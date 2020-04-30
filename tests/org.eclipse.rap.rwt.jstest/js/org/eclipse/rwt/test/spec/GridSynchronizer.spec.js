@@ -251,6 +251,25 @@ describe( "GridSynchronizer", function() {
 
   } );
 
+  describe( "focusCellChanged event", function() {
+
+    beforeEach( function() {
+      grid.getRenderConfig.andReturn( {
+        "cellSelection" : true,
+        "cellOrder" : [ 2, 0, 1 ]
+      } );
+    } );
+
+    it( "sets focusCell property", function() {
+      grid.getFocusCell.andReturn( 1 );
+
+      notifyListener( "focusCellChanged" );
+
+      expect( gridRemoteObject.set ).toHaveBeenCalledWith( "focusCell", 0 );
+    } );
+
+  } );
+
   describe( "topItemChanged event", function() {
 
     var vScroll = {

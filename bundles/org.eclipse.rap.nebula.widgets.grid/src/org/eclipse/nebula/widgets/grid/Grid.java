@@ -77,6 +77,7 @@ public class Grid extends Composite {
   private List<GridColumn> displayOrderedColumns = new ArrayList<GridColumn>();
   private List<GridColumnGroup> columnGroups = new ArrayList<GridColumnGroup>();
   private GridItem focusItem;
+  private GridColumn focusColumn;
   private boolean isTree;
   private boolean disposing;
   private boolean columnHeadersVisible;
@@ -2351,6 +2352,91 @@ public class Grid extends Composite {
   public GridItem getFocusItem() {
     checkWidget();
     return focusItem;
+  }
+
+  /**
+   * Sets the focused column to the given column. Column focus is only applicable
+   * when cell selection is enabled.
+   *
+   * @param column
+   *            column to focus.
+   * @throws IllegalArgumentException
+   *             <ul>
+   *             <li>ERROR_INVALID_ARGUMENT - if item is disposed</li>
+   *             </ul>
+   * @throws org.eclipse.swt.SWTException
+   *             <ul>
+   *             <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+   *             disposed</li>
+   *             <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread
+   *             that created the receiver</li>
+   *             </ul>
+   *
+   * @since 3.13
+   */
+  public void setFocusColumn( GridColumn column ) {
+    checkWidget();
+    if( column == null
+        || column.isDisposed()
+        || column.getParent() != this
+        || !column.isVisible() )
+    {
+      SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    if( isCellSelectionEnabled() ) {
+      focusColumn = column;
+    }
+  }
+
+  /**
+   * Returns the current column in focus.
+   * Column focus is only applicable when cell selection is enabled.
+   *
+   * @return column in focus or {@code null}.
+   * @throws org.eclipse.swt.SWTException
+   * <ul>
+   * <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   * <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that
+   * created the receiver</li>
+   * </ul>
+   *
+   * @since 3.13
+   */
+  public GridColumn getFocusColumn() {
+    checkWidget();
+    return isCellSelectionEnabled() ? focusColumn : null;
+  }
+
+  /**
+   * Returns the current cell in focus. If cell selection is disabled, this method
+   * returns null.
+   *
+   * @return cell in focus or {@code null}. x represents the column and y the row
+   *         the cell is in
+   * @throws org.eclipse.swt.SWTException
+   *             <ul>
+   *             <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+   *             disposed</li>
+   *             <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread
+   *             that created the receiver</li>
+   *             </ul>
+   *
+   * @since 3.13
+   */
+  public Point getFocusCell() {
+    checkWidget();
+    if( !cellSelectionEnabled ) {
+      return null;
+    }
+    int x = -1;
+    int y = -1;
+    if( focusColumn != null ) {
+      x = indexOf( focusColumn );
+    }
+    if( focusItem != null ) {
+      y = indexOf( focusItem );
+    }
+    return new Point( x, y );
   }
 
   /**

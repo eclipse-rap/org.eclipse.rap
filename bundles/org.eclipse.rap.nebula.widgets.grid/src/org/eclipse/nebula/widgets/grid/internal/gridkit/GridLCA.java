@@ -69,6 +69,7 @@ public class GridLCA extends WidgetLCA<Grid> {
   private static final String PROP_LINES_VISIBLE = "linesVisible";
   private static final String PROP_TOP_ITEM_INDEX = "topItemIndex";
   private static final String PROP_FOCUS_ITEM = "focusItem";
+  private static final String PROP_FOCUS_CELL = "focusCell";
   private static final String PROP_SCROLL_LEFT = "scrollLeft";
   private static final String PROP_SELECTION = "selection";
   private static final String PROP_CELL_SELECTION = "cellSelection";
@@ -123,6 +124,7 @@ public class GridLCA extends WidgetLCA<Grid> {
     preserveProperty( grid, PROP_LINES_VISIBLE, grid.getLinesVisible() );
     preserveProperty( grid, PROP_TOP_ITEM_INDEX, getTopItemIndex( grid ) );
     preserveProperty( grid, PROP_FOCUS_ITEM, grid.getFocusItem() );
+    preserveProperty( grid, PROP_FOCUS_CELL, getFocusCell( grid ) );
     preserveProperty( grid, PROP_SCROLL_LEFT, getScrollLeft( grid ) );
     preserveProperty( grid, PROP_SELECTION, getSelection( grid ) );
     preserveProperty( grid, PROP_AUTO_HEIGHT, grid.isAutoHeight() );
@@ -152,6 +154,7 @@ public class GridLCA extends WidgetLCA<Grid> {
     renderProperty( grid, PROP_LINES_VISIBLE, grid.getLinesVisible(), false );
     renderProperty( grid, PROP_TOP_ITEM_INDEX, getTopItemIndex( grid ), ZERO );
     renderProperty( grid, PROP_FOCUS_ITEM, grid.getFocusItem(), null );
+    renderProperty( grid, PROP_FOCUS_CELL, getFocusCell( grid ), -1 );
     renderProperty( grid, PROP_SCROLL_LEFT, getScrollLeft( grid ), ZERO );
     renderProperty( grid, PROP_SELECTION, getSelection( grid ), DEFAULT_SELECTION );
     renderProperty( grid, PROP_AUTO_HEIGHT, grid.isAutoHeight(), false );
@@ -261,6 +264,11 @@ public class GridLCA extends WidgetLCA<Grid> {
       result[ i ] = getId( grid.getColumn( order[ i ] ) );
     }
     return result;
+  }
+
+  private static int getFocusCell( Grid grid ) {
+    GridColumn focusColumn = grid.getFocusColumn();
+    return focusColumn == null ? -1 : grid.indexOf( focusColumn );
   }
 
   ///////////////

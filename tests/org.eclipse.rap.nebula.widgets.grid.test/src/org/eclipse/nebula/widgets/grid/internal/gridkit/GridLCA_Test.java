@@ -694,6 +694,44 @@ public class GridLCA_Test {
   }
 
   @Test
+  public void testRenderInitialFocusColumn() throws IOException {
+    grid.setCellSelectionEnabled( true );
+    lca.render( grid );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( grid );
+    assertTrue( operation.getProperties().names().indexOf( "focusCell" ) == -1 );
+  }
+
+  @Test
+  public void testRenderFocusColumn() throws IOException {
+    grid.setCellSelectionEnabled( true );
+    GridColumn[] columns = createGridColumns( grid, 3, SWT.NONE );
+
+    grid.setFocusColumn( columns[ 1 ] );
+    lca.renderChanges( grid );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    int expected = grid.indexOf( columns[ 1 ] );
+    assertEquals( expected, message.findSetProperty( grid, "focusCell" ).asInt() );
+  }
+
+  @Test
+  public void testRenderFocusColumnUnchanged() throws IOException {
+    grid.setCellSelectionEnabled( true );
+    GridColumn[] columns = createGridColumns( grid, 3, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( grid );
+
+    grid.setFocusColumn( columns[ 1 ] );
+    Fixture.preserveWidgets();
+    lca.renderChanges( grid );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( grid, "focusCell" ) );
+  }
+
+  @Test
   public void testRenderInitialScrollLeft() throws IOException {
     createGridColumns( grid, 3, SWT.NONE );
     lca.render( grid );
