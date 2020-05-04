@@ -10,6 +10,8 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
+(function( $ ) {
+
 rwt.qx.Class.define( "rwt.widgets.Grid", {
 
   extend : rwt.widgets.base.Parent,
@@ -25,6 +27,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     this._selection = [];
     this._focusItem = null;
     this._focusCell = -1;
+    this.$selectionOverlay = null;
     this._renderQueue = {};
     this._resizeLine = null;
     this._selectionTimestamp = null;
@@ -71,6 +74,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     this._focusItem = null;
     this._sortColumn = null;
     this._resizeLine = null;
+    this.$selectionOverlay = null;
   },
 
   members : {
@@ -121,6 +125,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       this._rootItem.addEventListener( "update", this._onItemUpdate, this );
       this.addEventListener( "mousedown", this._onMouseDown, this );
       this.addEventListener( "mouseup", this._onMouseUp, this );
+      this.addEventListener( "mousemove", this._onMouseMove, this );
       this.addEventListener( "click", this._onClick, this );
       this.addEventListener( "mouseout", this._onMouseOut, this );
       this.addEventListener( "keypress", this._onKeyPress, this );
@@ -580,14 +585,46 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
         if( row ) {
           this._onRowMouseDown( row, event );
         }
+        if( this._config.cellSelection && this._hasMultiSelection ) {
+          this.setCapture( true );
+          this._mouseDownY = event.getPageY() - rwt.html.Location.getTop( this.getElement() );
+          this._mouseDownX = event.getPageX() - rwt.html.Location.getLeft( this.getElement() );
+          this._createSelectionOverlay( this._mouseDownY, this._mouseDownX );
+        }
       }
     },
 
     _onMouseUp : function( event ) {
       if( this._delayedSelection ) {
         this._onMouseDown( event );
+      } else if( this.$selectionOverlay !== null ) {
+        this.setCapture( false );
+        this.$selectionOverlay.detach();
+        this.$selectionOverlay = null;
+        var row = this._rowContainer.findRowByElement( event.getDomTarget() );
+        if( row ) {
+          this._dragSelection = true;
+          this._onRowMouseDown( row, event );
+          this._dragSelection = false;
+        }
       } else {
         this._checkAndProcessHyperlink( event );
+      }
+    },
+
+    _onMouseMove : function( event ) {
+      if( this.$selectionOverlay !== null ) {
+        var mouseY = event.getPageY() - rwt.html.Location.getTop( this.getElement() );
+        var mouseX = event.getPageX() - rwt.html.Location.getLeft( this.getElement() );
+        var height = Math.abs( mouseY - this._mouseDownY );
+        var width = Math.abs( mouseX - this._mouseDownX );
+        if( mouseY < this._mouseDownY ) {
+          this.$selectionOverlay.css( "top", mouseY + 1 );
+        }
+        if( mouseX < this._mouseDownX ) {
+          this.$selectionOverlay.css( "left", mouseX + 1 );
+        }
+        this.$selectionOverlay.css( { "width" : width, "height" : height } );
       }
     },
 
@@ -1184,7 +1221,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
         } else {
           this._ctrlSelectItem( item, cell );
         }
-      } else if( event.isShiftPressed() ) {
+      } else if( event.isShiftPressed() || this._dragSelection ) {
         if( this._focusItem != null ) {
           this._shiftSelectItem( item, cell );
         } else {
@@ -1494,6 +1531,28 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       return rwt.widgets.base.Scrollable.adjustScrollLeft( this, scrollLeft );
     },
 
+    _createSelectionOverlay : function( top, left ) {
+      if( this.$selectionOverlay === null ) {
+        this.$selectionOverlay = $( "<div>" ).css( {
+          "overflow" : "hidden",
+          "userSelect" : "none",
+          "background" : "#ccdbef",
+          "opacity" : 0.5,
+          "position" : "relative",
+          "borderWidth" : "1px",
+          "borderStyle" : "solid",
+          "borderColor" : "#0000bf",
+          "zIndex" : 99999,
+          "top" : top,
+          "left" : left,
+          "width" : 0,
+          "height" : 0
+        } ).appendTo( this );
+      } else {
+        this.$selectionOverlay.css( { "top" : top, "left" : left } );
+      }
+    },
+
     ////////////////////////
     // Cell tooltip handling
 
@@ -1523,3 +1582,5 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
   }
 
 } );
+
+}( rwt.util._RWTQuery ) );
