@@ -616,8 +616,8 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       if( this.$selectionOverlay !== null ) {
         var mouseY = event.getPageY() - rwt.html.Location.getTop( this.getElement() );
         var mouseX = event.getPageX() - rwt.html.Location.getLeft( this.getElement() );
-        var height = Math.abs( mouseY - this._mouseDownY );
-        var width = Math.abs( mouseX - this._mouseDownX );
+        var height = Math.abs( mouseY - this._mouseDownY - 1 );
+        var width = Math.abs( mouseX - this._mouseDownX - 1 );
         if( mouseY < this._mouseDownY ) {
           this.$selectionOverlay.css( "top", mouseY + 1 );
         }
