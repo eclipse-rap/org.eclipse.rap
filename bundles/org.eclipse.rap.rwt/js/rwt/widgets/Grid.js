@@ -602,7 +602,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
         this.$selectionOverlay.detach();
         this.$selectionOverlay = null;
         var row = this._rowContainer.findRowByElement( event.getDomTarget() );
-        if( row ) {
+        if( row && !event.isCtrlPressed() ) {
           this._dragSelection = true;
           this._onRowMouseDown( row, event );
           this._dragSelection = false;
