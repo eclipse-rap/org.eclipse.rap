@@ -584,12 +584,12 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
         var row = this._rowContainer.findRowByElement( event.getDomTarget() );
         if( row ) {
           this._onRowMouseDown( row, event );
-        }
-        if( this._config.cellSelection && this._hasMultiSelection ) {
-          this.setCapture( true );
-          this._mouseDownY = event.getPageY() - rwt.html.Location.getTop( this.getElement() );
-          this._mouseDownX = event.getPageX() - rwt.html.Location.getLeft( this.getElement() );
-          this._createSelectionOverlay( this._mouseDownY, this._mouseDownX );
+          if( this._config.cellSelection && this._hasMultiSelection ) {
+            this.setCapture( true );
+            this._mouseDownY = event.getPageY() - rwt.html.Location.getTop( this.getElement() );
+            this._mouseDownX = event.getPageX() - rwt.html.Location.getLeft( this.getElement() );
+            this._createSelectionOverlay( this._mouseDownY, this._mouseDownX );
+          }
         }
       }
     },
