@@ -742,6 +742,64 @@ public class Grid_Test {
   }
 
   @Test
+  public void testIsCellSelected() {
+    grid.setCellSelectionEnabled( true );
+    createGridItems( grid, 3, 0 );
+    createGridColumns( grid, 3, SWT.NONE );
+
+    grid.selectCell( new Point( 2, 1 ) );
+
+    assertTrue( grid.isCellSelected( new Point( 2, 1 ) ) );
+    assertFalse( grid.isCellSelected( new Point( 2, 2 ) ) );
+  }
+
+  @Test
+  public void testGetCell() {
+    grid.setCellSelectionEnabled( true );
+    createGridItems( grid, 3, 0 );
+    createGridColumns( grid, 3, SWT.NONE );
+
+    assertEquals( new Point( 1, 2 ), grid.getCell( new Point( 50, 70 ) ) );
+  }
+
+  @Test
+  public void testSelectColumn() {
+    grid.setCellSelectionEnabled( true );
+    createGridItems( grid, 3, 0 );
+    createGridColumns( grid, 3, SWT.NONE );
+
+    grid.selectColumn( 1 );
+
+    Point[] expected = new Point[] {
+      new Point( 1, 0 ),
+      new Point( 1, 1 ),
+      new Point( 1, 2 )
+    };
+    assertTrue( Arrays.equals( expected, grid.getCellSelection() ) );
+  }
+
+  @Test
+  public void testSelectColumnGroup() {
+    grid.setCellSelectionEnabled( true );
+    createGridItems( grid, 3, 0 );
+    createGridColumns( grid, 3, SWT.NONE );
+    GridColumnGroup gridColumnGroup = new GridColumnGroup( grid, SWT.NONE );
+    createGridColumns( gridColumnGroup, 2, SWT.NONE );
+
+    grid.selectColumnGroup( 0 );
+
+    Point[] expected = new Point[] {
+      new Point( 3, 0 ),
+      new Point( 3, 1 ),
+      new Point( 3, 2 ),
+      new Point( 4, 0 ),
+      new Point( 4, 1 ),
+      new Point( 4, 2 )
+    };
+    assertTrue( Arrays.equals( expected, grid.getCellSelection() ) );
+  }
+
+  @Test
   public void testGetSelection_Initial() {
     assertTrue( Arrays.equals( new GridItem[ 0 ], grid.getSelection() ) );
   }

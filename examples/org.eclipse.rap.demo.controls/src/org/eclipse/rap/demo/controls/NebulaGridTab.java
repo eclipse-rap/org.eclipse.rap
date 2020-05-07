@@ -81,6 +81,9 @@ public class NebulaGridTab extends ExampleTab {
     createEnableCellSelection( parent );
     createSetCellSelection( parent );
     createAddCellsToSelection( parent );
+    createSelectCellsInColumn( parent );
+    createSelectCellsInColumnGroup( parent );
+    createDeselectAllCells( parent );
     createGetCellsSelection( parent );
     createSetColumnOrder( parent );
   }
@@ -529,6 +532,39 @@ public class NebulaGridTab extends ExampleTab {
       @Override
       public void widgetSelected( SelectionEvent e ) {
         grid.selectCells( new Point[] { new Point( 0, 5 ), new Point( 2, 7 ) } );
+      }
+    } );
+  }
+
+  private void createSelectCellsInColumn( Composite parent ) {
+    Button button = new Button( parent, SWT.PUSH );
+    button.setText( "Select all cells in column 4" );
+    button.addSelectionListener( new SelectionAdapter() {
+      @Override
+      public void widgetSelected( SelectionEvent e ) {
+        grid.selectColumn( 4 );
+      }
+    } );
+  }
+
+  private void createSelectCellsInColumnGroup( Composite parent ) {
+    Button button = new Button( parent, SWT.PUSH );
+    button.setText( "Select all cells in column group" );
+    button.addSelectionListener( new SelectionAdapter() {
+      @Override
+      public void widgetSelected( SelectionEvent e ) {
+        grid.selectColumnGroup( 0 );
+      }
+    } );
+  }
+
+  private void createDeselectAllCells( Composite parent ) {
+    Button button = new Button( parent, SWT.PUSH );
+    button.setText( "Deselect all cells" );
+    button.addSelectionListener( new SelectionAdapter() {
+      @Override
+      public void widgetSelected( SelectionEvent e ) {
+        grid.deselectAllCells();
       }
     } );
   }
