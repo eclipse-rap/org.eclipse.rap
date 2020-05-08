@@ -1340,6 +1340,13 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       }
     },
 
+    deselectAllCells : function() {
+      for( var i = 0; i < this._selection.length; i++ ) {
+        this._selection[ i ].setCellSelection( [] );
+        this._rowContainer.renderItem( this._selection[ i ] );
+      }
+    },
+
     _toggleCheckSelection : function( item, cell ) {
       if( item.isCached() ) {
         if( isNaN( cell ) ) {

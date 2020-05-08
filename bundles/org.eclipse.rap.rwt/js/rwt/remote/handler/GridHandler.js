@@ -113,6 +113,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Grid", {
       widget.getRenderConfig().cellSelection = value;
     },
     "cellSelection" : function( widget, value ) {
+      widget.deselectAllCells();
       value.forEach( function( arr ) {
         var cell = arr.split( "#" );
         rwt.remote.HandlerUtil.callWithTarget( cell[ 0 ], function( item ) {
