@@ -29,6 +29,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.Size;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
+import org.eclipse.rap.rwt.template.Template;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
@@ -3823,6 +3824,27 @@ public class Grid extends Composite {
     this.hasSpanning = hasSpanning;
   }
 
+  private boolean isFixedColumn( GridColumn column ) {
+    int[] columnOrder = getColumnOrder();
+    int visualIndex = -1;
+    for( int i = 0; i < columnOrder.length && visualIndex == -1; i++ ) {
+      if( indexOf( column ) == columnOrder[ i ] ) {
+        visualIndex = i;
+      }
+    }
+    return visualIndex < getFixedColumns();
+  }
+
+  private int getFixedColumns() {
+    Object fixedColumns = getData( RWT.FIXED_COLUMNS );
+    if( fixedColumns instanceof Integer ) {
+      if( !( getData( RWT.ROW_TEMPLATE ) instanceof Template ) ) {
+        return ( ( Integer )fixedColumns ).intValue();
+      }
+    }
+    return -1;
+  }
+
   ////////////////
   // Inner classes
 
@@ -3943,6 +3965,16 @@ public class Grid extends Composite {
           visitor.visit( item );
         }
       }
+    }
+
+    @Override
+    public int getFixedColumns() {
+      return Grid.this.getFixedColumns();
+    }
+
+    @Override
+    public boolean isFixedColumn( GridColumn column ) {
+      return Grid.this.isFixedColumn( column );
     }
   }
 

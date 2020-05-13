@@ -61,6 +61,7 @@ public class GridLCA extends WidgetLCA<Grid> {
   private static final String PROP_ITEM_METRICS = "itemMetrics";
   private static final String PROP_COLUMN_COUNT = "columnCount";
   private static final String PROP_COLUMN_ORDER = "columnOrder";
+  private static final String PROP_FIXED_COLUMNS = "fixedColumns";
   private static final String PROP_TREE_COLUMN = "treeColumn";
   private static final String PROP_HEADER_HEIGHT = "headerHeight";
   private static final String PROP_HEADER_VISIBLE = "headerVisible";
@@ -100,6 +101,9 @@ public class GridLCA extends WidgetLCA<Grid> {
     remoteObject.set( "parent", getId( grid.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( grid, ALLOWED_STYLES ) ) );
     remoteObject.set( "appearance", "grid" );
+    if( getFixedColumns( grid ) >= 0 ) {
+      remoteObject.set( "splitContainer", true );
+    }
     remoteObject.set( PROP_MARKUP_ENABLED, isMarkupEnabledFor( grid ) );
     TemplateLCAUtil.renderRowTemplate( grid );
     remoteObject.listen( PROP_SETDATA_LISTENER, isVirtual( grid ) );
@@ -116,6 +120,7 @@ public class GridLCA extends WidgetLCA<Grid> {
     preserveProperty( grid, PROP_ITEM_METRICS, getItemMetrics( grid ) );
     preserveProperty( grid, PROP_COLUMN_COUNT, grid.getColumnCount() );
     preserveProperty( grid, PROP_COLUMN_ORDER, getColumnOrder( grid ) );
+    preserveProperty( grid, PROP_FIXED_COLUMNS, getFixedColumns( grid ) );
     preserveProperty( grid, PROP_TREE_COLUMN, getTreeColumn( grid ) );
     preserveProperty( grid, PROP_HEADER_HEIGHT, grid.getHeaderHeight() );
     preserveProperty( grid, PROP_HEADER_VISIBLE, grid.getHeaderVisible() );
@@ -146,6 +151,7 @@ public class GridLCA extends WidgetLCA<Grid> {
     renderItemMetrics( grid );
     renderProperty( grid, PROP_COLUMN_COUNT, grid.getColumnCount(), ZERO );
     renderProperty( grid, PROP_COLUMN_ORDER, getColumnOrder( grid ), DEFAULT_COLUMN_ORDER );
+    renderProperty( grid, PROP_FIXED_COLUMNS, getFixedColumns( grid ), -1 );
     renderProperty( grid, PROP_TREE_COLUMN, getTreeColumn( grid ), ZERO );
     renderProperty( grid, PROP_HEADER_HEIGHT, grid.getHeaderHeight(), ZERO );
     renderProperty( grid, PROP_HEADER_VISIBLE, grid.getHeaderVisible(), false );
@@ -264,6 +270,10 @@ public class GridLCA extends WidgetLCA<Grid> {
       result[ i ] = getId( grid.getColumn( order[ i ] ) );
     }
     return result;
+  }
+
+  private static int getFixedColumns( Grid grid ) {
+    return getGridAdapter( grid ).getFixedColumns();
   }
 
   private static int getFocusCell( Grid grid ) {

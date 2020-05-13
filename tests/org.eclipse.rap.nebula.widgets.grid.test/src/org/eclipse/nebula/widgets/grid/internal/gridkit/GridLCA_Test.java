@@ -119,6 +119,17 @@ public class GridLCA_Test {
   }
 
   @Test
+  public void testRenderCreateWithFixedColumns() throws IOException {
+    grid.setData( RWT.FIXED_COLUMNS, Integer.valueOf( 1 ) );
+
+    lca.renderInitialization( grid );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( grid );
+    assertEquals( JsonValue.TRUE, operation.getProperties().get( "splitContainer" ) );
+  }
+
+  @Test
   public void testRenderInitialization_setsOperationHandler() throws IOException {
     String id = getId( grid );
 

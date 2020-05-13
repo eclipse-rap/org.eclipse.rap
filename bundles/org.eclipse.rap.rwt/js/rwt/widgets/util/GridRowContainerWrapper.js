@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2011, 2020 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -191,6 +191,7 @@ rwt.widgets.util.GridRowContainerWrapper.prototype = {
         configRight.itemLeft[ column ] -= rightColumnsOffset;
         configRight.itemImageLeft[ column ] -= rightColumnsOffset;
         configRight.itemTextLeft[ column ] -= rightColumnsOffset;
+        configRight.itemCellCheckLeft[ column ] -= rightColumnsOffset;
       }
     }
     if( this._splitOffset !== rightColumnsOffset ) {

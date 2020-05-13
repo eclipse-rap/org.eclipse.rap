@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2020 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.nebula.widgets.grid.internal;
 
+import org.eclipse.nebula.widgets.grid.GridColumn;
 import org.eclipse.nebula.widgets.grid.GridItem;
 
 
@@ -28,7 +29,10 @@ public interface IGridAdapter {
   int getTextWidth( int index );
 
   int getItemIndex( GridItem item );
-  
+
   void doRedraw();
+
+  int getFixedColumns();
+  boolean isFixedColumn( GridColumn column );
 
 }

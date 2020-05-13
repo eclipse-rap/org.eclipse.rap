@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2017 EclipseSource and others.
+ * Copyright (c) 2012, 2020 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -882,6 +882,37 @@ public class GridColumnLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( column, "headerWordWrap" ) );
+  }
+
+  @Test
+  public void testRenderInitialFixed() throws IOException {
+    lca.render( column );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( column );
+    assertFalse( operation.getProperties().names().contains( "fixed" ) );
+  }
+
+  @Test
+  public void testRenderFixed() throws IOException {
+    grid.setData( RWT.FIXED_COLUMNS, Integer.valueOf( 1 ) );
+    lca.renderChanges( column );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( JsonValue.TRUE, message.findSetProperty( column, "fixed" ) );
+  }
+
+  @Test
+  public void testRenderFixedUnchanged() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( column );
+
+    grid.setData( RWT.FIXED_COLUMNS, Integer.valueOf( 1 ) );
+    Fixture.preserveWidgets();
+    lca.renderChanges( column );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( column, "fixed" ) );
   }
 
   //////////////////

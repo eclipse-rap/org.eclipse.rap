@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2017 EclipseSource and others.
+ * Copyright (c) 2012, 2020 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -56,6 +56,7 @@ public class GridColumnLCA extends WidgetLCA<GridColumn> {
   private static final String PROP_FOOTER_SPAN = "footerSpan";
   private static final String PROP_WORD_WRAP = "wordWrap";
   private static final String PROP_HEADER_WORD_WRAP = "headerWordWrap";
+  private static final String PROP_FIXED = "fixed";
 
   private static final int ZERO = 0;
   private static final String DEFAULT_ALIGNMENT = "left";
@@ -90,6 +91,7 @@ public class GridColumnLCA extends WidgetLCA<GridColumn> {
     preserveProperty( column, PROP_FOOTER_SPAN, getFooterSpan( column ) );
     preserveProperty( column, PROP_WORD_WRAP, column.getWordWrap() );
     preserveProperty( column, PROP_HEADER_WORD_WRAP, column.getHeaderWordWrap() );
+    preserveProperty( column, PROP_FIXED, isFixed( column ) );
   }
 
   @Override
@@ -112,6 +114,7 @@ public class GridColumnLCA extends WidgetLCA<GridColumn> {
     renderProperty( column, PROP_FOOTER_SPAN, getFooterSpan( column ), 1 );
     renderProperty( column, PROP_WORD_WRAP, column.getWordWrap(), false );
     renderProperty( column, PROP_HEADER_WORD_WRAP, column.getHeaderWordWrap(), false );
+    renderProperty( column, PROP_FIXED, isFixed( column ), false );
     renderListenSelection( column );
   }
 
@@ -151,6 +154,10 @@ public class GridColumnLCA extends WidgetLCA<GridColumn> {
   private static int getFooterSpan( GridColumn column ) {
     Integer value = ( Integer )column.getData( PROP_FOOTER_SPAN );
     return value == null ? 1 : value.intValue();
+  }
+
+  private static boolean isFixed( GridColumn column ) {
+    return getGridAdapter( column ).isFixedColumn( column );
   }
 
   private static IGridAdapter getGridAdapter( GridColumn column ) {

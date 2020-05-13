@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 EclipseSource and others.
+ * Copyright (c) 2012, 2020 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import java.io.IOException;
 import org.eclipse.nebula.widgets.grid.Grid;
 import org.eclipse.nebula.widgets.grid.GridColumn;
 import org.eclipse.nebula.widgets.grid.GridColumnGroup;
+import org.eclipse.nebula.widgets.grid.internal.IGridAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
@@ -47,6 +48,7 @@ public class GridColumnGroupLCA extends WidgetLCA<GridColumnGroup> {
   private static final String PROP_FONT = "font";
   private static final String PROP_EXPANDED = "expanded";
   private static final String PROP_HEADER_WORD_WRAP = "headerWordWrap";
+  private static final String PROP_FIXED = "fixed";
   private static final String PROP_EXPAND_LISTENER = "Expand";
   private static final String PROP_COLLAPSE_LISTENER = "Collapse";
 
@@ -74,6 +76,7 @@ public class GridColumnGroupLCA extends WidgetLCA<GridColumnGroup> {
     preserveProperty( group, PROP_FONT, group.getHeaderFont() );
     preserveProperty( group, PROP_EXPANDED, group.getExpanded() );
     preserveProperty( group, PROP_HEADER_WORD_WRAP, group.getHeaderWordWrap() );
+    preserveProperty( group, PROP_FIXED, isFixed( group ) );
   }
 
   @Override
@@ -87,6 +90,7 @@ public class GridColumnGroupLCA extends WidgetLCA<GridColumnGroup> {
     renderFont( group, PROP_FONT, group.getHeaderFont() );
     renderProperty( group, PROP_EXPANDED, group.getExpanded(), true );
     renderProperty( group, PROP_HEADER_WORD_WRAP, group.getHeaderWordWrap(), false );
+    renderProperty( group, PROP_FIXED, isFixed( group ), false );
   }
 
   //////////////////////////////////////////////
@@ -141,6 +145,21 @@ public class GridColumnGroupLCA extends WidgetLCA<GridColumnGroup> {
       }
     }
     return result;
+  }
+
+  private static boolean isFixed( GridColumnGroup group ) {
+    boolean result = false;
+    IGridAdapter gridAdapter = getGridAdapter( group );
+    for( GridColumn column : group.getColumns() ) {
+      if( gridAdapter.isFixedColumn( column ) ) {
+        result = true;
+      }
+    }
+    return result;
+  }
+
+  private static IGridAdapter getGridAdapter( GridColumnGroup group ) {
+    return group.getParent().getAdapter( IGridAdapter.class );
   }
 
 }
