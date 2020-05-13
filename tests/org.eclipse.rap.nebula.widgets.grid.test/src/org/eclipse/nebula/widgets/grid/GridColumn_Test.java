@@ -370,6 +370,41 @@ public class GridColumn_Test {
   }
 
   @Test
+  public void testSetTree() {
+    GridColumn column1 = new GridColumn( grid, SWT.NONE );
+    createGridItems( grid, 3, 1 );
+
+    column1.setTree( true );
+
+    assertTrue( column1.isTree() );
+  }
+
+  @Test
+  public void testSetTree_resetsOtherThreeColumn() {
+    GridColumn column1 = new GridColumn( grid, SWT.NONE );
+    createGridItems( grid, 3, 1 );
+
+    assertTrue( column.isTree() );
+
+    column1.setTree( true );
+
+    assertFalse( column.isTree() );
+  }
+
+  @Test
+  public void testSetTree_removesTreeColumn() {
+    GridColumn column1 = new GridColumn( grid, SWT.NONE );
+    createGridItems( grid, 3, 1 );
+    column1.setTree( true );
+    assertTrue( column1.isTree() );
+
+    column1.setTree( false );
+
+    assertTrue( column.isTree() );
+    assertFalse( column1.isTree() );
+  }
+
+  @Test
   public void testGetAlignment_Initial() {
     assertEquals( SWT.LEFT, column.getAlignment() );
   }

@@ -724,6 +724,31 @@ public class GridColumn extends Item {
   }
 
   /**
+   * Makes this column the one with tree toggle.
+   *
+   * @param tree
+   *            true to add toggle.
+   * @throws org.eclipse.swt.SWTException
+   *             <ul>
+   *             <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed
+   *             </li>
+   *             <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+   *             thread that created the receiver</li>
+   *             </ul>
+   *
+   * @since 3.13
+   */
+  public void setTree( boolean tree ) {
+    checkWidget();
+    if( tree ) {
+      parent.setTreeColumn( this );
+    } else if( isTree() ) {
+      parent.setTreeColumn( null );
+    }
+    parent.redraw();
+  }
+
+  /**
    * Returns true if this column includes a tree toggle.
    *
    * @return true if the column includes the tree toggle.

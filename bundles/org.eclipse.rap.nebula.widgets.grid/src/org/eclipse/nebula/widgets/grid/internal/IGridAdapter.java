@@ -35,4 +35,6 @@ public interface IGridAdapter {
   int getFixedColumns();
   boolean isFixedColumn( GridColumn column );
 
+  int getTreeColumn();
+
 }

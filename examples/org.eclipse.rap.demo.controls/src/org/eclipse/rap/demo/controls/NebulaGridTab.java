@@ -69,6 +69,7 @@ public class NebulaGridTab extends ExampleTab {
     createTopIndexButton( parent );
     createShowItemGroup( parent );
     createShowColumnGroup( parent );
+    createTreeColumnButton( parent );
     createSetFooterSpanGroup( parent );
     createSetColumnSpanGroup( parent );
     createShowHeaderButton( parent );
@@ -340,6 +341,32 @@ public class NebulaGridTab extends ExampleTab {
         }
         if( index >= 0 && index < grid.getColumnCount() ) {
           grid.showColumn( grid.getColumn( index ) );
+        }
+      }
+    } );
+  }
+
+  private void createTreeColumnButton( Composite parent ) {
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setLayout( new GridLayout( 3, false ) );
+    Label treeColumnIndexLabel = new Label( composite, SWT.NONE );
+    treeColumnIndexLabel.setLayoutData( new GridData( 100, SWT.DEFAULT ) );
+    treeColumnIndexLabel.setText( "Tree column" );
+    final Text treeColumnIndexText = new Text( composite, SWT.BORDER );
+    treeColumnIndexText.setLayoutData( new GridData( 50, SWT.DEFAULT ) );
+    Button button = new Button( composite, SWT.PUSH );
+    button.setLayoutData( new GridData( 100, SWT.DEFAULT ) );
+    button.setText( "Change" );
+    button.addSelectionListener( new SelectionAdapter() {
+      @Override
+      public void widgetSelected( SelectionEvent event ) {
+        int treeColumnIndex = -1;
+        try {
+          treeColumnIndex = Integer.parseInt( treeColumnIndexText.getText() );
+        } catch( NumberFormatException e ) {
+        }
+        if( treeColumnIndex >= 0 && treeColumnIndex < grid.getColumnCount() ) {
+          grid.getColumn( treeColumnIndex ).setTree( true );
         }
       }
     } );

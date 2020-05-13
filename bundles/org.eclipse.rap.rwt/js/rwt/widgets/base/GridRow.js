@@ -459,6 +459,8 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         if( renderBounds ) {
           this._renderCellCheckBounds( cell );
         }
+      } else if( this.$cellCheckBoxes[ cell ] ) {
+        this._getCellCheckBoxElement( cell ).css( "display", "none" );
       }
     },
 
@@ -809,14 +811,15 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       var result = null;
       var nextLevelOffset = ( level + 1 ) * gridConfig.indentionWidth;
       var cellWidth = gridConfig.itemWidth[ gridConfig.treeColumn ];
+      var cellLeft = gridConfig.itemLeft[ gridConfig.treeColumn ];
       if( nextLevelOffset <= cellWidth || gridConfig.rowTemplate ) {
         var offset = level * gridConfig.indentionWidth;
         var width = nextLevelOffset - offset;
         var element = this._getIndentImageElement().css( {
           "opacity" : gridConfig.enabled ? 1 : FADED,
           "backgroundImage" : source,
-          "left" : this._mirror ? "" : offset,
-          "right" : this._mirror ? offset : "",
+          "left" : this._mirror ? "" : cellLeft + offset,
+          "right" : this._mirror ? cellLeft + offset : "",
           "top" : 0,
           "width" : width,
           "height" : "100%"

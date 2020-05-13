@@ -195,8 +195,7 @@ public class GridLCA extends WidgetLCA<Grid> {
   }
 
   private static int getTreeColumn( Grid grid ) {
-    int[] order = grid.getColumnOrder();
-    return order.length > 0 ? order[ 0 ] : 0;
+    return getGridAdapter( grid ).getTreeColumn();
   }
 
   private static int getTopItemIndex( Grid grid ) {

@@ -79,6 +79,7 @@ public class Grid extends Composite {
   private List<GridColumnGroup> columnGroups = new ArrayList<GridColumnGroup>();
   private GridItem focusItem;
   private GridColumn focusColumn;
+  private GridColumn treeColumn;
   private boolean isTree;
   private boolean disposing;
   private boolean columnHeadersVisible;
@@ -3422,10 +3423,13 @@ public class Grid extends Composite {
 
   private void updatePrimaryCheckColumn() {
     if( ( getStyle() & SWT.CHECK ) == SWT.CHECK ) {
-      boolean firstCol = true;
-      for( GridColumn column : displayOrderedColumns ) {
-        column.setTableCheck( firstCol );
-        firstCol = false;
+      for( GridColumn column : columns ) {
+        column.setTableCheck( false );
+      }
+      if( treeColumn != null ) {
+        treeColumn.setTableCheck( true );
+      } else if( displayOrderedColumns.size() > 0 ) {
+        displayOrderedColumns.get( 0 ).setTableCheck( true );
       }
     }
   }
@@ -3630,11 +3634,19 @@ public class Grid extends Composite {
     return new Size( width, height );
   }
 
+  void setTreeColumn( GridColumn column ) {
+    treeColumn = column;
+    updatePrimaryCheckColumn();
+  }
+
   boolean isTreeColumn( int index ) {
     boolean result = false;
-    if( isTree ) {
-      int columnCount = getColumnCount();
-      result = columnCount == 0 && index == 0 || columnCount > 0 && index == getColumnOrder()[ 0 ];
+    if( isTree && index < columns.size() ) {
+      if( treeColumn != null ) {
+        result = columns.get( index ) == treeColumn;
+      } else {
+        result = index == getColumnOrder()[ 0 ];
+      }
     }
     return result;
   }
@@ -3975,6 +3987,16 @@ public class Grid extends Composite {
     @Override
     public boolean isFixedColumn( GridColumn column ) {
       return Grid.this.isFixedColumn( column );
+    }
+
+    @Override
+    public int getTreeColumn() {
+      if( treeColumn != null ) {
+        return indexOf( treeColumn );
+      } else if( getColumnCount() > 0 ) {
+        return getColumnOrder()[ 0 ];
+      }
+      return -1;
     }
   }
 
