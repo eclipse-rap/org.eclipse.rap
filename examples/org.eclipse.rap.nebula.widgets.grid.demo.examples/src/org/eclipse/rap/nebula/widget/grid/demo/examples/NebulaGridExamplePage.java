@@ -46,6 +46,7 @@ public class NebulaGridExamplePage implements IExamplePage {
     Grid grid = createGrid( parent );
     GridColumn category = createColumn( grid, null, "", 235, SWT.CENTER );
     category.setFooterText( "Net income" );
+    category.setResizeable( false );
     GridColumnGroup group
       = createGridColumnGroup( grid, "Period ( Year Ended December 31 )", SWT.CENTER );
     for( int i = 0; i < YEARS.length; i++ ) {
@@ -89,8 +90,9 @@ public class NebulaGridExamplePage implements IExamplePage {
   }
 
   private Grid createGrid( Composite parent ) {
-    Grid grid = new Grid( parent, SWT.V_SCROLL | SWT.BORDER | SWT.MULTI );
+    Grid grid = new Grid( parent, SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER | SWT.MULTI );
     grid.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+    grid.setData( RWT.FIXED_COLUMNS, Integer.valueOf( 1 ) );
     GridData tableLayoutData = ExampleUtil.createFillData();
     tableLayoutData.verticalIndent = 10;
     grid.setLayoutData( tableLayoutData );
