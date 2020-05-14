@@ -172,6 +172,7 @@ public class GridItem extends Item {
       parentItem.newItem( this, index );
       setVisible( parentItem.isVisible() && parentItem.isExpanded() );
     }
+    parent.invalidateDefaultRowHeadersText();
   }
 
   /**
@@ -204,6 +205,7 @@ public class GridItem extends Item {
       } else {
         parent.removeRootItem( this.index );
       }
+      parent.invalidateDefaultRowHeadersText();
     }
     super.dispose();
   }
@@ -474,6 +476,7 @@ public class GridItem extends Item {
           }
         }
       }
+      parent.invalidateDefaultRowHeadersText();
       parent.scheduleRedraw();
       if( unselected ) {
         Event event = new Event();
@@ -978,7 +981,7 @@ public class GridItem extends Item {
     CellData cellData = getCellData( index );
     updateColumnImageCount( index, cellData.image, image );
     cellData.image = image;
-    parent.imageSetOnItem( index, this );
+    parent.imageSetOnItem( image );
     markCached();
   }
 
@@ -1299,6 +1302,235 @@ public class GridItem extends Item {
   }
 
   /**
+   * Sets the receiver's row header text. If the text is <code>null</code> the
+   * row header will display the row number.
+   *
+   * @param text
+   *            the new text
+   * @throws IllegalArgumentException
+   *             <ul>
+   *             <li>ERROR_NULL_ARGUMENT - if the text is null</li>
+   *             </ul>
+   * @throws org.eclipse.swt.SWTException
+   *             <ul>
+   *             <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed
+   *             </li>
+   *             <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+   *             thread that created the receiver</li>
+   *             </ul>
+   *
+   * @since 3.14
+   */
+  public void setHeaderText( String text ) {
+    checkWidget();
+    if( parent.getRowHeadersColumn() != null ) {
+      updateColumnTextCount( Integer.MIN_VALUE, internalGetHeaderText(), text );
+      getItemData().headerText = text;
+    }
+  }
+
+  /**
+   * Returns the receiver's row header text. If the text is <code>null</code>
+   * the row header will display the row number.
+   *
+   * @return the text stored for the row header or code <code>null</code> if
+   *         the default has to be displayed
+   * @throws org.eclipse.swt.SWTException
+   *             <ul>
+   *             <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed
+   *             </li>
+   *             <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+   *             thread that created the receiver</li>
+   *             </ul>
+   *
+   * @since 3.14
+   */
+  public String getHeaderText() {
+    checkWidget();
+    return getItemData().headerText;
+  }
+
+  /**
+   * Sets the receiver's row header image. If the image is <code>null</code>
+   * none is shown in the header
+   *
+   * @param image
+   *            the new image
+   * @throws org.eclipse.swt.SWTException
+   *             <ul>
+   *             <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed
+   *             </li>
+   *             <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+   *             thread that created the receiver</li>
+   *             </ul>
+   *
+   * @since 3.14
+   */
+  public void setHeaderImage( Image image ) {
+    checkWidget();
+    if( image != null && image.isDisposed() ) {
+      SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    if( parent.getRowHeadersColumn() != null ) {
+      updateColumnImageCount( Integer.MIN_VALUE, getItemData().headerImage, image );
+      getItemData().headerImage = image;
+      parent.imageSetOnItem( image );
+    }
+  }
+
+  /**
+   * Returns the receiver's row header image.
+   *
+   * @return the image stored for the header or <code>null</code> if none has
+   *         to be displayed
+   * @throws org.eclipse.swt.SWTException
+   *             <ul>
+   *             <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed
+   *             </li>
+   *             <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+   *             thread that created the receiver</li>
+   *             </ul>
+   *
+   * @since 3.14
+   */
+  public Image getHeaderImage() {
+    checkWidget();
+    return getItemData().headerImage;
+  }
+
+  /**
+   * Set the new header background
+   *
+   * @param headerBackground
+   *            the color or <code>null</code>
+   * @throws org.eclipse.swt.SWTException
+   *             <ul>
+   *             <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed
+   *             </li>
+   *             <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+   *             thread that created the receiver</li>
+   *             </ul>
+   *
+   * @since 3.14
+   */
+  public void setHeaderBackground( Color headerBackground ) {
+    checkWidget();
+    if( headerBackground != null && headerBackground.isDisposed() ) {
+      SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    if( parent.getRowHeadersColumn() != null ) {
+      getItemData().headerBackground = headerBackground;
+    }
+  }
+
+  /**
+   * Returns the receiver's row header background color
+   *
+   * @return the color or <code>null</code> if none
+   * @throws org.eclipse.swt.SWTException
+   *             <ul>
+   *             <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed
+   *             </li>
+   *             <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+   *             thread that created the receiver</li>
+   *             </ul>
+   *
+   * @since 3.14
+   */
+  public Color getHeaderBackground() {
+    checkWidget();
+    return getItemData().headerBackground;
+  }
+
+  /**
+   * Set the new header foreground
+   *
+   * @param headerForeground
+   *            the color or <code>null</code>
+   * @throws org.eclipse.swt.SWTException
+   *             <ul>
+   *             <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed
+   *             </li>
+   *             <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+   *             thread that created the receiver</li>
+   *             </ul>
+   *
+   * @since 3.14
+   */
+  public void setHeaderForeground( Color headerForeground ) {
+    checkWidget();
+    if( headerForeground != null && headerForeground.isDisposed() ) {
+      SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    if( parent.getRowHeadersColumn() != null ) {
+      getItemData().headerForeground = headerForeground;
+    }
+  }
+
+  /**
+   * Returns the receiver's row header foreground color
+   *
+   * @return the color or <code>null</code> if none
+   * @throws org.eclipse.swt.SWTException
+   *             <ul>
+   *             <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed
+   *             </li>
+   *             <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+   *             thread that created the receiver</li>
+   *             </ul>
+   *
+   * @since 3.14
+   */
+  public Color getHeaderForeground() {
+    checkWidget();
+    return getItemData().headerForeground;
+  }
+
+  /**
+   * Set the new header font
+   *
+   * @param headerFont
+   *            the font or <code>null</code>
+   * @throws org.eclipse.swt.SWTException
+   *             <ul>
+   *             <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed
+   *             </li>
+   *             <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+   *             thread that created the receiver</li>
+   *             </ul>
+   *
+   * @since 3.14
+   */
+  public void setHeaderFont( Font headerFont ) {
+    checkWidget();
+    if( headerFont != null && headerFont.isDisposed() ) {
+      SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    if( parent.getRowHeadersColumn() != null ) {
+      getItemData().headerFont = headerFont;
+    }
+  }
+
+  /**
+   * Returns the receiver's row header font
+   *
+   * @return the font or <code>null</code> if none
+   * @throws org.eclipse.swt.SWTException
+   *             <ul>
+   *             <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed
+   *             </li>
+   *             <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+   *             thread that created the receiver</li>
+   *             </ul>
+   *
+   * @since 3.14
+   */
+  public Font getHeaderFont() {
+    checkWidget();
+    return getItemData().headerFont;
+  }
+
+  /**
    * Sets this <code>GridItem</code> to its preferred height.
    *
    * @throws org.eclipse.swt.SWTException
@@ -1542,9 +1774,36 @@ public class GridItem extends Item {
     return data;
   }
 
+  private String internalGetHeaderText() {
+    if( !parent.isRowHeaderVisible() ) {
+      return "";
+    }
+    String text = getItemData().headerText;
+    if( text == null ) {
+      text = getItemData().defaultHeaderText;
+    }
+    return text == null ? "" : text;
+  }
+
+  void setDefaultHeaderText( String text ) {
+    getItemData().defaultHeaderText = text;
+  }
+
+  private Color internalGetHeaderBackground() {
+    if( !parent.isRowHeaderVisible() ) {
+      return null;
+    }
+    Color background = getItemData().headerBackground;
+    if( background == null ) {
+      background = getItemData().defaultHeaderBackground;
+    }
+    return background;
+  }
+
   void ensureItemData() {
     if( data == null ) {
       data = new GridItemData( parent.getColumnCount() );
+      data.defaultHeaderBackground = new Color( getDisplay(), 231, 231, 231 );
     }
   }
 
@@ -1579,7 +1838,9 @@ public class GridItem extends Item {
     } else if( oldImage != null && newImage == null ) {
       delta = -1;
     }
-    if( delta != 0 && index >= 0 && index < parent.getColumnCount() ) {
+    if( delta != 0 && index == Integer.MIN_VALUE ) {
+      parent.getRowHeadersColumn().imageCount += delta;
+    } else if( delta != 0 && index >= 0 && index < parent.getColumnCount() ) {
       parent.getColumn( index ).imageCount += delta;
     }
   }
@@ -1591,7 +1852,9 @@ public class GridItem extends Item {
     } else if( oldText.length() > 0 && newText.length() == 0 ) {
       delta = -1;
     }
-    if( delta != 0 && index >= 0 && index < parent.getColumnCount() ) {
+    if( delta != 0 && index == Integer.MIN_VALUE ) {
+      parent.getRowHeadersColumn().textCount += delta;
+    } else if( delta != 0 && index >= 0 && index < parent.getColumnCount() ) {
       parent.getColumn( index ).textCount += delta;
     }
   }
@@ -1645,10 +1908,16 @@ public class GridItem extends Item {
 
     @Override
     public String[] getTexts() {
-      int columnCount = Math.max( 1, getParent().getColumnCount() );
+      int offset = getColumnOffset();
+      int columnCount = Math.max( 1, getParent().getColumnCount() ) + offset;
       String[] result = null;
       for( int i = 0; i < columnCount; i++ ) {
-        String text = getCellData( i ).text;
+        String text = "";
+        if( i == 0 && offset == 1 ) {
+          text = internalGetHeaderText();
+        } else {
+          text = getCellData( i - offset ).text;
+        }
         if( !"".equals( text ) ) {
           if( result == null ) {
             result = new String[ columnCount ];
@@ -1662,10 +1931,16 @@ public class GridItem extends Item {
 
     @Override
     public Image[] getImages() {
-      int columnCount = Math.max( 1, getParent().getColumnCount() );
+      int offset = getColumnOffset();
+      int columnCount = Math.max( 1, getParent().getColumnCount() ) + offset;
       Image[] result = null;
       for( int i = 0; i < columnCount; i++ ) {
-        Image image = getCellData( i ).image;
+        Image image = null;
+        if( i == 0 && offset == 1 ) {
+          image = getItemData().headerImage;
+        } else {
+          image = getCellData( i - offset ).image;
+        }
         if( image != null ) {
           if( result == null ) {
             result = new Image[ columnCount ];
@@ -1678,10 +1953,16 @@ public class GridItem extends Item {
 
     @Override
     public Color[] getCellBackgrounds() {
-      int columnCount = Math.max( 1, getParent().getColumnCount() );
+      int offset = getColumnOffset();
+      int columnCount = Math.max( 1, getParent().getColumnCount() ) + offset;
       Color[] result = null;
       for( int i = 0; i < columnCount; i++ ) {
-        Color background = getCellData( i ).background;
+        Color background = null;
+        if( i == 0 && offset == 1 ) {
+          background = internalGetHeaderBackground();
+        } else {
+          background = getCellData( i - offset ).background;
+        }
         if( background != null ) {
           if( result == null ) {
             result = new Color[ columnCount ];
@@ -1694,10 +1975,16 @@ public class GridItem extends Item {
 
     @Override
     public Color[] getCellForegrounds() {
-      int columnCount = Math.max( 1, getParent().getColumnCount() );
+      int offset = getColumnOffset();
+      int columnCount = Math.max( 1, getParent().getColumnCount() ) + offset;
       Color[] result = null;
       for( int i = 0; i < columnCount; i++ ) {
-        Color foreground = getCellData( i ).foreground;
+        Color foreground = null;
+        if( i == 0 && offset == 1 ) {
+          foreground = getItemData().headerForeground;
+        } else {
+          foreground = getCellData( i - offset ).foreground;
+        }
         if( foreground != null ) {
           if( result == null ) {
             result = new Color[ columnCount ];
@@ -1710,10 +1997,16 @@ public class GridItem extends Item {
 
     @Override
     public Font[] getCellFonts() {
-      int columnCount = Math.max( 1, getParent().getColumnCount() );
+      int offset = getColumnOffset();
+      int columnCount = Math.max( 1, getParent().getColumnCount() ) + offset;
       Font[] result = null;
       for( int i = 0; i < columnCount; i++ ) {
-        Font font = getCellData( i ).font;
+        Font font = null;
+        if( i == 0 && offset == 1 ) {
+          font = getItemData().headerFont;
+        } else {
+          font = getCellData( i - offset ).font;
+        }
         if( font != null ) {
           if( result == null ) {
             result = new Font[ columnCount ];
@@ -1726,10 +2019,11 @@ public class GridItem extends Item {
 
     @Override
     public boolean[] getCellChecked() {
-      int columnCount = Math.max( 1, getParent().getColumnCount() );
+      int offset = getColumnOffset();
+      int columnCount = Math.max( 1, getParent().getColumnCount() ) + offset;
       boolean[] result = null;
-      for( int i = 0; i < columnCount; i++ ) {
-        boolean checked = getCellData( i ).checked;
+      for( int i = offset; i < columnCount; i++ ) {
+        boolean checked = getCellData( i - offset ).checked;
         if( checked ) {
           if( result == null ) {
             result = new boolean[ columnCount ];
@@ -1742,10 +2036,11 @@ public class GridItem extends Item {
 
     @Override
     public boolean[] getCellGrayed() {
-      int columnCount = Math.max( 1, getParent().getColumnCount() );
+      int offset = getColumnOffset();
+      int columnCount = Math.max( 1, getParent().getColumnCount() ) + offset;
       boolean[] result = null;
-      for( int i = 0; i < columnCount; i++ ) {
-        boolean grayed = getCellData( i ).grayed;
+      for( int i = offset; i < columnCount; i++ ) {
+        boolean grayed = getCellData( i - offset ).grayed;
         if( grayed ) {
           if( result == null ) {
             result = new boolean[ columnCount ];
@@ -1758,10 +2053,11 @@ public class GridItem extends Item {
 
     @Override
     public boolean[] getCellCheckable() {
-      int columnCount = Math.max( 1, getParent().getColumnCount() );
+      int offset = getColumnOffset();
+      int columnCount = Math.max( 1, getParent().getColumnCount() ) + offset;
       boolean[] result = null;
-      for( int i = 0; i < columnCount; i++ ) {
-        boolean checkable = getCellData( i ).checkable;
+      for( int i = offset; i < columnCount; i++ ) {
+        boolean checkable = getCellData( i - offset ).checkable;
         if( !checkable ) {
           if( result == null ) {
             result = new boolean[ columnCount ];
@@ -1775,10 +2071,11 @@ public class GridItem extends Item {
 
     @Override
     public int[] getColumnSpans() {
-      int columnCount = Math.max( 1, getParent().getColumnCount() );
+      int offset = getColumnOffset();
+      int columnCount = Math.max( 1, getParent().getColumnCount() ) + offset;
       int[] result = null;
-      for( int i = 0; i < columnCount; i++ ) {
-        int span = getCellData( i ).columnSpan;
+      for( int i = offset; i < columnCount; i++ ) {
+        int span = getCellData( i - offset ).columnSpan;
         if( span != 0 ) {
           if( result == null ) {
             result = new int[ columnCount ];
@@ -1787,6 +2084,10 @@ public class GridItem extends Item {
         }
       }
       return result;
+    }
+
+    private int getColumnOffset() {
+      return parent.getRowHeadersColumn() != null ? 1 : 0;
     }
 
   }

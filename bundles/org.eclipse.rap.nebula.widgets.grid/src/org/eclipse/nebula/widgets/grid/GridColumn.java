@@ -1157,15 +1157,18 @@ public class GridColumn extends Item {
   }
 
   int getLeft() {
-    int result = 0;
-    boolean found = false;
-    int[] columnOrder = parent.getColumnOrder();
-    for( int i = 0; i < columnOrder.length && !found; i++ ) {
-      GridColumn currentColumn = parent.getColumn( columnOrder[ i ] );
-      if( currentColumn == this ) {
-        found = true;
-      } else if( currentColumn.isVisible() ) {
-        result += currentColumn.getWidth();
+    GridColumn rowHeaders = parent.getRowHeadersColumn();
+    int result = rowHeaders == null || rowHeaders == this ? 0 : rowHeaders.getWidth();
+    if( rowHeaders != this ) {
+      boolean found = false;
+      int[] columnOrder = parent.getColumnOrder();
+      for( int i = 0; i < columnOrder.length && !found; i++ ) {
+        GridColumn currentColumn = parent.getColumn( columnOrder[ i ] );
+        if( currentColumn == this ) {
+          found = true;
+        } else if( currentColumn.isVisible() ) {
+          result += currentColumn.getWidth();
+        }
       }
     }
     return result;

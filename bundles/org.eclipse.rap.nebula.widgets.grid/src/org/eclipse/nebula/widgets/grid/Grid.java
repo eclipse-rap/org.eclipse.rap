@@ -80,6 +80,8 @@ public class Grid extends Composite {
   private GridItem focusItem;
   private GridColumn focusColumn;
   private GridColumn treeColumn;
+  private GridColumn rowHeadersColumn;
+  private boolean isInternalColumn;
   private boolean isTree;
   private boolean disposing;
   private boolean columnHeadersVisible;
@@ -99,6 +101,7 @@ public class Grid extends Composite {
   private IScrollBarProxy vScroll;
   private IScrollBarProxy hScroll;
   private boolean scrollValuesObsolete;
+  private boolean defaultRowHeadersTextObsolete;
   private int topIndex = -1;
   private int bottomIndex = -1;
   private boolean bottomIndexShownCompletely;
@@ -147,6 +150,7 @@ public class Grid extends Composite {
     gridAdapter = new GridAdapter();
     layoutCache = new LayoutCache();
     initListeners();
+    createRowHeadersColumn();
   }
 
   /**
@@ -1172,7 +1176,6 @@ public class Grid extends Composite {
     } else {
       selectedCells.clear();
     }
-    redraw();
     cellSelectionEnabled = cellSelection;
   }
 
@@ -1340,7 +1343,6 @@ public class Grid extends Composite {
         SWT.error( SWT.ERROR_NULL_ARGUMENT );
       }
       addToCellSelection( cell );
-      redraw();
     }
   }
 
@@ -1379,7 +1381,6 @@ public class Grid extends Composite {
       for( Point cell : cells ) {
         addToCellSelection( cell );
       }
-      redraw();
     }
   }
 
@@ -1582,7 +1583,6 @@ public class Grid extends Composite {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     selectedCells.remove( cell );
-    redraw();
   }
 
   /**
@@ -1619,7 +1619,6 @@ public class Grid extends Composite {
     for( Point cell : cells ) {
       selectedCells.remove( cell );
     }
-    redraw();
   }
 
   /**
@@ -1638,7 +1637,6 @@ public class Grid extends Composite {
   public void deselectAllCells() {
     checkWidget();
     selectedCells.clear();
-    redraw();
   }
 
   /**
@@ -1892,7 +1890,6 @@ public class Grid extends Composite {
       }
       selectedCells.clear();
       addToCellSelection( cell );
-      redraw();
     }
   }
 
@@ -1937,7 +1934,6 @@ public class Grid extends Composite {
       for( Point cell : cells ) {
         addToCellSelection( cell );
       }
-      redraw();
     }
   }
 
@@ -2868,6 +2864,144 @@ public class Grid extends Composite {
     }
   }
 
+  /**
+   * Marks the receiver's row header as visible if the argument is {@code true},
+   * and marks it invisible otherwise.
+   *
+   * @param show
+   *            the new visibility state
+   * @throws org.eclipse.swt.SWTException
+   *             <ul>
+   *             <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+   *             disposed</li>
+   *             <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread
+   *             that created the receiver</li>
+   *             </ul>
+   *
+   * @since 3.14
+   */
+  public void setRowHeaderVisible( boolean show ) {
+    setRowHeaderVisible( show, 10 );
+  }
+
+  /**
+   * Marks the receiver's row header as visible if the argument is {@code true},
+   * and marks it invisible otherwise.
+   *
+   * @param show
+   *            the new visibility state
+   * @param minWidth
+   *            the minimun width of the row column
+   * @throws org.eclipse.swt.SWTException
+   *             <ul>
+   *             <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+   *             disposed</li>
+   *             <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread
+   *             that created the receiver</li>
+   *             </ul>
+   *
+   * @since 3.14
+   */
+  public void setRowHeaderVisible( boolean show, int minWidth ) {
+    checkWidget();
+    if( rowHeadersColumn != null ) {
+      if( show ) {
+        rowHeadersColumn.setMinimumWidth( Math.max( 10, minWidth ) );
+      } else {
+        rowHeadersColumn.setMinimumWidth( 0 );
+        rowHeadersColumn.setWidth( 0 );
+      }
+    }
+  }
+
+  /**
+   * Sets the row header width to the specified value. This automatically disables
+   * the auto width feature of the grid.
+   *
+   * @param width
+   *            the width of the row header
+   * @see #getItemHeaderWidth()
+   *
+   * @since 3.14
+   */
+  public void setItemHeaderWidth( int width ) {
+    checkWidget();
+    if( rowHeadersColumn != null ) {
+      rowHeadersColumn.setWidth( width );
+    }
+  }
+
+  /**
+   * Returns the row header width or 0 if row headers are not visible.
+   *
+   * @return the width of the row headers
+   * @throws org.eclipse.swt.SWTException
+   *             <ul>
+   *             <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+   *             disposed</li>
+   *             <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread
+   *             that created the receiver</li>
+   *             </ul>
+   *
+   * @since 3.14
+   */
+  public int getItemHeaderWidth() {
+    checkWidget();
+    return rowHeadersColumn != null ? rowHeadersColumn.getWidth() : 0;
+  }
+
+  /**
+   * Returns {@code true} if the receiver's row header is visible, and
+   * {@code false} otherwise.
+   * <p>
+   *
+   * @return the receiver's row header's visibility state
+   * @throws org.eclipse.swt.SWTException
+   *             <ul>
+   *             <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+   *             disposed</li>
+   *             <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread
+   *             that created the receiver</li>
+   *             </ul>
+   *
+   * @since 3.14
+   */
+  public boolean isRowHeaderVisible() {
+    checkWidget();
+    return rowHeadersColumn != null && rowHeadersColumn.getWidth() > 0;
+  }
+
+  /**
+   * Sets the value of the word-wrap feature for row headers. When enabled, this
+   * feature will word-wrap the contents of row headers.
+   *
+   * @param enabled
+   *            Set to true to enable this feature, false (default) otherwise.
+   * @see #isWordWrapHeader()
+   *
+   * @since 3.14
+   */
+  public void setWordWrapHeader( boolean enabled ) {
+    checkWidget();
+    if( rowHeadersColumn != null ) {
+      rowHeadersColumn.setWordWrap( enabled );
+    }
+  }
+
+  /**
+   * Returns the value of the row header word-wrap feature, which word-wraps the
+   * content of row headers.
+   *
+   * @return Returns whether or not the row header word-wrap feature is enabled.
+   * @see #setWordWrapHeader(boolean)
+   *
+   * @since 3.14
+   */
+  public boolean isWordWrapHeader() {
+    checkWidget();
+    return rowHeadersColumn != null ? rowHeadersColumn.getWordWrap() : false;
+  }
+
   @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
@@ -2887,6 +3021,9 @@ public class Grid extends Composite {
   public void setData( String key, Object value ) {
     if( !RWT.MARKUP_ENABLED.equals( key ) || !isMarkupEnabledFor( this ) ) {
       checkMarkupPrecondition( key, TEXT, () -> items.size() == 0 );
+      if( RWT.ROW_TEMPLATE.equals( key ) && value instanceof Template ) {
+        rowHeadersColumn = null;
+      }
       super.setData( key, value );
     }
   }
@@ -2970,25 +3107,26 @@ public class Grid extends Composite {
     }
   }
 
-  int newColumn( GridColumn column, int index ) {
-    if( index == -1 ) {
-      columns.add( column );
-      displayOrderedColumns.add( column );
-    } else {
-      columns.add( index, column );
-      displayOrderedColumns.add( index, column );
+  void newColumn( GridColumn column, int index ) {
+    if( !isInternalColumn ) {
+      if( index == -1 ) {
+        columns.add( column );
+        displayOrderedColumns.add( column );
+      } else {
+        columns.add( index, column );
+        displayOrderedColumns.add( index, column );
+      }
+      updatePrimaryCheckColumn();
+      for( GridItem item : items ) {
+        item.columnAdded( index );
+      }
+      if( column.isCheck() ) {
+        layoutCache.invalidateItemHeight();
+      }
+      layoutCache.invalidateHeaderHeight();
+      layoutCache.invalidateFooterHeight();
+      scheduleRedraw();
     }
-    updatePrimaryCheckColumn();
-    for( GridItem item : items ) {
-      item.columnAdded( index );
-    }
-    if( column.isCheck() ) {
-      layoutCache.invalidateItemHeight();
-    }
-    layoutCache.invalidateHeaderHeight();
-    layoutCache.invalidateFooterHeight();
-    scheduleRedraw();
-    return columns.size() - 1;
   }
 
   void removeColumn( GridColumn column ) {
@@ -3055,8 +3193,7 @@ public class Grid extends Composite {
     return displayOrderedColumns.toArray( new GridColumn[ columns.size() ] );
   }
 
-  void imageSetOnItem( int column, GridItem item ) {
-    Image image = item.getImage( column );
+  void imageSetOnItem( Image image ) {
     if( image != null && itemImageSize == null ) {
       Rectangle imageBounds = image.getBounds();
       itemImageSize = new Point( imageBounds.width, imageBounds.height );
@@ -3145,11 +3282,25 @@ public class Grid extends Composite {
         }
       }
     }
+    updateDefaultRowHeadersText();
     updateScrollBars();
   }
 
   boolean isVirtual() {
     return ( getStyle() & SWT.VIRTUAL ) != 0;
+  }
+
+  private void updateDefaultRowHeadersText() {
+    if( isRowHeaderVisible() && defaultRowHeadersTextObsolete ) {
+      int rowCounter = 1;
+      for( int index = 0; index < items.size(); index++ ) {
+        GridItem item = items.get( index );
+        if( item.isVisible() ) {
+          item.setDefaultHeaderText( Integer.toString( rowCounter++ ) );
+        }
+      }
+      defaultRowHeadersTextObsolete = false;
+    }
   }
 
   void updateScrollBars() {
@@ -3617,6 +3768,31 @@ public class Grid extends Composite {
     return Math.max( 0, getCellWidth( index ) - getTextOffset( index ) - getCellPadding().right );
   }
 
+  private int getRowHeaderImageOffset() {
+    return getCellPadding().left;
+  }
+
+  private int getRowHeaderImageWidth() {
+    if( hasColumnImages( Integer.MIN_VALUE ) ) {
+      int availableWidth = Math.max( 0, getItemHeaderWidth() - getCellPadding().left );
+      return Math.min( getItemImageSize().x, availableWidth );
+    }
+    return 0;
+  }
+
+  private int getRowHeaderTextOffset() {
+    int result = getRowHeaderImageOffset();
+    if( hasColumnImages( Integer.MIN_VALUE ) ) {
+      result += getItemImageSize().x;
+      result += getCellSpacing();
+    }
+    return result;
+  }
+
+  private int getRowHeaderTextWidth() {
+    return Math.max( 0, getItemHeaderWidth() - getRowHeaderTextOffset() - getCellPadding().right );
+  }
+
   Point getItemImageSize() {
     Point result = new Point( 0, 0 );
     if( itemImageSize != null ) {
@@ -3627,10 +3803,16 @@ public class Grid extends Composite {
   }
 
   boolean hasColumnImages( int index ) {
+    if( index == Integer.MIN_VALUE ) {
+      return rowHeadersColumn != null && rowHeadersColumn.imageCount > 0;
+    }
     return getColumn( index ).imageCount > 0;
   }
 
   boolean hasColumnTexts( int index ) {
+    if( index == Integer.MIN_VALUE ) {
+      return rowHeadersColumn != null && rowHeadersColumn.textCount > 0;
+    }
     return getColumn( index ).textCount > 0;
   }
 
@@ -3851,11 +4033,39 @@ public class Grid extends Composite {
     scrollValuesObsolete = true;
   }
 
+  void invalidateDefaultRowHeadersText() {
+    defaultRowHeadersTextObsolete = true;
+    redraw();
+  }
+
   void setHasSpanning( boolean hasSpanning ) {
     this.hasSpanning = hasSpanning;
   }
 
+  boolean isRowHeadersColumn( GridColumn column ) {
+    return column != null && column == rowHeadersColumn;
+  }
+
+  GridColumn getRowHeadersColumn() {
+    return rowHeadersColumn;
+  }
+
+  private void createRowHeadersColumn() {
+    isInternalColumn = true;
+    rowHeadersColumn = new GridColumn( this, SWT.NONE );
+    rowHeadersColumn.setMoveable( false );
+    rowHeadersColumn.setMinimumWidth( 0 );
+    rowHeadersColumn.setWidth( 0 );
+    isInternalColumn = false;
+  }
+
   private boolean isFixedColumn( GridColumn column ) {
+    int fixedColumns = getFixedColumns();
+    if( fixedColumns <= 0 ) {
+      return false;
+    } else if( isRowHeadersColumn( column ) ) {
+      return true;
+    }
     int[] columnOrder = getColumnOrder();
     int visualIndex = -1;
     for( int i = 0; i < columnOrder.length && visualIndex == -1; i++ ) {
@@ -3863,15 +4073,16 @@ public class Grid extends Composite {
         visualIndex = i;
       }
     }
-    return visualIndex < getFixedColumns();
+    return visualIndex < fixedColumns - 1;
   }
 
   private int getFixedColumns() {
-    Object fixedColumns = getData( RWT.FIXED_COLUMNS );
-    if( fixedColumns instanceof Integer ) {
-      if( !( getData( RWT.ROW_TEMPLATE ) instanceof Template ) ) {
-        return ( ( Integer )fixedColumns ).intValue();
+    if( !( getData( RWT.ROW_TEMPLATE ) instanceof Template ) ) {
+      Object fixedColumns = getData( RWT.FIXED_COLUMNS );
+      if( fixedColumns instanceof Integer ) {
+        return ( ( Integer )fixedColumns ).intValue() + 1;
       }
+      return 1;
     }
     return -1;
   }
@@ -3948,6 +4159,26 @@ public class Grid extends Composite {
     }
 
     @Override
+    public int getRowHeaderImageOffset() {
+      return Grid.this.getRowHeaderImageOffset();
+    }
+
+    @Override
+    public int getRowHeaderImageWidth() {
+      return Grid.this.getRowHeaderImageWidth();
+    }
+
+    @Override
+    public int getRowHeaderTextOffset() {
+      return Grid.this.getRowHeaderTextOffset();
+    }
+
+    @Override
+    public int getRowHeaderTextWidth() {
+      return Grid.this.getRowHeaderTextWidth();
+    }
+
+    @Override
     public int getItemIndex( GridItem item ) {
       return item.index;
     }
@@ -3982,6 +4213,9 @@ public class Grid extends Composite {
       for( GridColumnGroup columnGroup : columnGroups ) {
         visitor.visit( columnGroup );
       }
+      if( rowHeadersColumn != null ) {
+        visitor.visit( rowHeadersColumn );
+      }
       for( GridColumn column : columns ) {
         visitor.visit( column );
       }
@@ -4010,10 +4244,11 @@ public class Grid extends Composite {
 
     @Override
     public int getTreeColumn() {
+      int offset = rowHeadersColumn != null ? 1 : 0;
       if( treeColumn != null ) {
-        return indexOf( treeColumn );
+        return indexOf( treeColumn ) + offset;
       } else if( getColumnCount() > 0 ) {
-        return getColumnOrder()[ 0 ];
+        return getColumnOrder()[ 0 ] + offset;
       }
       return -1;
     }
@@ -4021,6 +4256,11 @@ public class Grid extends Composite {
     @Override
     public int getSelectionType() {
       return selectionType;
+    }
+
+    @Override
+    public GridColumn getRowHeadersColumn() {
+      return Grid.this.getRowHeadersColumn();
     }
 
   }

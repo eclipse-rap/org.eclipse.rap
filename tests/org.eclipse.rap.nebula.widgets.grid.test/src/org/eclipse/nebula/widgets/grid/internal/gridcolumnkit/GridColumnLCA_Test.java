@@ -290,7 +290,7 @@ public class GridColumnLCA_Test {
     lca.render( column );
 
     TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( 0, message.findCreateProperty( column, "index" ).asInt() );
+    assertEquals( 1, message.findCreateProperty( column, "index" ).asInt() );
   }
 
   @Test
@@ -299,7 +299,7 @@ public class GridColumnLCA_Test {
     lca.renderChanges( column );
 
     TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( 1, message.findSetProperty( column, "index" ).asInt() );
+    assertEquals( 2, message.findSetProperty( column, "index" ).asInt() );
   }
 
   @Test
@@ -332,6 +332,17 @@ public class GridColumnLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 50, message.findSetProperty( column, "left" ).asInt() );
+  }
+
+  @Test
+  public void testRenderLeftWithRowHeader() throws IOException {
+    grid.setRowHeaderVisible( true, 10 );
+    GridColumn column2 = new GridColumn( grid, SWT.NONE, 0 );
+    column2.setWidth( 50 );
+    lca.renderChanges( column );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( 60, message.findSetProperty( column, "left" ).asInt() );
   }
 
   @Test

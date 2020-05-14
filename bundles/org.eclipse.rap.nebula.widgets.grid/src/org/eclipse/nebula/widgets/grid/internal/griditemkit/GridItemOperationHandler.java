@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 EclipseSource and others.
+ * Copyright (c) 2013, 2020 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package org.eclipse.nebula.widgets.grid.internal.griditemkit;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 
 import org.eclipse.nebula.widgets.grid.GridItem;
+import org.eclipse.nebula.widgets.grid.internal.IGridAdapter;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
@@ -47,8 +48,9 @@ public class GridItemOperationHandler extends WidgetOperationHandler<GridItem> {
     JsonValue value = properties.get( PROP_CELL_CHECKED );
     if( value != null ) {
       JsonArray arrayValue = value.asArray();
-      for( int i = 0; i < arrayValue.size(); i++ ) {
-        item.setChecked( i, arrayValue.get( i ).asBoolean() );
+      int offset = getGridAdapter( item ).getRowHeadersColumn() != null ? 1 : 0;
+      for( int i = offset; i < arrayValue.size(); i++ ) {
+        item.setChecked( i - offset, arrayValue.get( i ).asBoolean() );
       }
     }
   }
@@ -80,6 +82,10 @@ public class GridItemOperationHandler extends WidgetOperationHandler<GridItem> {
     if( value != null ) {
       item.setHeight( value.asInt() );
     }
+  }
+
+  private static IGridAdapter getGridAdapter( GridItem item ) {
+    return item.getParent().getAdapter( IGridAdapter.class );
   }
 
 }

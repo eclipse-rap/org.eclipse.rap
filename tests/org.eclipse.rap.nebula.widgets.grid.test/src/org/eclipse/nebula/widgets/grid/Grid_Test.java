@@ -2860,6 +2860,18 @@ public class Grid_Test {
   }
 
   @Test
+  public void testGetOrigin_RowHeaderVisible() {
+    GridColumn[] columns = createGridColumns( grid, 10, SWT.NONE );
+    GridItem[] items = createGridItems( grid, 20, 3 );
+    horizontalBar.setSelection( 150 );
+    grid.setRowHeaderVisible( true, 10 );
+    grid.setTopIndex( 40 );
+
+    Point expected = new Point( -20, 2 * grid.getItemHeight() );
+    assertEquals( expected, grid.getOrigin( columns[ 3 ], items[ 48 ] ) );
+  }
+
+  @Test
   public void testIsShown() {
     GridItem[] items = createGridItems( grid, 20, 0 );
     grid.setTopIndex( 5 );
@@ -2906,11 +2918,12 @@ public class Grid_Test {
   public void testItemProvider_visitedItems() {
     GridColumnGroup group = new GridColumnGroup( grid, SWT.NONE );
     GridColumn column = new GridColumn( group, SWT.NONE );
+    GridColumn rowHeader = grid.getRowHeadersColumn();
     GridItem item = new GridItem( grid, SWT.NONE );
 
     List<Item> items = getVisitedItems();
 
-    assertEquals( Arrays.asList( group, column, item ), items );
+    assertEquals( Arrays.asList( group, rowHeader, column, item ), items );
   }
 
   @Test

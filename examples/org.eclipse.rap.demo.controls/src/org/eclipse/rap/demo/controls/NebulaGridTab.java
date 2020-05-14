@@ -46,6 +46,7 @@ public class NebulaGridTab extends ExampleTab {
   private Image image;
   private boolean headerVisible = true;
   private boolean footerVisible = true;
+  private boolean rowHeadersVisible = true;
   private boolean cellSelectionEnabled;
   public NebulaGridTab() {
     super( "Nebula Grid" );
@@ -75,6 +76,7 @@ public class NebulaGridTab extends ExampleTab {
     createSetColumnSpanGroup( parent );
     createShowHeaderButton( parent );
     createShowFooterButton( parent );
+    createShowRowHeadersButton( parent );
     createAutoHeightButton( parent );
     createWordWrapButton( parent );
     createHeaderWordWrapButton( parent );
@@ -109,10 +111,12 @@ public class NebulaGridTab extends ExampleTab {
     grid.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, true, 1, 20 ) );
     grid.setHeaderVisible( headerVisible );
     grid.setFooterVisible( footerVisible );
+    grid.setRowHeaderVisible( rowHeadersVisible, 50 );
     grid.setCellSelectionEnabled( cellSelectionEnabled );
     addGridListeners();
     createGridColumns();
     createGridItems();
+    updateRowHeaders();
   }
 
   private void addGridListeners() {
@@ -120,10 +124,12 @@ public class NebulaGridTab extends ExampleTab {
       @Override
       public void treeExpanded( TreeEvent event ) {
         log( "grid treeExpanded: " + event );
+        updateRowHeaders();
       }
       @Override
       public void treeCollapsed( TreeEvent event ) {
         log( "grid treeExpanded: " + event );
+        updateRowHeaders();
       }
     } );
     grid.addSelectionListener( new SelectionListener() {
@@ -223,6 +229,17 @@ public class NebulaGridTab extends ExampleTab {
       }
     }
     grid.getItem( 0 ).setExpanded( true );
+  }
+
+  private void updateRowHeaders() {
+    for( GridItem item : grid.getItems() ) {
+      if( item != null && item.isVisible() ) {
+        if( item.getParentItem() != null ) {
+          item.setHeaderImage( image );
+        }
+      }
+    }
+    grid.getItem( 0 ).setHeaderText( "X" );
   }
 
   private void createAddRemoveItemButton( Composite parent ) {
@@ -457,6 +474,19 @@ public class NebulaGridTab extends ExampleTab {
       public void widgetSelected( SelectionEvent event ) {
         footerVisible = button.getSelection();
         grid.setFooterVisible( footerVisible );
+      }
+    } );
+  }
+
+  private void createShowRowHeadersButton( Composite parent ) {
+    final Button button = new Button( parent, SWT.CHECK );
+    button.setText( "Show row headers" );
+    button.setSelection( true );
+    button.addSelectionListener( new SelectionAdapter() {
+      @Override
+      public void widgetSelected( SelectionEvent event ) {
+        rowHeadersVisible = button.getSelection();
+        grid.setRowHeaderVisible( rowHeadersVisible, 50 );
       }
     } );
   }

@@ -32,6 +32,7 @@ import java.util.List;
 import org.eclipse.nebula.widgets.grid.Grid;
 import org.eclipse.nebula.widgets.grid.GridColumn;
 import org.eclipse.nebula.widgets.grid.GridItem;
+import org.eclipse.nebula.widgets.grid.internal.IGridAdapter;
 import org.eclipse.nebula.widgets.grid.internal.gridkit.GridLCA.ItemMetrics;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
@@ -119,14 +120,23 @@ public class GridLCA_Test {
   }
 
   @Test
-  public void testRenderCreateWithFixedColumns() throws IOException {
-    grid.setData( RWT.FIXED_COLUMNS, Integer.valueOf( 1 ) );
-
+  public void testRenderCreate_rendersSplitContainer() throws IOException {
     lca.renderInitialization( grid );
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( grid );
     assertEquals( JsonValue.TRUE, operation.getProperties().get( "splitContainer" ) );
+  }
+
+  @Test
+  public void testRenderCreate_doesNotRenderSplitContainerWithRowTemplate() throws IOException {
+    grid.setData( RWT.ROW_TEMPLATE, new Template() );
+
+    lca.renderInitialization( grid );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( grid );
+    assertTrue( operation.getProperties().names().indexOf( "splitContainer" ) == -1 );
   }
 
   @Test
@@ -242,16 +252,19 @@ public class GridLCA_Test {
 
   @Test
   public void testRenderItemMetrics() throws IOException {
+    grid.setRowHeaderVisible( true, 10 );
     GridColumn column = new GridColumn( grid, SWT.NONE );
     column.setWidth( 50 );
     GridItem[] items = createGridItems( grid, 3, 1 );
+    items[ 0 ].setHeaderText( "bar" );
     items[ 0 ].setText( "foo" );
 
     lca.renderChanges( grid );
 
     TestMessage message = Fixture.getProtocolMessage();
     JsonArray actual = message.findSetProperty( grid, "itemMetrics" ).asArray();
-    assertEquals( JsonArray.readFrom( "[0, 0, 50, 0, 0, 0, 44, 0, 0]" ), actual.get( 0 ) );
+    assertEquals( JsonArray.readFrom( "[0, 0, 10, 6, 0, 6, 0, 0, 0]" ), actual.get( 0 ) );
+    assertEquals( JsonArray.readFrom( "[1, 10, 50, 10, 0, 10, 44, 10, 0]" ), actual.get( 1 ) );
   }
 
   @Test
@@ -264,8 +277,9 @@ public class GridLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     JsonArray actual = message.findSetProperty( grid, "itemMetrics" ).asArray();
-    assertEquals( JsonArray.readFrom( "[0, 0, 20, 23, 0, 23, 0, 0, 21]" ), actual.get( 0 ) );
-    assertEquals( JsonArray.readFrom( "[1, 20, 40, 49, 0, 49, 5, 26, 21]" ), actual.get( 1 ) );
+    assertEquals( JsonArray.readFrom( "[0, 0, 0, 6, 0, 6, 0, 0, 0]" ), actual.get( 0 ) );
+    assertEquals( JsonArray.readFrom( "[1, 0, 20, 23, 0, 23, 0, 0, 21]" ), actual.get( 1 ) );
+    assertEquals( JsonArray.readFrom( "[2, 20, 40, 49, 0, 49, 5, 26, 21]" ), actual.get( 2 ) );
   }
 
   @Test
@@ -298,7 +312,7 @@ public class GridLCA_Test {
     lca.renderChanges( grid );
 
     TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( 1, message.findSetProperty( grid, "columnCount" ).asInt() );
+    assertEquals( 2, message.findSetProperty( grid, "columnCount" ).asInt() );
   }
 
   @Test
@@ -331,7 +345,9 @@ public class GridLCA_Test {
     lca.renderChanges( grid );
 
     TestMessage message = Fixture.getProtocolMessage();
+    GridColumn rowHeadersColumn = grid.getAdapter( IGridAdapter.class ).getRowHeadersColumn();
     JsonArray expected = new JsonArray()
+      .add( getId( rowHeadersColumn ) )
       .add( getId( columns[ 2 ] ) )
       .add( getId( columns[ 0 ] ) )
       .add( getId( columns[ 1 ] ) );
@@ -371,7 +387,7 @@ public class GridLCA_Test {
     lca.renderChanges( grid );
 
     TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( 1, message.findSetProperty( grid, "treeColumn" ).asInt() );
+    assertEquals( 2, message.findSetProperty( grid, "treeColumn" ).asInt() );
   }
 
   @Test
@@ -723,7 +739,7 @@ public class GridLCA_Test {
     lca.renderChanges( grid );
 
     TestMessage message = Fixture.getProtocolMessage();
-    int expected = grid.indexOf( columns[ 1 ] );
+    int expected = grid.indexOf( columns[ 1 ] ) + 1;
     assertEquals( expected, message.findSetProperty( grid, "focusCell" ).asInt() );
   }
 
@@ -869,12 +885,12 @@ public class GridLCA_Test {
     String item0Id = getId( grid.getItem( 0 ) );
     String item4Id = getId( grid.getItem( 4 ) );
     Object expected = new JsonArray()
-      .add( item0Id + "#0" )
       .add( item0Id + "#1" )
       .add( item0Id + "#2" )
-      .add( item4Id + "#0")
-      .add( item4Id + "#1" )
-      .add( item4Id + "#2" );
+      .add( item0Id + "#3" )
+      .add( item4Id + "#1")
+      .add( item4Id + "#2" )
+      .add( item4Id + "#3" );
     assertEquals( expected, message.findSetProperty( grid, "cellSelection" ) );
   }
 
@@ -1082,7 +1098,7 @@ public class GridLCA_Test {
     Fixture.markInitialized( grid );
 
     String itemId = getId( item );
-    processCellToolTipRequest( grid, itemId, 1 );
+    processCellToolTipRequest( grid, itemId, 2 );
 
     TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "foo", message.findSetProperty( grid, "cellToolTipText" ).asString() );
@@ -1128,19 +1144,36 @@ public class GridLCA_Test {
     ItemMetrics[] metrics = GridLCA.getItemMetrics( grid );
 
     assertEquals( 0, metrics[ 0 ].left );
-    assertEquals( 100, metrics[ 1 ].left );
+    assertEquals( 0, metrics[ 1 ].left );
+    assertEquals( 100, metrics[ 2 ].left );
   }
 
   @Test
-  public void testGetItemMetrics_CellWidth() {
+  public void testGetItemMetrics_CellLeftWithRowHeader() {
+    grid.setRowHeaderVisible( true, 10 );
     GridColumn[] columns = createGridColumns( grid, 2, SWT.NONE );
     columns[ 0 ].setWidth( 100 );
     columns[ 1 ].setWidth( 150 );
 
     ItemMetrics[] metrics = GridLCA.getItemMetrics( grid );
 
-    assertEquals( 100, metrics[ 0 ].width );
-    assertEquals( 150, metrics[ 1 ].width );
+    assertEquals( 0, metrics[ 0 ].left );
+    assertEquals( 10, metrics[ 1 ].left );
+    assertEquals( 110, metrics[ 2 ].left );
+  }
+
+  @Test
+  public void testGetItemMetrics_CellWidth() {
+    grid.setRowHeaderVisible( true, 10 );
+    GridColumn[] columns = createGridColumns( grid, 2, SWT.NONE );
+    columns[ 0 ].setWidth( 100 );
+    columns[ 1 ].setWidth( 150 );
+
+    ItemMetrics[] metrics = GridLCA.getItemMetrics( grid );
+
+    assertEquals( 10, metrics[ 0 ].width );
+    assertEquals( 100, metrics[ 1 ].width );
+    assertEquals( 150, metrics[ 2 ].width );
   }
 
   @Test
@@ -1153,15 +1186,15 @@ public class GridLCA_Test {
     GridItem[] items = createGridItems( grid, 3, 1 );
 
     ItemMetrics[] metrics = GridLCA.getItemMetrics( grid );
-    assertEquals( 0, metrics[ 0 ].imageLeft );
-    assertEquals( 106, metrics[ 1 ].imageLeft );
+    assertEquals( 0, metrics[ 1 ].imageLeft );
+    assertEquals( 106, metrics[ 2 ].imageLeft );
 
     items[ 1 ].setImage( image2 );
     items[ 0 ].setImage( 1, image1 );
 
     metrics = GridLCA.getItemMetrics( grid );
-    assertEquals( 0, metrics[ 0 ].imageLeft );
-    assertEquals( 106, metrics[ 1 ].imageLeft );
+    assertEquals( 0, metrics[ 1 ].imageLeft );
+    assertEquals( 106, metrics[ 2 ].imageLeft );
   }
 
   @Test
@@ -1180,13 +1213,13 @@ public class GridLCA_Test {
     items[ 0 ].setImage( image1 );
 
     metrics = GridLCA.getItemMetrics( grid );
-    assertEquals( 50, metrics[ 0 ].imageWidth );
+    assertEquals( 50, metrics[ 1 ].imageWidth );
 
     items[ 1 ].setImage( null );
     items[ 0 ].setImage( null );
 
     metrics = GridLCA.getItemMetrics( grid );
-    assertEquals( 0, metrics[ 0 ].imageWidth );
+    assertEquals( 0, metrics[ 1 ].imageWidth );
   }
 
   @Test
@@ -1198,12 +1231,12 @@ public class GridLCA_Test {
     GridItem[] items = createGridItems( grid, 3, 1 );
 
     ItemMetrics[] metrics = GridLCA.getItemMetrics( grid );
-    assertEquals( 106, metrics[ 1 ].textLeft );
+    assertEquals( 106, metrics[ 2 ].textLeft );
 
     items[ 0 ].setImage( 1, image );
 
     metrics = GridLCA.getItemMetrics( grid );
-    assertEquals( 206, metrics[ 1 ].textLeft );
+    assertEquals( 206, metrics[ 2 ].textLeft );
   }
 
   @Test
@@ -1218,7 +1251,7 @@ public class GridLCA_Test {
 
     ItemMetrics[] metrics = GridLCA.getItemMetrics( grid );
 
-    assertEquals( 123, metrics[ 0 ].textLeft );
+    assertEquals( 123, metrics[ 1 ].textLeft );
   }
 
   @Test
@@ -1233,7 +1266,7 @@ public class GridLCA_Test {
 
     ItemMetrics[] metrics = GridLCA.getItemMetrics( grid );
 
-    assertEquals( 71, metrics[ 0 ].textWidth );
+    assertEquals( 71, metrics[ 1 ].textWidth );
   }
 
   @Test

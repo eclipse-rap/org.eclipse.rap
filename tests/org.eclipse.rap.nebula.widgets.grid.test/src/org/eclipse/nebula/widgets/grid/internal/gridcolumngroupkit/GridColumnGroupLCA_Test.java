@@ -289,6 +289,20 @@ public class GridColumnGroupLCA_Test {
   }
 
   @Test
+  public void testRenderLeftWithRowHeader() throws IOException {
+    createGridColumns( grid, 3, SWT.NONE );
+    grid.setRowHeaderVisible( true, 10 );
+    grid.getColumn( 1 ).setVisible( false );
+    createGridColumns( group, 3, SWT.NONE );
+
+    grid.getColumn( 0 ).setWidth( 30 );
+    lca.renderChanges( group );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( 100, message.findSetProperty( group, "left" ).asInt() );
+  }
+
+  @Test
   public void testRenderLeftUnchanged() throws IOException {
     createGridColumns( grid, 3, SWT.NONE );
     grid.getColumn( 1 ).setVisible( false );

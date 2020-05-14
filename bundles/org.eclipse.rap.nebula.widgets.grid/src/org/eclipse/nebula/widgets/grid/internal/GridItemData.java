@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2015 EclipseSource and others.
+ * Copyright (c) 2014, 2020 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,13 @@ public class GridItemData implements SerializableCompatibility {
   public Font defaultFont;
   public Color defaultBackground;
   public Color defaultForeground;
+  public String defaultHeaderText;
+  public String headerText;
+  public Image headerImage;
+  public Color defaultHeaderBackground;
+  public Color headerBackground;
+  public Color headerForeground;
+  public Font headerFont;
   public int customHeight = -1;
   public boolean expanded;
 
@@ -74,6 +81,12 @@ public class GridItemData implements SerializableCompatibility {
     defaultFont = null;
     defaultBackground = null;
     defaultForeground = null;
+    defaultHeaderText = null;
+    headerText = null;
+    headerImage = null;
+    headerFont = null;
+    headerBackground = null;
+    headerForeground = null;
   }
 
   public static final class CellData implements SerializableCompatibility {

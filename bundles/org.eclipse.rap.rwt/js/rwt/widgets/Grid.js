@@ -323,8 +323,10 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     },
 
     setFocusCell : function( cell ) {
-      this._focusCell = cell;
-      this.dispatchSimpleEvent( "focusCellChanged" );
+      if( cell > 0 ) {
+        this._focusCell = cell;
+        this.dispatchSimpleEvent( "focusCellChanged" );
+      }
     },
 
     getFocusCell : function() {
@@ -661,7 +663,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
             && identifier[ 0 ] !== "cellCheckBox" )
         {
           var cell = this._config.cellOrder.indexOf( identifier[ 1 ] );
-          if( cell >= 0 ) {
+          if( cell > 0 ) {
             this._dragSelection = true;
             this._onSelectionClick( event, item, cell);
             this._dragSelection = false;

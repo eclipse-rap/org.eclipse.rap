@@ -371,14 +371,14 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
     setCellSelection : function( selection ) {
       this._cellSelection = [];
       for( var i = 0; i < selection.length; i++ ) {
-        if( selection[ i ] >= 0 ) {
+        if( selection[ i ] > 0 ) {
           this._cellSelection.push( selection[ i ] );
         }
       }
     },
 
     selectCell : function( cell ) {
-      if( !this.isCellSelected( cell ) && cell >= 0 ) {
+      if( !this.isCellSelected( cell ) && cell > 0 ) {
         this._cellSelection.push( cell );
       }
     },

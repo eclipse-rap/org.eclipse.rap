@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 EclipseSource and others.
+ * Copyright (c) 2012, 2020 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -586,7 +586,7 @@ public class GridItem_Test {
   }
 
   @Test( expected = IllegalArgumentException.class )
-  public void testSetBackground_DisposedFont() {
+  public void testSetBackground_DisposedColor() {
     GridItem item = new GridItem( grid, SWT.NONE );
     Color background = new Color( display, 0, 0, 255 );
     background.dispose();
@@ -626,7 +626,7 @@ public class GridItem_Test {
   }
 
   @Test( expected = IllegalArgumentException.class )
-  public void testSetBackgroundByIndex_DisposedFont() {
+  public void testSetBackgroundByIndex_DisposedColor() {
     createGridColumns( grid, 3, SWT.NONE );
     GridItem item = new GridItem( grid, SWT.NONE );
     Color background = new Color( display, 0, 0, 255 );
@@ -663,7 +663,7 @@ public class GridItem_Test {
   }
 
   @Test( expected = IllegalArgumentException.class )
-  public void testSetForeground_DisposedFont() {
+  public void testSetForeground_DisposedColor() {
     GridItem item = new GridItem( grid, SWT.NONE );
     Color foreground = new Color( display, 0, 0, 255 );
     foreground.dispose();
@@ -703,7 +703,7 @@ public class GridItem_Test {
   }
 
   @Test( expected = IllegalArgumentException.class )
-  public void testSetForegroundByIndex_DisposedFont() {
+  public void testSetForegroundByIndex_DisposedColor() {
     createGridColumns( grid, 3, SWT.NONE );
     GridItem item = new GridItem( grid, SWT.NONE );
     Color foreground = new Color( display, 0, 0, 255 );
@@ -1148,6 +1148,17 @@ public class GridItem_Test {
   }
 
   @Test
+  public void testGetBounds_WithRowHeaders() {
+    createGridColumns( grid, 3, SWT.NONE );
+    createGridItems( grid, 3, 3 );
+    grid.setRowHeaderVisible( true, 10 );
+
+    assertEquals( new Rectangle( 10, 27, 20, 27 ), grid.getItem( 4 ).getBounds( 0 ) );
+    assertEquals( new Rectangle( 30, 27, 40, 27 ), grid.getItem( 4 ).getBounds( 1 ) );
+    assertEquals( new Rectangle( 70, 27, 60, 27 ), grid.getItem( 4 ).getBounds( 2 ) );
+  }
+
+  @Test
   public void testGetBounds_WithOffset() {
     createGridColumns( grid, 5, SWT.NONE );
     createGridItems( grid, 20, 3 );
@@ -1533,6 +1544,126 @@ public class GridItem_Test {
     GridItem gridItem = new GridItem( grid, SWT.NONE );
     assertTrue( gridItem.getAdapter( WidgetLCA.class ) instanceof GridItemLCA );
     assertSame( gridItem.getAdapter( WidgetLCA.class ), gridItem.getAdapter( WidgetLCA.class ) );
+  }
+
+  @Test
+  public void testGetHeaderText_Inital() {
+    GridItem item = new GridItem( grid, SWT.NONE );
+
+    assertNull( item.getHeaderText());
+  }
+
+  @Test
+  public void testSetHeaderText() {
+    GridItem item = new GridItem( grid, SWT.NONE );
+
+    item.setHeaderText( "foo" );
+
+    assertEquals( "foo", item.getHeaderText());
+  }
+
+  @Test
+  public void testGetHeaderImage_Inital() {
+    GridItem item = new GridItem( grid, SWT.NONE );
+
+    assertNull( item.getImage() );
+  }
+
+  @Test
+  public void testGetHeaderImage() {
+    GridItem item = new GridItem( grid, SWT.NONE );
+    Image image = loadImage( display, Fixture.IMAGE1 );
+
+    item.setHeaderImage( image );
+
+    assertSame( image, item.getHeaderImage() );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetHeaderImage_DisposedImage() {
+    GridItem item = new GridItem( grid, SWT.NONE );
+    Image image = loadImage( display, Fixture.IMAGE1 );
+    image.dispose();
+
+    item.setHeaderImage( image );
+  }
+
+  @Test
+  public void testGetHeaderFont_Inital() {
+    GridItem item = new GridItem( grid, SWT.NONE );
+
+    assertNull( item.getHeaderFont() );
+  }
+
+  @Test
+  public void testGetHeaderFont() {
+    GridItem item = new GridItem( grid, SWT.NONE );
+    Font font = new Font( display, "Arial", 20, SWT.BOLD );
+
+    item.setHeaderFont( font );
+
+    assertSame( font, item.getHeaderFont() );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetHeaderFont_DisposedFont() {
+    GridItem item = new GridItem( grid, SWT.NONE );
+    Font font = new Font( display, "Arial", 20, SWT.BOLD );
+    font.dispose();
+
+    item.setHeaderFont( font );
+  }
+
+  @Test
+  public void testGetHeaderBackground_Initial() {
+    GridItem item = new GridItem( grid, SWT.NONE );
+
+    assertNull( item.getHeaderBackground() );
+  }
+
+  @Test
+  public void testGetHeaderBackground() {
+    GridItem item = new GridItem( grid, SWT.NONE );
+    Color background = new Color( display, 0, 0, 255 );
+
+    item.setHeaderBackground( background );
+
+    assertSame( background, item.getHeaderBackground() );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetHeaderBackground_DisposedColor() {
+    GridItem item = new GridItem( grid, SWT.NONE );
+    Color background = new Color( display, 0, 0, 255 );
+    background.dispose();
+
+    item.setHeaderBackground( background );
+  }
+
+  @Test
+  public void testGetHeaderForeground_Initial() {
+    GridItem item = new GridItem( grid, SWT.NONE );
+
+    assertNull( item.getHeaderForeground() );
+  }
+
+  @Test
+  public void testGetHeaderForeground() {
+    GridItem item = new GridItem( grid, SWT.NONE );
+    Color foreground = new Color( display, 0, 0, 255 );
+
+    item.setHeaderForeground( foreground );
+
+    assertSame( foreground, item.getHeaderForeground() );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetHeaderForeground_DisposedColor() {
+    GridItem item = new GridItem( grid, SWT.NONE );
+    Color foreground = new Color( display, 0, 0, 255 );
+    foreground.dispose();
+
+    item.setHeaderForeground( foreground );
   }
 
   private void fakeSpacing( Grid grid, int spacing ) {

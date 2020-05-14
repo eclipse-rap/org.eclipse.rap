@@ -124,7 +124,8 @@ public class GridOperationHandler extends ControlOperationHandler<Grid> {
         JsonArray currentCell = cells.get( i ).asArray();
         GridItem item = getItem( grid, currentCell.get( 0 ).asString() );
         if( item != null ) {
-          selectedCells[ i ] = new Point( currentCell.get( 1 ).asInt(), grid.indexOf( item ) );
+          int x = currentCell.get( 1 ).asInt() - getColumnOffset( grid );
+          selectedCells[ i ] = new Point( x, grid.indexOf( item ) );
         }
       }
       grid.setCellSelection( selectedCells );
@@ -179,7 +180,7 @@ public class GridOperationHandler extends ControlOperationHandler<Grid> {
   public void handleSetFocusCell( Grid grid, JsonObject properties ) {
     JsonValue value = properties.get( PROP_FOCUS_CELL );
     if( value != null ) {
-      GridColumn column = grid.getColumn( value.asInt() );
+      GridColumn column = grid.getColumn( value.asInt() - getColumnOffset( grid ) );
       if( column != null ) {
         grid.setFocusColumn( column );
       }
@@ -197,8 +198,8 @@ public class GridOperationHandler extends ControlOperationHandler<Grid> {
     ICellToolTipProvider provider = adapter.getCellToolTipProvider();
     if( provider != null ) {
       GridItem item = getItem( grid, properties.get( "item" ).asString() );
-      int columnIndex = properties.get( "column" ).asInt();
-      if( item != null && ( columnIndex == 0 || columnIndex < grid.getColumnCount() ) ) {
+      int columnIndex = properties.get( "column" ).asInt() - getColumnOffset( grid );
+      if( item != null && ( columnIndex >= 0 && columnIndex < grid.getColumnCount() ) ) {
         provider.getToolTipText( item, columnIndex );
       }
     }
@@ -293,6 +294,10 @@ public class GridOperationHandler extends ControlOperationHandler<Grid> {
   private static int readIndex( JsonObject properties ) {
     JsonValue value = properties.get( EVENT_PARAM_INDEX );
     return value == null ? 0 : value.asInt();
+  }
+
+  private static int getColumnOffset( Grid grid ) {
+    return getGridAdapter( grid ).getRowHeadersColumn() != null ? 1 : 0;
   }
 
   private static IGridAdapter getGridAdapter( Grid grid ) {

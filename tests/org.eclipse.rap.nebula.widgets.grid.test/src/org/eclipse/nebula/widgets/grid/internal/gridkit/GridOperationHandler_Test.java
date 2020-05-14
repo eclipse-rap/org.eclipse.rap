@@ -114,8 +114,8 @@ public class GridOperationHandler_Test {
 
     Point[] selectedCells = grid.getCellSelection();
     assertEquals( 2, selectedCells.length );
-    assertEquals( new Point( 1, 0 ), selectedCells[ 0 ] );
-    assertEquals( new Point( 2, 2 ), selectedCells[ 1 ] );
+    assertEquals( new Point( 0, 0 ), selectedCells[ 0 ] );
+    assertEquals( new Point( 1, 2 ), selectedCells[ 1 ] );
   }
 
   @Test
@@ -169,13 +169,14 @@ public class GridOperationHandler_Test {
     grid.setCellSelectionEnabled( true );
     GridColumn[] columns = createGridColumns( grid, 3, SWT.NONE );
 
-    handler.handleSet( new JsonObject().add( "focusCell", 2 ) );
+    handler.handleSet( new JsonObject().add( "focusCell", 3 ) );
 
     assertSame( columns[ 2 ], grid.getFocusColumn() );
   }
 
   @Test
   public void testHandleCallRenderToolTipText() {
+    new GridColumn( grid, SWT.NONE );
     GridItem item = new GridItem( grid, SWT.NONE );
     final ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( grid );
     adapter.setCellToolTipProvider( new ICellToolTipProvider() {
@@ -189,7 +190,7 @@ public class GridOperationHandler_Test {
       }
     } );
 
-    JsonObject properties = new JsonObject().add( "item", getId( item ) ).add( "column", 0 );
+    JsonObject properties = new JsonObject().add( "item", getId( item ) ).add( "column", 1 );
     handler.handleCall( "renderToolTipText", properties );
 
     assertEquals( getId( item ) + ",0", CellToolTipUtil.getAdapter( grid ).getCellToolTipText() );

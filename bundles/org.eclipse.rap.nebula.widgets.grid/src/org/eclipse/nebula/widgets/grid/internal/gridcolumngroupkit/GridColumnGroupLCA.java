@@ -106,8 +106,8 @@ public class GridColumnGroupLCA extends WidgetLCA<GridColumnGroup> {
   // Helping methods
 
   private static int getLeft( GridColumnGroup group ) {
-    int result = 0;
     Grid grid = group.getParent();
+    int result = grid.getItemHeaderWidth();
     int[] columnOrder = grid.getColumnOrder();
     boolean found = false;
     for( int i = 0; i < columnOrder.length && !found; i++ ) {

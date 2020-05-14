@@ -133,7 +133,12 @@ public class GridColumnLCA extends WidgetLCA<GridColumn> {
   // Helping methods
 
   private static int getLeft( GridColumn column ) {
-    return getGridAdapter( column ).getCellLeft( getIndex( column ) );
+    GridColumn rowHeadersColumn = getGridAdapter( column ).getRowHeadersColumn();
+    if( rowHeadersColumn == column ) {
+      return 0;
+    }
+    int columnIndex = column.getParent().indexOf( column );
+    return getGridAdapter( column ).getCellLeft( columnIndex );
   }
 
   private static String getAlignment( GridColumn column ) {
@@ -148,7 +153,12 @@ public class GridColumnLCA extends WidgetLCA<GridColumn> {
   }
 
   private static int getIndex( GridColumn column ) {
-    return column.getParent().indexOf( column );
+    GridColumn rowHeadersColumn = getGridAdapter( column ).getRowHeadersColumn();
+    if( rowHeadersColumn == column ) {
+      return 0;
+    }
+    int offset = rowHeadersColumn != null ? 1 : 0;
+    return column.getParent().indexOf( column ) + offset;
   }
 
   private static int getFooterSpan( GridColumn column ) {

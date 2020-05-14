@@ -28,6 +28,11 @@ public interface IGridAdapter {
   int getTextOffset( int index );
   int getTextWidth( int index );
 
+  int getRowHeaderImageOffset();
+  int getRowHeaderImageWidth();
+  int getRowHeaderTextOffset();
+  int getRowHeaderTextWidth();
+
   int getItemIndex( GridItem item );
 
   void doRedraw();
@@ -37,5 +42,6 @@ public interface IGridAdapter {
 
   int getTreeColumn();
   int getSelectionType();
+  GridColumn getRowHeadersColumn();
 
 }
