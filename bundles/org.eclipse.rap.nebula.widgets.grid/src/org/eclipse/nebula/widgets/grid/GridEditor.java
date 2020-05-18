@@ -187,6 +187,10 @@ public class GridEditor extends ControlEditor
                 cell.width = area.x + area.width - cell.x;
             }
         }
+        if (table.getLinesVisible()) {
+            cell.width--;
+            cell.height--;
+        }
         Rectangle editorRect = new Rectangle(cell.x, cell.y, minimumWidth, minimumHeight);
 
         if (grabHorizontal)
