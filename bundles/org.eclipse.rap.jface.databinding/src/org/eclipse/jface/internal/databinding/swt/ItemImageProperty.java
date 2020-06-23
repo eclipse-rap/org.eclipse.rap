@@ -18,15 +18,18 @@ import org.eclipse.swt.widgets.Item;
  * @since 3.3
  * 
  */
-public class ItemImageProperty extends WidgetImageValueProperty {
-	Image doGetImageValue(Object source) {
-		return ((Item) source).getImage();
+public class ItemImageProperty extends WidgetImageValueProperty<Item> {
+	@Override
+	protected Image doGetImageValue(Item source) {
+		return source.getImage();
 	}
 
-	void doSetImageValue(Object source, Image value) {
-		((Item) source).setImage(value);
+	@Override
+	protected void doSetImageValue(Item source, Image value) {
+		source.setImage(value);
 	}
 
+	@Override
 	public String toString() {
 		return "Item.image <Image>"; //$NON-NLS-1$
 	}

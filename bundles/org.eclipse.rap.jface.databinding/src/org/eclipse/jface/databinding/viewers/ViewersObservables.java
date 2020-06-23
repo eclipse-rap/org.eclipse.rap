@@ -33,6 +33,7 @@ import org.eclipse.jface.viewers.Viewer;
  * 
  * @since 1.1
  */
+@SuppressWarnings("rawtypes")
 public class ViewersObservables {
 	private static void checkNull(Object obj) {
 		if (obj == null)
@@ -60,9 +61,8 @@ public class ViewersObservables {
 	 * 
 	 * @since 1.3
 	 */
-	public static IViewerObservableValue observeDelayedValue(int delay,
-			IViewerObservableValue observable) {
-		return new ViewerObservableValueDecorator(Observables
+	public static <T> IViewerObservableValue<T> observeDelayedValue(int delay, IViewerObservableValue<T> observable) {
+		return new ViewerObservableValueDecorator<>(Observables
 				.observeDelayedValue(delay, observable), observable.getViewer());
 	}
 
@@ -253,7 +253,7 @@ public class ViewersObservables {
 	 */
 	public static IObservableValue observeInput(Viewer viewer) {
 		checkNull(viewer);
-		return ViewerProperties.input().observe(viewer);
+		return ViewerProperties.<StructuredViewer, Object>input().observe(viewer);
 	}
 
 	/**

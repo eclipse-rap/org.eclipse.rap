@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.DateTime;
  * @since 3.2
  * 
  */
-public class DateTimeSelectionProperty extends WidgetValueProperty {
+public class DateTimeSelectionProperty extends WidgetValueProperty<DateTime, Date> {
 	/**
 	 * 
 	 */
@@ -31,48 +31,43 @@ public class DateTimeSelectionProperty extends WidgetValueProperty {
 		super(SWT.Selection);
 	}
 
+	@Override
 	public Object getValueType() {
 		return Date.class;
 	}
 
 	// One calendar per thread to preserve thread-safety
-	private static final ThreadLocal calendar = new ThreadLocal() {
-		protected Object initialValue() {
-			return Calendar.getInstance();
-		}
-	};
+	private static final ThreadLocal<Calendar> calendar = ThreadLocal.withInitial(Calendar::getInstance);
 
-	protected Object doGetValue(Object source) {
-		DateTime dateTime = (DateTime) source;
-
-		Calendar cal = (Calendar) calendar.get();
+	@Override
+	protected Date doGetValue(DateTime source) {
+		Calendar cal = calendar.get();
 		cal.clear();
-		if ((dateTime.getStyle() & SWT.TIME) != 0) {
-			cal.set(Calendar.HOUR_OF_DAY, dateTime.getHours());
-			cal.set(Calendar.MINUTE, dateTime.getMinutes());
-			cal.set(Calendar.SECOND, dateTime.getSeconds());
+		if ((source.getStyle() & SWT.TIME) != 0) {
+			cal.set(Calendar.HOUR_OF_DAY, source.getHours());
+			cal.set(Calendar.MINUTE, source.getMinutes());
+			cal.set(Calendar.SECOND, source.getSeconds());
 		} else {
-			cal.set(Calendar.YEAR, dateTime.getYear());
-			cal.set(Calendar.MONTH, dateTime.getMonth());
-			cal.set(Calendar.DAY_OF_MONTH, dateTime.getDay());
+			cal.set(Calendar.YEAR, source.getYear());
+			cal.set(Calendar.MONTH, source.getMonth());
+			cal.set(Calendar.DAY_OF_MONTH, source.getDay());
 		}
 		return cal.getTime();
 	}
 
-	protected void doSetValue(Object source, Object value) {
-		DateTime dateTime = (DateTime) source;
-
+	@Override
+	protected void doSetValue(DateTime source, Date value) {
 		if (value == null)
 			throw new IllegalArgumentException(
 					"Cannot set null selection on DateTime"); //$NON-NLS-1$
 
-		Calendar cal = (Calendar) calendar.get();
-		cal.setTime((Date) value);
-		if ((dateTime.getStyle() & SWT.TIME) != 0) {
-			dateTime.setTime(cal.get(Calendar.HOUR_OF_DAY), cal
+		Calendar cal = calendar.get();
+		cal.setTime(value);
+		if ((source.getStyle() & SWT.TIME) != 0) {
+			source.setTime(cal.get(Calendar.HOUR_OF_DAY), cal
 					.get(Calendar.MINUTE), cal.get(Calendar.SECOND));
 		} else {
-			dateTime.setDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
+			source.setDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
 					cal.get(Calendar.DAY_OF_MONTH));
 		}
 	}

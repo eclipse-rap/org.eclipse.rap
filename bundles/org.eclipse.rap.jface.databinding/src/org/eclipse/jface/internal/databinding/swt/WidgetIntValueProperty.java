@@ -13,12 +13,15 @@
 package org.eclipse.jface.internal.databinding.swt;
 
 import org.eclipse.jface.databinding.swt.WidgetValueProperty;
+import org.eclipse.swt.widgets.Widget;
 
 /**
+ * @param <S> type of the source object
+ * 
  * @since 3.3
  * 
  */
-public abstract class WidgetIntValueProperty extends WidgetValueProperty {
+public abstract class WidgetIntValueProperty<S extends Widget> extends WidgetValueProperty<S, Integer> {
 	WidgetIntValueProperty() {
 		super();
 	}
@@ -31,19 +34,22 @@ public abstract class WidgetIntValueProperty extends WidgetValueProperty {
 		super(events);
 	}
 
+	@Override
 	public Object getValueType() {
 		return Integer.TYPE;
 	}
 
-	protected Object doGetValue(Object source) {
-		return new Integer(doGetIntValue(source));
+	@Override
+	protected Integer doGetValue(S source) {
+		return doGetIntValue(source);
 	}
 
-	protected void doSetValue(Object source, Object value) {
-		doSetIntValue(source, ((Integer) value).intValue());
+	@Override
+	protected void doSetValue(S source, Integer value) {
+		doSetIntValue(source, value);
 	}
 
-	abstract int doGetIntValue(Object source);
+	abstract protected int doGetIntValue(S source);
 
-	abstract void doSetIntValue(Object source, int intValue);
+	abstract void doSetIntValue(S source, int intValue);
 }

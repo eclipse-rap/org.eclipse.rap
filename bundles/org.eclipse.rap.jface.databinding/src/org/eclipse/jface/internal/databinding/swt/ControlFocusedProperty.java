@@ -13,6 +13,7 @@
 package org.eclipse.jface.internal.databinding.swt;
 
 import org.eclipse.core.databinding.observable.Diffs;
+import org.eclipse.core.databinding.observable.value.ValueDiff;
 import org.eclipse.core.databinding.property.INativePropertyListener;
 import org.eclipse.core.databinding.property.IProperty;
 import org.eclipse.core.databinding.property.ISimplePropertyListener;
@@ -21,10 +22,12 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 
 /**
+ * @param <S> type of the source object
+ *
  * @since 3.3
  * 
  */
-public class ControlFocusedProperty extends WidgetBooleanValueProperty {
+public class ControlFocusedProperty<S extends Control> extends WidgetBooleanValueProperty<S> {
 	/**
 	 * 
 	 */
@@ -32,22 +35,25 @@ public class ControlFocusedProperty extends WidgetBooleanValueProperty {
 		super();
 	}
 
-	public boolean doGetBooleanValue(Object source) {
-		return ((Control) source).isFocusControl();
+	@Override
+	protected boolean doGetBooleanValue(S source) {
+		return source.isFocusControl();
 	}
 
-	public void doSetBooleanValue(Object source, boolean value) {
+	@Override
+	protected void doSetBooleanValue(S source, boolean value) {
 		if (value)
-			((Control) source).setFocus();
+			source.setFocus();
 	}
 
-	public INativePropertyListener adaptListener(
-			ISimplePropertyListener listener) {
+	@Override
+	public INativePropertyListener<S> adaptListener(ISimplePropertyListener<S, ValueDiff<? extends Boolean>> listener) {
 		int[] events = { SWT.FocusIn, SWT.FocusOut };
-		return new ControlFocusListener(this, listener, events, null);
+		return new ControlFocusListener<>(this, listener, events, null);
 	}
 
-	private class ControlFocusListener extends WidgetListener {
+	private static class ControlFocusListener<S extends Control>
+			extends WidgetListener<S, ValueDiff<? extends Boolean>> {
 		/**
 		 * @param property
 		 * @param listener
@@ -55,25 +61,26 @@ public class ControlFocusedProperty extends WidgetBooleanValueProperty {
 		 * @param staleEvents
 		 */
 		private ControlFocusListener(IProperty property,
-				ISimplePropertyListener listener, int[] changeEvents,
+				ISimplePropertyListener<S, ValueDiff<? extends Boolean>> listener, int[] changeEvents,
 				int[] staleEvents) {
 			super(property, listener, changeEvents, staleEvents);
 		}
 
+		@SuppressWarnings("unchecked")
+		@Override
 		public void handleEvent(Event event) {
 			switch (event.type) {
 			case SWT.FocusIn:
-				fireChange(event.widget, Diffs.createValueDiff(Boolean.FALSE,
-						Boolean.TRUE));
+				fireChange((S) event.widget, Diffs.createValueDiff(false, true));
 				break;
 			case SWT.FocusOut:
-				fireChange(event.widget, Diffs.createValueDiff(Boolean.TRUE,
-						Boolean.FALSE));
+				fireChange((S) event.widget, Diffs.createValueDiff(true, false));
 				break;
 			}
 		}
 	}
 
+	@Override
 	public String toString() {
 		return "Control.focus <boolean>"; //$NON-NLS-1$
 	}

@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Button;
  * @since 3.3
  * 
  */
-public class ButtonSelectionProperty extends WidgetBooleanValueProperty {
+public class ButtonSelectionProperty extends WidgetBooleanValueProperty<Button> {
 	/**
 	 * 
 	 */
@@ -26,14 +26,17 @@ public class ButtonSelectionProperty extends WidgetBooleanValueProperty {
 		super(SWT.Selection);
 	}
 
-	boolean doGetBooleanValue(Object source) {
-		return ((Button) source).getSelection();
+	@Override
+	protected boolean doGetBooleanValue(Button source) {
+		return source.getSelection();
 	}
 
-	void doSetBooleanValue(Object source, boolean value) {
-		((Button) source).setSelection(value);
+	@Override
+	protected void doSetBooleanValue(Button source, boolean value) {
+		source.setSelection(value);
 	}
 
+	@Override
 	public String toString() {
 		return "Button.selection <Boolean>"; //$NON-NLS-1$
 	}

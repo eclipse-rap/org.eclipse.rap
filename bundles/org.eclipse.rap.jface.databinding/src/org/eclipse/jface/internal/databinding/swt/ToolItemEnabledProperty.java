@@ -16,15 +16,18 @@ import org.eclipse.swt.widgets.ToolItem;
 /**
  * @since 1.4
  */
-public class ToolItemEnabledProperty extends WidgetBooleanValueProperty {
-	public boolean doGetBooleanValue(Object source) {
-		return ((ToolItem) source).getEnabled();
+public class ToolItemEnabledProperty extends WidgetBooleanValueProperty<ToolItem> {
+	@Override
+	protected boolean doGetBooleanValue(ToolItem source) {
+		return source.getEnabled();
 	}
 
-	void doSetBooleanValue(Object source, boolean value) {
-		((ToolItem) source).setEnabled(value);
+	@Override
+	protected void doSetBooleanValue(ToolItem source, boolean value) {
+		source.setEnabled(value);
 	}
 
+	@Override
 	public String toString() {
 		return "ToolItem.enabled <boolean>"; //$NON-NLS-1$
 	}

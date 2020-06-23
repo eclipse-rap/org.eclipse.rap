@@ -18,15 +18,18 @@ import org.eclipse.swt.widgets.Label;
  * @since 3.3
  * 
  */
-public class LabelImageProperty extends WidgetImageValueProperty {
-	Image doGetImageValue(Object source) {
-		return ((Label) source).getImage();
+public class LabelImageProperty extends WidgetImageValueProperty<Label> {
+	@Override
+	protected Image doGetImageValue(Label source) {
+		return source.getImage();
 	}
 
-	void doSetImageValue(Object source, Image value) {
-		((Label) source).setImage(value);
+	@Override
+	protected void doSetImageValue(Label source, Image value) {
+		source.setImage(value);
 	}
 
+	@Override
 	public String toString() {
 		return "Label.image <Image>"; //$NON-NLS-1$
 	}

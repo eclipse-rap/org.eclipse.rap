@@ -17,22 +17,28 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Control;
 
 /**
+ * @param <S> type of the source object
+ *
  * @since 3.3
  * 
  */
-public class ControlForegroundProperty extends WidgetValueProperty {
+public class ControlForegroundProperty<S extends Control> extends WidgetValueProperty<S, Color> {
+	@Override
 	public Object getValueType() {
 		return Color.class;
 	}
 
-	protected Object doGetValue(Object source) {
-		return ((Control) source).getForeground();
+	@Override
+	protected Color doGetValue(S source) {
+		return source.getForeground();
 	}
 
-	protected void doSetValue(Object source, Object value) {
-		((Control) source).setForeground((Color) value);
+	@Override
+	protected void doSetValue(S source, Color value) {
+		source.setForeground(value);
 	}
 
+	@Override
 	public String toString() {
 		return "Control.foreground <Color>"; //$NON-NLS-1$
 	}

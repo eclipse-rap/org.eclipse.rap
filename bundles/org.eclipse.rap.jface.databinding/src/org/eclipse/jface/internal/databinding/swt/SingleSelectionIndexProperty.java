@@ -11,12 +11,15 @@
 
 package org.eclipse.jface.internal.databinding.swt;
 
+import org.eclipse.swt.widgets.Widget;
+
 /**
+ * @param <S> type of the source object
+ *
  * @since 1.4
  * 
  */
-public abstract class SingleSelectionIndexProperty extends
-		WidgetIntValueProperty {
+public abstract class SingleSelectionIndexProperty<S extends Widget> extends WidgetIntValueProperty<S> {
 	/**
 	 * @param events
 	 */
@@ -24,7 +27,8 @@ public abstract class SingleSelectionIndexProperty extends
 		super(events);
 	}
 
-	protected void doSetValue(Object source, Object value) {
-		super.doSetValue(source, value == null ? new Integer(-1) : value);
+	@Override
+	protected void doSetValue(S source, Integer value) {
+		super.doSetValue(source, value == null ? Integer.valueOf(-1) : value);
 	}
 }

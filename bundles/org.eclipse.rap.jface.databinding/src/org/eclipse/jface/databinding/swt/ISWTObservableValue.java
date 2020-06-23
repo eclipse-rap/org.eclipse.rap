@@ -15,10 +15,12 @@ import org.eclipse.core.databinding.observable.value.IObservableValue;
 
 /**
  * {@link IObservableValue} observing an SWT widget.
- * 
- * @since 1.1
  *
+ * @param <T>
+ *            type of the value of the observable
+ *
+ * @since 1.1
  */
-public interface ISWTObservableValue extends ISWTObservable, IObservableValue {
+public interface ISWTObservableValue<T> extends ISWTObservable, IObservableValue<T> {
 
 }

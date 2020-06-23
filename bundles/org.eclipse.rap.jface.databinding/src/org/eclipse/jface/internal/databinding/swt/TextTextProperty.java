@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Widget;
  * @since 3.3
  * 
  */
-public class TextTextProperty extends WidgetStringValueProperty {
+public class TextTextProperty extends WidgetStringValueProperty<Text> {
 	/**
 	 * 
 	 */
@@ -39,8 +39,8 @@ public class TextTextProperty extends WidgetStringValueProperty {
 
 	private static int[] checkEvents(int[] events) {
 		if (events != null)
-			for (int i = 0; i < events.length; i++)
-				checkEvent(events[i]);
+			for (int event : events)
+				checkEvent(event);
 		return events;
 	}
 
@@ -53,26 +53,29 @@ public class TextTextProperty extends WidgetStringValueProperty {
 
 	private static int[] staleEvents(int[] changeEvents) {
 		if (changeEvents != null)
-			for (int i = 0; i < changeEvents.length; i++)
-				if (changeEvents[i] == SWT.Modify)
+			for (int changeEvent : changeEvents)
+				if (changeEvent == SWT.Modify)
 					return null;
 		return new int[] { SWT.Modify };
 	}
 
-	String doGetStringValue(Object source) {
-		return ((Text) source).getText();
+	@Override
+	protected String doGetStringValue(Text source) {
+		return source.getText();
 	}
 
-	void doSetStringValue(Object source, String value) {
-		((Text) source).setText(value == null ? "" : value); //$NON-NLS-1$
+	@Override
+	protected void doSetStringValue(Text source, String value) {
+		source.setText(value == null ? "" : value); //$NON-NLS-1$
 	}
 
+	@Override
 	public String toString() {
 		return "Text.text <String>"; //$NON-NLS-1$
 	}
 
-	protected ISWTObservableValue wrapObservable(IObservableValue observable,
-			Widget widget) {
+	@Override
+	protected ISWTObservableValue<String> wrapObservable(IObservableValue<String> observable, Widget widget) {
 		return new SWTVetoableValueDecorator(widget, this, observable);
 	}
 }

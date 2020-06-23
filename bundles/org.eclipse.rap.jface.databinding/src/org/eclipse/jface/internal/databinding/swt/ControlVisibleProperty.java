@@ -14,18 +14,23 @@ package org.eclipse.jface.internal.databinding.swt;
 import org.eclipse.swt.widgets.Control;
 
 /**
+ * @param <S> type of the source object
+ *
  * @since 3.3
  * 
  */
-public class ControlVisibleProperty extends WidgetBooleanValueProperty {
-	boolean doGetBooleanValue(Object source) {
-		return ((Control) source).getVisible();
+public class ControlVisibleProperty<S extends Control> extends WidgetBooleanValueProperty<S> {
+	@Override
+	protected boolean doGetBooleanValue(S source) {
+		return source.getVisible();
 	}
 
-	void doSetBooleanValue(Object source, boolean value) {
-		((Control) source).setVisible(value);
+	@Override
+	protected void doSetBooleanValue(S source, boolean value) {
+		source.setVisible(value);
 	}
 
+	@Override
 	public String toString() {
 		return "Control.visible <boolean>"; //$NON-NLS-1$
 	}

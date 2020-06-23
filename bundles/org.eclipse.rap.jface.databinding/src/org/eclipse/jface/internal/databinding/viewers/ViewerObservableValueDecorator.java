@@ -21,33 +21,38 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
 /**
+ * @param <T>
+ *            the type of value being observed
+ *
  * @since 3.3
  * 
  */
-public class ViewerObservableValueDecorator extends DecoratingObservableValue
-		implements IViewerObservableValue, Listener {
+public class ViewerObservableValueDecorator<T> extends DecoratingObservableValue<T>
+		implements IViewerObservableValue<T>, Listener {
 	private Viewer viewer;
 
 	/**
 	 * @param decorated
 	 * @param viewer
 	 */
-	public ViewerObservableValueDecorator(IObservableValue decorated,
-			Viewer viewer) {
+	public ViewerObservableValueDecorator(IObservableValue<T> decorated, Viewer viewer) {
 		super(decorated, true);
 		this.viewer = viewer;
 		viewer.getControl().addListener(SWT.Dispose, this);
 	}
 
+	@Override
 	public void handleEvent(Event event) {
 		if (event.type == SWT.Dispose)
 			dispose();
 	}
 
+	@Override
 	public Viewer getViewer() {
 		return viewer;
 	}
 
+	@Override
 	public synchronized void dispose() {
 		if (viewer != null) {
 			Control control = viewer.getControl();

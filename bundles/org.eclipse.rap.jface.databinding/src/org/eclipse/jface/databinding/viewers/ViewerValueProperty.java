@@ -29,32 +29,40 @@ import org.eclipse.jface.viewers.Viewer;
  * <li>All <code>observe()</code> methods should return an
  * {@link IViewerObservableValue}
  * </ul>
- * 
+ *
+ * @param <S> type of the source object
+ * @param <T> type of the value of the property
+ *
  * @since 1.3
  */
-public abstract class ViewerValueProperty extends SimpleValueProperty implements
-		IViewerValueProperty {
-	public IObservableValue observe(Object source) {
+public abstract class ViewerValueProperty<S, T> extends SimpleValueProperty<S, T>
+		implements IViewerValueProperty<S, T> {
+	@Override
+	public IObservableValue<T> observe(S source) {
 		if (source instanceof Viewer) {
 			return observe((Viewer) source);
 		}
 		return super.observe(source);
 	}
 
-	public IObservableValue observe(Realm realm, Object source) {
-		IObservableValue observable = super.observe(realm, source);
+	@Override
+	public IObservableValue<T> observe(Realm realm, S source) {
+		IObservableValue<T> observable = super.observe(realm, source);
 		if (source instanceof Viewer)
-			observable = new ViewerObservableValueDecorator(observable,
+			observable = new ViewerObservableValueDecorator<>(observable,
 					(Viewer) source);
 		return observable;
 	}
 
-	public IViewerObservableValue observe(Viewer viewer) {
-		return (IViewerObservableValue) observe(SWTObservables.getRealm(viewer
-				.getControl().getDisplay()), viewer);
+	@SuppressWarnings("unchecked")
+	@Override
+	public IViewerObservableValue<T> observe(Viewer viewer) {
+		return (IViewerObservableValue<T>) observe(SWTObservables.getRealm(viewer
+				.getControl().getDisplay()), (S) viewer);
 	}
 
-	public IViewerObservableValue observeDelayed(int delay, Viewer viewer) {
+	@Override
+	public IViewerObservableValue<T> observeDelayed(int delay, Viewer viewer) {
 		return ViewersObservables.observeDelayedValue(delay, observe(viewer));
 	}
 }

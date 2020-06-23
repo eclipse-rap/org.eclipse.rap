@@ -18,7 +18,7 @@ import org.eclipse.swt.custom.CCombo;
  * @since 3.3
  * 
  */
-public class CComboSingleSelectionIndexProperty extends SingleSelectionIndexProperty {
+public class CComboSingleSelectionIndexProperty extends SingleSelectionIndexProperty<CCombo> {
 	/**
 	 * 
 	 */
@@ -26,17 +26,20 @@ public class CComboSingleSelectionIndexProperty extends SingleSelectionIndexProp
 		super(new int[] { SWT.Selection, SWT.DefaultSelection });
 	}
 
-	int doGetIntValue(Object source) {
-		return ((CCombo) source).getSelectionIndex();
+	@Override
+	protected int doGetIntValue(CCombo source) {
+		return source.getSelectionIndex();
 	}
 
-	void doSetIntValue(Object source, int value) {
+	@Override
+	protected void doSetIntValue(CCombo source, int value) {
 		if (value == -1)
-			((CCombo) source).deselectAll();
+			source.deselectAll();
 		else
-			((CCombo) source).select(value);
+			source.select(value);
 	}
 
+	@Override
 	public String toString() {
 		return "CCombo.selectionIndex <int>"; //$NON-NLS-1$
 	}

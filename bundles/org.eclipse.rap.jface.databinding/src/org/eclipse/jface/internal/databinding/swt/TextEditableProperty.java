@@ -17,15 +17,18 @@ import org.eclipse.swt.widgets.Text;
  * @since 3.3
  * 
  */
-public class TextEditableProperty extends WidgetBooleanValueProperty {
-	boolean doGetBooleanValue(Object source) {
-		return ((Text) source).getEditable();
+public class TextEditableProperty extends WidgetBooleanValueProperty<Text> {
+	@Override
+	protected boolean doGetBooleanValue(Text source) {
+		return source.getEditable();
 	}
 
-	void doSetBooleanValue(Object source, boolean value) {
-		((Text) source).setEditable(value);
+	@Override
+	protected void doSetBooleanValue(Text source, boolean value) {
+		source.setEditable(value);
 	}
 
+	@Override
 	public String toString() {
 		return "Text.editable <boolean>"; //$NON-NLS-1$
 	}

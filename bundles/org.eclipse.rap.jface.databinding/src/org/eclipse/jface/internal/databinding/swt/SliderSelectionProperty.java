@@ -17,22 +17,25 @@ import org.eclipse.swt.widgets.Slider;
 /**
  * @since 1.4
  */
-public class SliderSelectionProperty extends WidgetIntValueProperty {
+public class SliderSelectionProperty extends WidgetIntValueProperty<Slider> {
 	/**
-	 * 
+	 *
 	 */
 	public SliderSelectionProperty() {
 		super(SWT.Selection);
 	}
 
-	int doGetIntValue(Object source) {
-		return ((Slider) source).getSelection();
+	@Override
+	protected int doGetIntValue(Slider source) {
+		return source.getSelection();
 	}
 
-	void doSetIntValue(Object source, int value) {
-		((Slider) source).setSelection(value);
+	@Override
+	protected void doSetIntValue(Slider source, int value) {
+		source.setSelection(value);
 	}
 
+	@Override
 	public String toString() {
 		return "Slider.selection <int>"; //$NON-NLS-1$
 	}

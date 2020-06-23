@@ -12,27 +12,32 @@
 package org.eclipse.jface.internal.databinding.swt;
 
 import org.eclipse.core.databinding.property.value.IValueProperty;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 
 /**
+ * @param <S> type of the source object
+ *
  * @since 3.3
- * 
+ *
  */
-public class WidgetEditableProperty extends WidgetDelegatingValueProperty {
-	IValueProperty text;
+public class WidgetEditableProperty<S extends Control> extends WidgetDelegatingValueProperty<S, Boolean> {
+	IValueProperty<Text, Boolean> text;
 
 	/**
-	 * 
+	 *
 	 */
 	public WidgetEditableProperty() {
 		super(Boolean.TYPE);
 	}
 
-	protected IValueProperty doGetDelegate(Object source) {
+	@SuppressWarnings("unchecked")
+	@Override
+	protected IValueProperty<S, Boolean> doGetDelegate(S source) {
 		if (source instanceof Text) {
 			if (text == null)
 				text = new TextEditableProperty();
-			return text;
+			return (IValueProperty<S, Boolean>) text;
 		}
 		throw notSupported(source);
 	}

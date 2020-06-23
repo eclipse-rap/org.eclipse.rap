@@ -17,16 +17,19 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.swt.widgets.Widget;
 
 /**
+ * @param <S> type of the source object
+ * 
  * @since 1.4
  */
-public class WidgetEnabledProperty extends WidgetDelegatingValueProperty {
-	IValueProperty control;
-	IValueProperty menu;
-	IValueProperty menuItem;
-	IValueProperty scrollBar;
-	IValueProperty toolItem;
+public class WidgetEnabledProperty<S extends Widget> extends WidgetDelegatingValueProperty<S, Boolean> {
+	IValueProperty<Control, Boolean> control;
+	IValueProperty<Menu, Boolean> menu;
+	IValueProperty<MenuItem, Boolean> menuItem;
+	IValueProperty<ScrollBar, Boolean> scrollBar;
+	IValueProperty<ToolItem, Boolean> toolItem;
 
 	/**
 	 * 
@@ -35,31 +38,33 @@ public class WidgetEnabledProperty extends WidgetDelegatingValueProperty {
 		super(Boolean.TYPE);
 	}
 
-	protected IValueProperty doGetDelegate(Object source) {
+	@SuppressWarnings("unchecked")
+	@Override
+	protected IValueProperty<S, Boolean> doGetDelegate(S source) {
 		if (source instanceof Control) {
 			if (control == null)
 				control = new ControlEnabledProperty();
-			return control;
+			return (IValueProperty<S, Boolean>) control;
 		}
 		if (source instanceof Menu) {
 			if (menu == null)
 				menu = new MenuEnabledProperty();
-			return menu;
+			return (IValueProperty<S, Boolean>) menu;
 		}
 		if (source instanceof MenuItem) {
 			if (menuItem == null)
 				menuItem = new MenuItemEnabledProperty();
-			return menuItem;
+			return (IValueProperty<S, Boolean>) menuItem;
 		}
 		if (source instanceof ScrollBar) {
 			if (scrollBar == null)
 				scrollBar = new ScrollBarEnabledProperty();
-			return scrollBar;
+			return (IValueProperty<S, Boolean>) scrollBar;
 		}
 		if (source instanceof ToolItem) {
 			if (toolItem == null)
 				toolItem = new ToolItemEnabledProperty();
-			return toolItem;
+			return (IValueProperty<S, Boolean>) toolItem;
 		}
 		throw notSupported(source);
 	}

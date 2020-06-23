@@ -18,8 +18,7 @@ import org.eclipse.swt.widgets.Table;
  * @since 3.3
  * 
  */
-public class TableSingleSelectionIndexProperty extends
-		SingleSelectionIndexProperty {
+public class TableSingleSelectionIndexProperty extends SingleSelectionIndexProperty<Table> {
 	/**
 	 * 
 	 */
@@ -27,17 +26,20 @@ public class TableSingleSelectionIndexProperty extends
 		super(new int[] { SWT.Selection, SWT.DefaultSelection });
 	}
 
-	int doGetIntValue(Object source) {
-		return ((Table) source).getSelectionIndex();
+	@Override
+	protected int doGetIntValue(Table source) {
+		return source.getSelectionIndex();
 	}
 
-	void doSetIntValue(Object source, int value) {
+	@Override
+	protected void doSetIntValue(Table source, int value) {
 		if (value == -1)
-			((Table) source).deselectAll();
+			source.deselectAll();
 		else
-			((Table) source).setSelection(value);
+			source.setSelection(value);
 	}
 
+	@Override
 	public String toString() {
 		return "Table.selectionIndex <int>"; //$NON-NLS-1$
 	}

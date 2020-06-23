@@ -18,7 +18,7 @@ import org.eclipse.swt.custom.CCombo;
  * @since 3.3
  * 
  */
-public class CComboTextProperty extends WidgetStringValueProperty {
+public class CComboTextProperty extends WidgetStringValueProperty<CCombo> {
 	/**
 	 * 
 	 */
@@ -26,14 +26,17 @@ public class CComboTextProperty extends WidgetStringValueProperty {
 		super(SWT.Modify);
 	}
 
-	String doGetStringValue(Object source) {
-		return ((CCombo) source).getText();
+	@Override
+	protected String doGetStringValue(CCombo source) {
+		return source.getText();
 	}
 
-	void doSetStringValue(Object source, String value) {
-		((CCombo) source).setText(value != null ? value : ""); //$NON-NLS-1$
+	@Override
+	protected void doSetStringValue(CCombo source, String value) {
+		source.setText(value != null ? value : ""); //$NON-NLS-1$
 	}
 
+	@Override
 	public String toString() {
 		return "CCombo.text <String>"; //$NON-NLS-1$
 	}

@@ -34,11 +34,13 @@ import org.eclipse.swt.widgets.Widget;
  * 
  * Note that this class will not forward {@link ValueChangingEvent} events from
  * a wrapped {@link IVetoableValue}.
- * 
+ *
+ * @param <T>
+ *            the type of value being observed
+ *
  * @since 1.2
  */
-public class SWTDelayedObservableValueDecorator extends
-		SWTObservableValueDecorator {
+public class SWTDelayedObservableValueDecorator<T> extends SWTObservableValueDecorator<T> {
 	private Control control;
 
 	/**
@@ -52,8 +54,7 @@ public class SWTDelayedObservableValueDecorator extends
 	 * @throws IllegalArgumentException
 	 *             if <code>updateEventType</code> is an incorrect type.
 	 */
-	public SWTDelayedObservableValueDecorator(IObservableValue decorated,
-			Widget widget) {
+	public SWTDelayedObservableValueDecorator(IObservableValue<T> decorated, Widget widget) {
 		super(decorated, widget);
 
 		if (widget instanceof Control) {
@@ -62,6 +63,7 @@ public class SWTDelayedObservableValueDecorator extends
 		}
 	}
 
+	@Override
 	public void handleEvent(Event event) {
 		// When the control loses focus..
 		if (event.type == SWT.FocusOut && isStale())
@@ -70,6 +72,7 @@ public class SWTDelayedObservableValueDecorator extends
 		super.handleEvent(event);
 	}
 
+	@Override
 	public synchronized void dispose() {
 		if (control != null) {
 			WidgetListenerUtil.asyncRemoveListener(control, SWT.FocusOut, this);

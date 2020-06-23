@@ -19,10 +19,12 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Control;
 
 /**
+ * @param <S> type of the source object
+ *
  * @since 3.3
  * 
  */
-public class ControlBoundsProperty extends WidgetValueProperty {
+public class ControlBoundsProperty<S extends Control> extends WidgetValueProperty<S, Rectangle> {
 	/**
 	 * 
 	 */
@@ -30,18 +32,22 @@ public class ControlBoundsProperty extends WidgetValueProperty {
 		super(new int[] { SWT.Resize, SWT.Move });
 	}
 
+	@Override
 	public Object getValueType() {
 		return Rectangle.class;
 	}
 
-	protected Object doGetValue(Object source) {
-		return ((Control) source).getBounds();
+	@Override
+	protected Rectangle doGetValue(S source) {
+		return source.getBounds();
 	}
 
-	protected void doSetValue(Object source, Object value) {
-		((Control) source).setBounds((Rectangle) value);
+	@Override
+	protected void doSetValue(S source, Rectangle value) {
+		source.setBounds(value);
 	}
 
+	@Override
 	public String toString() {
 		return "Control.bounds <Rectangle>"; //$NON-NLS-1$
 	}

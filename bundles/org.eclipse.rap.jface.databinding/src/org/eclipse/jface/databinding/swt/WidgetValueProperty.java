@@ -14,6 +14,7 @@ package org.eclipse.jface.databinding.swt;
 
 import org.eclipse.core.databinding.observable.Realm;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
+import org.eclipse.core.databinding.observable.value.ValueDiff;
 import org.eclipse.core.databinding.property.INativePropertyListener;
 import org.eclipse.core.databinding.property.ISimplePropertyListener;
 import org.eclipse.core.databinding.property.value.SimpleValueProperty;
@@ -27,7 +28,7 @@ import org.eclipse.swt.widgets.Widget;
  * class implements some basic behavior that widget properties are generally
  * expected to have, namely:
  * <ul>
- * <li>Calling {@link #observe(Object)} should create the observable on the
+ * <li>Calling {@link #observe} should create the observable on the
  * display realm of the widget, rather than the current default realm
  * <li>All <code>observe()</code> methods should return an
  * {@link ISWTObservableValue}
@@ -36,11 +37,14 @@ import org.eclipse.swt.widgets.Widget;
  * {@link Listener untyped listener API}. Subclasses may pass one or more SWT
  * event type constants to the super constructor to indicate which events signal
  * a property change.
+ *
+ * @param <S> type of the source object
+ * @param <T> type of the value of the property
  * 
  * @since 1.3
  */
-public abstract class WidgetValueProperty extends SimpleValueProperty implements
-		IWidgetValueProperty {
+public abstract class WidgetValueProperty<S extends Widget, T> extends SimpleValueProperty<S, T>
+		implements IWidgetValueProperty<S, T> {
 	private int[] changeEvents;
 	private int[] staleEvents;
 
@@ -89,35 +93,31 @@ public abstract class WidgetValueProperty extends SimpleValueProperty implements
 		this.staleEvents = staleEvents;
 	}
 
-	public INativePropertyListener adaptListener(
-			ISimplePropertyListener listener) {
+	@Override
+	public INativePropertyListener<S> adaptListener(
+			ISimplePropertyListener<S, ValueDiff<? extends T>> listener) {
 		if (changeEvents == null && staleEvents == null)
 			return null;
-		return new WidgetListener(this, listener, changeEvents, staleEvents);
+		return new WidgetListener<>(this, listener, changeEvents, staleEvents);
 	}
 
-	public IObservableValue observe(Object source) {
-		if (source instanceof Widget) {
-			return observe((Widget) source);
-		}
-		return super.observe(source);
+	@Override
+	public ISWTObservableValue<T> observe(Realm realm, S source) {
+		return wrapObservable(super.observe(realm, source), source);
 	}
 
-	public IObservableValue observe(Realm realm, Object source) {
-		return wrapObservable(super.observe(realm, source), (Widget) source);
-	}
-
-	protected ISWTObservableValue wrapObservable(IObservableValue observable,
+	protected ISWTObservableValue<T> wrapObservable(IObservableValue<T> observable,
 			Widget widget) {
-		return new SWTObservableValueDecorator(observable, widget);
+		return new SWTObservableValueDecorator<>(observable, widget);
 	}
 
-	public ISWTObservableValue observe(Widget widget) {
-		return (ISWTObservableValue) observe(SWTObservables.getRealm(widget
-				.getDisplay()), widget);
+	@Override
+	public ISWTObservableValue<T> observe(S widget) {
+		return observe(SWTObservables.getRealm(widget.getDisplay()), widget);
 	}
 
-	public ISWTObservableValue observeDelayed(int delay, Widget widget) {
+	@Override
+	public ISWTObservableValue<T> observeDelayed(int delay, S widget) {
 		return SWTObservables.observeDelayedValue(delay, observe(widget));
 	}
 }

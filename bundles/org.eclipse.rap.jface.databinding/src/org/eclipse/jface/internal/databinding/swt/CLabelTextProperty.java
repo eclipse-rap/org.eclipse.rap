@@ -17,15 +17,18 @@ import org.eclipse.swt.custom.CLabel;
  * @since 3.3
  * 
  */
-public class CLabelTextProperty extends WidgetStringValueProperty {
-	String doGetStringValue(Object source) {
-		return ((CLabel) source).getText();
+public class CLabelTextProperty extends WidgetStringValueProperty<CLabel> {
+	@Override
+	protected String doGetStringValue(CLabel source) {
+		return source.getText();
 	}
 
-	void doSetStringValue(Object source, String value) {
-		((CLabel) source).setText(value == null ? "" : value); //$NON-NLS-1$
+	@Override
+	protected void doSetStringValue(CLabel source, String value) {
+		source.setText(value == null ? "" : value); //$NON-NLS-1$
 	}
 
+	@Override
 	public String toString() {
 		return "CLabel.text <String>"; //$NON-NLS-1$
 	}
