@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2010 IBM Corporation and others.
+ * Copyright (c) 2004, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,8 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.presentations.defaultpresentation;
 
-import com.ibm.icu.text.MessageFormat;
+import java.text.MessageFormat;
+
 import org.eclipse.jface.resource.FontRegistry;
 import org.eclipse.jface.util.Geometry;
 import org.eclipse.swt.custom.CTabFolder;

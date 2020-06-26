@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 IBM Corporation and others.
+ * Copyright (c) 2008, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,8 @@ package org.eclipse.ui.internal;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.text.Collator;
+import java.text.DateFormat;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
@@ -25,9 +27,6 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.about.ISystemSummarySection;
 import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
-
-import com.ibm.icu.text.Collator;
-import com.ibm.icu.text.DateFormat;
 
 /**
  * This class contains utility methods that clients may use to obtain

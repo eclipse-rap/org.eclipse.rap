@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2015 IBM Corporation and others.
+ * Copyright (c) 2004, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.e4.ui.workbench.swt.internal.copy;
 
-import com.ibm.icu.text.BreakIterator;
+import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -246,8 +246,8 @@ public class PatternFilter extends ViewerFilter {
 	 *         text
 	 */
 	protected boolean isParentMatch(Viewer viewer, Object element) {
-		Object[] children = ((ITreeContentProvider) ((AbstractTreeViewer) viewer)
-				.getContentProvider()).getChildren(element);
+		Object[] children = ((ITreeContentProvider) ((AbstractTreeViewer) viewer).getContentProvider())
+				.getChildren(element);
 
 		if ((children != null) && (children.length > 0)) {
 			return isAnyVisible(viewer, element, children);
@@ -268,8 +268,7 @@ public class PatternFilter extends ViewerFilter {
 	 * @return true if the given element's label matches the filter text
 	 */
 	protected boolean isLeafMatch(Viewer viewer, Object element) {
-		String labelText = ((ILabelProvider) ((StructuredViewer) viewer)
-				.getLabelProvider()).getText(element);
+		String labelText = ((ILabelProvider) ((StructuredViewer) viewer).getLabelProvider()).getText(element);
 
 		if (labelText == null) {
 			return false;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,23 +11,19 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.forms.widgets;
 
+import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Vector;
 
 import org.eclipse.rap.rwt.Adaptable;
-import org.eclipse.ui.forms.internal.widgets.ITextSegmentAdapter;
-
 import org.eclipse.swt.SWT;
-// RAP [if] unnecessary
-//import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-
-import com.ibm.icu.text.BreakIterator;
+import org.eclipse.ui.forms.internal.widgets.ITextSegmentAdapter;
 
 /**
  * @version 1.0
