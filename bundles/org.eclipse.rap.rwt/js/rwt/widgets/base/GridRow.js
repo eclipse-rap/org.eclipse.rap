@@ -103,12 +103,11 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         return candidate != null && candidate.is( node );
       };
       if( match( this.$expandIcon ) ) {
-        result = [ "expandIcon" ];
+        result = [ "expandIcon", cell ];
       } else if( match( this.$checkBox ) ) {
-        result = [ "checkBox" ];
+        result = [ "checkBox", cell ];
       } else if( this.$cellCheckBoxes.some( match ) ) {
-        var cell = this.$cellCheckBoxes.filter( match )[ 0 ];
-        result = [ "cellCheckBox", this.$cellCheckBoxes.indexOf( cell ) ];
+        result = [ "cellCheckBox", cell ];
       } else {
         while( !this.$el.is( node ) && result[ 0 ] === "other" ) { // Can be removed?
           if( this.$treeColumnParts.some( match ) ) {
@@ -824,6 +823,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
           "width" : width,
           "height" : "100%"
         } );
+        element.attr( { "data-cell-index" : gridConfig.treeColumn } );
         result = element;
       }
       return result;
@@ -873,6 +873,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       if( !result ) {
         result = this._createElement( 3 );
         result.css( { "backgroundRepeat" : "no-repeat", "backgroundPosition" : "center" } );
+        result.attr( { "data-cell-index" : cell } );
         this.$cellCheckBoxes[ cell ] = result;
       }
       return result;

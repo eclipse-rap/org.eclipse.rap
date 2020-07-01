@@ -607,9 +607,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
         this.$selectionOverlay = null;
         var row = this._rowContainer.findRowByElement( event.getDomTarget() );
         if( row && !event.isCtrlPressed() ) {
-          this._dragSelection = true;
-          this._onRowMouseDown( row, event );
-          this._dragSelection = false;
+          this._onRowMouseUp( row, event );
         }
       } else {
         this._checkAndProcessHyperlink( event );
@@ -649,6 +647,21 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
         } else if( identifier[ 0 ] === "treeColumn" || this._acceptsGlobalSelection() ) {
           var cell = this._config.cellOrder.indexOf( identifier[ 1 ] );
           this._onSelectionClick( event, item, cell);
+        }
+      }
+    },
+
+    _onRowMouseUp : function( row, event ) {
+      var item = this._rowContainer.findItemByRow( row );
+      if( item != null ) {
+        var identifier = row.identify( event.getDomTarget() );
+        if( this._config.cellSelection ) {
+          var cell = this._config.cellOrder.indexOf( identifier[ 1 ] );
+          if( cell >= 0 ) {
+            this._dragSelection = true;
+            this._onSelectionClick( event, item, cell);
+            this._dragSelection = false;
+          }
         }
       }
     },
@@ -1293,13 +1306,13 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
         currentCell = targetCell;
         targetCell = temp;
       }
-      this._selectCells( currentItem, currentCell, targetCell );
-      this._selectItem( currentItem, true );
-      while( currentItem !== targetItem ) {
-        currentItem = currentItem.getNextItem();
+      while( currentItem != null && currentItem !== targetItem ) {
         this._selectCells( currentItem, currentCell, targetCell );
         this._selectItem( currentItem, true );
+        currentItem = currentItem.getNextItem();
       }
+      this._selectCells( targetItem, currentCell, targetCell );
+      this._selectItem( targetItem, true );
       this._fireSelectionChanged( item, "selection" );
       this.setFocusItem( item );
       this.setFocusCell( cell );
