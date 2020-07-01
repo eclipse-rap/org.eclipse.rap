@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -142,6 +142,7 @@ public abstract class ImageDescriptor extends DeviceResourceDescriptor  {
      * @param theDevice the device that was used to create the Image
      * @return a newly created image descriptor
      */
+    @Deprecated
     public static ImageDescriptor createFromImage(Image img, Device theDevice) {
         return new ImageDataImageDescriptor(img);
     }
@@ -307,6 +308,38 @@ public abstract class ImageDescriptor extends DeviceResourceDescriptor  {
     }
 
     /**
+     * Creates and returns a new SWT <code>ImageData</code> object for this
+     * image descriptor. Note that each call returns a new SWT image data
+     * object.
+     * <p>
+     * This framework method is declared public so that it is possible to
+     * request an image descriptor's image data without creating an SWT image
+     * object.
+     * </p>
+     * <p>
+     * Returns <code>null</code> if the image data could not be created or if no
+     * image data is available for the given zoom level.
+     * </p>
+     * <p>
+     * Since 3.13, subclasses should re-implement this method and should not implement
+     * {@link #getImageData()} any more.
+     * </p>
+     *
+     * @param zoom
+     *            The zoom level in % of the standard resolution (which is 1
+     *            physical monitor pixel / 1 SWT logical point). Typically 100,
+     *            150, or 200.
+     * @return a new image data or <code>null</code>
+     * @since 3.13
+     */
+    public ImageData getImageData(int zoom) {
+        if (zoom == 100) {
+            return getImageData();
+        }
+        return null;
+    }
+
+    /**
      * Creates and returns a new SWT <code>ImageData</code> object
      * for this image descriptor.
      * Note that each call returns a new SWT image data object.
@@ -318,10 +351,18 @@ public abstract class ImageDescriptor extends DeviceResourceDescriptor  {
      * <p>
      * Returns <code>null</code> if the image data could not be created.
      * </p>
+     * <p>
+     * This method was abstract until 3.13. Clients should stop re-implementing
+     * this method and should re-implement {@link #getImageData(int)} instead.
+     * </p>
      *
      * @return a new image data or <code>null</code>
+     * @deprecated Use {@link #getImageData(int)} instead.
      */
-    public abstract ImageData getImageData();
+    @Deprecated
+    public ImageData getImageData() {
+        return getImageData(100);
+    }
 
     /**
      * Returns the shared image descriptor for a missing image.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2013 IBM Corporation and others.
+ * Copyright (c) 2000, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,6 @@ import java.io.InputStream;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.util.Policy;
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Device;
@@ -61,13 +60,14 @@ class FileImageDescriptor extends ImageDescriptor {
 	 *            the name of the file
      */
     FileImageDescriptor(Class clazz, String filename) {
-        this.location = clazz;
-        this.name = filename;
+        location = clazz;
+        name = filename;
     }
 
 	/*
 	 * (non-Javadoc) Method declared on Object.
      */
+    @Override
     public boolean equals(Object o) {
         if (!(o instanceof FileImageDescriptor)) {
             return false;
@@ -85,37 +85,40 @@ class FileImageDescriptor extends ImageDescriptor {
         return name.equals(other.name);
     }
 
-	/**
-	 * @see org.eclipse.jface.resource.ImageDescriptor#getImageData() The
-	 *      FileImageDescriptor implementation of this method is not used by
-	 *      {@link ImageDescriptor#createImage(boolean, Device)} as of version
-	 *      3.4 so that the SWT OS optimised loading can be used.
+    /**
+     * {@inheritDoc}
+     * <p>
+     * The FileImageDescriptor implementation of this method is not used by
+     * {@link ImageDescriptor#createImage(boolean, Device)} as of version
+     * 3.4 so that the SWT OS optimised loading can be used.
      */
-    public ImageData getImageData() {
-        InputStream in = getStream();
-        ImageData result = null;
-        if (in != null) {
-            try {
-                result = new ImageData(in);
-            } catch (SWTException e) {
-                if (e.code != SWT.ERROR_INVALID_IMAGE) {
-					throw e;
-                // fall through otherwise
-				}
-            } finally {
-                try {
-                    in.close();
-                } catch (IOException e) {
-					// System.err.println(getClass().getName()+".getImageData():
-					// "+
-                    //  "Exception while closing InputStream : "+e);
-                }
-            }
+    @Override
+    public ImageData getImageData(int zoom) {
+      InputStream in = getStream();
+      ImageData result = null;
+      if (in != null) {
+        try {
+          result = new ImageData(in);
+        } catch (SWTException e) {
+          if (e.code != SWT.ERROR_INVALID_IMAGE) {
+            throw e;
+            // fall through otherwise
+          }
+        } finally {
+          try {
+            in.close();
+          } catch (IOException e) {
+            // System.err.println(getClass().getName()+".getImageData():
+            // "+
+            // "Exception while closing InputStream : "+e);
+          }
         }
-        return result;
+      }
+      return result;
     }
 
     // RAP [bm] alternative to ImageData for performance reasons
+    @Override
     public Image createImage(boolean returnMissingImageOnError, Device device) {
       Image result = null;
       if( location != null ) {
@@ -178,6 +181,7 @@ class FileImageDescriptor extends ImageDescriptor {
 	/*
 	 * (non-Javadoc) Method declared on Object.
      */
+    @Override
     public int hashCode() {
         int code = name.hashCode();
         if (location != null) {
@@ -194,13 +198,14 @@ class FileImageDescriptor extends ImageDescriptor {
 	 * <code>Object</code> method returns a string representation of this
 	 * object which is suitable only for debugging.
      */
+    @Override
     public String toString() {
         return "FileImageDescriptor(location=" + location + ", name=" + name + ")";//$NON-NLS-3$//$NON-NLS-2$//$NON-NLS-1$
     }
 
 //	/*
 //	 * (non-Javadoc)
-//	 * 
+//	 *
 //	 * @see org.eclipse.jface.resource.ImageDescriptor#createImage(boolean,
 //	 *      org.eclipse.swt.graphics.Device)
 //	 */
@@ -208,7 +213,7 @@ class FileImageDescriptor extends ImageDescriptor {
 //		String path = getFilePath();
 //		if (path == null)
 //			return createDefaultImage(returnMissingImageOnError, device);
-//		try {			
+//		try {
 //			return new Image(device, path);
 //		} catch (SWTException exception) {
 //			//if we fail try the default way using a stream
@@ -218,7 +223,7 @@ class FileImageDescriptor extends ImageDescriptor {
 //
 //	/**
 //	 * Return default image if returnMissingImageOnError is true.
-//	 * 
+//	 *
 //	 * @param device
 //	 * @return Image or <code>null</code>
 //	 */
@@ -235,7 +240,7 @@ class FileImageDescriptor extends ImageDescriptor {
 //
 //	/**
 //	 * Returns the filename for the ImageData.
-//	 * 
+//	 *
 //	 * @return {@link String} or <code>null</code> if the file cannot be found
 //	 */
 //	private String getFilePath() {
