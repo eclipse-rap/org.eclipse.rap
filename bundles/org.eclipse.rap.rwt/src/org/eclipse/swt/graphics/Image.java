@@ -39,7 +39,7 @@ import org.eclipse.swt.widgets.Display;
  * pixels are specified as being transparent when drawn. Examples
  * of file formats that support transparency are GIF and PNG.</p>
  */
-public class Image extends Resource {
+public class Image extends Resource implements Drawable {
 
   /**
    * The internal resource.
