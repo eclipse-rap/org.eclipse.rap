@@ -2993,8 +2993,27 @@ public class Grid extends Composite {
 
   void removeColumn( GridColumn column ) {
     int index = columns.indexOf( column );
+    if( cellSelectionEnabled ) {
+      List<Point> removeSelectedCells = new ArrayList<>();
+      for( Point cell : selectedCells ) {
+        if( cell.x == index ) {
+          removeSelectedCells.add( cell );
+        }
+      }
+      if( removeSelectedCells.size() > 0 ) {
+        selectedCells.removeAll( removeSelectedCells );
+      }
+      for( Point cell : selectedCells ) {
+        if( cell.x >= index ) {
+          cell.x-- ;
+        }
+      }
+    }
     columns.remove( index );
     displayOrderedColumns.remove( column );
+    if( focusColumn == column ) {
+      focusColumn = null;
+    }
     updatePrimaryCheckColumn();
     for( GridItem item : items ) {
       item.columnRemoved( index );

@@ -696,6 +696,20 @@ public class Grid_Test {
   }
 
   @Test
+  public void testGetCellSelection_afterColumnDisposal() {
+    createGridColumns( grid, 3, SWT.NONE );
+    createGridItems( grid, 3, 0 );
+    grid.setCellSelectionEnabled( true );
+    Point[] cells = new Point[] { new Point( 0, 0 ), new Point( 1, 1 ), new Point( 2, 2 ) };
+    grid.setCellSelection( cells );
+
+    grid.getColumn( 1 ).dispose();
+
+    Point[] expected = new Point[] { new Point( 0, 0 ), new Point( 1, 2 ) };
+    assertTrue( Arrays.equals( expected, grid.getCellSelection() ) );
+  }
+
+  @Test
   public void testIsCellSelectionEnabled_Initial() {
     assertFalse( grid.isCellSelectionEnabled() );
   }
@@ -1762,6 +1776,17 @@ public class Grid_Test {
     columns[ 1 ].setVisible( false );
 
     grid.setFocusColumn( columns[ 1 ] );
+  }
+
+  @Test
+  public void testGetFocusColumn_afterColumnDisposal() {
+    createGridColumns( grid, 3, SWT.NONE );
+    GridColumn column = grid.getColumn( 1 );
+    grid.setFocusColumn( column );
+
+    column.dispose();
+
+    assertNull( grid.getFocusColumn() );
   }
 
   @Test
