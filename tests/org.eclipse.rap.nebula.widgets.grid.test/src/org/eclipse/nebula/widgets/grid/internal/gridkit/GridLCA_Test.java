@@ -777,6 +777,38 @@ public class GridLCA_Test {
   }
 
   @Test
+  public void testRenderInitialSelectionType() throws IOException {
+    lca.render( grid );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( grid );
+    assertTrue( operation.getProperties().names().indexOf( "selectionType" ) == -1 );
+  }
+
+  @Test
+  public void testRenderSelectionType() throws IOException {
+    grid.setCellSelectionEnabled( true );
+    lca.renderChanges( grid );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( "MULTI", message.findSetProperty( grid, "selectionType" ).asString() );
+  }
+
+  @Test
+  public void testRenderSelectionTypeUnchanged() throws IOException {
+    grid = new Grid( shell, SWT.MULTI );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( grid );
+
+    grid.setCellSelectionEnabled( true );
+    Fixture.preserveWidgets();
+    lca.renderChanges( grid );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( grid, "selectionType" ) );
+  }
+
+  @Test
   public void testRenderInitialSelection() throws IOException {
     lca.render( grid );
 

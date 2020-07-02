@@ -75,6 +75,7 @@ public class GridLCA extends WidgetLCA<Grid> {
   private static final String PROP_SELECTION = "selection";
   private static final String PROP_CELL_SELECTION = "cellSelection";
   private static final String PROP_CELL_SELECTION_ENABLED = "cellSelectionEnabled";
+  private static final String PROP_SELECTION_TYPE = "selectionType";
   private static final String PROP_AUTO_HEIGHT = "autoHeight";
   private static final String PROP_INDENTION_WIDTH = "indentionWidth";
   // TODO: [if] Sync sortDirection and sortColumn in GridColumnLCA when multiple sort columns are
@@ -131,6 +132,7 @@ public class GridLCA extends WidgetLCA<Grid> {
     preserveProperty( grid, PROP_FOCUS_ITEM, grid.getFocusItem() );
     preserveProperty( grid, PROP_FOCUS_CELL, getFocusCell( grid ) );
     preserveProperty( grid, PROP_SCROLL_LEFT, getScrollLeft( grid ) );
+    preserveProperty( grid, PROP_SELECTION_TYPE, getSelectionType( grid ) );
     preserveProperty( grid, PROP_SELECTION, getSelection( grid ) );
     preserveProperty( grid, PROP_AUTO_HEIGHT, grid.isAutoHeight() );
     preserveProperty( grid, PROP_INDENTION_WIDTH, getIndentationWidth( grid ) );
@@ -162,6 +164,7 @@ public class GridLCA extends WidgetLCA<Grid> {
     renderProperty( grid, PROP_FOCUS_ITEM, grid.getFocusItem(), null );
     renderProperty( grid, PROP_FOCUS_CELL, getFocusCell( grid ), -1 );
     renderProperty( grid, PROP_SCROLL_LEFT, getScrollLeft( grid ), ZERO );
+    renderProperty( grid, PROP_SELECTION_TYPE, getSelectionType( grid ), "SINGLE" );
     renderProperty( grid, PROP_SELECTION, getSelection( grid ), DEFAULT_SELECTION );
     renderProperty( grid, PROP_AUTO_HEIGHT, grid.isAutoHeight(), false );
     renderProperty( grid, PROP_INDENTION_WIDTH, getIndentationWidth( grid ), ZERO );
@@ -214,6 +217,10 @@ public class GridLCA extends WidgetLCA<Grid> {
       result = horizontalBar.getSelection();
     }
     return result;
+  }
+
+  private static String getSelectionType( Grid grid ) {
+    return getGridAdapter( grid ).getSelectionType() == SWT.MULTI ? "MULTI" : "SINGLE";
   }
 
   private static String[] getSelection( Grid grid ) {

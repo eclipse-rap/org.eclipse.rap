@@ -3998,6 +3998,12 @@ public class Grid extends Composite {
       }
       return -1;
     }
+
+    @Override
+    public int getSelectionType() {
+      return selectionType;
+    }
+
   }
 
   private final class CellToolTipProvider

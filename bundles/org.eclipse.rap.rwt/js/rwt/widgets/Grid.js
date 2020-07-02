@@ -285,6 +285,10 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       this._horzScrollBar.setValue( value );
     },
 
+    setSelectionType : function( type ) {
+      this._hasMultiSelection = type === 'MULTI';
+    },
+
     selectItem : function( item ) {
       this._selectItem( item, false );
       this._scheduleItemUpdate( item );

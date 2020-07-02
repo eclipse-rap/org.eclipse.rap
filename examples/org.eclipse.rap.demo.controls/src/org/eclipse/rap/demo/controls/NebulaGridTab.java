@@ -56,6 +56,7 @@ public class NebulaGridTab extends ExampleTab {
   protected void createStyleControls( Composite parent ) {
     createStyleButton( "BORDER", SWT.BORDER );
     createStyleButton( "CHECK", SWT.CHECK, true );
+    createStyleButton( "SINGLE", SWT.SINGLE, false );
     createStyleButton( "MULTI", SWT.MULTI, true );
     createStyleButton( "H_SCROLL", SWT.H_SCROLL, true );
     createStyleButton( "V_SCROLL", SWT.V_SCROLL, true );

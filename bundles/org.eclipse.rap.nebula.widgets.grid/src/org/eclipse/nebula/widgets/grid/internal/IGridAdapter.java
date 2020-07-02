@@ -36,5 +36,6 @@ public interface IGridAdapter {
   boolean isFixedColumn( GridColumn column );
 
   int getTreeColumn();
+  int getSelectionType();
 
 }

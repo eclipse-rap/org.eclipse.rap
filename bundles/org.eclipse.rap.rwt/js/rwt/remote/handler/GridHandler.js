@@ -71,6 +71,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Grid", {
     "linesVisible",
     "topItemIndex",
     "scrollLeft",
+    "selectionType",
     "selection",
     "cellSelectionEnabled",
     "cellSelection",
