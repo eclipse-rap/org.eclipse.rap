@@ -655,7 +655,11 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       var item = this._rowContainer.findItemByRow( row );
       if( item != null ) {
         var identifier = row.identify( event.getDomTarget() );
-        if( this._config.cellSelection ) {
+        if(    this._config.cellSelection
+            && identifier[ 0 ] !== "expandIcon"
+            && identifier[ 0 ] !== "checkBox"
+            && identifier[ 0 ] !== "cellCheckBox" )
+        {
           var cell = this._config.cellOrder.indexOf( identifier[ 1 ] );
           if( cell >= 0 ) {
             this._dragSelection = true;
