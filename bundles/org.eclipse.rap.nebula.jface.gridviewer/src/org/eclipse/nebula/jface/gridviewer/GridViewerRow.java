@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 IBM Corporation and others.
+ * Copyright (c) 2007, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,9 +8,10 @@
  * Contributors:
  *    rmcamara@us.ibm.com - initial API and implementation
  *    Tom Schindl <tom.schindl@bestsolution.at> - various significant contributions
- *    											  bug fix in: 191216
+ *                            bug fix in: 191216
  *    Mirko Paturzo <mirko.paturzo@exeura.eu> - improvement (bugfix in 387366)
  *******************************************************************************/
+
 package org.eclipse.nebula.jface.gridviewer;
 
 import org.eclipse.jface.viewers.TreePath;
@@ -23,12 +24,10 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Widget;
 
-
 /**
  * GridViewerRow is the concrete implementation of the part that represents items in a Grid.
  */
 public class GridViewerRow extends ViewerRow {
-
   private GridItem item;
 
   /**
@@ -52,6 +51,7 @@ public class GridViewerRow extends ViewerRow {
       } else {
         return item.getBounds( columnIndex );
       }
+
     }
   }
 
@@ -72,8 +72,7 @@ public class GridViewerRow extends ViewerRow {
   @Override
   public Color getBackground( int columnIndex ) {
     if( columnIndex == Integer.MAX_VALUE ) {
-      // TODO Provide implementation for GridItem
-      return null;
+      return item.getHeaderBackground();
     } else {
       return item.getBackground( columnIndex );
     }
@@ -83,8 +82,7 @@ public class GridViewerRow extends ViewerRow {
   @Override
   public Font getFont( int columnIndex ) {
     if( columnIndex == Integer.MAX_VALUE ) {
-      // TODO Provide implementation for GridItem
-      return null;
+      return item.getHeaderFont();
     } else {
       return item.getFont( columnIndex );
     }
@@ -94,8 +92,7 @@ public class GridViewerRow extends ViewerRow {
   @Override
   public Color getForeground( int columnIndex ) {
     if( columnIndex == Integer.MAX_VALUE ) {
-      // TODO Provide implementation for GridItem
-      return null;
+      return item.getHeaderForeground();
     } else {
       return item.getForeground( columnIndex );
     }
@@ -105,8 +102,7 @@ public class GridViewerRow extends ViewerRow {
   @Override
   public Image getImage( int columnIndex ) {
     if( columnIndex == Integer.MAX_VALUE ) {
-      // TODO Provide implementation for GridItem
-      return null;
+      return item.getHeaderImage();
     } else {
       return item.getImage( columnIndex );
     }
@@ -115,28 +111,28 @@ public class GridViewerRow extends ViewerRow {
   /** {@inheritDoc} */
   @Override
   public String getText( int columnIndex ) {
-//    if( columnIndex == Integer.MAX_VALUE ) {
-//      return item.getHeaderText();
-//    } else {
+    if( columnIndex == Integer.MAX_VALUE ) {
+      return item.getHeaderText();
+    } else {
       return item.getText( columnIndex );
-//    }
+    }
   }
 
   /** {@inheritDoc} */
   @Override
   public void setBackground( int columnIndex, Color color ) {
-//    if( columnIndex == Integer.MAX_VALUE ) {
-//      item.setHeaderBackground( color );
-//    } else {
+    if( columnIndex == Integer.MAX_VALUE ) {
+      item.setHeaderBackground( color );
+    } else {
       item.setBackground( columnIndex, color );
-//    }
+    }
   }
 
   /** {@inheritDoc} */
   @Override
   public void setFont( int columnIndex, Font font ) {
     if( columnIndex == Integer.MAX_VALUE ) {
-      // TODO Provide implementation for GridItem
+      item.setHeaderFont( font );
     } else {
       item.setFont( columnIndex, font );
     }
@@ -145,31 +141,31 @@ public class GridViewerRow extends ViewerRow {
   /** {@inheritDoc} */
   @Override
   public void setForeground( int columnIndex, Color color ) {
-//    if( columnIndex == Integer.MAX_VALUE ) {
-//      item.setHeaderForeground( color );
-//    } else {
+    if( columnIndex == Integer.MAX_VALUE ) {
+      item.setHeaderForeground( color );
+    } else {
       item.setForeground( columnIndex, color );
-//    }
+    }
   }
 
   /** {@inheritDoc} */
   @Override
   public void setImage( int columnIndex, Image image ) {
-//    if( columnIndex == Integer.MAX_VALUE ) {
-//      item.setHeaderImage( image );
-//    } else {
+    if( columnIndex == Integer.MAX_VALUE ) {
+      item.setHeaderImage( image );
+    } else {
       item.setImage( columnIndex, image );
-//    }
+    }
   }
 
   /** {@inheritDoc} */
   @Override
   public void setText( int columnIndex, String text ) {
-//    if( columnIndex == Integer.MAX_VALUE ) {
-//      item.setHeaderText( text );
-//    } else {
+    if( columnIndex == Integer.MAX_VALUE ) {
+      item.setHeaderText( text );
+    } else {
       item.setText( columnIndex, text == null ? "" : text ); //$NON-NLS-1$
-//    }
+    }
   }
 
   /** {@inheritDoc} */
@@ -207,6 +203,7 @@ public class GridViewerRow extends ViewerRow {
     if( index < item.getParent().getItemCount() ) {
       GridItem tmp = item.getParent().getItem( index );
       // Maybe this is a dummy item!!
+
       if( tmp != null && !tmp.isDisposed() && tmp.isVisible() && tmp.getData() != null ) {
         return new GridViewerRow( tmp );
       }
@@ -219,9 +216,7 @@ public class GridViewerRow extends ViewerRow {
    */
   @Override
   public TreePath getTreePath() {
-    return new TreePath( new Object[] {
-      item.getData()
-    } );
+    return new TreePath( new Object[]{ item.getData() } );
   }
 
   /**
@@ -277,32 +272,36 @@ public class GridViewerRow extends ViewerRow {
     return super.getCreationIndex( visualIndex );
   }
 
-// public Rectangle getTextBounds(int index) {
-// return item.getTextBounds(index);
-// }
-//
-// /* (non-Javadoc)
-// * @see org.eclipse.jface.viewers.ViewerRow#getImageBounds(int)
-// */
-// public Rectangle getImageBounds(int index) {
-// return item.getImageBounds(index);
-// }
+  // public Rectangle getTextBounds(int index) {
+  // return item.getTextBounds(index);
+  // }
+  //
+  // /* (non-Javadoc)
+  // * @see org.eclipse.jface.viewers.ViewerRow#getImageBounds(int)
+  // */
+  // public Rectangle getImageBounds(int index) {
+  // return item.getImageBounds(index);
+  // }
+
   private boolean hasColumns() {
-    return this.item.getParent().getColumnCount() != 0;
+    return item.getParent().getColumnCount() != 0;
   }
 
   private boolean isValidOrderIndex( int currentIndex ) {
-    return currentIndex < this.item.getParent().getColumnOrder().length;
+    return currentIndex < item.getParent().getColumnOrder().length;
   }
 
   /**
    * Check if the column of the cell is part of is visible
    *
-   * @param columnIndex the column index
+   * @param columnIndex
+   *            the column index
+   *
    * @return <code>true</code> if the column is visible
    */
   @Override
   protected boolean isColumnVisible( int columnIndex ) {
     return item.getParent().getColumn( columnIndex ).isVisible();
   }
+
 }

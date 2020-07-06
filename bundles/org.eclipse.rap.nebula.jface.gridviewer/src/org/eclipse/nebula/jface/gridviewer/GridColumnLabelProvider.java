@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 Tom Schindl and others.
+ * Copyright (c) 2007, 2020 Tom Schindl and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -70,8 +70,7 @@ public class GridColumnLabelProvider extends ColumnLabelProvider {
     int rowSpan = getRowSpan( element );
     GridItem gridItem = ( GridItem )cell.getViewerRow().getItem();
     if( rowText != null ) {
-      // [RAP] setHeaderText missing
-      // gridItem.setHeaderText(rowText);
+      gridItem.setHeaderText( rowText );
     }
     gridItem.setColumnSpan( cell.getColumnIndex(), colSpan );
     // [RAP] setRowSpan missing
