@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 IBM Corporation and others.
+ * Copyright (c) 2007, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import org.eclipse.nebula.widgets.grid.Grid;
 import org.eclipse.nebula.widgets.grid.GridEditor;
 import org.eclipse.nebula.widgets.grid.GridItem;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Item;
 
@@ -46,9 +47,9 @@ public class GridViewerEditor extends ColumnViewerEditor {
                     int feature )
   {
     super( viewer, editorActivationStrategy, feature );
-    this.selectionFollowsEditor = ( feature
+    selectionFollowsEditor = ( feature
                                     & SELECTION_FOLLOWS_EDITOR ) == SELECTION_FOLLOWS_EDITOR;
-    this.gridEditor = new GridEditor( ( Grid )viewer.getControl() );
+    gridEditor = new GridEditor( ( Grid )viewer.getControl() );
   }
 
   /**
@@ -80,18 +81,17 @@ public class GridViewerEditor extends ColumnViewerEditor {
    */
   @Override
   public ViewerCell getFocusCell() {
-// [RAP] cell selection missing
-//    Grid grid = ( Grid )getViewer().getControl();
-//    if( grid.getCellSelectionEnabled() ) {
-//      Point p = grid.getFocusCell();
-//      if( p.x >= 0 && p.y >= 0 ) {
-//        GridItem item = grid.getItem( p.y );
-//        if( item != null ) {
-//          ViewerRow row = getViewerRowFromItem( item );
-//          return row.getCell( p.x );
-//        }
-//      }
-//    }
+    Grid grid = ( Grid )getViewer().getControl();
+    if( grid.getCellSelectionEnabled() ) {
+      Point p = grid.getFocusCell();
+      if( p.x >= 0 && p.y >= 0 ) {
+        GridItem item = grid.getItem( p.y );
+        if( item != null ) {
+          ViewerRow row = getViewerRowFromItem( item );
+          return row.getCell( p.x );
+        }
+      }
+    }
     return null;
   }
 
@@ -112,11 +112,13 @@ public class GridViewerEditor extends ColumnViewerEditor {
     if( event.eventType == ColumnViewerEditorActivationEvent.PROGRAMMATIC
         || event.eventType == ColumnViewerEditorActivationEvent.TRAVERSAL )
     {
-      // grid.setFocusColumn( grid.getColumn( focusCell.getColumnIndex() ) );
+      grid.setFocusColumn( grid.getColumn( focusCell.getColumnIndex() ) );
       grid.setFocusItem( ( GridItem )focusCell.getItem() );
       if( selectionFollowsEditor ) {
-        // grid.setCellSelection( new Point( focusCell.getColumnIndex(),
-        //                                   ( ( GridItem )focusCell.getItem() ).getRowIndex() ) );
+        GridItem item = ( GridItem )focusCell.getItem();
+        int x = focusCell.getColumnIndex();
+        int y = item.getParent().indexOf( item );
+        grid.setCellSelection( new Point( x, y ) );
       }
     }
     grid.showColumn( grid.getColumn( focusCell.getColumnIndex() ) );
