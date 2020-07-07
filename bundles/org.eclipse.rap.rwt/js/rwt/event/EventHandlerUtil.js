@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2018 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2020 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource, and others.
  *
  * All rights reserved. This program and the accompanying materials
@@ -203,7 +203,9 @@ rwt.event.EventHandlerUtil = {
       if( root ) {
         var focusTarget = target;
         while( !focusTarget.isFocusable() && focusTarget != root ) {
-          if( focusTarget instanceof rwt.widgets.MenuBar ) {
+          if(    focusTarget instanceof rwt.widgets.MenuBar
+              || focusTarget instanceof rwt.widgets.ToolItem )
+          {
             return;
           }
           focusTarget = focusTarget.getParent();
