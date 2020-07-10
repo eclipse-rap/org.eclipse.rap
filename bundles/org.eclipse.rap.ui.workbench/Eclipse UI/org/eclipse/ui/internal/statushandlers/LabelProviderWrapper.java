@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2020 IBM Corporation and others.
+ * Copyright (c) 2009, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,12 +10,11 @@
  ******************************************************************************/
 package org.eclipse.ui.internal.statushandlers;
 
+import com.ibm.icu.text.DateFormat;
 import java.net.URL;
-import java.text.DateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.resource.ImageDescriptor;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2020 IBM Corporation and others.
+ * Copyright (c) 2002, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.cheatsheets.registry;
 
-import java.text.Collator;
+import com.ibm.icu.text.Collator;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -18,15 +18,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtensionDelta;
-import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.IRegistryChangeEvent;
-import org.eclipse.core.runtime.IRegistryChangeListener;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.ui.internal.cheatsheets.CheatSheetPlugin;
-import org.eclipse.ui.internal.cheatsheets.ICheatSheetResource;
+import org.eclipse.core.runtime.*;
+import org.eclipse.ui.internal.cheatsheets.*;
 
 /**
  *  Instances access the registry that is provided at creation time

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2020 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@
 package org.eclipse.ui.internal;
 
 import java.io.OutputStream;
-import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -32,9 +31,9 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.service.localization.LocaleProvider;
+import org.eclipse.rap.rwt.internal.RWTProperties;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.SingletonUtil;
-import org.eclipse.rap.rwt.internal.RWTProperties;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.ui.internal.SessionLocaleProvider;
 import org.eclipse.rap.ui.internal.progress.JobManagerAdapter;
@@ -84,6 +83,8 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.SynchronousBundleListener;
 import org.osgi.framework.Version;
+
+import com.ibm.icu.text.MessageFormat;
 
 
 /**

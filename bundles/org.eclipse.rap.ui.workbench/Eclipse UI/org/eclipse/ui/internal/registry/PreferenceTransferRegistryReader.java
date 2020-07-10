@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2020 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,20 +12,20 @@
 
 package org.eclipse.ui.internal.registry;
 
-import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.PreferenceFilterEntry;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.preferences.PreferenceTransferElement;
+
+import com.ibm.icu.text.Collator;
 
 /**
  * Preference Transfer registry reader to read extenders of the

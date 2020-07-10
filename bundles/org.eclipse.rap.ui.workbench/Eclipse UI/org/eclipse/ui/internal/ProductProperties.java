@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2020 IBM Corporation and others.
+ * Copyright (c) 2004, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,6 @@ package org.eclipse.ui.internal;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.MissingResourceException;
@@ -25,6 +24,8 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.branding.IProductConstants;
 import org.osgi.framework.Bundle;
+
+import com.ibm.icu.text.MessageFormat;
 
 /**
  * A class that converts the strings returned by

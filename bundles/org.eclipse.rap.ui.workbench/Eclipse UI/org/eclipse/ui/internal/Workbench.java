@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2020 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,8 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
-import java.util.Locale.Category;
 import java.util.Set;
 
 import org.eclipse.core.commands.Command;
@@ -191,6 +189,8 @@ import org.eclipse.ui.views.IViewRegistry;
 import org.eclipse.ui.wizards.IWizardRegistry;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceRegistration;
+
+import com.ibm.icu.util.ULocale;
 
 /**
  * The workbench class represents the top of the Eclipse user interface. Its
@@ -683,11 +683,8 @@ public final class Workbench extends EventManager implements IWorkbench {
 
 		Realm.runWithDefault(SWTObservables.getRealm(display), new Runnable() {
 			public void run() {
-				        Locale newLocale = new Locale( Platform.getNL() + Platform.getNLExtensions() );
-                Locale.setDefault( newLocale );
-                for( Category cat : Category.values() ) {
-                    Locale.setDefault( cat, newLocale );
-                }
+				ULocale.setDefault(new ULocale(Platform.getNL()
+						+ Platform.getNLExtensions()));
                 // create the workbench instance
                 // RAP [bm]:
 //              Workbench workbench = new Workbench(display, advisor);
