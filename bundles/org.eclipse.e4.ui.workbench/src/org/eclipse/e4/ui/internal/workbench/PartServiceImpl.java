@@ -43,7 +43,6 @@ import org.eclipse.e4.ui.model.application.ui.advanced.MArea;
 import org.eclipse.e4.ui.model.application.ui.advanced.MPerspective;
 import org.eclipse.e4.ui.model.application.ui.advanced.MPlaceholder;
 import org.eclipse.e4.ui.model.application.ui.basic.MCompositePart;
-import org.eclipse.e4.ui.model.application.ui.basic.MInputPart;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import org.eclipse.e4.ui.model.application.ui.basic.MPartSashContainer;
 import org.eclipse.e4.ui.model.application.ui.basic.MPartSashContainerElement;
@@ -91,8 +90,7 @@ public class PartServiceImpl implements EPartService {
 					firePartHidden(oldSelectedPart);
 				}
 
-				if (selectedPart != null && selectedPart.isToBeRendered()
-						&& getParts().contains(selectedPart)) {
+				if (selectedPart != null && selectedPart.isToBeRendered() && getParts().contains(selectedPart)) {
 					// ask the renderer to create this part
 					if (placeholder == null) {
 						if (selectedPart.getParent().getRenderer() != null) {
@@ -121,10 +119,8 @@ public class PartServiceImpl implements EPartService {
 			Object newValue = event.getProperty(UIEvents.EventTags.NEW_VALUE);
 			Object oldValue = event.getProperty(UIEvents.EventTags.OLD_VALUE);
 
-			boolean minimizedTagAdded = UIEvents.isADD(event)
-					&& IPresentationEngine.MINIMIZED.equals(newValue);
-			boolean minimizedTagRemoved = UIEvents.isREMOVE(event)
-					&& IPresentationEngine.MINIMIZED.equals(oldValue);
+			boolean minimizedTagAdded = UIEvents.isADD(event) && IPresentationEngine.MINIMIZED.equals(newValue);
+			boolean minimizedTagRemoved = UIEvents.isREMOVE(event) && IPresentationEngine.MINIMIZED.equals(oldValue);
 
 			if (!(minimizedTagAdded || minimizedTagRemoved)) {
 				return;
@@ -140,8 +136,8 @@ public class PartServiceImpl implements EPartService {
 
 		private MPart toPart(MStackElement stackElement) {
 			if (stackElement != null) {
-				return stackElement instanceof MPlaceholder ? (MPart) ((MPlaceholder) stackElement)
-						.getRef() : (MPart) stackElement;
+				return stackElement instanceof MPlaceholder ? (MPart) ((MPlaceholder) stackElement).getRef()
+						: (MPart) stackElement;
 			}
 			return null;
 		}
@@ -207,8 +203,7 @@ public class PartServiceImpl implements EPartService {
 		if (activePart != p) {
 			if (p != null) {
 				MPerspective persp = modelService.getPerspectiveFor(p);
-				boolean inCurrentPerspective = persp == null
-						|| persp == persp.getParent().getSelectedElement();
+				boolean inCurrentPerspective = persp == null || persp == persp.getParent().getSelectedElement();
 				if (inCurrentPerspective) {
 					activate(p, true, true);
 				}
@@ -376,10 +371,10 @@ public class PartServiceImpl implements EPartService {
 				parent = currentElement.getParent();
 			}
 
-			// If the part is in the same stack as the currently active part then activate it
+			// If the part is in the same stack as the currently active part
+			// then activate it
 			// instead
-			MElementContainer<MUIElement> activeParent = activePart != null ? activePart
-					.getParent() : null;
+			MElementContainer<MUIElement> activeParent = activePart != null ? activePart.getParent() : null;
 			if (activePart != null && activeParent == null) {
 				MPlaceholder activePH = modelService.findPlaceholderFor(getWindow(), activePart);
 				if (activePH != null) {
@@ -395,9 +390,9 @@ public class PartServiceImpl implements EPartService {
 
 			delegateBringToTop(part);
 
-			// check to make sure that the currently selected element is actually valid
-			if (oldSelectedElement != currentElement
-					&& parent.getChildren().contains(oldSelectedElement)
+			// check to make sure that the currently selected element is
+			// actually valid
+			if (oldSelectedElement != currentElement && parent.getChildren().contains(oldSelectedElement)
 					&& parent instanceof MGenericStack<?>) {
 				if (oldSelectedElement instanceof MPlaceholder) {
 					oldSelectedElement = ((MPlaceholder) oldSelectedElement).getRef();
@@ -428,7 +423,8 @@ public class PartServiceImpl implements EPartService {
 
 		MContext parentPart = getParentWithContext(oldSelectedElement);
 		if (parentPart == null) {
-			// technically this shouldn't happen as there should be an MWindow somewhere
+			// technically this shouldn't happen as there should be an MWindow
+			// somewhere
 			return;
 		}
 		IEclipseContext parentContext = parentPart.getContext();
@@ -436,7 +432,8 @@ public class PartServiceImpl implements EPartService {
 		Object child = parentContext.getActiveChild();
 		if (child == null || oldContext == null || child == oldContext) {
 			if (part == null) {
-				// TBD this should not be necessary; deactivation is missing somewhere
+				// TBD this should not be necessary; deactivation is missing
+				// somewhere
 				IEclipseContext currentActive = parentContext.getActiveChild();
 				if (currentActive != null)
 					currentActive.deactivate();
@@ -453,8 +450,7 @@ public class PartServiceImpl implements EPartService {
 
 	private <T> List<T> getParts(Class<T> cls, String id) {
 		return modelService.findElements(workbenchWindow, id, cls, null,
-				EModelService.OUTSIDE_PERSPECTIVE | EModelService.IN_ACTIVE_PERSPECTIVE
-						| EModelService.IN_SHARED_AREA);
+				EModelService.OUTSIDE_PERSPECTIVE | EModelService.IN_ACTIVE_PERSPECTIVE | EModelService.IN_SHARED_AREA);
 	}
 
 	@Override
@@ -492,8 +488,8 @@ public class PartServiceImpl implements EPartService {
 	private boolean isInContainer(MUIElement element) {
 		if (modelService.isHostedElement(element, getWindow()))
 			return true;
-		List<MUIElement> allPerspectiveElements = modelService.findElements(workbenchWindow, null,
-				MUIElement.class, null, EModelService.PRESENTATION);
+		List<MUIElement> allPerspectiveElements = modelService.findElements(workbenchWindow, null, MUIElement.class,
+				null, EModelService.PRESENTATION);
 		return allPerspectiveElements.contains(element);
 	}
 
@@ -560,8 +556,8 @@ public class PartServiceImpl implements EPartService {
 
 			// if that is a shared part, check the placeholders
 			if (workbenchWindow.getSharedElements().contains(part)) {
-				List<MPlaceholder> placeholders = modelService.findElements(perspective, elementId,
-						MPlaceholder.class, null);
+				List<MPlaceholder> placeholders = modelService.findElements(perspective, elementId, MPlaceholder.class,
+						null);
 				for (MPlaceholder mPlaceholder : placeholders) {
 					if (mPlaceholder.isVisible() && mPlaceholder.isToBeRendered()) {
 						return true;
@@ -581,11 +577,10 @@ public class PartServiceImpl implements EPartService {
 		MWindow window = getWindow();
 		if (window != null && isInContainer(window, perspective)) {
 			perspective.getParent().setSelectedElement(perspective);
-			List<MPart> newPerspectiveParts = modelService.findElements(perspective, null,
-					MPart.class, null);
-			// if possible, keep the same active part across perspective switches
-			if (newPerspectiveParts.contains(activePart)
-					&& partActivationHistory.isValid(perspective, activePart)) {
+			List<MPart> newPerspectiveParts = modelService.findElements(perspective, null, MPart.class, null);
+			// if possible, keep the same active part across perspective
+			// switches
+			if (newPerspectiveParts.contains(activePart) && partActivationHistory.isValid(perspective, activePart)) {
 				MPart target = activePart;
 				IEclipseContext activeChild = activePart.getContext().getParent().getActiveChild();
 				if (activeChild != null) {
@@ -605,7 +600,8 @@ public class PartServiceImpl implements EPartService {
 
 			MPart newActivePart = perspective.getContext().getActiveLeaf().get(MPart.class);
 			if (newActivePart == null) {
-				// whatever part was previously active can no longer be found, find another one
+				// whatever part was previously active can no longer be found,
+				// find another one
 				MPart candidate = partActivationHistory.getActivationCandidate(perspective);
 				if (candidate != null) {
 					modelService.bringToTop(candidate);
@@ -614,7 +610,8 @@ public class PartServiceImpl implements EPartService {
 				}
 			}
 
-			// there seems to be no parts in this perspective, just activate it as is then
+			// there seems to be no parts in this perspective, just activate it
+			// as is then
 			if (newActivePart == null) {
 				modelService.bringToTop(perspective);
 				perspective.getContext().activate();
@@ -668,9 +665,11 @@ public class PartServiceImpl implements EPartService {
 
 		MWindow window = getWindow();
 		IEclipseContext windowContext = window.getContext();
-		// check if the active part has changed or if we are no longer the active window
+		// check if the active part has changed or if we are no longer the
+		// active window
 		if (windowContext.getParent().getActiveChild() == windowContext && part == activePart) {
-			// insert it in the beginning of the activation history, it may not have been inserted
+			// insert it in the beginning of the activation history, it may not
+			// have been inserted
 			// pending when this service was instantiated
 			partActivationHistory.prepend(part);
 			UIEvents.publishEvent(UIEvents.UILifeCycle.ACTIVATE, part);
@@ -691,10 +690,13 @@ public class PartServiceImpl implements EPartService {
 		}
 
 		try {
-			// record any sibling into the activation history if necessary, this will allow it to be
-			// reselected again in the future as it will be an activation candidate in the future,
+			// record any sibling into the activation history if necessary, this
+			// will allow it to be
+			// reselected again in the future as it will be an activation
+			// candidate in the future,
 			// this
-			// prevents other unrendered elements from being selected arbitrarily which would cause
+			// prevents other unrendered elements from being selected
+			// arbitrarily which would cause
 			// unwanted bundle activation
 			recordStackActivation(part);
 
@@ -726,12 +728,12 @@ public class PartServiceImpl implements EPartService {
 	}
 
 	/**
-	 * Records the specified parent part's selected element in the activation history if the parent
-	 * is a stack.
+	 * Records the specified parent part's selected element in the activation
+	 * history if the parent is a stack.
 	 *
 	 * @param part
-	 *            the part whose parent's selected element should be checked for activation history
-	 *            recording
+	 *            the part whose parent's selected element should be checked for
+	 *            activation history recording
 	 */
 	private void recordStackActivation(MPart part) {
 		MElementContainer<? extends MUIElement> parent = part.getParent();
@@ -749,11 +751,12 @@ public class PartServiceImpl implements EPartService {
 	}
 
 	/**
-	 * Records the specified parent 's selected element in the activation history.
+	 * Records the specified parent 's selected element in the activation
+	 * history.
 	 *
 	 * @param parent
-	 *            the element whose selected element should be checked for activation history
-	 *            recording
+	 *            the element whose selected element should be checked for
+	 *            activation history recording
 	 */
 	private void recordSelectedActivation(MElementContainer<? extends MUIElement> parent) {
 		MUIElement selectedElement = parent.getSelectedElement();
@@ -847,24 +850,25 @@ public class PartServiceImpl implements EPartService {
 	}
 
 	/**
-	 * Adds a part to the current container if it isn't already in the container. The part may still
-	 * be added to the container if the part supports having multiple copies of itself in a given
-	 * container.
+	 * Adds a part to the current container if it isn't already in the
+	 * container. The part may still be added to the container if the part
+	 * supports having multiple copies of itself in a given container.
 	 *
 	 * @param providedPart
 	 *            the part to add
 	 * @param localPart
-	 *            a part that shares attributes with <code>providedPart</code>, for example, it may
-	 *            have been backed by the same part descriptor, this part may already be in the
-	 *            current container
-	 * @return a part that has been added to the current container, note that this may not
-	 *         necessarily be <code>providedPart</code>
+	 *            a part that shares attributes with <code>providedPart</code>,
+	 *            for example, it may have been backed by the same part
+	 *            descriptor, this part may already be in the current container
+	 * @return a part that has been added to the current container, note that
+	 *         this may not necessarily be <code>providedPart</code>
 	 * @see MPartDescriptor#isAllowMultiple()
 	 */
 	private MPart addPart(MPart providedPart, MPart localPart) {
 		MPartDescriptor descriptor = modelService.getPartDescriptor(providedPart.getElementId());
 		if (descriptor == null) {
-			// there is no part descriptor backing the provided part, just add it to the container
+			// there is no part descriptor backing the provided part, just add
+			// it to the container
 			// if it's not already there
 			if (!isInContainer(providedPart)) {
 				adjustPlaceholder(providedPart);
@@ -872,7 +876,8 @@ public class PartServiceImpl implements EPartService {
 			}
 		} else {
 			if (providedPart != localPart && !descriptor.isAllowMultiple()) {
-				// multiple copies of this part are not allowed, just return the local one
+				// multiple copies of this part are not allowed, just return the
+				// local one
 				return localPart;
 			}
 
@@ -894,8 +899,7 @@ public class PartServiceImpl implements EPartService {
 					MUIElement area = modelService.find("org.eclipse.ui.editorss", container); //$NON-NLS-1$
 
 					MPartStack activeStack = null;
-					if (area instanceof MPlaceholder
-							&& ((MPlaceholder) area).getRef() instanceof MArea) {
+					if (area instanceof MPlaceholder && ((MPlaceholder) area).getRef() instanceof MArea) {
 						// Find the currently 'active' stack in the area
 						MArea a = (MArea) ((MPlaceholder) area).getRef();
 						MUIElement curActive = a.getSelectedElement();
@@ -913,8 +917,7 @@ public class PartServiceImpl implements EPartService {
 						activeStack.getChildren().add(providedPart);
 					} else {
 						// Find the first visible stack in the area
-						List<MPartStack> sharedStacks = modelService.findElements(area, null,
-								MPartStack.class, null);
+						List<MPartStack> sharedStacks = modelService.findElements(area, null, MPartStack.class, null);
 						if (sharedStacks.size() > 0) {
 							for (MPartStack stack : sharedStacks) {
 								if (stack.isToBeRendered()) {
@@ -928,11 +931,11 @@ public class PartServiceImpl implements EPartService {
 					}
 				} else {
 					@SuppressWarnings("rawtypes")
-					List<MElementContainer> containers = modelService.findElements(getContainer(),
-							null, MElementContainer.class, Collections.singletonList(category),
-							EModelService.PRESENTATION);
+					List<MElementContainer> containers = modelService.findElements(getContainer(), null,
+							MElementContainer.class, Collections.singletonList(category), EModelService.PRESENTATION);
 					if (containers.isEmpty()) {
-						// couldn't find any containers with the specified tag, just add it to the
+						// couldn't find any containers with the specified tag,
+						// just add it to the
 						// end
 						addToLastContainer(category, providedPart);
 					} else {
@@ -956,9 +959,12 @@ public class PartServiceImpl implements EPartService {
 			MPlaceholder placeholder = part.getCurSharedRef();
 			// if this part doesn't have any placeholders, we need to make one
 			if (placeholder == null
-			// alternatively, if it has one but it's not in the current container, then we
-			// need to spawn another one as we don't want to reuse the same one and end up
-			// shifting that placeholder to the current container during the add operation
+					// alternatively, if it has one but it's not in the current
+					// container, then we
+					// need to spawn another one as we don't want to reuse the
+					// same one and end up
+					// shifting that placeholder to the current container during
+					// the add operation
 					|| (placeholder.getParent() != null && !isInContainer(placeholder))) {
 				placeholder = createSharedPart(part);
 				part.setCurSharedRef(placeholder);
@@ -972,14 +978,15 @@ public class PartServiceImpl implements EPartService {
 
 	private void addToLastContainer(String category, MPart part) {
 		// OK, we haven't found an explicit placeholder;
-		// If this is a multi-instance view see if there's a 'global' placeholder
+		// If this is a multi-instance view see if there's a 'global'
+		// placeholder
 		String partId = part.getElementId();
 		int colonIndex = partId == null ? -1 : partId.indexOf(':');
 		if (colonIndex >= 0) {
 			String descId = part.getElementId().substring(0, colonIndex);
 			descId += ":*"; //$NON-NLS-1$
-			List<MPlaceholder> phList = modelService.findElements(workbenchWindow, descId,
-					MPlaceholder.class, null, EModelService.PRESENTATION);
+			List<MPlaceholder> phList = modelService.findElements(workbenchWindow, descId, MPlaceholder.class, null,
+					EModelService.PRESENTATION);
 			if (phList.size() > 0) {
 				MUIElement phParent = phList.get(0).getParent();
 				if (phParent instanceof MPartStack) {
@@ -1034,8 +1041,7 @@ public class PartServiceImpl implements EPartService {
 			psc.getChildren().add(stack);
 		} else {
 			// We need a sash so 'insert' the new stack
-			modelService.insert(stack, (MPartSashContainerElement) children.get(0),
-					EModelService.RIGHT_OF, 0.5f);
+			modelService.insert(stack, (MPartSashContainerElement) children.get(0), EModelService.RIGHT_OF, 0.5f);
 		}
 		return stack;
 	}
@@ -1049,8 +1055,7 @@ public class PartServiceImpl implements EPartService {
 			Object muiElement = children.get(i);
 			if (muiElement instanceof MElementContainer<?>) {
 				MElementContainer<?> childContainer = (MElementContainer<?>) muiElement;
-				MElementContainer<?> lastContainer = getLastContainer(childContainer,
-						childContainer.getChildren());
+				MElementContainer<?> lastContainer = getLastContainer(childContainer, childContainer.getChildren());
 				if (lastContainer != null) {
 					return lastContainer;
 				}
@@ -1060,14 +1065,15 @@ public class PartServiceImpl implements EPartService {
 	}
 
 	/**
-	 * Returns the parent container of the specified element. If one cannot be found, a check will
-	 * be performed to see whether the element is being represented by a placeholder, if it is, the
-	 * placeholder's parent will be returned, if any.
+	 * Returns the parent container of the specified element. If one cannot be
+	 * found, a check will be performed to see whether the element is being
+	 * represented by a placeholder, if it is, the placeholder's parent will be
+	 * returned, if any.
 	 *
 	 * @param element
 	 *            the element to query
-	 * @return the element's parent container, or the parent container of the specified element's
-	 *         current placeholder, if it has one
+	 * @return the element's parent container, or the parent container of the
+	 *         specified element's current placeholder, if it has one
 	 */
 	private MElementContainer<MUIElement> getParent(MUIElement element) {
 		MElementContainer<MUIElement> parent = element.getParent();
@@ -1083,8 +1089,7 @@ public class PartServiceImpl implements EPartService {
 		return parent;
 	}
 
-	private MElementContainer<MUIElement> findContainer(MElementContainer<MUIElement> container,
-			MUIElement element) {
+	private MElementContainer<MUIElement> findContainer(MElementContainer<MUIElement> container, MUIElement element) {
 		for (MUIElement child : container.getChildren()) {
 			if (child == element) {
 				return container;
@@ -1158,8 +1163,7 @@ public class PartServiceImpl implements EPartService {
 			return addedPart;
 		case VISIBLE:
 			MPart activePart = getActivePart();
-			if (activePart == null
-					|| (activePart != addedPart && getParent(activePart) == getParent(addedPart))) {
+			if (activePart == null || (activePart != addedPart && getParent(activePart) == getParent(addedPart))) {
 				delegateBringToTop(addedPart);
 				activate(addedPart);
 			} else {
@@ -1223,8 +1227,7 @@ public class PartServiceImpl implements EPartService {
 				activate(candidate);
 			}
 		} else if (!partActivationHistory.isValid(activePart) || !getParts().contains(activePart)) {
-			MPart candidate = partActivationHistory.getNextActivationCandidate(getParts(),
-					activePart);
+			MPart candidate = partActivationHistory.getNextActivationCandidate(getParts(), activePart);
 			if (candidate != null) {
 				activate(candidate);
 			}
@@ -1244,12 +1247,13 @@ public class PartServiceImpl implements EPartService {
 			MElementContainer<MUIElement> parent = getParent(toBeRemoved);
 			List<MUIElement> children = parent.getChildren();
 
-			// check if we're a placeholder but not actually the shared ref of the part
-			if (toBeRemoved != part && toBeRemoved instanceof MPlaceholder
-					&& sharedRef != toBeRemoved) {
+			// check if we're a placeholder but not actually the shared ref of
+			// the part
+			if (toBeRemoved != part && toBeRemoved instanceof MPlaceholder && sharedRef != toBeRemoved) {
 				toBeRemoved.setToBeRendered(false);
 
-				// if so, not much to do, remove ourselves if necessary but that's it
+				// if so, not much to do, remove ourselves if necessary but
+				// that's it
 				if (force || part.getTags().contains(REMOVE_ON_HIDE_TAG)) {
 					parent.getChildren().remove(toBeRemoved);
 				}
@@ -1261,20 +1265,19 @@ public class PartServiceImpl implements EPartService {
 			// check if we're the active child
 			if (isActiveChild) {
 				// get the activation candidate if we are
-				activationCandidate = partActivationHistory.getNextActivationCandidate(getParts(),
-						part);
+				activationCandidate = partActivationHistory.getNextActivationCandidate(getParts(), part);
 			}
 
 			MPerspective thePersp = modelService.getPerspectiveFor(toBeRemoved);
 			boolean needNewSel = thePersp == null || !thePersp.getTags().contains("PerspClosing"); //$NON-NLS-1$
 			if (needNewSel) {
 				if (parent.getSelectedElement() == toBeRemoved) {
-					// if we're the selected element and we're going to be hidden, need to select
+					// if we're the selected element and we're going to be
+					// hidden, need to select
 					// something else
 					MUIElement candidate = partActivationHistory.getSiblingSelectionCandidate(part);
 					candidate = candidate == null ? null
-							: candidate.getCurSharedRef() == null ? candidate : candidate
-									.getCurSharedRef();
+							: candidate.getCurSharedRef() == null ? candidate : candidate.getCurSharedRef();
 					if (candidate != null && children.contains(candidate)) {
 						parent.setSelectedElement(candidate);
 					} else {
@@ -1288,7 +1291,8 @@ public class PartServiceImpl implements EPartService {
 				}
 
 				if (activationCandidate == null) {
-					// nothing else to activate and we're the active child, deactivate
+					// nothing else to activate and we're the active child,
+					// deactivate
 					if (isActiveChild) {
 						part.getContext().deactivate();
 					}
@@ -1311,7 +1315,8 @@ public class PartServiceImpl implements EPartService {
 			if (force || part.getTags().contains(REMOVE_ON_HIDE_TAG)) {
 				children.remove(toBeRemoved);
 			}
-			// remove ourselves from the activation history also since we're being hidden
+			// remove ourselves from the activation history also since we're
+			// being hidden
 			partActivationHistory.forget(getWindow(), part, toBeRemoved == part);
 		}
 	}
@@ -1375,24 +1380,10 @@ public class PartServiceImpl implements EPartService {
 		return true;
 	}
 
-	@Override
-	public Collection<MInputPart> getInputParts(String inputUri) {
-		Assert.isNotNull(inputUri, "Input uri must not be null"); //$NON-NLS-1$
-
-		Collection<MInputPart> rv = new ArrayList<MInputPart>();
-
-		for (MInputPart p : getParts(MInputPart.class, null)) {
-			if (inputUri.equals(p.getInputURI())) {
-				rv.add(p);
-			}
-		}
-
-		return rv;
-	}
-
 	/**
-	 * "Container" here is: 1) a selected MPerspective, or, if none available 2) the MWindow for
-	 * which this part service is created, or, if not available, 3) the MApplication.
+	 * "Container" here is: 1) a selected MPerspective, or, if none available 2)
+	 * the MWindow for which this part service is created, or, if not available,
+	 * 3) the MApplication.
 	 */
 	private MElementContainer<? extends MUIElement> getContainer() {
 		MElementContainer<? extends MUIElement> outerContainer = (workbenchWindow != null) ? workbenchWindow

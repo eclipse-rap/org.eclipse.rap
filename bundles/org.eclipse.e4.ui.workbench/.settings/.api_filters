@@ -31,6 +31,14 @@
             </message_arguments>
         </filter>
     </resource>
+    <resource path="src/org/eclipse/e4/ui/workbench/UIEvents.java" type="org.eclipse.e4.ui.workbench.UIEvents">
+        <filter comment="he removal of MInput and MInput part was announced so the removal does not break API" id="338886760">
+            <message_arguments>
+                <message_argument value="org.eclipse.e4.ui.workbench.UIEvents.Input"/>
+                <message_argument value="org.eclipse.e4.ui.workbench_1.3.0"/>
+            </message_arguments>
+        </filter>
+    </resource>
     <resource path="src/org/eclipse/e4/ui/workbench/UIEvents.java" type="org.eclipse.e4.ui.workbench.UIEvents$Application">
         <filter comment="New dialogs field in MApplication" id="403767336">
             <message_arguments>
@@ -223,6 +231,14 @@
             </message_arguments>
         </filter>
     </resource>
+    <resource path="src/org/eclipse/e4/ui/workbench/modeling/EPartService.java" type="org.eclipse.e4.ui.workbench.modeling.EPartService">
+        <filter comment="he removal of MInput and MInput part was announced so the removal does not break API" id="405901410">
+            <message_arguments>
+                <message_argument value="org.eclipse.e4.ui.workbench.modeling.EPartService"/>
+                <message_argument value="getInputParts(String)"/>
+            </message_arguments>
+        </filter>
+    </resource>
     <resource path="src/org/eclipse/e4/ui/workbench/modeling/EPlaceholderResolver.java" type="org.eclipse.e4.ui.workbench.modeling.EPlaceholderResolver">
         <filter comment="Bug 411257 - .api_description files in Kepler release do not contain @noreference" id="406052990">
             <message_arguments>
@@ -404,6 +420,12 @@
         </filter>
     </resource>
     <resource path="src/org/eclipse/e4/ui/workbench/modeling/ModelReconciler.java" type="org.eclipse.e4.ui.workbench.modeling.ModelReconciler">
+        <filter comment="he removal of MInput and MInput part was announced so the removal does not break API" id="338755678">
+            <message_arguments>
+                <message_argument value="org.eclipse.e4.ui.workbench.modeling.ModelReconciler"/>
+                <message_argument value="INPUT_INPUTURI_ATTNAME"/>
+            </message_arguments>
+        </filter>
         <filter comment="Bug 411257 - .api_description files in Kepler release do not contain @noreference" id="338944126">
             <message_arguments>
                 <message_argument value="org.eclipse.e4.ui.workbench.modeling.ModelReconciler"/>
