@@ -105,7 +105,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       if( match( this.$expandIcon ) ) {
         result = [ "expandIcon", cell ];
       } else if( match( this.$checkBox ) ) {
-        result = [ "checkBox", cell ];
+        result = [ "checkBox" ];
       } else if( this.$cellCheckBoxes.some( match ) ) {
         result = [ "cellCheckBox", cell ];
       } else {
