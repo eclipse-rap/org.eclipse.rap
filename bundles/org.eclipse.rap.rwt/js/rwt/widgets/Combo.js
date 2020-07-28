@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2015 EclipseSource and others.
+ * Copyright (c) 2009, 2020 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -148,6 +148,10 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
         this._list.addListener( "Selection", function( event ) {
           that._onListSelectionChanged( event );
         } );
+        var id = this.getHtmlAttribute( "id" );
+        if( id ) {
+          this._list.applyObjectId( id + "-listbox" );
+        }
       }
     },
 
@@ -436,7 +440,9 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
 
     applyObjectId : function( id ) {
       this.base( arguments, id );
-      this._list.applyObjectId( id + "-listbox" );
+      if( this._list ) {
+        this._list.applyObjectId( id + "-listbox" );
+      }
     }
 
   }
