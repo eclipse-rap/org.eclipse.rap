@@ -455,7 +455,7 @@ public class NebulaGridTab extends ExampleTab {
   private void createShowHeaderButton( Composite parent ) {
     final Button button = new Button( parent, SWT.CHECK );
     button.setText( "Show header" );
-    button.setSelection( true );
+    button.setSelection( headerVisible );
     button.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent event ) {
@@ -468,7 +468,7 @@ public class NebulaGridTab extends ExampleTab {
   private void createShowFooterButton( Composite parent ) {
     final Button button = new Button( parent, SWT.CHECK );
     button.setText( "Show footer" );
-    button.setSelection( true );
+    button.setSelection( footerVisible );
     button.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent event ) {
@@ -481,7 +481,7 @@ public class NebulaGridTab extends ExampleTab {
   private void createShowRowHeadersButton( Composite parent ) {
     final Button button = new Button( parent, SWT.CHECK );
     button.setText( "Show row headers" );
-    button.setSelection( true );
+    button.setSelection( rowHeadersVisible );
     button.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent event ) {
@@ -563,6 +563,7 @@ public class NebulaGridTab extends ExampleTab {
   private void createEnableCellSelection( Composite parent ) {
     final Button button = new Button( parent, SWT.CHECK );
     button.setText( "Enable cell selection" );
+    button.setSelection( cellSelectionEnabled );
     button.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent event ) {
