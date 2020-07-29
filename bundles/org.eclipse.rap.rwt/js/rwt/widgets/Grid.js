@@ -323,7 +323,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     },
 
     setFocusCell : function( cell ) {
-      if( cell > 0 ) {
+      if( cell === -1 || cell > 0 ) {
         this._focusCell = cell;
         this.dispatchSimpleEvent( "focusCellChanged" );
       }
