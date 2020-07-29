@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2011, 2020 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,14 @@ rwt.widgets.util.GridUtil = {
     if( container.setFixedColumns ) {
       container.setFixedColumns( value );
       tree.update();
+    }
+  },
+
+  setCellSelectionEnabled : function( grid, value ) {
+    var container = grid.getRowContainer();
+    container.getRenderConfig().cellSelection = value;
+    if( container._updateConfig ) {
+      container._updateConfig();
     }
   },
 

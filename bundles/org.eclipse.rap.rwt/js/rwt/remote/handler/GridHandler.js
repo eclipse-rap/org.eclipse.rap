@@ -111,7 +111,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Grid", {
       }
     },
     "cellSelectionEnabled" : function( widget, value ) {
-      widget.getRenderConfig().cellSelection = value;
+      rwt.widgets.util.GridUtil.setCellSelectionEnabled( widget, value );
     },
     "cellSelection" : function( widget, value ) {
       widget.deselectAllCells();
