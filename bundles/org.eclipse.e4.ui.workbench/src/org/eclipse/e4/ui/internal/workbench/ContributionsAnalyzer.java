@@ -20,7 +20,7 @@ import java.util.List;
 import org.eclipse.core.expressions.EvaluationResult;
 import org.eclipse.core.expressions.Expression;
 import org.eclipse.core.expressions.ExpressionInfo;
-import org.eclipse.core.internal.expressions.ReferenceExpression;
+import org.eclipse.core.expressions.ReferenceExpression;
 import org.eclipse.e4.core.commands.ExpressionContext;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.ui.model.application.MApplication;
