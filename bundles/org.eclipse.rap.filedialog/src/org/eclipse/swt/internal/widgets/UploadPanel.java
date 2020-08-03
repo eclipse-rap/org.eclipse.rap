@@ -23,6 +23,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.FileUploadRunnable.State;
+import org.eclipse.rap.rwt.internal.util.Entities;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -81,7 +82,7 @@ public class UploadPanel extends Composite {
         name.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
         name.setData( FILENAME_KEY, fileName );
         name.setLayoutData( createHorizontalFillData() );
-        name.setText( fileName );
+        name.setText( prepareText( fileName, null ) );
         labels.add( name );
       }
     }
@@ -141,10 +142,11 @@ public class UploadPanel extends Composite {
 
   private static String prepareText( String fileName, Exception exception ) {
     String errorMessage = getErrorMessage( fileName, exception );
+	String escapedFileName = Entities.XML.escape( fileName );
     if( errorMessage != null ) {
-      return fileName + "<br/><small style=\"color: red;\">" + errorMessage + "</small>";
+      return escapedFileName + "<br/><small style=\"color: red;\">" + errorMessage + "</small>";
     }
-    return fileName;
+    return escapedFileName;
   }
 
   private static String getErrorToolTip( String fileName, Exception exception ) {

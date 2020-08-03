@@ -55,6 +55,13 @@ public class UploadPanel_Test {
 
     assertEquals( 1, uploadPanel.getChildren().length );
   }
+  
+  @Test
+  public void testCreate_createsUploadsRows_withSpecialFileName() {
+    uploadPanel = new UploadPanel( shell, new String[] { "foo & bar" } );
+
+    assertEquals( 1, uploadPanel.getChildren().length );
+  }
 
   @Test
   public void testCreate_initsFileNames() {
