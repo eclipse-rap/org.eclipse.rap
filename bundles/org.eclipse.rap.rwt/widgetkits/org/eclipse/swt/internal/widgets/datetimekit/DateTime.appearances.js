@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2020 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -294,13 +294,8 @@ var appearances = {
         textAlign : "center",
         verticalAlign : "middle"
       };
-      if( states.disabled ) {
-        result.textColor = tv.getCssColor( "*", "color" );
-        result.backgroundColor = "undefined";
-      } else {
-        result.textColor = tv.getCssColor( "DateTime-Calendar-Day", "color" );
-        result.backgroundColor = tv.getCssColor( "DateTime-Calendar-Day", "background-color" );
-      }
+      result.textColor = tv.getCssColor( "DateTime-Calendar-Day", "color" );
+      result.backgroundColor = tv.getCssColor( "DateTime-Calendar-Day", "background-color" );
       result.border = tv.getCssBorder( "DateTime-Calendar-Day", "border" );
       result.textShadow = tv.getCssShadow( "DateTime-Calendar-Day", "text-shadow" );
       return result;

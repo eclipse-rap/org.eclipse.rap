@@ -136,6 +136,9 @@
       <state name="hover"
           description="Applies while the user hovers over the calendar day." />
 
+      <state name="disabled"
+          description="Applies to the day outside min/max range." />
+
     </element>
 
     <element name="DateTime-Calendar-Navbar"
