@@ -101,6 +101,9 @@ public abstract class WidgetValueProperty<S extends Widget, T> extends SimpleVal
 		return new WidgetListener<>(this, listener, changeEvents, staleEvents);
 	}
 
+	/**
+	 * @since 3.14
+	 */
 	@Override
 	public ISWTObservableValue<T> observe(Realm realm, S source) {
 		return wrapObservable(super.observe(realm, source), source);
