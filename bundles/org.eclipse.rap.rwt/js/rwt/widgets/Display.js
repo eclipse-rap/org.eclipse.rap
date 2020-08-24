@@ -194,6 +194,8 @@ rwt.widgets.Display.prototype = {
     "trident" : function() {
       if( navigator.sendBeacon ) {
         this._connection.sendBeacon();
+      } else if( rwt.client.Client.getBrowser() === "explorer" ) {
+        this._connection.sendImmediate( false );
       } else {
         this._connection.sendImmediate( true );
       }
