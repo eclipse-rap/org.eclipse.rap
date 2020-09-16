@@ -32,7 +32,7 @@ public class NebulaGridExamplePage implements IExamplePage {
   private static final int NO_DATA = Integer.MIN_VALUE;
   private static final String EURO = "€ ";
   private static final String[] YEARS = new String[] {
-    "2005", "2006", "2007", "2008", "2009"
+    "2016", "2017", "2018", "2019", "2020"
   };
 
   private List<CompanyData> data;
