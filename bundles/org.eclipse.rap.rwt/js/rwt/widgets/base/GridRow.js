@@ -492,6 +492,9 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         if( renderBounds ) {
           var treeColumnAlignment = this._mirror ? "right" : "left";
           var columnAlignment = this._getAlignment( cell, this._gridConfig );
+          if( this._gridConfig.baseAppearance === "grid" ) {
+            treeColumnAlignment = columnAlignment;
+          }
           element.css( "textAlign", isTreeColumn ? treeColumnAlignment : columnAlignment );
         }
         this._renderCellLabelFont( cell, element );
