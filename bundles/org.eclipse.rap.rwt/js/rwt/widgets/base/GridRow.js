@@ -437,7 +437,10 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
           "opacity" : ""
         } );
       } else if( this.$cellBackgrounds[ cell ] || this._gridLines.vertical ) {
-        this._getCellBackgroundElement( cell ).css( "backgroundColor", "" );
+        this._getCellBackgroundElement( cell ).css( {
+          "backgroundColor" : "",
+          "opacity" : ""
+        } );
         renderBounds = !this._scrolling;
       }
       if( renderBounds ) {
