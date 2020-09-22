@@ -63,6 +63,7 @@ rwt.widgets.util.GridRowContainerWrapper._CONTAINER_DELEGATES = [
   "setRowHeight",
   "setTopItem",
   "renderItem",
+  "renderRowHeight",
   "setToolTip",
   "renderItemQueue",
   "setBaseAppearance",
