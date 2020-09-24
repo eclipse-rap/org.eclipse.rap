@@ -150,6 +150,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       this._config.fullSelection = !!map.fullSelection;
       this._config.markupEnabled = map.markupEnabled;
       this._hasFixedColumns = map.splitContainer;
+      this._config.splitContainer = map.splitContainer;
       this._config.baseAppearance = map.appearance;
       this._config.rowTemplate = map.rowTemplate;
       if( !map.fullSelection ) {
@@ -532,7 +533,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
 
     _afterInsertDom : function() {
       this.base( arguments );
-      if( this._config.autoHeight ) {
+      if( this._config.autoHeight && !this._config.splitContainer ) {
         this._rowContainer.renderRowHeight();
       }
     },

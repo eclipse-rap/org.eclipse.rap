@@ -211,6 +211,10 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       return this._mirror;
     },
 
+    getItem : function() {
+      return this._item;
+    },
+
     ///////////////////////
     // First-level Renderer
 
@@ -306,8 +310,8 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
 
     _renderHeight : function() {
       if( this._item ) {
-        if( this._gridConfig.autoHeight ) {
-          var computedHeight = this._computeAutoHeight();
+        if( this._gridConfig.autoHeight && !this._gridConfig.splitContainer ) {
+          var computedHeight = this.computeAutoHeight();
           if( this._item.getDefaultHeight() >= computedHeight - 1 ) {
             computedHeight = null; // ignore rounding error for network optimization
           }
@@ -702,7 +706,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     //////////////
     // Measurement
 
-    _computeAutoHeight : function() {
+    computeAutoHeight : function() {
       var maxHeight = 0;
       for( var i = 0; i < this.$cellLabels.length; i++ ) {
         if( this.$cellLabels[ i ] ) {
