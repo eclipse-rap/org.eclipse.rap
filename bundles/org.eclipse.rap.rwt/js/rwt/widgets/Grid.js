@@ -649,6 +649,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
           this._fireSelectionChanged( item, "cell", null, identifier[ 1 ] );
         } else if( identifier[ 0 ] === "treeColumn" || this._acceptsGlobalSelection() ) {
           var cell = this._config.cellOrder.indexOf( identifier[ 1 ] );
+          cell = this._config.cellSelection && cell === 0 ? -1 : cell;
           this._onSelectionClick( event, item, cell);
         }
       }
