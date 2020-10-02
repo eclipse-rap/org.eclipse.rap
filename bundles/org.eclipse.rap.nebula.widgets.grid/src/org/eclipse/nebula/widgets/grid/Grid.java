@@ -3474,7 +3474,10 @@ public class Grid extends Composite {
 
   private void internalSelectAll() {
     for( int i = 0; i < items.size(); i++  ) {
-      internalSelect( i );
+      GridItem item = items.get( i );
+      if( item.isVisible() ) {
+        internalSelect( i );
+      }
     }
   }
 

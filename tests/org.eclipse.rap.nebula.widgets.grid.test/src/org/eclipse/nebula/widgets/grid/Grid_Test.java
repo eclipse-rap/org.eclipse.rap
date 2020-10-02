@@ -1134,6 +1134,43 @@ public class Grid_Test {
   }
 
   @Test
+  public void testSelectAllCells_WithCollapsedItems() {
+    grid = new Grid( shell, SWT.MULTI );
+    grid.setCellSelectionEnabled( true );
+    createGridColumns( grid, 3, SWT.NONE );
+    GridItem[] items = createGridItems( grid, 3, 1 );
+    items[ 1 ].setExpanded( false );
+
+    grid.selectAllCells();
+
+    Point[] expected = new Point[] {
+      new Point( 0, 0 ), new Point( 1, 0 ), new Point( 2, 0 ),
+      new Point( 0, 2 ), new Point( 1, 2 ), new Point( 2, 2 ),
+      new Point( 0, 4 ), new Point( 1, 4 ), new Point( 2, 4 ),
+    };
+    assertTrue( Arrays.equals( expected, grid.getCellSelection() ) );
+  }
+
+  @Test
+  public void testSelectAllCells_WithExpandedItems() {
+    grid = new Grid( shell, SWT.MULTI );
+    grid.setCellSelectionEnabled( true );
+    createGridColumns( grid, 3, SWT.NONE );
+    GridItem[] items = createGridItems( grid, 3, 1 );
+    items[ 2 ].setExpanded( true );
+
+    grid.selectAllCells();
+
+    Point[] expected = new Point[] {
+      new Point( 0, 0 ), new Point( 1, 0 ), new Point( 2, 0 ),
+      new Point( 0, 2 ), new Point( 1, 2 ), new Point( 2, 2 ),
+      new Point( 0, 3 ), new Point( 1, 3 ), new Point( 2, 3 ),
+      new Point( 0, 4 ), new Point( 1, 4 ), new Point( 2, 4 ),
+    };
+    assertTrue( Arrays.equals( expected, grid.getCellSelection() ) );
+  }
+
+  @Test
   public void testSetSelectionByIndex() {
     GridItem[] items = createGridItems( grid, 3, 0 );
 

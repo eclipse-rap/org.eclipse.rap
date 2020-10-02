@@ -20,6 +20,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TreeListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.TypedListener;
 
@@ -190,6 +191,24 @@ public class GridColumnGroup extends Item {
     checkWidget();
     if( this.expanded != expanded ) {
       this.expanded = expanded;
+      if( parent.getCellSelectionEnabled() ) {
+        List<Integer> collapsedCols = new ArrayList<>();
+        for( int j = 0; j < columns.size(); j++ ) {
+          GridColumn column = columns.get( j );
+          if( expanded && column.isSummary() ) {
+            collapsedCols.add( Integer.valueOf( parent.indexOf( column ) ) );
+          }
+          if( !expanded && !column.isSummary() ) {
+            collapsedCols.add( Integer.valueOf( parent.indexOf( column ) ) );
+          }
+        }
+        Point[] selection = parent.getCellSelection();
+        for( int i = 0; i < selection.length; i++ ) {
+          if( collapsedCols.contains( Integer.valueOf( selection[ i ].x ) ) ) {
+            parent.deselectCell( selection[ i ] );
+          }
+        }
+      }
       parent.invalidateScrollBars();
       parent.redraw();
     }

@@ -83,6 +83,7 @@ public class NebulaGridTab extends ExampleTab {
     createQueryFocusItem( parent );
     createQueryFocusColumn( parent );
     createEnableCellSelection( parent );
+    createSelectAll( parent );
     createSetCellSelection( parent );
     createAddCellsToSelection( parent );
     createSelectCellsInColumn( parent );
@@ -569,6 +570,17 @@ public class NebulaGridTab extends ExampleTab {
       public void widgetSelected( SelectionEvent event ) {
         cellSelectionEnabled = button.getSelection();
         grid.setCellSelectionEnabled( cellSelectionEnabled );
+      }
+    } );
+  }
+
+  private void createSelectAll( Composite parent ) {
+    Button button = new Button( parent, SWT.PUSH );
+    button.setText( "Select all" );
+    button.addSelectionListener( new SelectionAdapter() {
+      @Override
+      public void widgetSelected( SelectionEvent e ) {
+        grid.selectAll();
       }
     } );
   }
