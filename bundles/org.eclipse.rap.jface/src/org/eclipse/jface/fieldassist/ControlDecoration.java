@@ -190,7 +190,7 @@ public class ControlDecoration implements Serializable {
    *         if the control has been uninstalled.
    */
   public Control getControl() {
-    return decorator.getControl();
+    return decorator.isDisposed() ? null : decorator.getControl();
   }
 
   /**
