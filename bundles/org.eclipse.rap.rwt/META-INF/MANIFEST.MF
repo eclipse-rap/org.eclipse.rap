@@ -6,7 +6,7 @@ Bundle-Version: 3.15.0.qualifier
 Bundle-ClassPath: .
 Bundle-Localization: plugin
 Bundle-Vendor: %Bundle-Vendor
-Provide-Capability: org.eclipse.rap; org.eclipse.rap.rwt; version:Version=3.1
+Provide-Capability: org.eclipse.rap;org.eclipse.rap.rwt=true
 Import-Package: javax.servlet;version="[3.1.0,5.0.0)",
  javax.servlet.http;version="[3.1.0,5.0.0)",
  javax.xml.parsers,

@@ -12,9 +12,9 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <tycho.version>1.0.0</tycho.version>
+    <tycho.version>2.0.0</tycho.version>
     <tycho.showEclipseLog>true</tycho.showEclipseLog>
-    <assembly.version>2.4</assembly.version>
+    <assembly.version>3.3.0</assembly.version>
     <replacer.version>1.4.1</replacer.version>
     <rap-repo.url>http://download.eclipse.org/rt/rap/nightly/runtime/</rap-repo.url>
     <rap-incubator-repo.url>http://download.eclipse.org/rt/rap/incubator/nightly/</rap-incubator-repo.url>
