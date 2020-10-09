@@ -29,9 +29,9 @@
     <tycho-baseline-repo.url>http://download.eclipse.org/rt/rap/3.2/</tycho-baseline-repo.url>
      -->
     <cbi-plugins.version>1.1.2</cbi-plugins.version>
-    <jetty-repo.url>https://download.eclipse.org/jetty/updates/jetty-bundles-9.x/9.4.31.v20200723/</jetty-repo.url>
-    <orbit-repo.url>https://download.eclipse.org/tools/orbit/downloads/2020-09/</orbit-repo.url>
-    <platform-repo.url>https://download.eclipse.org/eclipse/updates/4.17/R-4.17-202009021800/</platform-repo.url>
+    <jetty-repo.url>https://download.eclipse.org/jetty/updates/jetty-bundles-9.x/9.4.32.v20200930/</jetty-repo.url>
+    <orbit-repo.url>https://download.eclipse.org/tools/orbit/downloads/2020-12/</orbit-repo.url>
+    <platform-repo.url>https://download.eclipse.org/eclipse/updates/4.18milestones/S-4.18M1-202010071800/</platform-repo.url>
     <rap-extra-repo.url>https://build.eclipse.org/rt/rap/base-platforms/3.14/extra-dependencies/</rap-extra-repo.url>
     <license-repo.url>https://download.eclipse.org/cbi/updates/license/</license-repo.url>
     <!-- The build type, N for nighty builds, S for stable builds. S-builds will be signed. -->
