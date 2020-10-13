@@ -107,6 +107,7 @@
         <artifactId>tycho-p2-plugin</artifactId>
         <version>${tycho.version}</version>
         <configuration>
+          <generateDownloadStatsProperty>true</generateDownloadStatsProperty>
           <baselineRepositories>
             <repository>
               <url>${tycho-baseline-repo.url}</url>

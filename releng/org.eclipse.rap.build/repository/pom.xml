@@ -50,6 +50,9 @@
         <version>${tycho.version}</version>
         <configuration>
           <repositoryName>RAP Runtime</repositoryName>
+          <extraArtifactRepositoryProperties>
+            <p2.statsURI>https://download.eclipse.org/stats/rt/rap</p2.statsURI>
+          </extraArtifactRepositoryProperties>
           <includeAllDependencies>false</includeAllDependencies>
           <compress>true</compress>
           <finalName>rap-${unqualifiedVersion}-${buildType}-${build}</finalName>
