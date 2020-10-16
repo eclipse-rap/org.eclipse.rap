@@ -345,6 +345,16 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
       return result;
     },
 
+    isCellVisible : function( column ) {
+      for( var i = 0; i <= column; i++ ) {
+        if( i === column ) {
+          return true;
+        }
+        i += this.getColumnSpan( i );
+      }
+      return false;
+    },
+
     //////////////////////////
     // relationship management
 

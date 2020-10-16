@@ -920,10 +920,13 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       } else if( this._config.cellSelection ) {
         var item = this._focusItem;
         var cell = this._focusCell;
-        while( cell - 1 > 0  && !this._columnOrder[ cell - 1 ].getVisibility() ) {
+        while( cell - 1 > 0
+               && ( !this._columnOrder[ cell - 1 ].getVisibility()
+                    || !item.isCellVisible( cell - 1 ) ) )
+        {
           cell--;
         }
-        cell = Math.max( 0, cell - 1 );
+        cell = Math.max( 1, cell - 1 );
         var itemIndex = item.getFlatIndex();
         this._handleKeyboardSelect( event, item, itemIndex, false, cell );
       } else if( this._focusItem.isExpanded() ) {
@@ -943,7 +946,10 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       } else if( this._config.cellSelection ) {
         var item = this._focusItem;
         var cell = this._focusCell;
-        while( cell + 1 < this._config.columnCount - 1 && !this._columnOrder[ cell + 1 ].getVisibility() ) {
+        while( cell + 1 < this._config.columnCount - 1
+               && ( !this._columnOrder[ cell + 1 ].getVisibility()
+                    || !item.isCellVisible( cell + 1 ) ) )
+        {
           cell++;
         }
         cell = Math.min( this._config.columnCount - 1, cell + 1 );
