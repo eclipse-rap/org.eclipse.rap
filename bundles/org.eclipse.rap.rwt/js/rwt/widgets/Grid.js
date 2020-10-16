@@ -866,7 +866,13 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       var item = this._focusItem.getPreviousItem();
       if( item != null ) {
         var itemIndex = item.getFlatIndex();
-        this._handleKeyboardSelect( event, item, itemIndex, false, this._focusCell );
+        var cell = this._focusCell;
+        if( this._config.cellSelection ) {
+          while( cell > 1 && !item.isCellVisible( cell ) ) {
+            cell--;
+          }
+        }
+        this._handleKeyboardSelect( event, item, itemIndex, false, cell );
       }
     },
 
@@ -874,7 +880,13 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       var item = this._focusItem.getNextItem();
       if( item != null ) {
         var itemIndex = item.getFlatIndex();
-        this._handleKeyboardSelect( event, item, itemIndex, false, this._focusCell );
+        var cell = this._focusCell;
+        if( this._config.cellSelection ) {
+          while( cell > 1 && !item.isCellVisible( cell ) ) {
+            cell--;
+          }
+        }
+        this._handleKeyboardSelect( event, item, itemIndex, false, cell );
       }
     },
 
