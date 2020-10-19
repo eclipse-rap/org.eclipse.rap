@@ -76,12 +76,14 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
 
     _gridLines : { horizontal : null, vertical : null },
 
-    renderItem : function( item, gridConfig, selected, hoverTarget, scrolling ) {
+    renderItem : function( item, gridConfig, selected, hoverTarget, contentOnly ) {
       this._item = item;
       this._gridConfig = gridConfig;
       this._selected = this._renderAsSelected( gridConfig, selected );
       this._hoverTarget = hoverTarget;
-      this._scrolling = scrolling;
+      this._columnSpans = this._getColumnSpans( item );
+      this._contentOnly = contentOnly && this._oldColumnSpans === this._columnSpans;
+      this._oldColumnSpans = this._columnSpans;
       this._layout = new rwt.widgets.util.GridRowLayout( gridConfig, item );
       this._renderStates();
       this._renderItemBackground();
@@ -387,7 +389,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         "backgroundImage" : image || ""
       } );
       var isTree = this._gridConfig.treeColumn !== -1;
-      if( this._item && ( isTree || !this._scrolling ) ) {
+      if( this._item && ( isTree || !this._contentOnly ) ) {
         this._renderCheckBoxBounds();
       }
     },
@@ -434,7 +436,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       var background = this._getCellBackgroundColor( cell );
       var renderBounds = false;
       if( background !== "undefined" && background != this._styleMap.backgroundColor ) {
-        renderBounds = !this._scrolling || !this.$cellBackgrounds[ cell ];
+        renderBounds = !this._contentOnly || !this.$cellBackgrounds[ cell ];
         this._getCellBackgroundElement( cell ).css( {
           "backgroundGradient" : "",
           "backgroundColor" : background,
@@ -445,7 +447,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
           "backgroundColor" : "",
           "opacity" : ""
         } );
-        renderBounds = !this._scrolling;
+        renderBounds = !this._contentOnly;
       }
       if( renderBounds ) {
         this._renderCellBackgroundBounds( cell );
@@ -456,7 +458,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       if( this._gridConfig.itemCellCheck[ cell ] ) {
         var image = this._getCellCheckBoxImage( cell );
         var isTreeColumn = this._isTreeColumn( cell );
-        var renderBounds = isTreeColumn || !this._scrolling || !this.$cellCheckBoxes[ cell ];
+        var renderBounds = isTreeColumn || !this._contentOnly || !this.$cellCheckBoxes[ cell ];
         this._getCellCheckBoxElement( cell ).css( {
           "display" : image === null ? "none" : "",
           "opacity" : this._gridConfig.enabled ? 1 : FADED,
@@ -473,7 +475,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     _renderCellImage : function( cell ) {
       var source = this._item ? this._item.getImage( cell ) : null;
       var isTreeColumn = this._isTreeColumn( cell );
-      var renderBounds = isTreeColumn || !this._scrolling;
+      var renderBounds = isTreeColumn || !this._contentOnly;
       if( source !== null ) {
         renderBounds = renderBounds || !this.$cellImages[ cell ];
         this._getCellImageElement( cell ).css( {
@@ -491,7 +493,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     _renderCellLabel : function( cell ) {
       var element = null;
       var isTreeColumn = this._isTreeColumn( cell );
-      var renderBounds = isTreeColumn || !this._scrolling;
+      var renderBounds = isTreeColumn || !this._contentOnly;
       if( this._item && this._item.hasText( cell ) ) {
         renderBounds = renderBounds || !this.$cellLabels[ cell ];
         element = this._getCellLabelElement( cell );
@@ -1035,6 +1037,17 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       var styleMap = manager.styleFrom( appearance, states );
       var valid = styleMap && styleMap.backgroundImage;
       return valid ? styleMap.backgroundImage : null;
+    },
+
+    _getColumnSpans : function( item ) {
+      if( item ) {
+        var spans = [];
+        for( var i = 0; i < this._gridConfig.cellOrder.length; i++ ) {
+          spans.push( item.getColumnSpan( this._gridConfig.cellOrder[ i ] ) );
+        }
+        return spans.join( "" );
+      }
+      return "";
     },
 
     /////////////
