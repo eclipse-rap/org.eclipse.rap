@@ -442,7 +442,10 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
           "backgroundColor" : background,
           "opacity" : ""
         } );
-      } else if( this.$cellBackgrounds[ cell ] || this._gridLines.vertical ) {
+      } else if(    this.$cellBackgrounds[ cell ]
+                 || this._gridLines.vertical
+                 || this._gridConfig.cellSelection )
+      {
         this._getCellBackgroundElement( cell ).css( {
           "backgroundColor" : "",
           "opacity" : ""
