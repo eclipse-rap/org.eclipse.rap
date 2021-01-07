@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 EclipseSource and others.
+ * Copyright (c) 2011, 2021 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,8 +26,10 @@ import org.eclipse.rap.fileupload.FileUploadHandler;
 import org.eclipse.rap.fileupload.FileUploadReceiver;
 import org.eclipse.rap.fileupload.UploadSizeLimitExceededException;
 import org.eclipse.rap.fileupload.UploadTimeLimitExceededException;
+import org.eclipse.rap.rwt.internal.util.HTTP;
 
 
+@SuppressWarnings( "restriction" )
 final class FileUploadProcessor {
 
   private final FileUploadHandler handler;
@@ -88,6 +90,7 @@ final class FileUploadProcessor {
     ServletFileUpload upload = new ServletFileUpload();
     upload.setFileSizeMax( handler.getMaxFileSize() );
     upload.setProgressListener( createProgressListener() );
+    upload.setHeaderEncoding( HTTP.CHARSET_UTF_8 );
     return upload;
   }
 
