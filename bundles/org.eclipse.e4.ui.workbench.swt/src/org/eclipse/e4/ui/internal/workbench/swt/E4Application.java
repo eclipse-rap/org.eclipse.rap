@@ -74,6 +74,7 @@ import org.eclipse.e4.ui.workbench.lifecycle.ProcessRemovals;
 import org.eclipse.e4.ui.workbench.modeling.EModelService;
 import org.eclipse.e4.ui.workbench.modeling.EPlaceholderResolver;
 import org.eclipse.e4.ui.workbench.modeling.ESelectionService;
+import org.eclipse.e4.ui.workbench.swt.DisplayUISynchronize;
 import org.eclipse.e4.ui.workbench.swt.internal.copy.WorkbenchSWTMessages;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
@@ -82,7 +83,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
-import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.jface.databinding.swt.DisplayRealm;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.osgi.util.NLS;
@@ -210,24 +211,8 @@ public class E4Application implements IApplication {
 
 		final IEclipseContext appContext = createDefaultContext();
 		appContext.set(Display.class, display);
-		// FIXME RAP DisplayRealm not public!!!
-		appContext.set(Realm.class, SWTObservables.getRealm(display));
-		appContext.set(UISynchronize.class, new UISynchronize() {
-
-			@Override
-			public void syncExec(Runnable runnable) {
-				if (display != null && !display.isDisposed()) {
-					display.syncExec(runnable);
-				}
-			}
-
-			@Override
-			public void asyncExec(Runnable runnable) {
-				if (display != null && !display.isDisposed()) {
-					display.asyncExec(runnable);
-				}
-			}
-		});
+		appContext.set(Realm.class, DisplayRealm.getRealm(display));
+		appContext.set(UISynchronize.class, new DisplayUISynchronize(display));
 		appContext.set(IApplicationContext.class, applicationContext);
 
 		// This context will be used by the injector for its
