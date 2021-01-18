@@ -12,6 +12,12 @@
  *******************************************************************************/
 package org.eclipse.nebula.jface.gridviewer;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+
 import org.eclipse.jface.viewers.AbstractTableViewer;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerEditor;
@@ -21,6 +27,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.viewers.ViewerRow;
+import org.eclipse.nebula.jface.gridviewer.internal.CellSelection;
 import org.eclipse.nebula.jface.gridviewer.internal.SelectionWithFocusRow;
 // [RAP ] DataVisualizer missing
 // import org.eclipse.nebula.widgets.grid.DataVisualizer;
@@ -51,6 +58,7 @@ import org.eclipse.swt.widgets.Widget;
  * @author Mirko Paturzo <mirko.paturzo@exeura.eu> Mirko modified improve performace and reduce used
  *         memory fix memory leak and slow disposed object
  */
+@SuppressWarnings("restriction")
 public class GridTableViewer extends AbstractTableViewer {
 
   /** This viewer's grid control. */
@@ -253,7 +261,6 @@ public class GridTableViewer extends AbstractTableViewer {
   }
 
   /** {@inheritDoc} */
-  @SuppressWarnings( "deprecation" )
   @Override
   protected void doRemoveAll() {
     grid.removeAll();
@@ -437,7 +444,6 @@ public class GridTableViewer extends AbstractTableViewer {
     } finally {
       getControl().setRedraw( true );
     }
-    // }
   }
 
   /**
@@ -449,7 +455,7 @@ public class GridTableViewer extends AbstractTableViewer {
   } )
   @Override
   protected void setSelectionToWidget( ISelection selection, boolean reveal ) {
-//    if( !grid.isCellSelectionEnabled() || !( selection instanceof CellSelection ) ) {
+    if( !grid.isCellSelectionEnabled() || !( selection instanceof CellSelection ) ) {
       super.setSelectionToWidget( selection, reveal );
       if( selection instanceof SelectionWithFocusRow ) {
         Object el = ( ( SelectionWithFocusRow )selection ).getFocusElement();
@@ -466,43 +472,43 @@ public class GridTableViewer extends AbstractTableViewer {
           }
         }
       }
-//    } else {
-//      CellSelection cellSelection = ( CellSelection )selection;
-//      List l = cellSelection.toList();
-//      ArrayList pts = new ArrayList();
-//      for( int i = 0; i < grid.getItemCount(); i++ ) {
-//        Iterator it = l.iterator();
-//        Object itemObject = grid.getItem( i ).getData();
-//        while( it.hasNext() ) {
-//          Object checkObject = it.next();
-//          if( itemObject == checkObject
-//              || ( getComparer() != null && getComparer().equals( itemObject, checkObject ) ) )
-//          {
-//            Iterator idxIt = cellSelection.getIndices( checkObject ).iterator();
-//            while( idxIt.hasNext() ) {
-//              Integer idx = ( Integer )idxIt.next();
-//              pts.add( new Point( idx.intValue(), i ) );
-//            }
-//          }
-//        }
-//      }
-//      Point[] tmp = new Point[ pts.size() ];
-//      pts.toArray( tmp );
-//      // grid.setCellSelection( tmp );
-//      if( cellSelection.getFocusElement() != null ) {
-//        Object el = cellSelection.getFocusElement();
-//        for( int i = 0; i < grid.getItemCount(); i++ ) {
-//          GridItem item = grid.getItem( i );
-//          if( item.getData() == el
-//              || item.getData().equals( el )
-//              || ( getComparer() != null && getComparer().equals( item.getData(), el ) ) )
-//          {
-//            grid.setFocusItem( item );
-//            break;
-//          }
-//        }
-//      }
-//    }
+    } else {
+      CellSelection cellSelection = ( CellSelection )selection;
+      List l = cellSelection.toList();
+      ArrayList pts = new ArrayList();
+      for( int i = 0; i < grid.getItemCount(); i++ ) {
+        Iterator it = l.iterator();
+        Object itemObject = grid.getItem( i ).getData();
+        while( it.hasNext() ) {
+          Object checkObject = it.next();
+          if( itemObject == checkObject
+              || ( getComparer() != null && getComparer().equals( itemObject, checkObject ) ) )
+          {
+            Iterator idxIt = cellSelection.getIndices( checkObject ).iterator();
+            while( idxIt.hasNext() ) {
+              Integer idx = ( Integer )idxIt.next();
+              pts.add( new Point( idx.intValue(), i ) );
+            }
+          }
+        }
+      }
+      Point[] tmp = new Point[ pts.size() ];
+      pts.toArray( tmp );
+      grid.setCellSelection( tmp );
+      if( cellSelection.getFocusElement() != null ) {
+        Object el = cellSelection.getFocusElement();
+        for( int i = 0; i < grid.getItemCount(); i++ ) {
+          GridItem item = grid.getItem( i );
+          if( item.getData() == el
+              || item.getData().equals( el )
+              || ( getComparer() != null && getComparer().equals( item.getData(), el ) ) )
+          {
+            grid.setFocusItem( item );
+            break;
+          }
+        }
+      }
+    }
   }
 
   /**
@@ -510,55 +516,55 @@ public class GridTableViewer extends AbstractTableViewer {
    */
   @Override
   public ISelection getSelection() {
-    // if( !grid.isCellSelectionEnabled() ) {
+    if( !grid.isCellSelectionEnabled() ) {
       IStructuredSelection selection = ( IStructuredSelection )super.getSelection();
       Object el = null;
       if( grid.getFocusItem() != null && !grid.getFocusItem().isDisposed() ) {
         el = grid.getFocusItem().getData();
       }
       return new SelectionWithFocusRow( selection.toList(), el, getComparer() );
-    // } else {
-    //   return createCellSelection();
-    // }
+    } else {
+      return createCellSelection();
+    }
   }
 
-//  @SuppressWarnings( {
-//    "unchecked",
-//    "rawtypes"
-//  } )
-//  private CellSelection createCellSelection() {
-//    Point[] ps = grid.getCellSelection();
-//    Arrays.sort( ps, new Comparator() {
-//
-//      @Override
-//      public int compare( Object arg0, Object arg1 ) {
-//        Point a = ( Point )arg0;
-//        Point b = ( Point )arg1;
-//        int rv = a.y - b.y;
-//        if( rv == 0 ) {
-//          rv = a.x - b.x;
-//        }
-//        return rv;
-//      }
-//    } );
-//    ArrayList objectList = new ArrayList();
-//    ArrayList indiceLists = new ArrayList();
-//    ArrayList indiceList = new ArrayList();
-//    int curLine = -1;
-//    for( int i = 0; i < ps.length; i++ ) {
-//      if( curLine != ps[ i ].y ) {
-//        curLine = ps[ i ].y;
-//        indiceList = new ArrayList();
-//        indiceLists.add( indiceList );
-//        objectList.add( grid.getItem( curLine ).getData() );
-//      }
-//      indiceList.add( new Integer( ps[ i ].x ) );
-//    }
-//    Object focusElement = null;
-//    if( grid.getFocusItem() != null && !grid.getFocusItem().isDisposed() ) {
-//      focusElement = grid.getFocusItem().getData();
-//    }
-//    return new CellSelection( objectList, indiceLists, focusElement, getComparer() );
-//  }
+  @SuppressWarnings( {
+    "unchecked",
+    "rawtypes"
+  } )
+  private CellSelection createCellSelection() {
+    Point[] ps = grid.getCellSelection();
+    Arrays.sort( ps, new Comparator() {
+
+      @Override
+      public int compare( Object arg0, Object arg1 ) {
+        Point a = ( Point )arg0;
+        Point b = ( Point )arg1;
+        int rv = a.y - b.y;
+        if( rv == 0 ) {
+          rv = a.x - b.x;
+        }
+        return rv;
+      }
+    } );
+    ArrayList objectList = new ArrayList();
+    ArrayList indiceLists = new ArrayList();
+    ArrayList indiceList = new ArrayList();
+    int curLine = -1;
+    for( int i = 0; i < ps.length; i++ ) {
+      if( curLine != ps[ i ].y ) {
+        curLine = ps[ i ].y;
+        indiceList = new ArrayList();
+        indiceLists.add( indiceList );
+        objectList.add( grid.getItem( curLine ).getData() );
+      }
+      indiceList.add( new Integer( ps[ i ].x ) );
+    }
+    Object focusElement = null;
+    if( grid.getFocusItem() != null && !grid.getFocusItem().isDisposed() ) {
+      focusElement = grid.getFocusItem().getData();
+    }
+    return new CellSelection( objectList, indiceLists, focusElement, getComparer() );
+  }
 
 }
