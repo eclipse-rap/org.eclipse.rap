@@ -424,6 +424,33 @@ public class TextTab extends ExampleTab {
         text.insert( insertText.getText() );
       }
     } );
+    new Label( group, SWT.NONE );
+    Button cutButton = new Button( group, SWT.PUSH );
+    cutButton.setText( "Cut" );
+    cutButton.addSelectionListener( new SelectionAdapter() {
+      @Override
+      public void widgetSelected( SelectionEvent e ) {
+        text.cut();
+      }
+    } );
+    new Label( group, SWT.NONE );
+    Button copyButton = new Button( group, SWT.PUSH );
+    copyButton.setText( "Copy" );
+    copyButton.addSelectionListener( new SelectionAdapter() {
+      @Override
+      public void widgetSelected( SelectionEvent e ) {
+        text.copy();
+      }
+    } );
+    new Label( group, SWT.NONE );
+    Button pasteButton = new Button( group, SWT.PUSH );
+    pasteButton.setText( "Paste" );
+    pasteButton.addSelectionListener( new SelectionAdapter() {
+      @Override
+      public void widgetSelected( SelectionEvent e ) {
+        text.paste();
+      }
+    } );
   }
 
   private void createMessage( Composite parent ) {

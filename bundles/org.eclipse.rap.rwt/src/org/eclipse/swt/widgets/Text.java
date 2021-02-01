@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2021 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,9 @@ import org.eclipse.rap.rwt.internal.theme.Size;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
+import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -28,7 +31,6 @@ import org.eclipse.swt.internal.graphics.FontUtil;
 import org.eclipse.swt.internal.widgets.ITextAdapter;
 import org.eclipse.swt.internal.widgets.textkit.TextLCA;
 import org.eclipse.swt.internal.widgets.textkit.TextThemeAdapter;
-
 
 /**
  * Instances of this class are selectable user interface
@@ -1022,6 +1024,101 @@ public class Text extends Scrollable {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
     removeListener( SWT.Verify, listener );
+  }
+
+  /**
+   * Cuts the selected text.
+   * <p>
+   * The current selection is first copied to the
+   * clipboard and then deleted from the widget.
+   * </p>
+   *
+   * @exception UnsupportedOperationException when running the application in JEE_COMPATIBILITY mode
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see org.eclipse.rap.rwt.application.Application.OperationMode
+   *
+   * @since 3.16
+   */
+  public void cut() {
+    checkWidget();
+    if( ( style & SWT.READ_ONLY ) == 0 ) {
+      try {
+        Clipboard clipboard = new Clipboard( display );
+        Transfer[] transfers = new Transfer[] { TextTransfer.getInstance() };
+        Object[] data = new Object[] { getSelectionText() };
+        text = new StringBuffer( text ).replace( selection.x, selection.y, "" ).toString();
+        clipboard.setContents( data, transfers );
+        clipboard.dispose();
+      } catch ( @SuppressWarnings( "unused" ) Exception e ) {
+        // ignore unsupported browsers
+      }
+    }
+  }
+
+  /**
+   * Copies the selected text.
+   * <p>
+   * The current selection is copied to the clipboard.
+   * </p>
+   *
+   * @exception UnsupportedOperationException when running the application in JEE_COMPATIBILITY mode
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see org.eclipse.rap.rwt.application.Application.OperationMode
+   *
+   * @since 3.16
+   */
+  public void copy() {
+    checkWidget();
+    try {
+      Clipboard clipboard = new Clipboard( display );
+      Transfer[] transfers = new Transfer[] { TextTransfer.getInstance() };
+      Object[] data = new Object[] { getSelectionText() };
+      clipboard.setContents( data, transfers );
+      clipboard.dispose();
+    } catch ( @SuppressWarnings( "unused" ) Exception e ) {
+      // ignore unsupported browsers
+    }
+  }
+
+  /**
+   * Pastes text from clipboard.
+   * <p>
+   * The selected text is deleted from the widget
+   * and new text inserted from the clipboard.
+   * </p>
+   *
+   * @exception UnsupportedOperationException when running the application in JEE_COMPATIBILITY mode
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see org.eclipse.rap.rwt.application.Application.OperationMode
+   *
+   * @since 3.16
+   */
+  public void paste() {
+    checkWidget();
+    if( ( style & SWT.READ_ONLY ) == 0 ) {
+      try {
+        Clipboard clipboard = new Clipboard( display );
+        String content = ( String )clipboard.getContents( TextTransfer.getInstance() );
+        if( content != null ) {
+          text = new StringBuffer( text ).replace( selection.x, selection.y, content ).toString();
+        }
+        clipboard.dispose();
+      } catch ( @SuppressWarnings( "unused" ) Exception e ) {
+        // ignore unsupported browsers
+      }
+    }
   }
 
   @Override
