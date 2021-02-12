@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2020 EclipseSource and others.
+ * Copyright (c) 2013, 2021 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,9 @@ import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PAR
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_ITEM;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SET_DATA;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.nebula.widgets.grid.Grid;
 import org.eclipse.nebula.widgets.grid.GridColumn;
@@ -119,16 +122,16 @@ public class GridOperationHandler extends ControlOperationHandler<Grid> {
     JsonValue values = properties.get( PROP_CELL_SELECTION );
     if( values != null ) {
       JsonArray cells = values.asArray();
-      Point[] selectedCells = new Point[ cells.size() ];
+      List<Point> selectedCells = new ArrayList<>();
       for( int i = 0; i < cells.size(); i++ ) {
         JsonArray currentCell = cells.get( i ).asArray();
         GridItem item = getItem( grid, currentCell.get( 0 ).asString() );
         if( item != null ) {
           int x = currentCell.get( 1 ).asInt() - getColumnOffset( grid );
-          selectedCells[ i ] = new Point( x, grid.indexOf( item ) );
+          selectedCells.add( new Point( x, grid.indexOf( item ) ) );
         }
       }
-      grid.setCellSelection( selectedCells );
+      grid.setCellSelection( selectedCells.toArray( new Point[ 0 ] ) );
     }
   }
 

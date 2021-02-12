@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2020 EclipseSource and others.
+ * Copyright (c) 2013, 2021 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -116,6 +116,25 @@ public class GridOperationHandler_Test {
     assertEquals( 2, selectedCells.length );
     assertEquals( new Point( 0, 0 ), selectedCells[ 0 ] );
     assertEquals( new Point( 1, 2 ), selectedCells[ 1 ] );
+  }
+
+  @Test
+  public void testHandleSetCellSelection_withDisposedItem() {
+    grid.setCellSelectionEnabled( true );
+    createGridItems( grid, 3, 3 );
+    createGridColumns( grid, 3, SWT.NONE );
+    GridItem item1 = grid.getItem( 0 );
+    GridItem item2 = grid.getItem( 2 );
+
+    JsonArray cellSelection = new JsonArray()
+      .add( new JsonArray().add( getId( item1 ) ).add( 1 ) )
+      .add( new JsonArray().add( getId( item2 ) ).add( 2 ) );
+    item2.dispose();
+    handler.handleSet( new JsonObject().add( "cellSelection", cellSelection ) );
+
+    Point[] selectedCells = grid.getCellSelection();
+    assertEquals( 1, selectedCells.length );
+    assertEquals( new Point( 0, 0 ), selectedCells[ 0 ] );
   }
 
   @Test
