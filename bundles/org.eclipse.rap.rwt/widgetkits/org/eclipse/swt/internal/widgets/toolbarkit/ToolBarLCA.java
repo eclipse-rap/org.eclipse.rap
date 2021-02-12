@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2021 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,8 +18,8 @@ import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRe
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.widgets.ToolBar;
@@ -31,7 +31,7 @@ public class ToolBarLCA extends WidgetLCA<ToolBar> {
 
   private static final String TYPE = "rwt.widgets.ToolBar";
   private static final String[] ALLOWED_STYLES = {
-    "FLAT", "HORIZONTAL", "VERTICAL", "NO_RADIO_GROUP", "BORDER", "RIGHT"
+    "FLAT", "HORIZONTAL", "VERTICAL", "NO_RADIO_GROUP", "BORDER", "RIGHT", "NO_FOCUS"
   };
 
   @Override
