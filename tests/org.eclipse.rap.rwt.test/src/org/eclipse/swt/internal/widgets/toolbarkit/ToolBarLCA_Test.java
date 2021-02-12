@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 EclipseSource and others.
+ * Copyright (c) 2012, 2021 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -76,6 +76,7 @@ public class ToolBarLCA_Test {
     List<String> styles = getStyles( operation );
     assertTrue( styles.contains( "HORIZONTAL" ) );
     assertFalse( styles.contains( "H_SCROLL" ) );
+    assertTrue( styles.contains( "NO_FOCUS" ) );
   }
 
   @Test
@@ -89,6 +90,7 @@ public class ToolBarLCA_Test {
     List<String> styles = getStyles( operation );
     assertTrue( styles.contains( "VERTICAL" ) );
     assertFalse( styles.contains( "V_SCROLL" ) );
+    assertTrue( styles.contains( "NO_FOCUS" ) );
   }
 
   @Test
@@ -99,7 +101,9 @@ public class ToolBarLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolBar );
-    assertTrue( getStyles( operation ).contains( "FLAT" ) );
+    List<String> styles = getStyles( operation );
+    assertTrue( styles.contains( "FLAT" ) );
+    assertFalse( styles.contains( "NO_FOCUS" ) );
   }
 
   @Test

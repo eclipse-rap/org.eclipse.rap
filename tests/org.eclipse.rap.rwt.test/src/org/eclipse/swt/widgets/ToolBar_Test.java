@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2021 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,6 +49,17 @@ public class ToolBar_Test {
     display = new Display();
     shell = new Shell( display );
     toolBar = new ToolBar( shell, SWT.NONE );
+  }
+
+  @Test
+  public void testStyle() {
+    toolBar = new ToolBar( shell, SWT.NONE );
+
+    assertTrue( ( toolBar.getStyle() & SWT.NO_FOCUS ) != 0 );
+
+    toolBar = new ToolBar( shell, SWT.FLAT );
+
+    assertTrue( ( toolBar.getStyle() & SWT.NO_FOCUS ) == 0 );
   }
 
   @Test

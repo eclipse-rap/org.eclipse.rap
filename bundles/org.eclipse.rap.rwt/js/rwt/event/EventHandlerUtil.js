@@ -203,8 +203,10 @@ rwt.event.EventHandlerUtil = {
       if( root ) {
         var focusTarget = target;
         while( !focusTarget.isFocusable() && focusTarget != root ) {
-          if(    focusTarget instanceof rwt.widgets.MenuBar
-              || focusTarget instanceof rwt.widgets.ToolItem )
+          if( focusTarget instanceof rwt.widgets.MenuBar ) {
+            return;
+          } else if(    focusTarget instanceof rwt.widgets.ToolBar
+                     && focusTarget.hasState( "rwt_NO_FOCUS" ) )
           {
             return;
           }

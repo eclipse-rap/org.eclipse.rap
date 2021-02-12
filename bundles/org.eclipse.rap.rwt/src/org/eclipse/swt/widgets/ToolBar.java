@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2021 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -359,6 +359,10 @@ public class ToolBar extends Composite {
   // Helping methods
 
   private static int checkStyle( int style ) {
+    int result = style;
+    if( ( result & SWT.FLAT ) == 0 ) {
+      result |= SWT.NO_FOCUS;
+    }
     /*
     * Even though it is legal to create this widget
     * with scroll bars, they serve no useful purpose
@@ -366,7 +370,7 @@ public class ToolBar extends Composite {
     * widget's client area.  The fix is to clear
     * the SWT style.
     */
-    return style & ~( SWT.H_SCROLL | SWT.V_SCROLL );
+    return result & ~( SWT.H_SCROLL | SWT.V_SCROLL );
   }
 
   void createItem( ToolItem item, int index ) {
