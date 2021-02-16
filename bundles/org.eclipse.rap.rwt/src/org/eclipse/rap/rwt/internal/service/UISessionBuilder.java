@@ -72,7 +72,7 @@ public class UISessionBuilder {
   }
 
   private static String generateConnectionId() {
-    return UUID.randomUUID().toString().substring( 0, 8 );
+    return UUID.randomUUID().toString().replace( "-", "" );
   }
 
 }
