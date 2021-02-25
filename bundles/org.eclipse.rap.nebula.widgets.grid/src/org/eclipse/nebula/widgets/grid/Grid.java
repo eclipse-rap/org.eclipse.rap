@@ -3306,7 +3306,7 @@ public class Grid extends Composite {
   void updateScrollBars() {
     if( scrollValuesObsolete ) {
       Point preferredSize = getTableSize();
-      Rectangle clientArea = getClientArea();
+      Rectangle clientArea = getScrollableArea();
       for( int doublePass = 1; doublePass <= 2; doublePass++ ) {
         if( preferredSize.y > clientArea.height ) {
           vScroll.setVisible( true );
@@ -3320,7 +3320,7 @@ public class Grid extends Composite {
           hScroll.setVisible( false );
           hScroll.setValues( 0, 0, 1, 1, 1, 1 );
         }
-        clientArea = getClientArea();
+        clientArea = getScrollableArea();
       }
       if( vScroll.getVisible() ) {
         int max = currentVisibleItems;
@@ -3342,6 +3342,12 @@ public class Grid extends Composite {
       }
       scrollValuesObsolete = false;
     }
+  }
+
+  private Rectangle getScrollableArea() {
+    Rectangle clientArea = getClientArea();
+    clientArea.width -= getItemHeaderWidth();
+    return clientArea;
   }
 
   protected IScrollBarProxy getHorizontalScrollBarProxy() {
