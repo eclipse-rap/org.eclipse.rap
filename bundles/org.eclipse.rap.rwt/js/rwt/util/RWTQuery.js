@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2015 EclipseSource and others.
+ * Copyright (c) 2014, 2021 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -101,6 +101,10 @@ rwt.util._RWTQuery.prototype = $.prototype = {
 
   insertBefore : function() {
     return this.__access( arguments, null, insertBefore_element );
+  },
+
+  focus : function() {
+    return this.__access( arguments, null, focus_element );
   },
 
   /**
@@ -441,6 +445,11 @@ var appendTo_element = function( element, args ) {
 
 var detach_element = function( element ) {
   element.parentNode.removeChild( element );
+  return this;
+};
+
+var focus_element = function( element ) {
+  element.focus();
   return this;
 };
 
