@@ -743,10 +743,12 @@ public class Shell extends Decorations {
     ProcessActionRunner.add( new Runnable() {
       @Override
       public void run() {
-        Event event = new Event();
-        notifyListeners( SWT.Close, event );
-        if( event.doit ) {
-          Shell.this.dispose();
+        if( !isDisposed() ) {
+          Event event = new Event();
+          notifyListeners( SWT.Close, event );
+          if( event.doit ) {
+            Shell.this.dispose();
+          }
         }
       }
     } );
