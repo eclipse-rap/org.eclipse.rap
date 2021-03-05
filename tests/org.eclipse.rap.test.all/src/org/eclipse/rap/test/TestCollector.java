@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2009, 2015 EclipseSource and others.
+* Copyright (c) 2009, 2021 EclipseSource and others.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -11,26 +11,26 @@
 package org.eclipse.rap.test;
 
 import java.io.*;
-import java.net.*;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 
-
+@SuppressWarnings( "restriction" )
 public class TestCollector {
 
   private static final String JAR_EXTENSION = ".jar";
   private static final String CLASS_EXTENSION = ".class";
 
-  private final URLClassLoader classLoader;
+  private final ClassLoader classLoader;
   private final List<Thread> threads;
   private final List<Throwable> problems;
   private final List<Class<?>> tests;
 
   TestCollector() {
-    classLoader = ( URLClassLoader )getClass().getClassLoader();
+    classLoader = getClass().getClassLoader();
     threads = new Vector<Thread>();
     problems = new Vector<Throwable>();
     tests = new Vector<Class<?>>();
@@ -38,11 +38,7 @@ public class TestCollector {
 
   Class<?>[] collectTests() {
     initializeFixture();
-    try {
-      scanClasspath();
-    } catch( IOException ioe ) {
-      throw new RuntimeException( ioe );
-    }
+    scanClasspath();
     return sortTests();
   }
 
@@ -54,10 +50,11 @@ public class TestCollector {
     return className.endsWith( "_Test" );
   }
 
-  private void scanClasspath() throws IOException {
-    URL[] urls = classLoader.getURLs();
-    for( int i = 0; i < urls.length; i++ ) {
-      File file = new File( URLDecoder.decode( urls[ i ].getFile(), "UTF-8" ) );
+  private void scanClasspath() {
+    String classpath = System.getProperty( "java.class.path" );
+    String[] entries = classpath.split( File.pathSeparator );
+    for( int i = 0; i < entries.length; i++ ) {
+      File file = Paths.get( entries[ i ] ).toAbsolutePath().toFile();
       if( file.exists() && acceptPath( file ) ) {
         runScan( file );
       }
