@@ -10,7 +10,7 @@ fi
 
 RAP_UID="${RAP_UID:-genie.rap@projects-storage.eclipse.org}"
 RAP_BASE_DIRECTORY="${RAP_BASE_DIRECTORY:-/home/data/httpd/download.eclipse.org/rt/rap}"
-RAP_RELEASE="${RAP_RELEASE:-3.16}"
+RAP_RELEASE="${RAP_RELEASE:-3.17}"
 RAP_VERSION="${RAP_VERSION:-${RAP_RELEASE}.0}"
 RAP_MILESTONE="${RAP_MILESTONE:-M0}"
 RAP_RUNTIME_BUILD_NUMBER="${RAP_RUNTIME_BUILD_NUMBER:-0}"
