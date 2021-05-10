@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2020 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2021 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource, and others.
  *
  * All rights reserved. This program and the accompanying materials
@@ -225,16 +225,14 @@ rwt.event.EventHandlerUtil = {
   ///////////////
   // KEY HANDLING
 
-  getKeyCode : rwt.util.Variant.select( "qx.client", {
-    "gecko" : function( event ) {
+  getKeyCode : function( event ) {
+    if( rwt.client.Client.isGecko() && rwt.client.Client.getMajor() < this.FIREFOX_NEW_KEY_EVENTS_VERSION ) {
       return event.keyCode;
-    },
-    "default" : function( event ) {
-      // the value in "keyCode" on "keypress" is actually the charcode:
-      var hasKeyCode = event.type !== "keypress" || event.keyCode === 13 || event.keyCode === 27;
-      return hasKeyCode ? event.keyCode : 0;
     }
-  } ),
+    // the value in "keyCode" on "keypress" is actually the charcode:
+    var hasKeyCode = event.type !== "keypress" || event.keyCode === 13 || event.keyCode === 27;
+    return hasKeyCode ? event.keyCode : 0;
+  },
 
   getCharCode : rwt.util.Variant.select( "qx.client", {
     "default" : function( event ) {
