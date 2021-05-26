@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 Frank Appel and others.
+ * Copyright (c) 2011, 2021 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,12 @@ package org.eclipse.rap.rwt.osgi.internal;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.EventListener;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.*;
 import javax.servlet.ServletRegistration.Dynamic;
@@ -340,6 +345,41 @@ class ServletContextWrapper implements ServletContext {
 
   @Override
   public void declareRoles( String... roleNames ) {
+  }
+
+  @Override
+  public Dynamic addJspFile( String servletName, String jspFile ) {
+    return null;
+  }
+
+  @Override
+  public int getSessionTimeout() {
+    return servletContext.getSessionTimeout();
+  }
+
+  @Override
+  public void setSessionTimeout( int sessionTimeout ) {
+    servletContext.setSessionTimeout( sessionTimeout );
+  }
+
+  @Override
+  public String getRequestCharacterEncoding() {
+    return servletContext.getRequestCharacterEncoding();
+  }
+
+  @Override
+  public void setRequestCharacterEncoding( String encoding ) {
+    servletContext.setRequestCharacterEncoding( encoding );
+  }
+
+  @Override
+  public String getResponseCharacterEncoding() {
+    return servletContext.getResponseCharacterEncoding();
+  }
+
+  @Override
+  public void setResponseCharacterEncoding( String encoding ) {
+    servletContext.setResponseCharacterEncoding( encoding );
   }
 
 }

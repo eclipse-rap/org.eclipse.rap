@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 EclipseSource and others.
+ * Copyright (c) 2011, 2021 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,8 +14,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.logging.Handler;
 
-import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.HandlerContainer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -24,7 +24,7 @@ import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.log.Log;
-import org.eclipse.jetty.util.resource.FileResource;
+import org.eclipse.jetty.util.resource.PathResource;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.util.FileUtil;
 
 
@@ -99,10 +99,10 @@ class JettyController {
     }
   }
 
-  private FileResource createServletContextPath() {
+  private PathResource createServletContextPath() {
     File contextRoot = FileUtil.getTempDir( this.toString() );
     try {
-      return new FileResource( contextRoot.toURI().toURL() );
+      return new PathResource( contextRoot.toURI().toURL() );
     } catch( Exception e ) {
       throw new RuntimeException( e );
     }
