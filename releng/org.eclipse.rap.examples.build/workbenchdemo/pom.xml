@@ -42,7 +42,7 @@
         </executions>
       </plugin>
 
-      <!-- Remove javax.servlet from the bundles.info -->
+      <!-- Remove servlet spec (old javax.servlet, new o.e.jetty.servlet-api) from the bundles.info -->
       <plugin>
         <groupId>com.google.code.maven-replacer-plugin</groupId>
         <artifactId>maven-replacer-plugin</artifactId>
@@ -64,6 +64,10 @@
             </replacement>
             <replacement>
               <token>reference\\:file\\:javax.servlet.*?jar@4,</token>
+              <value></value>
+            </replacement>
+            <replacement>
+              <token>reference\\:file\\:org.eclipse.jetty.servlet-api.*?jar@4,</token>
               <value></value>
             </replacement>
           </replacements>
