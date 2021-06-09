@@ -77,7 +77,6 @@
         <setEntry value="org.eclipse.rap.ui.views@default:default"/>
         <setEntry value="org.eclipse.rap.ui.workbench@default:default"/>
         <setEntry value="org.eclipse.rap.ui@default:default"/>
-        <setEntry value="slf4j.api@default:default"/>
     </setAttribute>
     <setAttribute key="selected_workspace_bundles">
         <setEntry value="org.eclipse.rap.demo@default:default"/>
