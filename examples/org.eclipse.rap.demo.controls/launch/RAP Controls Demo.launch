@@ -79,6 +79,7 @@
         <setEntry value="org.eclipse.rap.nebula.widgets.richtext@default:default"/>
         <setEntry value="org.eclipse.rap.rwt.osgi@default:default"/>
         <setEntry value="org.eclipse.rap.rwt@default:default"/>
+        <setEntry value="org.slf4j.api@default:default"/>
     </setAttribute>
     <setAttribute key="selected_workspace_bundles">
         <setEntry value="org.eclipse.rap.demo.controls@default:default"/>
