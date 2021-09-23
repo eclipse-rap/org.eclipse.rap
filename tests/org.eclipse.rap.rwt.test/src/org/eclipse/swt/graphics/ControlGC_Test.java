@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 Rüdiger Herrmann and others.
+ * Copyright (c) 2011, 2021 Rüdiger Herrmann and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -215,6 +215,48 @@ public class ControlGC_Test {
     gc.setLineJoin( SWT.JOIN_ROUND );
     getGCAdapter( gc ).clearGCOperations();
     gc.setLineJoin( SWT.JOIN_ROUND );
+    assertEquals( 0, getGCOperations( gc ).length );
+  }
+
+  @Test
+  public void testSetLineStyle() {
+    gc.setLineStyle( SWT.LINE_DOT );
+
+    assertEquals( SWT.LINE_DOT, gc.getLineStyle() );
+
+    GCOperation[] gcOperations = getGCOperations( gc );
+    SetProperty operation = ( SetProperty )gcOperations[ 0 ];
+    assertEquals( SetProperty.LINE_STYLE, operation.id );
+    assertEquals( Integer.valueOf( SWT.LINE_DOT ), operation.value );
+  }
+
+  @Test
+  public void testSetLineStyleWithUnchangedValue() {
+    gc.setLineStyle( SWT.LINE_DOT );
+    getGCAdapter( gc ).clearGCOperations();
+    gc.setLineStyle( SWT.LINE_DOT );
+
+    assertEquals( 0, getGCOperations( gc ).length );
+  }
+
+  @Test
+  public void testSetLineDash() {
+    gc.setLineDash( new int[] { 1, 2, 3 } );
+
+    assertTrue( Arrays.equals( new int[] { 1, 2, 3 }, gc.getLineDash() ) );
+
+    GCOperation[] gcOperations = getGCOperations( gc );
+    SetProperty operation = ( SetProperty )gcOperations[ 0 ];
+    assertEquals( SetProperty.LINE_DASH, operation.id );
+    assertTrue( Arrays.equals( new int[] { 1, 2, 3 }, ( int[] )operation.value ) );
+  }
+
+  @Test
+  public void testSetLineDashWithUnchangedValue() {
+    gc.setLineDash( new int[] { 1, 2, 3 } );
+    getGCAdapter( gc ).clearGCOperations();
+    gc.setLineDash( new int[] { 1, 2, 3 } );
+
     assertEquals( 0, getGCOperations( gc ).length );
   }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2015 EclipseSource and others.
+ * Copyright (c) 2010, 2021 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,7 +26,9 @@ public abstract class GCOperation {
     public static final int LINE_WIDTH = 3;
     public static final int LINE_CAP = 4;
     public static final int LINE_JOIN = 5;
-    public static final int FONT = 6;
+    public static final int LINE_STYLE = 6;
+    public static final int LINE_DASH = 7;
+    public static final int FONT = 8;
 
     public final int id;
     public final Object value;
@@ -44,6 +46,13 @@ public abstract class GCOperation {
     public SetProperty( int id, int value ) {
       this.id = id;
       this.value = Integer.valueOf( value );
+    }
+
+    public SetProperty( int id, int[] value ) {
+      this.id = id;
+      int[] arrValue = new int[ value.length ];
+      System.arraycopy( value, 0, arrValue, 0, value.length );
+      this.value = arrValue;
     }
   }
 
@@ -224,7 +233,7 @@ public abstract class GCOperation {
     public SetClipping( byte[] types, float[] points ) {
       this.types = types;
       this.points = points;
-      rectangle = null;
+      this.rectangle = null;
     }
 
     public boolean isRectangular() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 Rüdiger Herrmann and others.
+ * Copyright (c) 2011, 2021 Rüdiger Herrmann and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,18 +41,21 @@ class ControlGC extends GCDelegate {
   private int lineWidth;
   private int lineCap;
   private int lineJoin;
+  private int lineStyle;
+  private int[] lineDash;
   private Rectangle clippingRect;
   private float[] transform = { 1, 0, 0, 1, 0, 0 };
 
   ControlGC( Control control ) {
     this.control = control;
-    this.background = control.getBackground();
-    this.foreground = control.getForeground();
-    this.font = control.getFont();
-    this.alpha = 255;
-    this.lineWidth = 0;
-    this.lineCap = SWT.CAP_FLAT;
-    this.lineJoin = SWT.JOIN_MITER;
+    background = control.getBackground();
+    foreground = control.getForeground();
+    font = control.getFont();
+    alpha = 255;
+    lineWidth = 0;
+    lineCap = SWT.CAP_FLAT;
+    lineJoin = SWT.JOIN_MITER;
+    lineStyle = SWT.LINE_SOLID;
   }
 
   @Override
@@ -148,6 +151,32 @@ class ControlGC extends GCDelegate {
   @Override
   int getLineJoin() {
     return lineJoin;
+  }
+
+  @Override
+  void setLineStyle( int lineStyle ) {
+    this.lineStyle = lineStyle;
+    if( lineStyle != SWT.LINE_CUSTOM ) {
+      GCOperation operation = new SetProperty( SetProperty.LINE_STYLE, lineStyle );
+      addGCOperation( operation );
+    }
+  }
+
+  @Override
+  int getLineStyle() {
+    return lineStyle;
+  }
+
+  @Override
+  void setLineDash( int[] dashes ) {
+    lineDash = dashes;
+    GCOperation operation = new SetProperty( SetProperty.LINE_DASH, lineDash );
+    addGCOperation( operation );
+  }
+
+  @Override
+  int[] getLineDash() {
+    return lineDash;
   }
 
   @Override

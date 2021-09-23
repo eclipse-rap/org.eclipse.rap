@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2015 EclipseSource and others.
+ * Copyright (c) 2010, 2021 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -22,6 +23,7 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.NotSerializableException;
+import java.util.Arrays;
 
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
@@ -459,16 +461,94 @@ public class GC_Test {
   }
 
   @Test
+  public void testSetLineStyle() {
+    gc.setLineStyle( SWT.LINE_DASH );
+
+    assertEquals( SWT.LINE_DASH, gc.getLineStyle() );
+  }
+
+  @Test
+  public void testSetLineStyleWithInvalidValue() {
+    try {
+      gc.setLineStyle( 500 );
+      fail( "value not allowed" );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  @Test
+  public void testSetLineDash() {
+    gc.setLineDash( new int[] { 1, 2, 3 } );
+
+    assertTrue( Arrays.equals( new int[] { 1, 2, 3 }, gc.getLineDash() ) );
+  }
+
+  @Test
+  public void testSetLineDash_setsCustomStyle() {
+    gc.setLineDash( new int[] { 1, 2, 3 } );
+
+    assertEquals( SWT.LINE_CUSTOM, gc.getLineStyle() );
+  }
+
+  @Test
+  public void testSetLineDashWithNull() {
+    gc.setLineDash( new int[] { 1, 2, 3 } );
+
+    gc.setLineDash( null );
+
+    assertNull( gc.getLineDash() );
+  }
+
+  @Test
+  public void testSetLineDashWithNull_setsSolidStyle() {
+    gc.setLineDash( new int[] { 1, 2, 3 } );
+
+    gc.setLineDash( null );
+
+    assertEquals( SWT.LINE_SOLID, gc.getLineStyle() );
+  }
+
+  @Test
   public void testSetLineAttributes() {
-    LineAttributes attributes
-      = new LineAttributes( 5, SWT.CAP_ROUND, SWT.JOIN_BEVEL );
+    LineAttributes attributes = new LineAttributes( 5, SWT.CAP_ROUND, SWT.JOIN_BEVEL );
+
     gc.setLineAttributes( attributes );
+
     assertEquals( 5, gc.getLineWidth() );
     assertEquals( SWT.CAP_ROUND, gc.getLineCap() );
     assertEquals( SWT.JOIN_BEVEL, gc.getLineJoin() );
     assertEquals( 5, gc.getLineAttributes().width, 0 );
     assertEquals( SWT.CAP_ROUND, gc.getLineAttributes().cap );
     assertEquals( SWT.JOIN_BEVEL, gc.getLineAttributes().join );
+  }
+
+  @Test
+  public void testSetLineAttributes_fullConstructor() {
+    LineAttributes attributes = new LineAttributes( 5,
+                                                    SWT.CAP_ROUND,
+                                                    SWT.JOIN_BEVEL,
+                                                    SWT.LINE_CUSTOM,
+                                                    new float[] {
+                                                      1f,
+                                                      2f,
+                                                      3f
+                                                    },
+                                                    4f,
+                                                    5f );
+
+    gc.setLineAttributes( attributes );
+
+    assertEquals( 5, gc.getLineWidth() );
+    assertEquals( SWT.CAP_ROUND, gc.getLineCap() );
+    assertEquals( SWT.JOIN_BEVEL, gc.getLineJoin() );
+    assertEquals( 5, gc.getLineAttributes().width, 0 );
+    assertEquals( SWT.CAP_ROUND, gc.getLineAttributes().cap );
+    assertEquals( SWT.JOIN_BEVEL, gc.getLineAttributes().join );
+    assertEquals( SWT.LINE_CUSTOM, gc.getLineAttributes().style );
+    assertTrue( Arrays.equals( new float[] { 1f, 2f, 3f }, gc.getLineAttributes().dash ) );
+    // TODO: dashOffset and miterLimit not supported
+    assertEquals( 0f, gc.getLineAttributes().dashOffset, 0 );
+    assertEquals( 10f, gc.getLineAttributes().miterLimit, 0 );
   }
 
   @Test
@@ -482,9 +562,10 @@ public class GC_Test {
 
   @Test
   public void testGetLineAttributes() {
-    LineAttributes attributes
-      = new LineAttributes( 5, SWT.CAP_ROUND, SWT.JOIN_BEVEL );
+    LineAttributes attributes = new LineAttributes( 5, SWT.CAP_ROUND, SWT.JOIN_BEVEL );
+
     gc.setLineAttributes( attributes );
+
     LineAttributes returnedAttributes = gc.getLineAttributes();
     assertNotSame( attributes, returnedAttributes );
     assertEquals( attributes.cap, returnedAttributes.cap );

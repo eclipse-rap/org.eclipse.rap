@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 Rüdiger Herrmann and others.
+ * Copyright (c) 2011, 2021 Rüdiger Herrmann and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,9 @@
 package org.eclipse.swt.graphics;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
 
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
@@ -68,6 +71,20 @@ public class DeviceGC_Test {
   public void testSetLineCap() {
     gc.setLineCap( SWT.CAP_ROUND );
     assertEquals( SWT.CAP_ROUND, gc.getLineCap() );
+  }
+
+  @Test
+  public void testSetLineStyle() {
+    gc.setLineStyle( SWT.LINE_DOT );
+
+    assertEquals( SWT.LINE_DOT, gc.getLineStyle() );
+  }
+
+  @Test
+  public void testSetLineDash() {
+    gc.setLineDash( new int[] { 1, 2, 3 } );
+
+    assertTrue( Arrays.equals( new int[] { 1, 2, 3 }, gc.getLineDash() ) );
   }
 
   @Test

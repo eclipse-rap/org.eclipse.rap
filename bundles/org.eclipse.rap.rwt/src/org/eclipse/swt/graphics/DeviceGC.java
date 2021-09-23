@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 Rüdiger Herrmann and others.
+ * Copyright (c) 2011, 2021 Rüdiger Herrmann and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,18 +24,21 @@ class DeviceGC extends GCDelegate {
   private int lineWidth;
   private int lineCap;
   private int lineJoin;
+  private int lineStyle;
+  private int[] lineDash;
   private Rectangle clippingRect;
   private float[] transform = { 1, 0, 0, 1, 0, 0 };
 
   DeviceGC( Device device ) {
     this.device = device;
-    this.background = device.getSystemColor( SWT.COLOR_WHITE );
-    this.foreground = device.getSystemColor( SWT.COLOR_BLACK );
-    this.font = device.getSystemFont();
-    this.alpha = 255;
-    this.lineWidth = 0;
-    this.lineCap = SWT.CAP_FLAT;
-    this.lineJoin = SWT.JOIN_MITER;
+    background = device.getSystemColor( SWT.COLOR_WHITE );
+    foreground = device.getSystemColor( SWT.COLOR_BLACK );
+    font = device.getSystemFont();
+    alpha = 255;
+    lineWidth = 0;
+    lineCap = SWT.CAP_FLAT;
+    lineJoin = SWT.JOIN_MITER;
+    lineStyle = SWT.LINE_SOLID;
   }
 
   @Override
@@ -111,6 +114,26 @@ class DeviceGC extends GCDelegate {
   @Override
   int getLineJoin() {
     return lineJoin;
+  }
+
+  @Override
+  void setLineStyle( int lineStyle ) {
+    this.lineStyle = lineStyle;
+  }
+
+  @Override
+  int getLineStyle() {
+    return lineStyle;
+  }
+
+  @Override
+  void setLineDash( int[] dashes ) {
+    lineDash = dashes;
+  }
+
+  @Override
+  int[] getLineDash() {
+    return lineDash;
   }
 
   @Override

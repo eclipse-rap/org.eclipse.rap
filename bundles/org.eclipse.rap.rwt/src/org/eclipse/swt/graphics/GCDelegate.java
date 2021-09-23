@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 Rüdiger Herrmann and others.
+ * Copyright (c) 2011, 2021 Rüdiger Herrmann and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,10 @@ abstract class GCDelegate {
   abstract int getLineCap();
   abstract void setLineJoin( int lineJoin );
   abstract int getLineJoin();
+  abstract void setLineStyle( int lineStyle );
+  abstract int getLineStyle();
+  abstract void setLineDash( int[] dashes );
+  abstract int[] getLineDash();
 
   abstract void setClipping( Rectangle rectangle );
   abstract void setClipping( Path path );

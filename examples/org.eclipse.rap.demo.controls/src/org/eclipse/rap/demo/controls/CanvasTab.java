@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2016 EclipseSource and others.
+ * Copyright (c) 2010, 2021 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -106,11 +106,23 @@ public final class CanvasTab extends ExampleTab {
   }
 
   private void paintLines( Display display, GC gc ) {
-    gc.drawLine( 30, 130, 400, 130 );
+    gc.setLineStyle( SWT.LINE_SOLID );
+    gc.drawLine( 30, 50, 400, 50 );
+    gc.setLineStyle( SWT.LINE_DASH );
+    gc.drawLine( 30, 60, 400, 60 );
+    gc.setLineStyle( SWT.LINE_DASHDOT );
+    gc.drawLine( 30, 70, 400, 70 );
+    gc.setLineStyle( SWT.LINE_DASHDOTDOT );
+    gc.drawLine( 30, 80, 400, 80 );
+    gc.setLineStyle( SWT.LINE_DOT );
+    gc.drawLine( 30, 90, 400, 90 );
+    gc.setLineDash( new int[] { 12, 3, 3 }  );
+    gc.drawLine( 30, 100, 400, 100 );
+    gc.setLineStyle( SWT.LINE_SOLID );
     gc.setLineWidth( 10 );
     gc.setForeground( display.getSystemColor( SWT.COLOR_GREEN ) );
     gc.setAlpha( 64 );
-    gc.drawLine( 30, 140, 400, 140 );
+    gc.drawLine( 30, 135, 400, 135 );
     gc.setForeground( display.getSystemColor( SWT.COLOR_RED ) );
     gc.setLineJoin( SWT.JOIN_ROUND );
     gc.setLineCap( SWT.CAP_ROUND );

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2015 EclipseSource and others.
+ * Copyright (c) 2010, 2021 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -608,6 +608,133 @@ public class GC extends Resource {
   }
 
   /**
+   * Sets the receiver's line style to the argument, which must be one
+   * of the constants <code>SWT.LINE_SOLID</code>, <code>SWT.LINE_DASH</code>,
+   * <code>SWT.LINE_DOT</code>, <code>SWT.LINE_DASHDOT</code> or
+   * <code>SWT.LINE_DASHDOTDOT</code>.
+   *
+   * @param lineStyle the style to be used for drawing lines
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the style is not valid</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   *
+   * @since 3.19
+   */
+  public void setLineStyle( int lineStyle ) {
+    checkDisposed();
+    if( delegate.getLineStyle() != lineStyle ) {
+      switch( lineStyle ) {
+        case SWT.LINE_SOLID:
+        case SWT.LINE_DASH:
+        case SWT.LINE_DOT:
+        case SWT.LINE_DASHDOT:
+        case SWT.LINE_DASHDOTDOT:
+          delegate.setLineStyle( lineStyle );
+          break;
+        case SWT.LINE_CUSTOM:
+          if( delegate.getLineDash() == null ) {
+            delegate.setLineStyle( SWT.LINE_SOLID );
+          }
+          break;
+        default:
+          SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+      }
+    }
+  }
+
+  /**
+   * Returns the receiver's line style, which will be one
+   * of the constants <code>SWT.LINE_SOLID</code>, <code>SWT.LINE_DASH</code>,
+   * <code>SWT.LINE_DOT</code>, <code>SWT.LINE_DASHDOT</code> or
+   * <code>SWT.LINE_DASHDOTDOT</code>.
+   *
+   * @return the style used for drawing lines
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   *
+   * @since 3.19
+   */
+  public int getLineStyle() {
+    checkDisposed();
+    return delegate.getLineStyle();
+  }
+
+  /**
+   * Sets the receiver's line dash style to the argument. The default
+   * value is <code>null</code>. If the argument is not <code>null</code>,
+   * the receiver's line style is set to <code>SWT.LINE_CUSTOM</code>, otherwise
+   * it is set to <code>SWT.LINE_SOLID</code>.
+   *
+   * @param dashes the dash style to be used for drawing lines
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if any of the values in the array is less than or equal 0</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   *
+   * @since 3.19
+   */
+  public void setLineDash( int[] dashes ) {
+    checkDisposed();
+    int[] lineDashes = delegate.getLineDash();
+    if( dashes != null && dashes.length > 0 ) {
+      boolean changed =    delegate.getLineStyle() != SWT.LINE_CUSTOM
+                        || lineDashes == null
+                        || lineDashes.length != dashes.length;
+      for( int i = 0; i < dashes.length; i++ ) {
+        if( dashes[ i ] <= 0 ) {
+          SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+        }
+        if( !changed && lineDashes[ i ] != dashes[ i ] ) {
+          changed = true;
+        }
+      }
+      if( changed ) {
+        int[] newDashes = new int[ dashes.length ];
+        System.arraycopy( dashes, 0, newDashes, 0, dashes.length );
+        delegate.setLineStyle( SWT.LINE_CUSTOM );
+        delegate.setLineDash( newDashes );
+      }
+    } else {
+      if( delegate.getLineStyle() != SWT.LINE_SOLID || ( lineDashes != null && lineDashes.length != 0 ) ) {
+        delegate.setLineStyle( SWT.LINE_SOLID );
+        delegate.setLineDash( null );
+      }
+    }
+  }
+
+  /**
+   * Returns the receiver's line dash style. The default value is
+   * <code>null</code>.
+   *
+   * @return the line dash style used for drawing lines
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   *
+   * @since 3.19
+   */
+  public int[] getLineDash() {
+    checkDisposed();
+    int[] lineDashes = delegate.getLineDash();
+    if( lineDashes != null ) {
+      int[] dashes = new int[ lineDashes.length ];
+      System.arraycopy( lineDashes, 0, dashes, 0, lineDashes.length );
+      return dashes;
+    }
+    return null;
+  }
+
+  /**
    * Sets the receiver's line attributes.
    * <p>
    * This operation requires the operating system's advanced
@@ -635,6 +762,15 @@ public class GC extends Resource {
     setLineWidth( ( int )attributes.width );
     setLineCap( attributes.cap );
     setLineJoin( attributes.join );
+    setLineStyle( attributes.style );
+    float[] dashes = attributes.dash;
+    if( dashes != null && dashes.length > 0 ) {
+      int[] lineDashes = new int[ dashes.length ];
+      for( int i = 0; i < dashes.length; i++ ) {
+        lineDashes[ i ] = ( int )dashes[ i ];
+      }
+      setLineDash( lineDashes );
+    }
     advanced = true;
   }
 
@@ -652,7 +788,16 @@ public class GC extends Resource {
     int lineWidth = delegate.getLineWidth();
     int lineCap = delegate.getLineCap();
     int lineJoin = delegate.getLineJoin();
-    return new LineAttributes( lineWidth, lineCap, lineJoin );
+    int lineStyle = delegate.getLineStyle();
+    int[] dashes = delegate.getLineDash();
+    float[] lineDash = null;
+    if( dashes != null && dashes.length > 0 ) {
+      lineDash = new float[ dashes.length ];
+      for( int i = 0; i < dashes.length; i++ ) {
+        lineDash[ i ] = dashes[ i ];
+      }
+    }
+    return new LineAttributes( lineWidth, lineCap, lineJoin, lineStyle, lineDash, 0 , 10 );
   }
 
   /**

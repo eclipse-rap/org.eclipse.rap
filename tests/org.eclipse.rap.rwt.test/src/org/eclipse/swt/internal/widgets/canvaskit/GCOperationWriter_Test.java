@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2016 EclipseSource and others.
+ * Copyright (c) 2010, 2021 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -176,6 +176,46 @@ public class GCOperationWriter_Test {
 
     JsonArray ops = getGCOperations( canvas );
     assertEquals( "[\"lineJoin\",\"round\"]", getOperation( 0, ops ) );
+  }
+
+  @Test
+  public void testLineStyleDash() {
+    gc.setLineStyle( SWT.LINE_DASH );
+
+    JsonArray ops = getGCOperations( canvas );
+    assertEquals( "[\"lineDash\",[10,10]]", getOperation( 0, ops ) );
+  }
+
+  @Test
+  public void testLineStyleDashDot() {
+    gc.setLineStyle( SWT.LINE_DASHDOT );
+
+    JsonArray ops = getGCOperations( canvas );
+    assertEquals( "[\"lineDash\",[10,2,2,2]]", getOperation( 0, ops ) );
+  }
+
+  @Test
+  public void testLineStyleDashDotDot() {
+    gc.setLineStyle( SWT.LINE_DASHDOTDOT );
+
+    JsonArray ops = getGCOperations( canvas );
+    assertEquals( "[\"lineDash\",[10,2,2,2,2,2]]", getOperation( 0, ops ) );
+  }
+
+  @Test
+  public void testLineStyleDot() {
+    gc.setLineStyle( SWT.LINE_DOT );
+
+    JsonArray ops = getGCOperations( canvas );
+    assertEquals( "[\"lineDash\",[2,2]]", getOperation( 0, ops ) );
+  }
+
+  @Test
+  public void testLineDash() {
+    gc.setLineDash( new int[] { 1, 2, 3 } );
+
+    JsonArray ops = getGCOperations( canvas );
+    assertEquals( "[\"lineDash\",[1,2,3]]", getOperation( 0, ops ) );
   }
 
   @Test

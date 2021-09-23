@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2016 EclipseSource and others.
+ * Copyright (c) 2010, 2021 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -358,6 +358,36 @@ final class GCOperationWriter {
             value = JsonValue.valueOf( "round" );
             break;
         }
+      break;
+      case SetProperty.LINE_STYLE:
+        name = "lineDash";
+        switch( ( ( Integer )operation.value ).intValue() ) {
+          default:
+          case SWT.LINE_SOLID:
+            value = new JsonArray();
+            break;
+          case SWT.LINE_DASH:
+            value = new JsonArray().add( 10 ).add( 10 );
+            break;
+          case SWT.LINE_DASHDOT:
+            value = new JsonArray().add( 10 ).add( 2 ).add( 2 ).add( 2 );
+            break;
+          case SWT.LINE_DASHDOTDOT:
+            value = new JsonArray().add( 10 ).add( 2 ).add( 2 ).add( 2 ).add( 2 ).add( 2 );
+            break;
+          case SWT.LINE_DOT:
+            value = new JsonArray().add( 2 ).add( 2 );
+            break;
+        }
+      break;
+      case SetProperty.LINE_DASH:
+        name = "lineDash";
+        JsonArray jsonValue = new JsonArray();
+        int[] dashes = ( int[] )operation.value;
+        for( int i = 0; i < dashes.length; i++ ) {
+          jsonValue.add( dashes[ i ] );
+        }
+        value = jsonValue;
       break;
       case SetProperty.FONT:
         name = "font";

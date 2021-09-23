@@ -2571,6 +2571,51 @@ public class SWT {
   public static final int DRAW_MNEMONIC = 1 << 3;
 
   /**
+   * Line drawing style for solid lines  (value is 1).
+   *
+   * @since 3.19
+   */
+  public static final int LINE_SOLID = 1;
+
+  /**
+   * Line drawing style for dashed lines (value is 2).
+   *
+   * @since 3.19
+   */
+  public static final int LINE_DASH = 2;
+
+  /**
+   * Line drawing style for dotted lines (value is 3).
+   *
+   * @since 3.19
+   */
+  public static final int LINE_DOT = 3;
+
+  /**
+   * Line drawing style for alternating dash-dot lines (value is 4).
+   *
+   * @since 3.19
+   */
+  public static final int LINE_DASHDOT = 4;
+
+  /**
+   * Line drawing style for dash-dot-dot lines (value is 5).
+   *
+   * @since 3.19
+   */
+  public static final int LINE_DASHDOTDOT = 5;
+
+  /**
+   * Line drawing style for custom dashed lines (value is 6).
+   *
+   * @see org.eclipse.swt.graphics.GC#setLineDash(int[])
+   * @see org.eclipse.swt.graphics.GC#getLineDash()
+   *
+   * @since 3.19
+   */
+  public static final int LINE_CUSTOM = 6;
+
+  /**
    * Path constant that represents a "move to" operation (value is 1).
    *
    * @since 2.1
