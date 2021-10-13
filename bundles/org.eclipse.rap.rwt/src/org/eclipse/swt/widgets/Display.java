@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2021 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1131,9 +1131,8 @@ public class Display extends Device implements Adaptable {
     if( scheduler == null ) {
       scheduler = createTimerExecScheduler();
     }
-    if( milliseconds < 0 ) {
-      scheduler.cancel( runnable );
-    } else {
+    scheduler.cancel( runnable );
+    if( milliseconds >= 0 ) {
       scheduler.schedule( milliseconds, runnable );
     }
   }

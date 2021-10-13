@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2021 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.same;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -65,9 +66,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 
 
-@SuppressWarnings( "deprecation" )
 public class Display_Test {
 
   private Display display;
@@ -1086,7 +1087,9 @@ public class Display_Test {
     }
   }
 
-  public void tesTimerExec_schedulesRunnable() {
+  @Test
+  public void testTimerExec_schedulesRunnable() {
+    display.dispose();
     final TimerExecScheduler scheduler = mock( TimerExecScheduler.class );
     Display display = new Display() {
       @Override
@@ -1100,7 +1103,9 @@ public class Display_Test {
     verify( scheduler ).schedule( 23, runnable );
   }
 
-  public void tesTimerExec_cancelsRunnableIfTimeIsNegative() {
+  @Test
+  public void testTimerExec_cancelsRunnableIfTimeIsNegative() {
+    display.dispose();
     final TimerExecScheduler scheduler = mock( TimerExecScheduler.class );
     Display display = new Display() {
       @Override
@@ -1112,6 +1117,27 @@ public class Display_Test {
     display.timerExec( -1, runnable );
 
     verify( scheduler ).cancel( runnable );
+  }
+
+  @Test
+  public void testTimerExec_cancelsRunnableIfExists() {
+    display.dispose();
+    final TimerExecScheduler scheduler = mock( TimerExecScheduler.class );
+    Display display = new Display() {
+      @Override
+      TimerExecScheduler createTimerExecScheduler() {
+        return scheduler;
+      }
+    };
+    Runnable runnable = mock( Runnable.class );
+    display.timerExec( 10, runnable );
+    display.timerExec( 20, runnable );
+
+    InOrder inOrder = inOrder( scheduler );
+    inOrder.verify( scheduler ).cancel( runnable );
+    inOrder.verify( scheduler ).schedule( 10, runnable );
+    inOrder.verify( scheduler ).cancel( runnable );
+    inOrder.verify( scheduler ).schedule( 20, runnable );
   }
 
   @Test
