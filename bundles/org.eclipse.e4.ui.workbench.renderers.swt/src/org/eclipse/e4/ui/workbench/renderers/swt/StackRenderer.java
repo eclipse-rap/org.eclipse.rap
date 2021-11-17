@@ -1226,7 +1226,7 @@ public class StackRenderer extends LazyStackRenderer implements IPreferenceChang
 	public void showAvailableItems(MElementContainer<?> stack, CTabFolder ctf) {
 		IEclipseContext ctxt = getContext(stack);
 		final BasicPartList editorList = new BasicPartList(ctf.getShell(),
-				SWT.ON_TOP, SWT.V_SCROLL | SWT.H_SCROLL,
+				SWT.ON_TOP | SWT.BORDER, SWT.V_SCROLL | SWT.H_SCROLL,
 				ctxt.get(EPartService.class), stack, this,
  getMRUValueFromPreferences());
 		editorList.setInput();
