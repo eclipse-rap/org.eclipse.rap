@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2016 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2021 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -266,6 +266,9 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
         this._chevron = new rwt.widgets.base.BasicButton( "push", true );
         this._chevron.setAppearance( "ctabfolder-drop-down-button" );
         this._chevron.addEventListener( "execute", this._onChevronExecute, this );
+        this._chevron.addEventListener( "mousedown", this._stopEvent, this );
+        this._chevron.addEventListener( "mouseup", this._stopEvent, this );
+        this._chevron.addEventListener( "dblclick", this._stopEvent, this );
         this._chevron.setDirection( this.getDirection() );
         var wm = rwt.remote.WidgetManager.getInstance();
         wm.setToolTip( this._chevron, rwt.widgets.CTabFolder.CHEVRON_TOOLTIP );
@@ -434,6 +437,11 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
           server.getRemoteObject( this ).notify( "Folder", { "detail" : "showList" } );
         }
       }
+    },
+
+    _stopEvent : function( event ) {
+      event.stopPropagation();
+      event.preventDefault();
     },
 
     _onMinMaxExecute : function( evt ) {
