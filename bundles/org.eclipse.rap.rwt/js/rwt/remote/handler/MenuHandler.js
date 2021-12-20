@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 EclipseSource and others.
+ * Copyright (c) 2011, 2021 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -70,6 +70,26 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Menu", {
     "showMenu" : function( widget, args ) {
       if( widget.hasState( "rwt_POP_UP" ) ) {
         widget.showMenu( widget, args.x, args.y );
+      }
+    }
+  },
+
+  /**
+   * @class RWT Scripting analoge to org.eclipse.swt.widgets.Menu
+   * @name Menu
+   * @description The constructor is not public.
+   * @since 3.20
+   */
+  scriptingMethods : {
+    /**
+     * @description  Shows the pop-up menu at given location (x, y).
+     * <p>
+     *   Works with pop-up menus ONLY!
+     * </p>
+     */
+    "showAt" : function( x, y ) {
+      if( this.hasState( "rwt_POP_UP" ) ) {
+        this.showMenu( this, x, y );
       }
     }
   }
