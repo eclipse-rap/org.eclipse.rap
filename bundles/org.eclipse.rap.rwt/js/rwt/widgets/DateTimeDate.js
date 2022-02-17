@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2019 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2022 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -270,15 +270,16 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
 
     _applySpinnerValue : function( textField ) {
       if( textField === this._dayTextField ) {
-        this._applyDaySpinnerValue();
+        var value = parseInt( this._removeLeadingZero( this._dayTextField.getText() ), 10 );
+        this._applyDaySpinnerValue( value );
       } else if( textField === this._monthTextField ) {
-        this._applyMonthSpinnerValue();
+        this._applyMonthSpinnerValue( this._monthInt );
       } else if( textField === this._yearTextField ) {
-        this._applyYearSpinnerValue();
+        this._applyYearSpinnerValue( this._lastValidYear );
       }
     },
 
-    _applyDaySpinnerValue : function() {
+    _applyDaySpinnerValue : function( value ) {
       this._spinner.setMin( 1 );
       this._spinner.setMax( this._getDaysInMonth() );
       if( this._minimum && this._minimum.getFullYear() === this._lastValidYear &&
@@ -289,11 +290,10 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
           this._maximum.getMonth() === this._monthInt - 1 ) {
         this._spinner.setMax( this._maximum.getDate() );
       }
-      var tmpValue = this._removeLeadingZero( this._dayTextField.getText() );
-      this._spinner.setValue( parseInt( tmpValue, 10 ) );
+      this._spinner.setValue( value );
     },
 
-    _applyMonthSpinnerValue : function() {
+    _applyMonthSpinnerValue : function( value ) {
       this._spinner.setMin( 1 );
       this._spinner.setMax( 12 );
       if( this._minimum && this._minimum.getFullYear() === this._lastValidYear ) {
@@ -302,10 +302,10 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
       if( this._maximum && this._maximum.getFullYear() === this._lastValidYear ) {
         this._spinner.setMax( this._maximum.getMonth() + 1 );
       }
-      this._spinner.setValue( this._monthInt );
+      this._spinner.setValue( value );
     },
 
-    _applyYearSpinnerValue : function() {
+    _applyYearSpinnerValue : function( value ) {
       this._spinner.setMax( 9999 );
       this._spinner.setMin( 1752 );
       if( this._minimum ) {
@@ -314,7 +314,7 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
       if( this._maximum ) {
         this._spinner.setMax( this._maximum.getFullYear() );
       }
-      this._spinner.setValue( this._lastValidYear );
+      this._spinner.setValue( value );
     },
 
     _onSpinnerChange : function() {
@@ -680,7 +680,7 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
         this._monthTextField.setText( this._monthname[ this._monthInt - 1 ] );
       }
       if( this._focusedTextField === this._monthTextField ) {
-        this._spinner.setValue( this._monthInt );
+        this._applyMonthSpinnerValue( this._monthInt );
       }
       // Set the weekday
       this._setWeekday();
@@ -689,7 +689,7 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
     setDay : function( value ) {
       this._dayTextField.setText( this._addLeadingZero( value ) );
       if( this._focusedTextField === this._dayTextField ) {
-        this._spinner.setValue( value );
+        this._applyDaySpinnerValue( value );
       }
       // Set the weekday
       this._setWeekday();
@@ -699,7 +699,7 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
       this._lastValidYear = value;
       this._yearTextField.setText( "" + value );
       if( this._focusedTextField === this._yearTextField ) {
-        this._spinner.setValue( value );
+        this._applyYearSpinnerValue( this._lastValidYear );
       }
       // Set the weekday
       this._setWeekday();
