@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2020 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2022 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,6 +40,7 @@ rwt.qx.Class.define( "rwt.remote.Connection", {
     this._event = null;
     this._requestCounter = 0;
     this._requestPending = false;
+    this._currentCursor = null;
     this._connectionId = null;
     this._sendTimer = new Timer( 60 );
     this._sendTimer.addEventListener( "interval", function() {
@@ -123,6 +124,7 @@ rwt.qx.Class.define( "rwt.remote.Connection", {
         this._sendTimer.stop();
         this.getMessageWriter().appendHead( "requestCounter", this._requestCounter++ );
         this._requestPending = true;
+        this._currentCursor = ClientDocument.getInstance().getGlobalCursor();
         this._startWaitHintTimer();
         var request = this._createRequest();
         request.setAsynchronous( async );
@@ -305,7 +307,7 @@ rwt.qx.Class.define( "rwt.remote.Connection", {
     _hideWaitHint : function() {
       this._waitHintTimer.stop();
       ErrorHandler.hideErrorBox();
-      ClientDocument.getInstance().setGlobalCursor( null );
+      ClientDocument.getInstance().setGlobalCursor( this._currentCursor );
     }
 
   }
