@@ -104,6 +104,13 @@ As an alternative to registering an entrypoint, Eclipse applications can also us
                </appInfo>
             </annotation>
          </attribute>
+         <attribute name="csp" type="string">
+            <annotation>
+               <documentation>
+                  A string with Content Security Policy (CSP) directives.
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2022 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -63,8 +64,10 @@ public class StartupPage {
   }
 
   public void send( HttpServletResponse response ) throws IOException {
+    StartupPageValueProvider valueProvider = new StartupPageValueProvider();
     setResponseHeaders( response );
-    startupPageTemplate.writePage( response.getWriter(), new StartupPageValueProvider() );
+    setContentSecurityPolicy( response, valueProvider.getNonceValue() );
+    startupPageTemplate.writePage( response.getWriter(), valueProvider );
   }
 
   static void setResponseHeaders( HttpServletResponse response ) {
@@ -79,6 +82,13 @@ public class StartupPage {
     response.addHeader( "Cache-Control", "max-age=0, no-cache, must-revalidate, no-store" );
     response.setHeader( "Pragma", "no-cache" );
     response.setDateHeader( "Expires", 0 );
+  }
+
+  void setContentSecurityPolicy( HttpServletResponse response, String nonceValue ) {
+    String csp = getCurrentEntryPointProperties().get( WebClient.CSP );
+    if( csp != null ) {
+      response.setHeader( "Content-Security-Policy", csp.replaceAll( "nonce-", "nonce-" + nonceValue ) );
+    }
   }
 
   protected void writeTitle( PrintWriter printWriter ) {
@@ -100,17 +110,19 @@ public class StartupPage {
     writeEntryPointProperty( printWriter, WebClient.HEAD_HTML );
   }
 
-  private void writeLibraries( PrintWriter printWriter ) {
-    writeScriptTag( printWriter, clientJsLibrary );
+  private void writeLibraries( PrintWriter printWriter, String nonceValue ) {
+    writeScriptTag( printWriter, clientJsLibrary, nonceValue );
     for( String location : jsLibraries ) {
-      writeScriptTag( printWriter, location );
+      writeScriptTag( printWriter, location, nonceValue );
     }
   }
 
-  protected void writeScriptTag( PrintWriter printWriter, String libraryLocation ) {
+  protected void writeScriptTag( PrintWriter printWriter, String libraryLocation, String nonceValue ) {
     if( libraryLocation != null ) {
       printWriter.write( "    <script type=\"text/javascript\" src=\"" );
       printWriter.write( libraryLocation );
+      printWriter.write( "\" nonce=\"" );
+      printWriter.write( nonceValue );
       printWriter.write( "\" charset=\"" );
       printWriter.write( HTTP.CHARSET_UTF_8 );
       printWriter.write( "\"></script>\n" );
@@ -166,10 +178,20 @@ public class StartupPage {
 
   private class StartupPageValueProvider implements VariableWriter {
 
+    private final String nonceValue;
+
+    public StartupPageValueProvider() {
+      nonceValue = UUID.randomUUID().toString().replaceAll( "-", "" );
+    }
+
+    String getNonceValue() {
+      return nonceValue;
+    }
+
     @Override
     public void writeVariable( PrintWriter printWriter, String variableName ) {
       if( variableName.equals( StartupPageTemplate.TOKEN_LIBRARIES ) ) {
-        writeLibraries( printWriter );
+        writeLibraries( printWriter, nonceValue );
       } else if( variableName.equals( StartupPageTemplate.TOKEN_TITLE ) ) {
         writeTitle( printWriter );
       } else if( variableName.equals( StartupPageTemplate.TOKEN_BODY ) ) {
@@ -182,6 +204,8 @@ public class StartupPage {
         writeNoScriptMessage( printWriter );
       } else if( variableName.equals( StartupPageTemplate.TOKEN_APP_SCRIPT ) ) {
         writeAppScript( printWriter );
+      } else if( variableName.equals( StartupPageTemplate.TOKEN_NONCE_VALUE ) ) {
+        printWriter.write( nonceValue );
       } else {
         throw new IllegalArgumentException( "Unsupported variable: " + variableName );
       }

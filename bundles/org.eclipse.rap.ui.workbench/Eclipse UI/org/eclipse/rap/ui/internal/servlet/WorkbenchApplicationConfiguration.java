@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2019 EclipseSource and others.
+ * Copyright (c) 2006, 2022 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -160,6 +160,7 @@ public class WorkbenchApplicationConfiguration implements ApplicationConfigurati
       String className = element.getAttribute( "class" );
       String applicationId = element.getAttribute( "applicationId" );
       String brandingId = element.getAttribute( "brandingId" );
+      String csp = element.getAttribute( "csp" );
       try {
         EntryPointFactory entryPointFactory;
         if( className != null ) {
@@ -171,6 +172,7 @@ public class WorkbenchApplicationConfiguration implements ApplicationConfigurati
           throw new IllegalArgumentException( "Neither class nor applicationId specified" );
         }
         Map<String, String> properties = getBrandingProperties( brandingId );
+        properties.put( WebClient.CSP, csp );
         application.addEntryPoint( path, entryPointFactory, properties );
       } catch( final Throwable thr ) {
         String text = "Could not register entry point ''{0}'' with id ''{1}''.";

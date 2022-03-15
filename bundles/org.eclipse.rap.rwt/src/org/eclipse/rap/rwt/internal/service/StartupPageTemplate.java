@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2022 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@ public final class StartupPageTemplate {
   public final static String TOKEN_TITLE = "title";
   public final static String TOKEN_HEADERS = "headers";
   public final static String TOKEN_NO_SCRIPT_MESSAGE = "noScriptMessage";
+  public final static String TOKEN_NONCE_VALUE = "nonceValue";
 
   public interface VariableWriter {
     void writeVariable( PrintWriter printWriter, String variableName );

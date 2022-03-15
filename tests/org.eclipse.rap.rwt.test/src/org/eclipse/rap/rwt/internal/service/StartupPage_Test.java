@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2022 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,8 +14,12 @@ package org.eclipse.rap.rwt.internal.service;
 
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
@@ -69,6 +73,26 @@ public class StartupPage_Test {
   }
 
   @Test
+  public void testSetResponseHeaders_withoutContentSecurityPolicy() {
+    registerEntryPoint( null, null );
+    startupPage.activate();
+
+    startupPage.setContentSecurityPolicy( response, "abc" );
+
+    assertNull( response.getHeader( "Content-Security-Policy" ) );
+  }
+
+  @Test
+  public void testSetResponseHeaders_withContentSecurityPolicy() {
+    registerEntryPoint( WebClient.CSP, "script-src 'strict-dynamic' 'nonce-';" );
+    startupPage.activate();
+
+    startupPage.setContentSecurityPolicy( response, "abc" );
+
+    assertEquals( "script-src 'strict-dynamic' 'nonce-abc';", response.getHeader( "Content-Security-Policy" ) );
+  }
+
+  @Test
   public void testSend() throws IOException {
     startupPage.activate();
     registerEntryPoint( null, null );
@@ -82,6 +106,7 @@ public class StartupPage_Test {
 
   @Test
   public void testSuccessiveMarkup() throws IOException {
+    registerEntryPoint( null, null );
     startupPage.activate();
     mockTemplate( "<some html>" );
     startupPage.send( response );
@@ -195,17 +220,19 @@ public class StartupPage_Test {
 
   @Test
   public void testSendReplacesLibraryToken() throws IOException {
+    registerEntryPoint( null, null );
     startupPage.setClientJsLibrary( "client.js" );
     startupPage.activate();
     mockTemplate( variableFrom( StartupPageTemplate.TOKEN_LIBRARIES ) );
 
     startupPage.send( response );
 
-    verify( startupPage ).writeScriptTag( response.getWriter(), "client.js" );
+    verify( startupPage ).writeScriptTag( same( response.getWriter() ), eq( "client.js" ), anyString() );
   }
 
   @Test
   public void testAppendsJsLibrariesAfterClientLibrary() throws IOException {
+    registerEntryPoint( null, null );
     startupPage.addJsLibrary( "library.js" );
     startupPage.setClientJsLibrary( "client.js" );
     startupPage.activate();
@@ -214,12 +241,13 @@ public class StartupPage_Test {
     startupPage.send( response );
 
     InOrder order = inOrder( startupPage );
-    order.verify( startupPage ).writeScriptTag( response.getWriter(), "client.js" );
-    order.verify( startupPage ).writeScriptTag( response.getWriter(), "library.js" );
+    order.verify( startupPage ).writeScriptTag( same( response.getWriter() ), eq( "client.js" ), anyString() );
+    order.verify( startupPage ).writeScriptTag( same( response.getWriter() ), eq( "library.js" ), anyString() );
   }
 
   @Test
   public void testSendReplacesBackgroundImageToken() throws IOException {
+    registerEntryPoint( null, null );
     startupPage.activate();
     mockTemplate( variableFrom( StartupPageTemplate.TOKEN_BACKGROUND_IMAGE ) );
 
@@ -230,6 +258,7 @@ public class StartupPage_Test {
 
   @Test
   public void testSendReplacesNoScriptMessageToken() throws IOException {
+    registerEntryPoint( null, null );
     startupPage.activate();
     mockTemplate( variableFrom( StartupPageTemplate.TOKEN_NO_SCRIPT_MESSAGE ) );
 
@@ -240,6 +269,7 @@ public class StartupPage_Test {
 
   @Test
   public void testSendReplacesAppScriptToken() throws IOException {
+    registerEntryPoint( null, null );
     startupPage.activate();
     mockTemplate( variableFrom( StartupPageTemplate.TOKEN_APP_SCRIPT ) );
 
@@ -279,9 +309,9 @@ public class StartupPage_Test {
 
   @Test
   public void testWriteScriptTag() throws IOException {
-    startupPage.writeScriptTag( response.getWriter(), "lib.js" );
+    startupPage.writeScriptTag( response.getWriter(), "lib.js", "nonceValue" );
 
-    String tag = "<script type=\"text/javascript\" src=\"lib.js\" charset=\"UTF-8\"></script>";
+    String tag = "<script type=\"text/javascript\" src=\"lib.js\" nonce=\"nonceValue\" charset=\"UTF-8\"></script>";
     assertEquals( tag, response.getContent().trim() );
   }
 

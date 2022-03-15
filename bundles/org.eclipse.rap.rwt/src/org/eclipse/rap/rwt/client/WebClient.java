@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2016 EclipseSource and others.
+ * Copyright (c) 2012, 2022 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -136,6 +136,23 @@ public class WebClient implements Client {
    * @see Application#addEntryPoint(String, EntryPointFactory, Map)
    */
   public static final String FAVICON = PREFIX + ".favicon";
+
+  /**
+   * Entrypoint property name for specifing the content security policy. The value must contain a
+   * valid string with content security policy directives.
+   * <p>
+   * <strong>Note:</strong> Use "nonce-" without random value in your "script-src" directive.
+   * The nonce value will be appended dinamically.
+   * Example:
+   * "script-src 'strict-dynamic' 'nonce-' 'unsafe-eval' http: https:; object-src 'none'; base-uri 'none';"
+   * </p>
+   *
+   * @see Application#addEntryPoint(String, Class, Map)
+   * @see Application#addEntryPoint(String, EntryPointFactory, Map)
+   *
+   * @since 3.21
+   */
+  public static final String CSP = PREFIX + ".contentSecurityPolicy";
 
   public WebClient() {
     initializeServices();
