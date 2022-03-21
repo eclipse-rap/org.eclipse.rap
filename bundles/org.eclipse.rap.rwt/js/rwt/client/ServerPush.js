@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 EclipseSource and others.
+ * Copyright (c) 2011, 2022 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,6 +38,7 @@ rwt.client.ServerPush.prototype = {
     var connection = rwt.remote.Connection.getInstance();
     var request = new rwt.remote.Request( connection.getUrl(), "GET", "application/javascript" );
     request.setSuccessHandler( this._handleSuccess, this );
+    request.setRedirectHandler( this._handleRedirect, this );
     request.setErrorHandler( this._handleError, this );
     request.setData( "servicehandler=org.eclipse.rap.serverpush&cid=" + connection.getConnectionId() );
     return request;
@@ -47,6 +48,11 @@ rwt.client.ServerPush.prototype = {
     this._running = false;
     this._retryCount = 0;
     this._sendUIRequest();
+  },
+
+  _handleRedirect : function( event ) {
+    rwt.widgets.Display.getCurrent().setExitConfirmation( null );
+    document.location = event.responseHeaders.location;
   },
 
   _sendUIRequest : function() {

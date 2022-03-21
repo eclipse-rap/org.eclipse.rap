@@ -190,6 +190,7 @@ rwt.qx.Class.define( "rwt.remote.Connection", {
       }
       var result = new rwt.remote.Request( this._url + cid, "POST", "application/json" );
       result.setSuccessHandler( this._handleSuccess, this );
+      result.setRedirectHandler( this._handleRedirect, this );
       result.setErrorHandler( this._handleError, this );
       return result;
     },
@@ -234,6 +235,10 @@ rwt.qx.Class.define( "rwt.remote.Connection", {
         this._hideWaitHint();
         ErrorHandler.processJavaScriptErrorInResponse( event.responseText, ex, event.target );
       }
+    },
+
+    _handleRedirect : function( event ) {
+      Processor.processMessage( { head: { redirect: event.responseHeaders.location } } );
     },
 
     ///////////////////////////////

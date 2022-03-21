@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2017 EclipseSource and others.
+ * Copyright (c) 2012, 2022 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ rwt.remote.Request = function( url, method, responseType ) {
   this._method = method;
   this._async = true;
   this._success = null;
+  this._redirect = null;
   this._error = null;
   this._data = null;
   this._responseType = responseType;
@@ -35,26 +36,17 @@ rwt.remote.Request.prototype = {
       this._request.onreadystatechange = null;
       this._request.abort();
       this._success = null;
+      this._redirect = null;
       this._error = null;
       this._request = null;
     }
   },
 
   send : function() {
-    var urlpar = null;
-    var post = this._method === "POST";
-    if( !post && this._data ) {
-      urlpar = this._data;
-    }
-    var url = this._url;
-    if( urlpar ) {
-      url += ( url.indexOf( "?" ) >= 0 ? "&" : "?" ) + urlpar;
-    }
-    this._request.open( this._method, url, this._async );
-    this._configRequest();
-    this._request.send( post ? this._data : undefined );
-    if( !this._async ) {
-      this.dispose();
+    if( this._isFetchSupported() && this._async ) {
+      this._sendWithFetch();
+    } else {
+      this._sendWithXHR();
     }
   },
 
@@ -74,6 +66,10 @@ rwt.remote.Request.prototype = {
     this._error = function(){ handler.apply( context, arguments ); };
   },
 
+  setRedirectHandler : function( handler, context ) {
+    this._redirect = function(){ handler.apply( context, arguments ); };
+  },
+
   setData : function( value ) {
     this._data = value;
   },
@@ -82,10 +78,65 @@ rwt.remote.Request.prototype = {
     return this._data;
   },
 
-  _configRequest : function() {
-    var contentType = "application/json; charset=UTF-8";
-    this._request.setRequestHeader( "Content-Type", contentType );
+  _sendWithXHR : function() {
+    this._request.open( this._method, this._createUrl(), this._async );
+    this._request.setRequestHeader( "Content-Type", "application/json; charset=UTF-8" );
     this._request.onreadystatechange = rwt.util.Functions.bind( this._onReadyStateChange, this );
+    this._request.send( this._method === "POST" ? this._data : undefined );
+    if( !this._async ) {
+      this.dispose();
+    }
+  },
+
+  _sendWithFetch : function() {
+    var event = {
+      "target" : this
+    };
+    fetch( this._createUrl(), {
+      method: this._method,
+      redirect: "manual",
+      headers: {
+        "Content-Type": "application/json; charset=UTF-8"
+      },
+      credentials: 'same-origin',
+      body: this._method === "POST" ? this._data : undefined
+    } ).then( function( response ) {
+      event.status = response.status;
+      event.responseHeaders = event.target._getFetchHeaders( response.headers );
+      if( response.type === "opaqueredirect" ) {
+        event.responseHeaders.location = response.url;
+        if( event.target._redirect ) {
+          event.target._redirect( event );
+        }
+      } else {
+        response.text().then( function( text ) {
+          event.responseText = text;
+          if( response.status === 200 ) {
+            if( event.target._success ) {
+              event.target._success( event );
+            }
+          } else {
+            if( event.target._error ) {
+              event.target._error( event );
+            }
+          }
+          event.target.dispose();
+        } );
+      }
+    } );
+  },
+
+  _createUrl : function() {
+    var urlpar = null;
+    var post = this._method === "POST";
+    if( !post && this._data ) {
+      urlpar = this._data;
+    }
+    var url = this._url;
+    if( urlpar ) {
+      url += ( url.indexOf( "?" ) >= 0 ? "&" : "?" ) + urlpar;
+    }
+    return url;
   },
 
   _onReadyStateChange : function() {
@@ -99,7 +150,7 @@ rwt.remote.Request.prototype = {
       var event = {
         "responseText" : text,
         "status" : this._request.status,
-        "responseHeaders" : this._getHeaders(),
+        "responseHeaders" : this._getXHRHeaders( this._request.getAllResponseHeaders() ),
         "target" : this
       };
       if( this._request.status === 200 ) {
@@ -117,9 +168,8 @@ rwt.remote.Request.prototype = {
     }
   },
 
-  _getHeaders : function() {
-    var text = this._request.getAllResponseHeaders();
-    var values = text.split( /[\r\n]+/g );
+  _getXHRHeaders : function( headers ) {
+    var values = headers.split( /[\r\n]+/g );
     var result = {};
     for( var i = 0; i < values.length; i++ ) {
       var pair = values[ i ].match( /^([^:]+)\s*:\s*(.+)$/i );
@@ -129,6 +179,18 @@ rwt.remote.Request.prototype = {
       }
     }
     return result;
+  },
+
+  _getFetchHeaders : function( headers ) {
+    var result = {};
+    headers.forEach( function( value, name ) {
+      result[ name ] = value;
+    } );
+    return result;
+  },
+
+  _isFetchSupported : function() {
+    return typeof fetch === "function";
   }
 
 };
