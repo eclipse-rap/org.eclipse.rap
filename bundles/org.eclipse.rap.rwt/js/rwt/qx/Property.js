@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2022 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource, and others.
  *
  * All rights reserved. This program and the accompanying materials
@@ -91,39 +91,39 @@ rwt.qx.Class.define( "rwt.qx.Property", {
      * The keys could be used in the check of the properties
      */
     __checks : {
-      "Boolean"   : 'typeof value === "boolean"',
-      "String"    : 'typeof value === "string"',
-      "NonEmptyString" : 'typeof value === "string" && value.length > 0',
+      "Boolean"   : function( value ) { return typeof value === "boolean"; },
+      "String"    : function( value ) { return typeof value === "string"; },
+      "NonEmptyString" : function( value ) { return typeof value === "string" && value.length > 0; },
 
-      "Number"    : 'typeof value === "number" && isFinite(value)',
-      "Integer"   : 'typeof value === "number" && isFinite(value) && value%1 === 0',
-      "Float"     : 'typeof value === "number" && isFinite(value)',
-      "Double"    : 'typeof value === "number" && isFinite(value)',
+      "Number"    : function( value ) { return typeof value === "number" && isFinite( value ); },
+      "Integer"   : function( value ) { return typeof value === "number" && isFinite( value ) && value%1 === 0; },
+      "Float"     : function( value ) { return typeof value === "number" && isFinite( value ); },
+      "Double"    : function( value ) { return typeof value === "number" && isFinite( value ); },
 
-      "Error"     : 'value instanceof Error',
-      "RegExp"    : 'value instanceof RegExp',
+      "Error"     : function( value ) { return value instanceof Error; },
+      "RegExp"    : function( value ) { return value instanceof RegExp; },
 
-      "Object"    : 'value !== null && typeof value === "object"',
-      "Array"     : 'value instanceof Array',
-      "Map"       : 'value !== null && typeof value === "object" && !(value instanceof Array) && !(value instanceof rwt.qx.Object)',
+      "Object"    : function( value ) { return value !== null && typeof value === "object"; },
+      "Array"     : function( value ) { return value instanceof Array; },
+      "Map"       : function( value ) { return value !== null && typeof value === "object" && !( value instanceof Array ) && !( value instanceof rwt.qx.Object ); },
 
-      "Function"  : 'value instanceof Function',
-      "Date"      : 'value instanceof Date',
-      "Node"      : 'value !== null && value.nodeType !== undefined',
-      "Element"   : 'value !== null && value.nodeType === 1 && value.attributes',
-      "Document"  : 'value !== null && value.nodeType === 9 && value.documentElement',
-      "Window"    : 'value !== null && window.document',
-      "Event"     : 'value !== null && value.type !== undefined',
+      "Function"  : function( value ) { return value instanceof Function; },
+      "Date"      : function( value ) { return value instanceof Date; },
+      "Node"      : function( value ) { return value !== null && value.nodeType !== undefined; },
+      "Element"   : function( value ) { return value !== null && value.nodeType === 1 && value.attributes; },
+      "Document"  : function( value ) { return value !== null && value.nodeType === 9 && value.documentElement; },
+      "Window"    : function( value ) { return value !== null && window.document; },
+      "Event"     : function( value ) { return value !== null && value.type !== undefined; },
 
-      "Class"     : 'value !== null && value.$$type === "Class"',
-      "Mixin"     : 'value !== null && value.$$type === "Mixin"',
-      "Interface" : 'value !== null && value.$$type === "Interface"',
-      "Theme"     : 'value !== null && value.$$type === "Theme"',
+      "Class"     : function( value ) { return value !== null && value.$$type === "Class"; },
+      "Mixin"     : function( value ) { return value !== null && value.$$type === "Mixin"; },
+      "Interface" : function( value ) { return value !== null && value.$$type === "Interface"; },
+      "Theme"     : function( value ) { return value !== null && value.$$type === "Theme"; },
 
-      "Color"     : 'typeof value === "string" && rwt.util.Colors.isValid(value)',
-      "Border"    : 'value !== null',
-      "Font"      : 'value !== null',
-      "Label"     : 'value !== null && typeof value === "string"'
+      "Color"     : function( value ) { return typeof value === "string" && rwt.util.Colors.isValid( value ); },
+      "Border"    : function( value ) { return value !== null; },
+      "Font"      : function( value ) { return value !== null; },
+      "Label"     : function( value ) { return value !== null && typeof value === "string"; }
     },
 
     /**
@@ -304,68 +304,56 @@ rwt.qx.Class.define( "rwt.qx.Property", {
       var name = config.name;
       var themeable = config.themeable === true;
 
-      var setter = [];
-      var resetter = [];
+      var method = this.$$method;
 
-      if( themeable ) {
-        var styler = [];
-        var unstyler = [];
-      }
-
-      var argHandler = "var a=arguments[0] instanceof Array?arguments[0]:arguments;";
-
-      setter.push( argHandler );
-
-      if( themeable ) {
-        styler.push( argHandler );
-      }
-
-      if( config.mode == "shorthand" ) {
-        var shorthand = "a=rwt.util.Arrays.fromShortHand(rwt.util.Arrays.fromArguments(a));";
-        setter.push( shorthand );
-
-        if( themeable ) {
-          styler.push( shorthand );
-        }
-      }
-
-      for( var i = 0, a = config.group, l = a.length; i < l; i++ ) {
-        if( rwt.util.Variant.isSet( "qx.debug", "on" ) ) {
-          if( !this.$$method.set[ a[ i ] ] || !this.$$method.reset[ a[ i ] ] ) {
-            throw new Error( "Cannot create property group '" + name + "' including non-existing property '" + a[ i ] + "'!" );
+      if( rwt.util.Variant.isSet( "qx.debug", "on" ) ) {
+        for( var i = 0, prop = config.group, l = prop.length; i < l; i++ ) {
+          if( !method.set[ prop[ i ] ] || !method.reset[ prop[ i ] ] ) {
+            throw new Error( "Cannot create property group '" + name + "' including non-existing property '" + prop[ i ] + "'!" );
           }
-        }
-
-        setter.push( "this.", this.$$method.set[a[i]], "(a[", i, "]);" );
-        resetter.push( "this.", this.$$method.reset[a[i]], "();" );
-
-        if( themeable ) {
-          if( rwt.util.Variant.isSet( "qx.debug", "on" ) ) {
-            if( !this.$$method.style[a[i]] ) {
-              throw new Error( "Cannot add the non themable property '" + a[i] + "' to the themable property group '"+ name +"'" );
-            }
+          if( themeable && !method.style[ prop[ i ] ] ) {
+            throw new Error( "Cannot add the non themable property '" + prop[ i ] + "' to the themable property group '" + name + "'" );
           }
-          styler.push("this.", this.$$method.style[a[i]], "(a[", i, "]);" );
-          unstyler.push("this.", this.$$method.unstyle[a[i]], "();" );
         }
       }
 
       // Attach setter
-      this.$$method.set[name] = prefix + "set" + postfix;
-      members[this.$$method.set[name]] = new Function( setter.join( "" ) );
-
+      method.set[ name ] = prefix + "set" + postfix;
+      members[ method.set[ name ] ] = function() {
+        var a = arguments[ 0 ] instanceof Array ? arguments[ 0 ] : arguments;
+        if( config.mode == "shorthand" ) {
+          a = rwt.util.Arrays.fromShortHand( rwt.util.Arrays.fromArguments( a ) );
+        }
+        for( var i = 0, prop = config.group, l = prop.length; i < l; i++ ) {
+          this[ method.set[ prop[ i ] ] ]( a[ i ] );
+        }
+      };
       // Attach resetter
-      this.$$method.reset[name] = prefix + "reset" + postfix;
-      members[this.$$method.reset[name]] = new Function( resetter.join( "" ) );
-
+      method.reset[ name ] = prefix + "reset" + postfix;
+      members[ method.reset[ name ] ] = function() {
+        for( var i = 0, prop = config.group, l = prop.length; i < l; i++ ) {
+          this[ method.reset[ prop[ i ] ] ]();
+        }
+      };
       if( themeable ) {
         // Attach styler
-        this.$$method.style[name] = prefix + "style" + postfix;
-        members[this.$$method.style[name]] = new Function( styler.join( "" ) );
-
+        method.style[ name ] = prefix + "style" + postfix;
+        members[ method.style[ name ] ] = function() {
+          var a = arguments[ 0 ] instanceof Array ? arguments[ 0 ] : arguments;
+          if( config.mode == "shorthand" ) {
+            a = rwt.util.Arrays.fromShortHand( rwt.util.Arrays.fromArguments( a ) );
+          }
+          for( var i = 0, prop = config.group, l = prop.length; i < l; i++ ) {
+            this[ method.style[ prop[ i ] ] ]( a[ i ] );
+          }
+        };
         // Attach unstyler
-        this.$$method.unstyle[name] = prefix + "unstyle" + postfix;
-        members[this.$$method.unstyle[name]] = new Function( unstyler.join( "" ) );
+        method.unstyle[ name ] = prefix + "unstyle" + postfix;
+        members[ method.unstyle[ name ] ] = function() {
+          for( var i = 0, prop = config.group, l = prop.length; i < l; i++ ) {
+            this[ method.unstyle[ prop[ i ] ] ]();
+          }
+        };
       }
     },
 
@@ -437,8 +425,12 @@ rwt.qx.Class.define( "rwt.qx.Property", {
       }
 
       if( config.check === "Boolean" ) {
-        members[prefix + "toggle" + postfix] = new Function("return this." + method.set[name] + "(!this." + method.get[name] + "())");
-        members[prefix + "is" + postfix] = new Function("return this." + method.get[name] + "()");
+        members[prefix + "toggle" + postfix] = function() {
+          return this[method.set[name]](!this[method.get[name]]());
+        };
+        members[prefix + "is" + postfix] = function() {
+          return this[method.get[name]]();
+        };
       }
     },
 
@@ -471,44 +463,18 @@ rwt.qx.Class.define( "rwt.qx.Property", {
       throw new Error( msg + ( this.__errors[id] || "Unknown reason: " + id ) );
     },
 
-    /**
-     * Compiles a string builder object to a function, executes the function and
-     * returns the return value.
-     *
-     * @param instance {Object} Instance which have called the original method
-     * @param members {Object} Prototype members map where the new function should be stored
-     * @param name {String} Name of the property
-     * @param variant {String} Function variant e.g. get, set, reset, ...
-     * @param code {Array} Array which contains the code
-     * @param args {arguments} Incoming arguments of wrapper method
-     * @return {var} Return value of the generated function
-     */
-    __unwrapFunctionFromCode : function(instance, members, name, variant, code, args ) {
-      var store = this.$$method[variant][name];
+    __executeOptimizedFunction : function( instance, members, name, variant, func, args ) {
+      var store = this.$$method[ variant ][ name ];
 
-      // Output generate code
-      if( rwt.util.Variant.isSet( "qx.debug", "on" ) ) {
-
-        // Overriding temporary wrapper
-        try{
-          members[store] = new Function( "value", code.join( "" ) );
-          // eval("members[store] = function " + instance.classname.replace(/\./g, "_") + "$" + store + "(value) { " + code.join("") + "}");
-        } catch( ex ) {
-          throw new Error( "Malformed generated code to unwrap method: " + this.$$method[variant][name] + "\n" + code.join( "" ) );
-        }
-      }
-      else {
-        members[store] = new Function("value", code.join(""));
-        // eval("members[store] = function " + instance.classname.replace(/\./g, "_") + "$" + store + "(value) { " + code.join("") + "}");
-      }
+      members[store] = func;
 
       // Executing new function
       if( args === undefined ) {
-        return instance[store]();
+        return instance[ store ]();
       } else if( rwt.util.Variant.isSet( "qx.debug", "on" ) ) {
-        return instance[store].apply( instance, args );
+        return instance[ store ].apply( instance, args );
       } else {
-        return instance[store]( args[0] );
+        return instance[ store ]( args[ 0 ] );
       }
     },
 
@@ -525,38 +491,27 @@ rwt.qx.Class.define( "rwt.qx.Property", {
     executeOptimizedGetter : function( instance, clazz, name, variant ) {
       var config = clazz.$$properties[name];
       var members = clazz.prototype;
-      var code = [];
+      var store = this.$$store;
 
-      if( config.inheritable ) {
-        code.push( 'if(this.', this.$$store.inherit[name], '!==undefined)' );
-        code.push( 'return this.', this.$$store.inherit[name], ';' );
-        code.push( 'else ' );
-      }
+      var func = function() {
+        if( config.inheritable && this[ store.inherit[ name ] ] !== undefined ) {
+          return this[ store.inherit[ name ] ];
+        } else if( this[ store.user[ name ] ] !== undefined ) {
+          return this[ store.user[ name ] ];
+        } else if( config.themeable && this[ store.theme[ name ] ] !== undefined ) {
+          return this[ store.theme[ name ] ];
+        } else if( config.deferredInit && config.init === undefined && this[ store.init[ name ] ] !== undefined ) {
+          return this[ store.init[ name ] ];
+        } else if( config.init !== undefined ) {
+          return this[ store.init[ name ] ];
+        } else if( config.inheritable || config.nullable ) {
+          return null;
+        } else {
+          throw new Error( "Property " + name + " of an instance of " + clazz.classname + " is not (yet) ready!" );
+        }
+      };
 
-      code.push( 'if(this.', this.$$store.user[name], '!==undefined)' );
-      code.push( 'return this.', this.$$store.user[name], ';' );
-
-      if( config.themeable ) {
-        code.push( 'else if(this.', this.$$store.theme[name], '!==undefined)' );
-        code.push( 'return this.', this.$$store.theme[name], ';' );
-      }
-
-      if( config.deferredInit && config.init === undefined ) {
-        code.push( 'else if(this.', this.$$store.init[name], '!==undefined)' );
-        code.push( 'return this.', this.$$store.init[name], ';' );
-      }
-
-      code.push( 'else ' );
-
-      if( config.init !== undefined ) {
-        code.push( 'return this.', this.$$store.init[name], ';' );
-      } else if( config.inheritable || config.nullable ) {
-        code.push( 'return null;' );
-      } else {
-        code.push( 'throw new Error("Property ', name, ' of an instance of ', clazz.classname, ' is not (yet) ready!");' );
-      }
-
-      return this.__unwrapFunctionFromCode( instance, members, name, variant, code );
+      return this.__executeOptimizedFunction( instance, members, name, variant, func );
     },
 
     /**
@@ -571,390 +526,325 @@ rwt.qx.Class.define( "rwt.qx.Property", {
      * @return {var} Execute return value of apply generated function, generally the incoming value
      */
     executeOptimizedSetter : function( instance, clazz, name, variant, args ) {
-      var config = clazz.$$properties[name];
+      var config = clazz.$$properties[ name ];
       var members = clazz.prototype;
-      var code = [];
+      var storeInit = this.$$store.init[ name ];
+      var storeInherit = this.$$store.inherit[ name ];
+      var storeTheme = this.$$store.theme[ name ];
+      var storeUser = this.$$store.user[ name ];
+      var storeUseinit = this.$$store.useinit[ name ];
+      var method = this.$$method;
 
       var incomingValue =    variant === "set"
                           || variant === "style"
                           || ( variant === "init" && config.init === undefined );
       var resetValue = variant === "reset" || variant === "unstyle";
       var hasCallback = config.apply || config.event || config.inheritable;
+
+      var store = storeUser;
       if( variant === "style" || variant === "unstyle" ) {
-        var store = this.$$store.theme[name];
+        store = storeTheme;
       } else if( variant === "init" ) {
-        var store = this.$$store.init[name];
-      } else {
-        var store = this.$$store.user[name];
+        store = storeInit;
       }
 
-      // [1] INTEGRATE ERROR HELPER METHOD
+      var func = function( value ) {
+        // [1] INTEGRATE ERROR HELPER METHOD
 
-      // [2] PRE CONDITIONS
+        // [2] PRE CONDITIONS
+        var prop = rwt.qx.Property;
+        var inherit = prop.$$inherit;
 
-      if( !config.nullable || config.check || config.inheritable ) {
-        code.push( 'var prop=rwt.qx.Property;' );
-      }
-
-      // Undefined check
-      // TODO [rh] unused: changed as in patch to http://bugzilla.qooxdoo.org/show_bug.cgi?id=599
-      if( rwt.util.Variant.isSet( "qx.debug", "on" ) && variant === "set" ) {
-        code.push( 'if(value===undefined)prop.error(this,2,"' + name + '","' + variant + '",value);' );
-      }
-
-      // [3] PREPROCESSING INCOMING VALUE
-
-      if( incomingValue ) {
-        // Call user-provided transform method, if one is provided.  Transform
-        // method should either throw an error or return the new value.
-        if( config.transform ) {
-          code.push( 'value=this.', config.transform, '(value);' );
+        if( rwt.util.Variant.isSet( "qx.debug", "on" ) && variant === "set" && value === undefined ) {
+          prop.error( this, 2, name, variant, value );
         }
-      }
 
-      // [4] COMPARING (LOCAL) NEW AND OLD VALUE
-
-      // Old/new comparision
-      if( hasCallback ) {
+        // [3] PREPROCESSING INCOMING VALUE
         if( incomingValue ) {
-          code.push( 'if(this.', store, '===value)return value;' );
-        } else if( resetValue ) {
-          code.push( 'if(this.', store, '===undefined)return;' );
-        }
-      }
-
-      // [5] CHECKING VALUE
-
-      if( config.inheritable ) {
-        code.push( 'var inherit=prop.$$inherit;' );
-      }
-
-      // Generate checks only in debug mode
-
-      // TODO [rh] unused: changed as in patch to http://bugzilla.qooxdoo.org/show_bug.cgi?id=599
-      if( incomingValue && rwt.util.Variant.isSet( "qx.debug", "on" ) ) {
-        // Null check
-        if( !config.nullable ) {
-          code.push( 'if(value===null)prop.error(this,4,"'+name+'","'+variant+'",value);' );
-        }
-
-        // Processing check definition
-        if( config.check !== undefined ) {
-          // Accept "null"
-          if( config.nullable ) {
-            code.push( 'if(value!==null)' );
-          }
-
-          // Inheritable properties always accept "inherit" as value
-          if( config.inheritable ) {
-            code.push( 'if(value!==inherit)' );
-          }
-
-          code.push( 'if(' );
-
-          if( this.__checks[config.check] !== undefined ) {
-            code.push( '!(', this.__checks[config.check], ')' );
-          }
-          else if( rwt.qx.Class.isDefined( config.check ) ) {
-            code.push( '!(value instanceof ', config.check, ')' );
-          }
-          else if( typeof config.check === "function" ) {
-            code.push( '!', clazz.classname, '.$$properties.', name );
-            code.push( '.check.call(this, value)' );
-          }
-          else if( typeof config.check === "string" ) {
-            code.push( '!(', config.check, ')' );
-          }
-          else if( config.check instanceof Array ) {
-            // reconfigure for faster access trough map usage
-            config.checkMap = rwt.util.Objects.fromArray(config.check);
-
-            code.push(clazz.classname, '.$$properties.', name);
-            code.push( '.checkMap[value]===undefined' );
-          }
-          else {
-            throw new Error( "Could not add check to property " + name + " of class " + clazz.classname );
-          }
-
-          code.push( ')prop.error(this,5,"'+name+'","'+variant+'",value);' );
-        }
-      }
-
-      if( !hasCallback ) {
-        if( variant === "set" ) {
-          code.push( 'this.', this.$$store.user[name], '=value;' );
-        }
-        else if( variant === "reset" ) {
-          code.push( 'if(this.', this.$$store.user[name], '!==undefined)' );
-          code.push( 'delete this.', this.$$store.user[name], ';' );
-        }
-        // Store incoming value
-        else if( variant === "style" ) {
-          code.push( 'this.', this.$$store.theme[name], '=value;' );
-        }
-        else if( variant === "unstyle" ) {
-          code.push( 'if(this.', this.$$store.theme[name], '!==undefined)' );
-          code.push( 'delete this.', this.$$store.theme[name], ';' );
-        }
-        else if( variant === "init" && incomingValue ) {
-          code.push( 'this.', this.$$store.init[name], '=value;' );
-        }
-      }
-      else {
-        if( config.inheritable ) {
-          code.push( 'var computed, old=this.', this.$$store.inherit[name], ';' );
-        }
-        else {
-          code.push( 'var computed, old;' );
-        }
-
-        // OLD = USER VALUE
-
-        code.push( 'if(this.', this.$$store.user[name], '!==undefined){' );
-
-        if( variant === "set" ) {
-          if( !config.inheritable ) {
-            // Remember old value
-            code.push( 'old=this.', this.$$store.user[name], ';' );
-          }
-
-          // Replace it with new value
-          code.push( 'computed=this.', this.$$store.user[name], '=value;' );
-        }
-        else if( variant === "reset" ) {
-          if( !config.inheritable ) {
-            // Remember old value
-            code.push( 'old=this.', this.$$store.user[name], ';' );
-          }
-
-          // Delete field
-          code.push( 'delete this.', this.$$store.user[name], ';' );
-
-          // Complex compution of new value
-          code.push( 'if(this.', this.$$store.theme[name], '!==undefined)' );
-          code.push( 'computed=this.', this.$$store.theme[name], ';' );
-          code.push( 'else if(this.', this.$$store.init[name], '!==undefined){' );
-          code.push( 'computed=this.', this.$$store.init[name], ';' );
-          code.push( 'this.', this.$$store.useinit[name], '=true;' );
-          code.push( '}' );
-        }
-        else {
-          if( config.inheritable ) {
-            // Use user value where it has higher priority
-            code.push( 'computed=this.', this.$$store.user[name], ';' );
-          }
-          else {
-            // Use user value where it has higher priority
-            code.push( 'old=computed=this.', this.$$store.user[name], ';' );
-          }
-
-          // Store incoming value
-          if( variant === "style" ) {
-            code.push( 'this.', this.$$store.theme[name], '=value;' );
-          }
-          else if( variant === "unstyle" ) {
-            code.push( 'delete this.', this.$$store.theme[name], ';' );
-          }
-          else if( variant === "init" && incomingValue ) {
-            code.push( 'this.', this.$$store.init[name], '=value;' );
+          // Call user-provided transform method, if one is provided.  Transform
+          // method should either throw an error or return the new value.
+          if( config.transform ) {
+            value = this[ config.transform ]( value );
           }
         }
 
-        code.push( '}' );
-
-        // OLD = THEMED VALUE
-
-        if( config.themeable ) {
-          code.push( 'else if(this.', this.$$store.theme[name], '!==undefined){' );
-
-          if( !config.inheritable ) {
-            code.push( 'old=this.', this.$$store.theme[name], ';' );
-          }
-
-          if( variant === "set" ) {
-            code.push( 'computed=this.', this.$$store.user[name], '=value;' );
-          }
-
-          // reset() is impossible, because the user has higher priority than
-          // the themed value, so the themed value has no chance to ever get used,
-          // when there is a user value, too.
-
-          else if( variant === "style" ) {
-            code.push( 'computed=this.', this.$$store.theme[name], '=value;' );
-          }
-          else if( variant === "unstyle" ) {
-            // Delete entry
-            code.push( 'delete this.', this.$$store.theme[name], ';' );
-
-            // Fallback to init value
-            code.push( 'if(this.', this.$$store.init[name], '!==undefined){' );
-            code.push( 'computed=this.', this.$$store.init[name], ';' );
-            code.push( 'this.', this.$$store.useinit[name], '=true;' );
-            code.push( '}' );
-          }
-          else if( variant === "init" ) {
-            if( incomingValue ) {
-              code.push( 'this.', this.$$store.init[name], '=value;' );
-            }
-
-            code.push( 'computed=this.', this.$$store.theme[name], ';' );
-          }
-          else if( variant === "refresh" ) {
-            code.push( 'computed=this.', this.$$store.theme[name], ';' );
-          }
-
-          code.push( '}' );
-        }
-
-        // OLD = INIT VALUE
-
-        code.push( 'else if(this.', this.$$store.useinit[name], '){' );
-
-        if( !config.inheritable ) {
-          code.push( 'old=this.', this.$$store.init[name], ';' );
-        }
-
-        if( variant === "init" ) {
+        // [4] COMPARING (LOCAL) NEW AND OLD VALUE
+        if( hasCallback ) {
           if( incomingValue ) {
-            code.push( 'computed=this.', this.$$store.init[name], '=value;' );
-          } else {
-            code.push( 'computed=this.', this.$$store.init[name], ';' );
-          }
-
-          // useinit flag is already initialized
-        }
-
-        // reset() and unstyle() are impossible, because the user and themed values have a
-        // higher priority than the init value, so the themed value has no chance to ever get used,
-        // when there is a user or themed value, too.
-
-        else if( variant === "set" || variant === "style" || variant === "refresh" ) {
-          code.push( 'delete this.', this.$$store.useinit[name], ';' );
-
-          if( variant === "set" ) {
-            code.push( 'computed=this.', this.$$store.user[name], '=value;' );
-          } else if( variant === "style" ) {
-            code.push( 'computed=this.', this.$$store.theme[name], '=value;' );
-          } else if( variant === "refresh" ) {
-            code.push( 'computed=this.', this.$$store.init[name], ';' );
+            if( this[ store ] === value ) return value;
+          } else if( resetValue ) {
+            if( this[ store ] === undefined ) return;
           }
         }
 
-        code.push( '}' );
-
-        // OLD = NONE
-
-        // reset() and unstyle() are impossible because otherwise there
-        // is already an old value
-
-        if( variant === "set" || variant === "style" || variant === "init" ) {
-          code.push( 'else{' );
-
-          if( variant === "set" ) {
-            code.push( 'computed=this.', this.$$store.user[name], '=value;' );
-          } else if( variant === "style" ) {
-            code.push( 'computed=this.', this.$$store.theme[name], '=value;' );
-          } else if(  variant === "init" ) {
-            if( incomingValue ) {
-              code.push( 'computed=this.', this.$$store.init[name], '=value;' );
-            } else {
-              code.push( 'computed=this.', this.$$store.init[name], ';' );
+        // [5] CHECKING VALUE
+        if( incomingValue && rwt.util.Variant.isSet( "qx.debug", "on" ) ) {
+          if( !config.nullable && value === null ) {
+            prop.error( this, 4, name, variant, value );
+          }
+          // Processing check definition
+          if( config.check !== undefined ) {
+            if(    config.nullable && value !== null && !config.inheritable
+                || !config.nullable && config.inheritable && value !== inherit
+                || config.nullable && value !== null && config.inheritable && value !== inherit )
+            {
+              if( prop.__checks[ config.check ] !== undefined ) {
+                if( !( prop.__checks[ config.check ]( value ) ) ) {
+                  prop.error( this, 5, name, variant , value );
+                }
+              } else if( rwt.qx.Class.isDefined( config.check ) ) {
+                if( !( value instanceof rwt.qx.Class.getByName( config.check ) ) ) {
+                  prop.error( this, 5, name, variant , value );
+                }
+              } else if( typeof config.check === "function" ) {
+                if( !config.check.call( this, value ) ) {
+                  prop.error( this, 5, name, variant , value );
+                }
+              } else if( typeof config.check === "string" ) {
+                if( !config.check ) {
+                  prop.error( this, 5, name, variant , value );
+                }
+              } else if( config.check instanceof Array ) {
+                if( !config.check.includes( value ) ) {
+                  prop.error( this, 5, name, variant , value );
+                }
+              } else {
+                throw new Error( "Could not execute check to property " + name + " of class " + clazz.classname );
+              }
             }
-            code.push( 'this.', this.$$store.useinit[name], '=true;' );
           }
-          // refresh() will work with the undefined value, later
-          code.push( '}' );
         }
-      }
 
-      if( config.inheritable ) {
-        code.push( 'if(computed===undefined||computed===inherit){' );
+        if( !hasCallback ) {
+          switch( variant ) {
+            case "set":
+              this[ storeUser ] = value;
+            break;
+            case "reset":
+              if( this[ storeUser ] !== undefined ) {
+                delete this[ storeUser ];
+              }
+            break;
+            case "style":
+              this[ storeTheme ] = value;
+            break;
+            case "unstyle":
+              if( this[ storeTheme ] !== undefined ) {
+                delete this[ storeTheme ];
+              }
+            break;
+            case "init":
+              if( incomingValue ) {
+                this[ storeInit ] = value;
+              }
+            break;
+          }
+        } else {
+          var computed, old = config.inheritable ? this[ storeInherit ] : undefined;
 
-          if( variant === "refresh" ) {
-            code.push( 'computed=value;' );
+          if( this[ storeUser ] !== undefined ) {
+            // OLD = USER VALUE
+            if( variant === "set" ) {
+              if( !config.inheritable ) {
+                // Remember old value
+                old = this[ storeUser ];
+              }
+              // Replace it with new value
+              computed = this[ storeUser ] = value;
+            } else if( variant === "reset" ) {
+              if( !config.inheritable ) {
+                // Remember old value
+                old = this[ storeUser ];
+              }
+              // Delete field
+              delete this[ storeUser ];
+              // Complex compution of new value
+              if( this[ storeTheme ] !== undefined ) {
+                computed = this[ storeTheme ];
+              } else if( this[ storeInit ] !== undefined ) {
+                computed = this[ storeInit ];
+                this[ storeUseinit ] = true;
+              }
+            } else {
+              // Use user value where it has higher priority
+              if( config.inheritable ) {
+                computed = this[ storeUser ];
+              } else {
+                old = computed = this[ storeUser ];
+              }
+              // Store incoming value
+              if( variant === "style" ) {
+                this[ storeTheme ] = value;
+              } else if( variant === "unstyle" ) {
+                delete this[ storeTheme ];
+              } else if( variant === "init" && incomingValue ) {
+                this[ storeInit ] = value;
+              }
+            }
+          } else if( config.themeable && this[ storeTheme ] !== undefined ) {
+            // OLD = THEMED VALUE
+            if( !config.inheritable ) {
+              old = this[ storeTheme ];
+            }
+            // reset() is impossible, because the user has higher priority than
+            // the themed value, so the themed value has no chance to ever get used,
+            // when there is a user value, too.
+            if( variant === "set" ) {
+              computed = this[ storeUser ] = value;
+            } else if( variant === "style" ) {
+              computed = this[ storeTheme ] = value;
+            } else if( variant === "unstyle" ) {
+              // Delete entry
+              delete this[ storeTheme ];
+              // Fallback to init value
+              if( this[ storeInit ] !== undefined ) {
+                computed = this[ storeInit ];
+                this[ storeUseinit ] = true;
+              }
+            } else if( variant === "init" ) {
+              if( incomingValue ) {
+                this[ storeInit ] = value;
+              }
+              computed = this[ storeTheme ];
+            } else if( variant === "refresh" ) {
+              computed = this[ storeTheme ];
+            }
+          } else if( this[ storeUseinit ] ) {
+            // OLD = INIT VALUE
+            if( !config.inheritable ) {
+              old = this[ storeInit ];
+            }
+            // reset() and unstyle() are impossible, because the user and themed values have a
+            // higher priority than the init value, so the themed value has no chance to ever get used,
+            // when there is a user or themed value, too.
+            if( variant === "init" ) {
+              if( incomingValue ) {
+                computed = this[ storeInit ] = value;
+              } else {
+                computed = this[ storeInit ];
+              }
+              // useinit flag is already initialized
+            } else if( variant === "set" || variant === "style" || variant === "refresh" ) {
+              delete this[ storeUseinit ];
+              if( variant === "set" ) {
+                computed = this[ storeUser ] = value;
+              } else if( variant === "style" ) {
+                computed = this[ storeTheme ] = value;
+              } else if( variant === "refresh" ) {
+                computed = this[ storeInit ];
+              }
+            }
           } else {
-            code.push( 'var pa=this.getParent();if(pa)computed=pa.', this.$$store.inherit[name], ';' );
+            // OLD = NONE
+            // reset() and unstyle() are impossible because otherwise there
+            // is already an old value
+            if( variant === "set" ) {
+              computed = this[ storeUser ] = value;
+            } else if( variant === "style" ) {
+              computed = this[ storeTheme ] = value;
+            } else if( variant === "init" ) {
+              if( incomingValue ) {
+                computed = this[ storeInit ] = value;
+              } else {
+                computed = this[ storeInit ];
+              }
+              this[ storeUseinit ] = true;
+            }
+            // refresh() will work with the undefined value, later
           }
-
-          // Fallback to init value if inheritance was unsuccessful
-          code.push( 'if((computed===undefined||computed===inherit)&&' );
-          code.push( 'this.', this.$$store.init[name], '!==undefined&&' );
-          code.push( 'this.', this.$$store.init[name], '!==inherit){' );
-          code.push( 'computed=this.', this.$$store.init[name], ';' );
-          code.push( 'this.', this.$$store.useinit[name], '=true;' );
-          code.push( '}else{' );
-          code.push( 'delete this.', this.$$store.useinit[name], ';}' );
-
-        code.push( '}' );
-
-        // Compare old/new computed value
-        code.push( 'if(old===computed)return value;' );
-
-        // Note: At this point computed can be "inherit" or "undefined".
-
-        // Normalize "inherit" to undefined and delete inherited value
-        code.push( 'if(computed===inherit){' );
-        code.push( 'computed=undefined;delete this.', this.$$store.inherit[name], ';' );
-        code.push( '}' );
-
-        // Only delete inherited value
-        code.push( 'else if(computed===undefined)' );
-        code.push( 'delete this.', this.$$store.inherit[name], ';' );
-
-        // Store inherited value
-        code.push( 'else this.', this.$$store.inherit[name], '=computed;' );
-
-        // Protect against normalization
-        code.push( 'var backup=computed;' );
-
-        // After storage finally normalize computed and old value
-        code.push( 'if(computed===undefined)computed=null;' );
-        code.push( 'if(old===undefined)old=null;' );
-      }
-      else if( hasCallback ) {
-        // Properties which are not inheritable have no possiblity to get
-        // undefined at this position. (Hint: set() and style() only allow non undefined values)
-        if( variant !== "set" && variant !== "style" ) {
-          code.push( 'if(computed===undefined)computed=null;' );
         }
-
-        // Compare old/new computed value
-        code.push( 'if(old===computed)return value;' );
-
-        // Normalize old value
-        code.push( 'if(old===undefined)old=null;' );
-      }
-
-      // [12] NOTIFYING DEPENDEND OBJECTS
-
-      if( hasCallback ) {
-        // Execute user configured setter
-        if( config.apply ) {
-          code.push( 'this.', config.apply, '(computed, old);' );
+        if( config.inheritable ) {
+          if( computed === undefined || computed === inherit ) {
+            if( variant === "refresh" ) {
+              computed = value;
+            } else {
+              var pa = this.getParent();
+              if( pa ) {
+                computed = pa[ storeInherit ];
+              }
+            }
+            // Fallback to init value if inheritance was unsuccessful
+            if(    ( computed === undefined || computed === inherit )
+                && this[ storeInit ] !== undefined
+                && this[ storeInit ] !== inherit )
+            {
+              computed = this[ storeInit ];
+              this[ storeUseinit ] = true;
+            } else {
+              delete this[ storeUseinit ];
+            }
+          }
+          // Compare old/new computed value
+          if( old === computed ) {
+            return value;
+          }
+          // Note: At this point computed can be "inherit" or "undefined".
+          // Normalize "inherit" to undefined and delete inherited value
+          if( computed === inherit ) {
+            computed = undefined;
+            delete this[ storeInherit ];
+          } else if( computed===undefined ) {
+            // Only delete inherited value
+            delete this[ storeInherit ];
+          } else {
+            // Store inherited value
+            this[ storeInherit ] = computed;
+          }
+          // Protect against normalization
+          var backup = computed;
+          // After storage finally normalize computed and old value
+          if( computed === undefined ) {
+            computed = null;
+          }
+          if( old === undefined ) {
+            old = null;
+          }
+        } else if( hasCallback ) {
+          // Properties which are not inheritable have no possiblity to get
+          // undefined at this position. (Hint: set() and style() only allow non undefined values)
+          if( variant !== "set" && variant !== "style" && computed === undefined ) {
+            computed = null;
+          }
+          // Compare old/new computed value
+          if( old === computed ) {
+            return value;
+          }
+          // Normalize old value
+          if( old === undefined ) {
+            old = null;
+          }
         }
-
-        // Fire event
-        if( config.event ) {
-          code.push( 'this.createDispatchChangeEvent("', config.event, '", computed, old);' );
+        // [12] NOTIFYING DEPENDEND OBJECTS
+        if( hasCallback ) {
+          // Execute user configured setter
+          if( config.apply ) {
+            this[ config.apply ]( computed, old );
+          }
+          // Fire event
+          if( config.event ) {
+            this.createDispatchChangeEvent( config.event, computed, old );
+          }
+          // Refresh children
+          // Require the parent/children interface
+          if( config.inheritable && members.getChildren ) {
+            var children = this.getChildren();
+            if( children ) {
+              for( var i = 0, l = children.length; i < l; i++ ) {
+                if( children[ i ][ method.refresh[ name ] ] ) {
+                  children[ i ][ method.refresh[ name ] ]( backup );
+                }
+              }
+            }
+          }
         }
-
-        // Refresh children
-        // Require the parent/children interface
-        if( config.inheritable && members.getChildren ) {
-          code.push( 'var a=this.getChildren();if(a)for(var i=0,l=a.length;i<l;i++){' );
-          code.push( 'if(a[i].', this.$$method.refresh[name], ')a[i].', this.$$method.refresh[name], '(backup);' );
-          code.push( '}' );
+        // [13] RETURNING WITH ORIGINAL INCOMING VALUE
+        // Return value
+        if( incomingValue ) {
+          return value;
         }
-      }
+      };
 
-      // [13] RETURNING WITH ORIGINAL INCOMING VALUE
-
-      // Return value
-      if( incomingValue ) {
-        code.push( 'return value;' );
-      }
-
-      return this.__unwrapFunctionFromCode( instance, members, name, variant, code, args );
+      return this.__executeOptimizedFunction( instance, members, name, variant, func, args );
     }
   }
 

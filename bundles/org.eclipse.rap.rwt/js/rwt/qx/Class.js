@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2022 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource, and others.
  *
  * All rights reserved. This program and the accompanying materials
@@ -204,6 +204,17 @@ rwt.qx.Class = {
    */
   isDefined : function( name ) {
     return this.__registry[ name ] !== undefined;
+  },
+
+  /**
+   * Find a class by its name
+   *
+   * @type static
+   * @param name {String} class name to resolve
+   * @return {Class} the class
+   */
+  getByName : function( name ) {
+    return this.__registry[ name ];
   },
 
   /**

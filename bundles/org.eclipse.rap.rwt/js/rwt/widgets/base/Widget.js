@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2017 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2022 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource, and others.
  *
  * All rights reserved. This program and the accompanying materials
@@ -431,12 +431,13 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     TYPE_AUTO : 3,
     TYPE_FLEX : 4,
 
-    __initApplyMethods : function(members) {
+    __initApplyMethods : function( members ) {
       var applyRuntime = "_renderRuntime";
       var resetRuntime = "_resetRuntime";
-      var style = "this._style.";
-      var cssValue = "=((v==null)?0:v)+'px'";
-      var parameter = "v";
+      var applyMargin = applyRuntime + "Margin";
+      var resetMargin = resetRuntime + "Margin";
+      var applyPadding = applyRuntime + "Padding";
+      var resetPadding = resetRuntime + "Padding";
       var properties = [
         "left",
         "right",
@@ -449,53 +450,29 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
         "minHeight",
         "maxHeight"
       ];
-      var propertiesUpper = [
-        "Left",
-        "Right",
-        "Top",
-        "Bottom",
-        "Width",
-        "Height",
-        "MinWidth",
-        "MaxWidth",
-        "MinHeight",
-        "MaxHeight"
-      ];
-      var applyMargin = applyRuntime + "Margin";
-      var resetMargin = resetRuntime + "Margin";
-      var styleMargin = style + "margin";
-      for (var i=0; i<4; i++) {
-        members[applyMargin + propertiesUpper[i]]
-          = new Function(parameter, styleMargin + propertiesUpper[i] + cssValue);
-        members[resetMargin + propertiesUpper[i]]
-          = new Function(styleMargin + propertiesUpper[i] + "=''");
-      }
-      var applyPadding = applyRuntime + "Padding";
-      var resetPadding = resetRuntime + "Padding";
-      // need to use setStyleProperty to keep compatibility with enhanced cross browser borders
-      for (var i=0; i<4; i++) {
-        members[applyPadding + propertiesUpper[i]]
-          = new Function(parameter, "this.setStyleProperty('padding" + propertiesUpper[i] + "', ((v==null)?0:v)+'px')");
-        members[resetPadding + propertiesUpper[i]]
-          = new Function("this.removeStyleProperty('padding" + propertiesUpper[i] + "')");
-      }
-
-      /*
-        Use optimized method for internet explorer
-        to omit string concat and directly setup
-        the new layout property.
-         We could not use this to reset the value however.
-        It seems that is just doesn't work this way. And the
-        left/top always get priority. Tried: "", null, "auto".
-        Nothing helps.
-         Now I've switched back to the conventional method
-        to reset the value. This seems to work again.
-      */
-      for (var i=0; i<properties.length; i++) {
-        members[applyRuntime + propertiesUpper[i]]
-          = new Function(parameter, style + properties[i] + cssValue);
-        members[resetRuntime + propertiesUpper[i]] = new Function(style + properties[i] + "=''");
-      }
+      properties.forEach( function( property, index ) {
+        var propertyUpper = rwt.util.Strings.toFirstUp( property );
+        if( index < 4 ) {
+          members[ applyMargin + propertyUpper ] = function( v ) {
+            this._style[ "margin" + propertyUpper ] = ( ( v == null ) ? 0 : v ) + "px";
+          };
+          members[ resetMargin + propertyUpper ] = function() {
+            this._style[ "margin" + propertyUpper ] = "";
+          };
+          members[ applyPadding + propertyUpper ] = function( v ) {
+            this.setStyleProperty( "padding" + propertyUpper, ( ( v == null ) ? 0 : v ) + "px" );
+          };
+          members[ resetPadding + propertyUpper ] = function() {
+            this.removeStyleProperty( "padding" + propertyUpper );
+          };
+        }
+        members[ applyRuntime + propertyUpper ] = function( v ) {
+          this._style[ property ] = ( ( v == null ) ? 0 : v ) + "px";
+        };
+        members[ resetRuntime + propertyUpper ] = function() {
+          this._style[ property ] = "";
+        };
+      } );
     },
 
     ///////////////////////////////////////
