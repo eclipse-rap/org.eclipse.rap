@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2015 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2022 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -70,16 +70,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Scrollable", {
     },
 
     adjustScrollLeft : function( widget, scrollLeft ) {
-      var Client = rwt.client.Client;
-      var horzScrollBar = widget.getHorizontalBar();
-      if( widget.getDirection() === "rtl" ) {
-        if( Client.isGecko() ) {
-          return - scrollLeft;
-        } else if( horzScrollBar && ( Client.isWebkit() || Client.isBlink() ) ) {
-          return horzScrollBar.getMaximum() - horzScrollBar.getThumb() - scrollLeft;
-        }
-      }
-      return scrollLeft;
+      return widget.getDirection() === "rtl" ? - scrollLeft : scrollLeft;
     }
 
   },

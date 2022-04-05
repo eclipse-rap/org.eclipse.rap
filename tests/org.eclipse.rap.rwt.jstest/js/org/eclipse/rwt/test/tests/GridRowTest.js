@@ -1,5 +1,5 @@
   /*******************************************************************************
- * Copyright (c) 2010, 2020 EclipseSource and others.
+ * Copyright (c) 2010, 2022 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -745,9 +745,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( 0, nodes[ 2 ].offsetTop );
       assertEquals( 0, nodes[ 1 ].offsetTop );
       assertEquals( 0, nodes[ 0 ].offsetTop );
-      assertEquals( 0, nodes[ 2 ].offsetLeft );
-      assertEquals( 32, nodes[ 1 ].offsetLeft );
-      assertEquals( 48, nodes[ 0 ].offsetLeft );
+      assertEquals( 4, nodes[ 2 ].offsetLeft );
+      assertEquals( 36, nodes[ 1 ].offsetLeft );
+      assertEquals( 52, nodes[ 0 ].offsetLeft );
     },
 
     testIndentSymbolsPosition_RTL : function() {
@@ -764,9 +764,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( 0, nodes[ 2 ].offsetTop );
       assertEquals( 0, nodes[ 1 ].offsetTop );
       assertEquals( 0, nodes[ 0 ].offsetTop );
-      assertEquals( 384, nodes[ 2 ].offsetLeft );
-      assertEquals( 352, nodes[ 1 ].offsetLeft );
-      assertEquals( 336, nodes[ 0 ].offsetLeft );
+      assertEquals( 380, nodes[ 2 ].offsetLeft );
+      assertEquals( 348, nodes[ 1 ].offsetLeft );
+      assertEquals( 332, nodes[ 0 ].offsetLeft );
     },
 
     testIndentSymbolsNotEnoughSpace : function() {

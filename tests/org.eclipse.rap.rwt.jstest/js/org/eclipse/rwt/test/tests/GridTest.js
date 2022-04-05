@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2020 EclipseSource and others.
+ * Copyright (c) 2010, 2022 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -3084,13 +3084,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
       tree._horzScrollBar.setValue( 400 );
 
-      var expected = 400;
-      if( Client.isGecko() ) {
-        expected = -400;
-      } else if( Client.isWebkit() || Client.isBlink() ) {
-        expected = 200;
-      }
-      assertEquals( expected, tree._rowContainer.getScrollLeft() );
+      assertEquals( -400, tree._rowContainer.getScrollLeft() );
       tree.destroy();
     },
 
@@ -3464,13 +3458,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
       tree._horzScrollBar.setValue( 400 );
 
-      var expected = 400;
-      if( Client.isGecko() ) {
-        expected = -400;
-      } else if( Client.isWebkit() || Client.isBlink() ) {
-        expected = 200;
-      }
-      assertEquals( expected, tree._header.getScrollLeft() );
+      assertEquals( -400, tree._header.getScrollLeft() );
       tree.destroy();
     },
 

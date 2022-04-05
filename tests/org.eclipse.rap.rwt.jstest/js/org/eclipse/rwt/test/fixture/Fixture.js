@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 EclipseSource and others.
+ * Copyright (c) 2009, 2022 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,6 +41,7 @@ org.eclipse.rwt.test.fixture.Fixture = {
     // undo the changed done by MobileWebkitSupport to allow normal tooltip tests:
     delete rwt.widgets.util.ToolTipManager.getInstance().handleMouseEvent;
     rwt.remote.Request.prototype._shouldUseStateListener = rwt.util.Functions.returnTrue;
+    rwt.remote.Request.prototype._isFetchSupported = rwt.util.Functions.returnFalse;
     var connection = rwt.remote.Connection.getInstance();
     rwt.remote.KeyEventSupport.getInstance()._sendRequestAsync = function() {
       connection._requestPending = false;

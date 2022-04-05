@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2017 EclipseSource and others.
+ * Copyright (c) 2010, 2022 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -356,13 +356,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       composite.setHBarSelection( 10 );
       composite.setVBarSelection( 20 );
       var position = this._getScrollPosition( composite );
-      if( Client.isGecko() ) {
-        assertEquals( [ -10, 20 ], position );
-      } else if( Client.isTrident() ) {
-        assertEquals( [ 10, 20 ], position );
-      } else {
-        assertEquals( [ 100, 20 ], position );
-      }
+      assertEquals( [ -10, 20 ], position );
       composite.destroy();
     },
 
