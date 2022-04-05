@@ -9,7 +9,7 @@
             id="org.eclipse.rap.demo.workbench.default"
             path="/"
             class="org.eclipse.rap.demo.DemoWorkbench"
-            csp="script-src 'strict-dynamic' 'nonce-' 'unsafe-eval' http: https:; object-src 'none'; base-uri 'none';">
+            csp="script-src 'strict-dynamic' 'nonce-' http: https:; object-src 'none'; base-uri 'none';">
       </entrypoint>
       <entrypoint
             id="org.eclipse.rap.demo.workbench.business"
