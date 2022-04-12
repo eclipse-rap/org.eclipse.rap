@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2009, 2022 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -448,7 +448,10 @@ rwt.remote.DNDSupport.prototype = {
       widget.setBackgroundColor( backgroundColor );
       widget.setTextColor( textColor );
       var text = item.getText( config.treeColumn );
-      widget.setCellContent( 1, rwt.util.Encoding.escapeText( text, false ) );
+      if( !config.markupEnabled ) {
+        text = rwt.util.Encoding.escapeText( text, false );
+      }
+      widget.setCellContent( 1, text );
       widget.setFont( config.font );
     }
   },
