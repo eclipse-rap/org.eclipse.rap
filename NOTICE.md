@@ -28,8 +28,8 @@ SPDX-License-Identifier: EPL-1.0
 
 The project maintains the following source code repositories:
 
-* https://git.eclipse.org/r/plugins/gitiles/rap/org.eclipse.rap
-* https://git.eclipse.org/r/plugins/gitiles/rap/org.eclipse.rap.tools
+* https://github.com/eclipse-rap/org.eclipse.rap
+* https://github.com/eclipse-rap/org.eclipse.rap.tools
 
 ## Third-party Content
 

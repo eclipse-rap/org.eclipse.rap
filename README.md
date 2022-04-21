@@ -86,5 +86,5 @@ welcome!
 [7]: http://wiki.eclipse.org/EPL
 [8]: http://www.eclipse.org/forums/eclipse.technology.rap
 [9]: https://dev.eclipse.org/mailman/listinfo/rap-dev
-[10]: https://bugs.eclipse.org/bugs/buglist.cgi?product=RAP
-[11]: https://bugs.eclipse.org/bugs/enter_bug.cgi?product=RAP
+[10]: https://github.com/eclipse-rap/org.eclipse.rap/issues
+[11]: https://github.com/eclipse-rap/org.eclipse.rap/issues/new/choose
