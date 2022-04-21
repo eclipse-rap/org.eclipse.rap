@@ -25,13 +25,14 @@ more.
 
 The project maintains the following source code repositories
 
-* https://git.eclipse.org/r/plugins/gitiles/rap/org.eclipse.rap
-* https://git.eclipse.org/r/plugins/gitiles/rap/org.eclipse.rap.tools
+* https://github.com/eclipse-rap/org.eclipse.rap
+* https://github.com/eclipse-rap/org.eclipse.rap.tools
 
-This project uses Bugzilla to track ongoing development and issues.
+This project uses GitHub to track ongoing development and issues.
 
-* Search for issues: https://bugs.eclipse.org/bugs/buglist.cgi?product=RAP
-* Create a new report: https://bugs.eclipse.org/bugs/enter_bug.cgi?product=RAP
+* Search for issues: https://github.com/eclipse-rap/org.eclipse.rap/issues
+* Create a new report: https://github.com/eclipse-rap/org.eclipse.rap/issues/new/choose
+* For old issues until 2022-04, see Bugzilla at https://bugs.eclipse.org/bugs/buglist.cgi?product=RAP
 
 Be sure to search for existing bugs before you create another one. Remember that
 contributions are always welcome!
