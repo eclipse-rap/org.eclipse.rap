@@ -33,14 +33,14 @@ and a second one with the RAP e4 Runtime bundles in
 
 Official builds are available from the [RAP Download page](https://www.eclipse.org/rap/downloads/).
 
-Compiling and building the RAP demo projects is explained [here](releng/org.eclipse.rap.examples.build/README).
+Compiling and building the RAP demo projects is explained [here](releng/org.eclipse.rap.examples.build/README.md).
 
 Contributions
 -------------
 
 Before your contribution can be accepted by the project, you need to create and electronically sign the [Eclipse Foundation Contributor License Agreement (CLA)](https://www.eclipse.org/legal/ECA.php) and sign off on the Eclipse Foundation Certificate of Origin.
 
-For more information, please visit the [project's contribution guide](CONTRIBUTING).
+For more information, please visit the [project's contribution guide](CONTRIBUTING.md).
 
 License
 -------
