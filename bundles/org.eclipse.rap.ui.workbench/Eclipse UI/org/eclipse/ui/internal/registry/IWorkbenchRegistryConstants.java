@@ -682,6 +682,8 @@ public interface IWorkbenchRegistryConstants {
 	public static String PL_VIEWS = "views"; //$NON-NLS-1$
 
 	public static String PL_WORKINGSETS = "workingSets"; //$NON-NLS-1$
+	
+	public static String PL_QUICK_ACCESS = "quickAccess"; //$NON-NLS-1$
 
 	/**
 	 * The name of the deprecated accelerator configurations extension point.

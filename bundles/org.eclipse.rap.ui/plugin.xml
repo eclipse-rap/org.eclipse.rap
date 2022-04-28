@@ -69,6 +69,7 @@
    <extension-point id="installationPages" name="%ExtPoint.installationPages" schema="schema/installationPages.exsd"/>
    -->
    <extension-point id="org.eclipse.ui.propertiesView" name="%ExtPoint.propertiesView" schema="schema/propertiesView.exsd"/>
+   <extension-point id="org.eclipse.ui.quickAccess" name="%ExtPoint.quickAccess" schema="schema/quickAccess.exsd"/>
 
    <extension
          point="org.eclipse.ui.contexts">
@@ -1012,14 +1013,12 @@
             description="%command.openEditorDropDown.description"
             categoryId="org.eclipse.ui.category.window"
             id="org.eclipse.ui.window.openEditorDropDown" />
-      <!-- RAP [rh] QuickAccessHandler disabled in ui.workbench
       <command
             categoryId="org.eclipse.ui.category.window"
             defaultHandler="org.eclipse.ui.internal.quickaccess.QuickAccessHandler"
             description="%command.quickAccess.description"
             id="org.eclipse.ui.window.quickAccess"
             name="%command.quickAccess.name"/>
-      -->
       <!-- RAP [bm] SpyHandler disabled in ui.workbench
       <command
             categoryId="org.eclipse.ui.category.window"
