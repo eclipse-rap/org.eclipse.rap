@@ -1154,6 +1154,11 @@ public class Grid extends Composite {
 
   /**
    * Sets whether cells are selectable in the receiver.
+   * <p>
+   * Note: Using markup in the cell text will require <em>data-cell-index</em> attribute to be added
+   * to the HTML element that points to the cell column index. Row header column (visible or not)
+   * always has index 0.
+   * </p>
    *
    * @param cellSelection the cellSelection to set
    * @throws org.eclipse.swt.SWTException
