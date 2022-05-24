@@ -197,7 +197,7 @@ public abstract class QuickAccessContents {
 		this.computeProposalsJob = currentComputeEntriesJob;
 		currentComputeEntriesJob.schedule();
 		//TODO ggf. deadlock mit dem anderen job?
-		//computingFeedbackJob.schedule(200); // delay a bit so if proposals compute fast enough, we don't show feedback
+//		computingFeedbackJob.schedule(200); // delay a bit so if proposals compute fast enough, we don't show feedback
 	}
 
 	/**
@@ -310,7 +310,7 @@ public abstract class QuickAccessContents {
 						selectionIndex = index;
 					}
 					item.setData(entry);
-					item.setText(0, entry.provider.getName());
+					item.setText(0, entry.firstInCategory? entry.provider.getName() : "");
 					item.setText(1, entry.element.getLabel());
 					if (Util.isWpf()) {
 						item.setImage(1, entry.getImage(entry.element, resourceManager));
@@ -394,22 +394,23 @@ public abstract class QuickAccessContents {
 			if (!filter.isEmpty() || isPreviousPickProvider || showAllMatches) {
 				AtomicReference<List<QuickAccessElement>> sortedElementRef = new AtomicReference<>();
 				if (provider.requiresUiAccess()) {
-					UIJob job = new UIJob(
-							NLS.bind(QuickAccessMessages.get().QuickAccessContents_processingProviderInUI,
-									provider.getName())) {
-						@Override
-						public IStatus runInUIThread(IProgressMonitor monitor) {
-							sortedElementRef.set(Arrays.asList(provider.getElementsSorted(finalFilter, monitor)));
-							return Status.OK_STATUS;
-						}
-					};
-					job.setPriority(Job.INTERACTIVE);
-					job.schedule();
-					try {
-						job.join(0, new NullProgressMonitor());
-					} catch (Exception e) {
-						WorkbenchPlugin.log(e);
-					}
+					Display.getCurrent().syncExec(() -> sortedElementRef.set(Arrays.asList(provider.getElementsSorted(finalFilter, new NullProgressMonitor()))));
+//					UIJob job = new UIJob(
+//							NLS.bind(QuickAccessMessages.get().QuickAccessContents_processingProviderInUI,
+//									provider.getName())) {
+//						@Override
+//						public IStatus runInUIThread(IProgressMonitor monitor) {
+//							sortedElementRef.set(Arrays.asList(provider.getElementsSorted(finalFilter, monitor)));
+//							return Status.OK_STATUS;
+//						}
+//					};
+//					job.setPriority(Job.INTERACTIVE);
+//					job.schedule();
+//					try {
+//						job.join(0, new NullProgressMonitor());
+//					} catch (Exception e) {
+//						WorkbenchPlugin.log(e);
+//					}
 				} else {
 					sortedElementRef.set(Arrays.asList(provider.getElementsSorted(filter, aMonitor)));
 				}

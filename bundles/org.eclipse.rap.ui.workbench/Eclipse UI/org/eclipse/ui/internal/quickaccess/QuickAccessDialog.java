@@ -34,6 +34,7 @@ import org.eclipse.jface.bindings.TriggerSequence;
 import org.eclipse.jface.bindings.keys.KeySequence;
 import org.eclipse.jface.bindings.keys.SWTKeySupport;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.DialogSettings;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.PopupDialog;
@@ -69,7 +70,6 @@ import org.eclipse.ui.internal.quickaccess.providers.HelpSearchProvider;
 import org.eclipse.ui.internal.quickaccess.providers.PerspectiveProvider;
 import org.eclipse.ui.internal.quickaccess.providers.PreferenceProvider;
 import org.eclipse.ui.internal.quickaccess.providers.PropertiesProvider;
-import org.eclipse.ui.internal.quickaccess.providers.ViewProvider;
 import org.eclipse.ui.internal.quickaccess.providers.WizardProvider;
 import org.eclipse.ui.keys.IBindingService;
 import org.eclipse.ui.quickaccess.QuickAccessElement;
@@ -340,7 +340,7 @@ public class QuickAccessDialog extends PopupDialog {
 	@Override
 	protected IDialogSettings getDialogSettings() {
 		//TODO
-		return null;
+		return new DialogSettings("QuickAccess");
 //		final IDialogSettings workbenchDialogSettings = PlatformUI
 //				.getDialogSettingsProvider(FrameworkUtil.getBundle(QuickAccessDialog.class)).getDialogSettings();
 //		IDialogSettings result = workbenchDialogSettings.getSection(getId());

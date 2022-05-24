@@ -38,7 +38,7 @@ import org.osgi.framework.BundleException;
  */
 public class QuickAccessExtensionManager {
 
-	private static final String EXTENSION_POINT_ID = PlatformUI.PLUGIN_ID + '.'
+	private static final String EXTENSION_POINT_ID = "org.eclipse.ui" + '.'
 			+ IWorkbenchRegistryConstants.PL_QUICK_ACCESS;
 	private static final String COMPUTER_TAG = "computer"; //$NON-NLS-1$
 
