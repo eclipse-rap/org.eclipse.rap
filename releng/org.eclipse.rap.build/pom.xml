@@ -29,7 +29,7 @@
      -->
     <jetty-repo.url>https://download.eclipse.org/webtools/jetty/10.0.9/repository/</jetty-repo.url>
     <orbit-repo.url>https://download.eclipse.org/tools/orbit/downloads/2022-06/</orbit-repo.url>
-    <platform-repo.url>https://download.eclipse.org/eclipse/updates/4.24-I-builds/I20220519-0130/</platform-repo.url>
+    <platform-repo.url>https://download.eclipse.org/eclipse/updates/4.24-I-builds/I20220525-1800/</platform-repo.url>
     <rap-extra-repo.url>https://download.eclipse.org/rt/rap/base-platforms/3.14/extra-dependencies/</rap-extra-repo.url>
     <license-repo.url>https://download.eclipse.org/cbi/updates/license/</license-repo.url>
     <!-- The build type, N for nighty builds, S for stable builds. S-builds will be signed. -->
