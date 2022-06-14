@@ -89,6 +89,8 @@ public class QuickAccessDialog extends PopupDialog {
 	private KeyAdapter keyAdapter;
 	private Set<ModifyListener> toRemoveTextListeners;
 	private Text filterText;
+	private Label hintText;
+	private Table table;
 	private IWorkbenchWindow window;
 	private static final String USER_INPUT_TEXTS = "textArray"; //$NON-NLS-1$
 	private static final String TEXT_ENTRIES = "textEntries"; //$NON-NLS-1$
@@ -247,13 +249,13 @@ public class QuickAccessDialog extends PopupDialog {
 		Composite composite = (Composite) super.createDialogArea(parent);
 		boolean isWin32 = Util.isWindows();
 		GridLayoutFactory.fillDefaults().extendedMargins(isWin32 ? 0 : 3, 3, 2, 2).applyTo(composite);
-		Label hintText = contents.createHintText(composite, SWT.DEFAULT);
+		hintText = contents.createHintText(composite, SWT.DEFAULT);
 		GridData gridData = new GridData(SWT.FILL, SWT.DEFAULT, true, false,
 				((GridLayout) composite.getLayout()).numColumns, 1);
 		gridData.horizontalIndent = IDialogConstants.HORIZONTAL_MARGIN;
 		hintText.setLayoutData(gridData);
 
-		Table table = contents.createTable(composite, getDefaultOrientation());
+		table = contents.createTable(composite, getDefaultOrientation());
 		table.addKeyListener(getKeyAdapter());
 
 		return composite;
@@ -446,6 +448,21 @@ public class QuickAccessDialog extends PopupDialog {
 
 	public QuickAccessContents getQuickAccessContents() {
 		return this.contents;
+	}
+	
+	@Override
+	protected List getForegroundColorExclusions() {
+		List list = super.getForegroundColorExclusions();
+		if(filterText != null) {
+			list.add(filterText);
+		}
+		if(hintText != null) {
+			list.add(hintText);
+		}
+		if(table != null) {
+			list.add(table);
+		}
+		return list;
 	}
 
 }
