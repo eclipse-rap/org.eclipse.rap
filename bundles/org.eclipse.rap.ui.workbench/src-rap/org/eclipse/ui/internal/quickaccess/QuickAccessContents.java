@@ -748,7 +748,6 @@ public abstract class QuickAccessContents {
 		tableComposite.setLayout(tableColumnLayout);
 		table = new Table(tableComposite, SWT.SINGLE | SWT.FULL_SELECTION);
 		
-		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		
 //		textLayout = new TextLayout(table.getDisplay());
