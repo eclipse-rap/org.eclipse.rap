@@ -103,7 +103,7 @@ public class QuickAccessDialog extends PopupDialog {
 	private PreviousPicksProvider previousPicksProvider;
 
 	public QuickAccessDialog(IWorkbenchWindow window, Command invokingCommand) {
-		super(ProgressManagerUtil.getDefaultParent(), SWT.RESIZE, true, true, // persist
+		super(ProgressManagerUtil.getDefaultParent(), SWT.RESIZE | SWT.BORDER, true, true, // persist
 				// size
 				false, // but not location
 				true, true, QuickAccessMessages.get().QuickAccessContents_QuickAccess,
