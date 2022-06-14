@@ -331,8 +331,7 @@ public class QuickAccessDialog extends PopupDialog {
 	}
 
 	@Override
-	protected Point getDefaultLocation(Point initialSize) {
-		Point size = new Point(400, 400);
+	protected Point getDefaultLocation(Point size) {
 		Rectangle parentBounds = getParentShell().getBounds();
 		int x = parentBounds.x + parentBounds.width / 2 - size.x / 2;
 		int y = parentBounds.y + parentBounds.height / 2 - size.y / 2;
