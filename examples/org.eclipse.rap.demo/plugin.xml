@@ -318,5 +318,14 @@
          <keywordReference id="org.eclipse.ui.demo.preferenceKeywords"/>
       </page>
    </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="org.eclipse.ui.window.quickAccess"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+3">
+      </key>
+   </extension>
 
 </plugin>
