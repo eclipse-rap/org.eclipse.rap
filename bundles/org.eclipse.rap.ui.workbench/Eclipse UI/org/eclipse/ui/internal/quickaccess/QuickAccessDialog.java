@@ -143,7 +143,7 @@ public class QuickAccessDialog extends PopupDialog {
 					});
 				}
 			}));
-			providers.add(new HelpSearchProvider());
+			//providers.add(new HelpSearchProvider());
 
 			Collection<String> previousPickProviderIds = getPreviousPickProviderIds(getDialogSettings());
 			previousPicksProvider.setInvolvedProviders(
