@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 EclipseSource and others.
+ * Copyright (c) 2012, 2022 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -95,7 +95,7 @@ rwt.scripting.EventProxy.prototype = {
    * depending on the event, the state of the keyboard modifier keys and mouse
    * masks at the time the event was generated.
    *
-   * Set for KeyDown, KeyUp, MouseDown, MouseUp, MouseMove, MouseEvnet, MouseExit and MouseDoubleClick.
+   * Set for KeyDown, KeyUp, MouseDown, MouseUp, MouseMove, MouseEnter, MouseExit and MouseDoubleClick.
    */
   stateMask : 0,
 
@@ -103,23 +103,31 @@ rwt.scripting.EventProxy.prototype = {
    * the button that was pressed or released; 1 for the first button, 2 for the
    * second button, and 3 for the third button, etc.
    *
-   * Set for MouseDown, MouseUp, MouseMove, MouseEvnet, MouseExit and MouseDoubleClick.
+   * Set for MouseDown, MouseUp, MouseMove, MouseEnter, MouseExit and MouseDoubleClick.
    */
   button : 0,
 
   /**
    * x coordinate of the pointer at the time of the event
    *
-   * Set for MouseDown, MouseUp, MouseMove, MouseEvnet, MouseExit and MouseDoubleClick.
+   * Set for MouseDown, MouseUp, MouseMove, MouseEnter, MouseExit and MouseDoubleClick.
    */
   x : 0,
 
   /**
    * y coordinate of the pointer at the time of the event
    *
-   * Set for MouseDown, MouseUp, MouseMove, MouseEvnet, MouseExit and MouseDoubleClick.
+   * Set for MouseDown, MouseUp, MouseMove, MouseEnter, MouseExit and MouseDoubleClick.
    */
   y : 0,
+
+  /**
+   * the number of times the mouse has been clicked
+   * 1 for one click, 2 for double click and scroll delta for MouseWheel
+   *
+   * Set for MouseDown, MouseUp, MouseDoubleClick, MouseWheel.
+   */
+  count : 0,
 
   /**
    * depending on the event, the range of text being modified. Setting these
@@ -245,6 +253,15 @@ function initMouseEvent( event, originalEvent ) {
   var offset = rwt.html.Location.get( target, "scroll" );
   event.x = originalEvent.getPageX() - offset.left;
   event.y = originalEvent.getPageY() - offset.top;
+  event.count = 0;
+  if( event.type === SWT.MouseWheel ) {
+    var delta = originalEvent.getWheelDelta();
+    event.count = Math.ceil( Math.abs( delta ) ) * Math.sign( delta );
+  } else if( event.type === SWT.MouseDown || event.type === SWT.MouseUp ) {
+    event.count = 1;
+  } else if( event.type === SWT.MouseDoubleClick ) {
+    event.count = 2;
+  }
   if( originalEvent.isLeftButtonPressed() ) {
     event.button = 1;
   } else if( originalEvent.isRightButtonPressed() ) {
