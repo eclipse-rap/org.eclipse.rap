@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2022 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -288,6 +288,7 @@ public class ShellTab extends ExampleTab {
     editItem.setText( "Edit" );
     MenuItem searchItem = new MenuItem( menuBar, SWT.CASCADE );
     searchItem.setText( "Search" );
+    searchItem.setToolTipText( "Search item tooltip" );
     MenuItem disabledItem = new MenuItem( menuBar, SWT.CASCADE );
     disabledItem.setText( "Disabled" );
     disabledItem.setEnabled( false );
@@ -308,7 +309,9 @@ public class ShellTab extends ExampleTab {
     editItem.setMenu( editMenu );
     MenuItem item;
     new MenuItem( editMenu, SWT.PUSH ).setText( "Copy" );
-    new MenuItem( editMenu, SWT.PUSH ).setText( "Paste" );
+    MenuItem pasteItem = new MenuItem( editMenu, SWT.PUSH );
+    pasteItem.setText( "Paste" );
+    pasteItem.setToolTipText( "Paste item tooltip" );
     new MenuItem( editMenu, SWT.SEPARATOR );
     // cascade menu
     item = new MenuItem( editMenu, SWT.CASCADE );

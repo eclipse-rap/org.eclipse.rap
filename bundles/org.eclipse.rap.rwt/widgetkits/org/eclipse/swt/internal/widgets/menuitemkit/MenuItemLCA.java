@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2022 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -50,6 +50,7 @@ public final class MenuItemLCA extends WidgetLCA<MenuItem> {
 
   @Override
   public void preserveValues( MenuItem item ) {
+    WidgetLCAUtil.preserveToolTipText( item, item.getToolTipText() );
     preserveProperty( item, PROP_TEXT, item.getText() );
     preserveProperty( item, PROP_IMAGE, item.getImage() );
     preserveProperty( item, PROP_MENU, item.getMenu() );
@@ -71,6 +72,7 @@ public final class MenuItemLCA extends WidgetLCA<MenuItem> {
   public void renderChanges( MenuItem item ) throws IOException {
     WidgetLCAUtil.renderCustomVariant( item );
     WidgetLCAUtil.renderData( item );
+    WidgetLCAUtil.renderToolTip( item, item.getToolTipText() );
     renderText( item );
     renderMnemonicIndex( item );
     renderProperty( item, PROP_IMAGE, item.getImage(), null );

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2022 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,10 +11,11 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.menuitemkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.registerDataKeys;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.testfixture.internal.Fixture.getProtocolMessage;
 import static org.eclipse.rap.rwt.testfixture.internal.TestMessage.getParent;
 import static org.eclipse.rap.rwt.testfixture.internal.TestMessage.getStyles;
 import static org.junit.Assert.assertEquals;
@@ -33,13 +34,13 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
-import org.eclipse.rap.rwt.remote.OperationHandler;
+import org.eclipse.rap.rwt.internal.protocol.Operation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.DestroyOperation;
-import org.eclipse.rap.rwt.internal.protocol.Operation;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
 import org.eclipse.rap.rwt.testfixture.internal.TestUtil;
@@ -64,6 +65,7 @@ public class MenuItemLCA_Test {
   private Shell shell;
   private Menu menuBar;
   private Menu menu;
+  private MenuItem item;
   private MenuItemLCA lca;
 
   @Before
@@ -73,6 +75,7 @@ public class MenuItemLCA_Test {
     shell = new Shell( display );
     menuBar = new Menu( shell, SWT.BAR );
     menu = new Menu( shell, SWT.POP_UP );
+    item = new MenuItem( menu, SWT.NONE );
     lca = MenuItemLCA.INSTANCE;
     Fixture.fakeNewRequest();
   }
@@ -238,9 +241,59 @@ public class MenuItemLCA_Test {
   }
 
   @Test
-  public void testRenderIndex() throws IOException {
-    MenuItem item = new MenuItem( menu, SWT.PUSH );
+  public void testRenderIntialToolTipMarkupEnabled() throws IOException {
+    item.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
 
+    lca.renderChanges( item );
+
+    TestMessage message = getProtocolMessage();
+    assertTrue( "foo", message.findSetProperty( item, "toolTipMarkupEnabled" ).asBoolean() );
+  }
+
+  @Test
+  public void testRenderToolTipMarkupEnabled() throws IOException {
+    item.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+    Fixture.markInitialized( item );
+
+    lca.renderChanges( item );
+
+    TestMessage message = getProtocolMessage();
+    assertNull( message.findSetOperation( item, "toolTipMarkupEnabled" ) );
+  }
+
+  @Test
+  public void testRenderInitialToolTip() throws IOException {
+    lca.render( item );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertFalse( operation.getProperties().names().contains( "toolTip" ) );
+  }
+
+  @Test
+  public void testRenderToolTip() throws IOException {
+    item.setToolTipText( "foo" );
+    lca.renderChanges( item );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( "foo", message.findSetProperty( item, "toolTip" ).asString() );
+  }
+
+  @Test
+  public void testRenderToolTipUnchanged() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+
+    item.setToolTipText( "foo" );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "toolTip" ) );
+  }
+
+  @Test
+  public void testRenderIndex() throws IOException {
     lca.renderInitialization( item );
 
     TestMessage message = Fixture.getProtocolMessage();
