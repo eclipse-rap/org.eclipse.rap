@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2022 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,9 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
+
+import static org.eclipse.swt.internal.widgets.MarkupUtil.isToolTipMarkupEnabledFor;
+import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
 
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.swt.SWT;
@@ -22,6 +25,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
+import org.eclipse.swt.internal.widgets.MarkupValidator;
 import org.eclipse.swt.internal.widgets.menuitemkit.MenuItemLCA;
 
 
@@ -49,6 +53,7 @@ public class MenuItem extends Item {
   private boolean selection;
   private int userId;
   private AcceleratorBinding acceleratorBinding;
+  private String toolTipText;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -277,6 +282,48 @@ public class MenuItem extends Item {
     if( ( style & SWT.SEPARATOR ) == 0 ) {
       super.setImage( image );
     }
+  }
+
+  /**
+   * Sets the receiver's tool tip text to the argument, which
+   * may be null indicating that no tool tip text should be shown.
+   *
+   * @param toolTipText the new tool tip text (or null)
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 3.22
+   */
+  public void setToolTipText( String toolTipText ) {
+    checkWidget();
+    if(    toolTipText != null
+        && isToolTipMarkupEnabledFor( this )
+        && !isValidationDisabledFor( this ) )
+    {
+      MarkupValidator.getInstance().validate( toolTipText );
+    }
+    this.toolTipText = toolTipText;
+  }
+
+  /**
+   * Returns the receiver's tool tip text, or null if it has
+   * not been set.
+   *
+   * @return the receiver's tool tip text
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 3.22
+   */
+  public String getToolTipText() {
+    checkWidget();
+    return toolTipText;
   }
 
   /**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2022 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
@@ -34,6 +35,7 @@ import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.internal.widgets.MarkupValidator;
 import org.eclipse.swt.internal.widgets.menuitemkit.MenuItemLCA;
 import org.junit.Before;
 import org.junit.Rule;
@@ -167,6 +169,43 @@ public class MenuItem_Test {
     assertNotNull( image );
     separator.setImage( image );
     assertEquals( null, separator.getImage() );
+  }
+
+  @Test
+  public void testToolTip() {
+    menuItem.setToolTipText( "foo" );
+
+    assertEquals( "foo", menuItem.getToolTipText() );
+  }
+
+  @Test
+  public void testMarkupToolTipTextWithoutMarkupEnabled() {
+    menuItem.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.FALSE );
+
+    try {
+      menuItem.setToolTipText( "invalid xhtml: <<&>>" );
+    } catch( IllegalArgumentException notExpected ) {
+      fail();
+    }
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testMarkupToolTipTextWithMarkupEnabled() {
+    menuItem.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+
+    menuItem.setToolTipText( "invalid xhtml: <<&>>" );
+  }
+
+  @Test
+  public void testMarkupToolTipTextWithMarkupEnabled_ValidationDisabled() {
+    menuItem.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+    menuItem.setData( MarkupValidator.MARKUP_VALIDATION_DISABLED, Boolean.TRUE );
+
+    try {
+      menuItem.setToolTipText( "invalid xhtml: <<&>>" );
+    } catch( IllegalArgumentException notExpected ) {
+      fail();
+    }
   }
 
   @Test
