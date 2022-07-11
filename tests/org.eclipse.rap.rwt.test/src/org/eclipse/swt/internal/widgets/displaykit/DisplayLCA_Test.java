@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2017 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2022 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -629,6 +629,41 @@ public class DisplayLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( displayId, "overflow" ) );
+  }
+
+  @Test
+  public void testRenderDisableShutdown_whenDisplayIsNotInitialize() throws IOException {
+    Map<String, String> properties = new HashMap<String, String>();
+    properties.put( WebClient.DISABLE_SHUTDOWN_REQUEST, "true" );
+    registerDefaultEntryPoint( TestEntryPoint.class, properties );
+
+    displayLCA.render( display );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertTrue( message.findSetProperty( displayId, "disableShutdownRequest" ).asBoolean() );
+  }
+
+  @Test
+  public void testRenderDisableShutdown_whenDisplayIsInitialize() throws IOException {
+    Map<String, String> properties = new HashMap<String, String>();
+    properties.put( WebClient.DISABLE_SHUTDOWN_REQUEST, "true" );
+    registerDefaultEntryPoint( TestEntryPoint.class, properties );
+
+    Fixture.markInitialized( display );
+    displayLCA.render( display );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( displayId, "disableShutdownRequest" ) );
+  }
+
+  @Test
+  public void testRenderDisableShutdown_withoutProperties() throws IOException {
+    registerDefaultEntryPoint( TestEntryPoint.class, null );
+
+    displayLCA.render( display );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( displayId, "disableShutdownRequest" ) );
   }
 
   private static void setEnableUiTests( boolean value ) {

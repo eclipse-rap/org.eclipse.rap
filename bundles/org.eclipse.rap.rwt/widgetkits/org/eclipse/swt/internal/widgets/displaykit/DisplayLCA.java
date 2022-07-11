@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2017 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2022 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,6 +63,7 @@ public class DisplayLCA {
   static final String PROP_EXIT_CONFIRMATION = "exitConfirmation";
   private static final String METHOD_BEEP = "beep";
   private static final String PROP_RESIZE_LISTENER = "listener_Resize";
+  private static final String PROP_DISABLE_SHUTDOWN_REQUEST = "disableShutdownRequest";
 
   public void readData( Display display ) {
     handleOperations( display );
@@ -94,6 +95,7 @@ public class DisplayLCA {
 
   public void render( Display display ) throws IOException {
     renderOverflow( display );
+    renderDisableShutdownRequest( display );
     renderReparentControls();
     renderDisposeWidgets();
     renderExitConfirmation( display );
@@ -154,6 +156,15 @@ public class DisplayLCA {
       String overflow = getEntryPointProperties().get( WebClient.PAGE_OVERFLOW );
       if( overflow != null ) {
         RemoteObjectFactory.getRemoteObject( display ).set( "overflow", overflow );
+      }
+    }
+  }
+
+  private static void renderDisableShutdownRequest( Display display ) {
+    if( !getAdapter( display ).isInitialized() ) {
+      String prop = getEntryPointProperties().get( WebClient.DISABLE_SHUTDOWN_REQUEST );
+      if( "true".equals( prop ) ) {
+        RemoteObjectFactory.getRemoteObject( display ).set( PROP_DISABLE_SHUTDOWN_REQUEST, true );
       }
     }
   }
