@@ -1056,7 +1056,7 @@ public class StackRenderer extends LazyStackRenderer implements IPreferenceChang
 
 			@Override
 			public void handleEvent(org.eclipse.swt.widgets.Event event) {
-				if (event.detail == SWT.MouseDown) {
+				if (event.detail == SWT.None) { // SWT.MouseDown) {
 					CTabFolder ctf = (CTabFolder) event.widget;
 					if (ctf.getSelection() == null)
 						return;

@@ -94,7 +94,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.osgi.framework.Bundle;
-import org.w3c.dom.css.CSSStyleDeclaration;
 
 /**
  *
@@ -553,29 +552,7 @@ public class E4Application implements IApplication {
 				new ActiveChildLookupFunction(IServiceConstants.ACTIVE_SHELL,
 						E4Workbench.LOCAL_ACTIVE_SHELL));
 
-		appContext.set(IStylingEngine.class, new IStylingEngine() {
-			@Override
-			public void setClassname(Object widget, String classname) {
-			}
-
-			@Override
-			public void setId(Object widget, String id) {
-			}
-
-			@Override
-			public void style(Object widget) {
-			}
-
-			@Override
-			public CSSStyleDeclaration getStyle(Object widget) {
-				return null;
-			}
-
-			@Override
-			public void setClassnameAndId(Object widget, String classname,
-					String id) {
-			}
-		});
+		appContext.set(IStylingEngine.class, new StylingEngineImpl());
 
 		// translation
 		initializeLocalization(appContext);
