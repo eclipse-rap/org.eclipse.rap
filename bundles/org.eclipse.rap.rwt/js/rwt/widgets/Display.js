@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 EclipseSource and others.
+ * Copyright (c) 2011, 2022 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ rwt.widgets.Display = function() {
   this._exitConfirmation = null;
   this._hasResizeListener = false;
   this._sendResizeDelayed = false;
+  this._disableShutdownRequest = false;
   this._initialized = false;
   if( rwt.widgets.Display._current !== undefined ) {
     throw new Error( "Display can not be created twice" );
@@ -103,6 +104,10 @@ rwt.widgets.Display.prototype = {
     rwt.widgets.base.Widget._renderHtmlIds = value;
   },
 
+  setDisableShutdownRequest : function( value ) {
+    this._disableShutdownRequest = value;
+  },
+
   getDPI : function() {
     var result = [ 0, 0 ];
     if( typeof screen.systemXDPI == "number" ) {
@@ -181,7 +186,9 @@ rwt.widgets.Display.prototype = {
     this._connection.removeEventListener( "send", this._onSend, this );
     rwt.client.ServerPush.getInstance().setActive( false );
     this._connection.getMessageWriter().appendHead( "shutdown", true );
-    this._sendShutdown();
+    if( !this._disableShutdownRequest ) {
+      this._sendShutdown();
+    }
   },
 
   ///////////////////

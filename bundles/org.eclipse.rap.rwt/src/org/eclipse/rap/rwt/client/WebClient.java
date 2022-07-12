@@ -154,6 +154,17 @@ public class WebClient implements Client {
    */
   public static final String CSP = PREFIX + ".contentSecurityPolicy";
 
+  /**
+   * Entrypoint property name to disable the shutdown request. Accepts only "true" as property
+   * value.
+   *
+   * @see Application#addEntryPoint(String, Class, Map)
+   * @see Application#addEntryPoint(String, EntryPointFactory, Map)
+   *
+   * @since 3.22
+   */
+  public static final String DISABLE_SHUTDOWN_REQUEST = PREFIX + ".disableShutdownRequest";
+
   public WebClient() {
     initializeServices();
   }
