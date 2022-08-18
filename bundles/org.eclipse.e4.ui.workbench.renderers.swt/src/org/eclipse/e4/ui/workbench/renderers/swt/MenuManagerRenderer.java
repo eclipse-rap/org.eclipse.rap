@@ -44,7 +44,6 @@ import org.eclipse.e4.ui.internal.workbench.ContributionsAnalyzer;
 import org.eclipse.e4.ui.internal.workbench.OpaqueElementUtil;
 import org.eclipse.e4.ui.internal.workbench.RenderedElementUtil;
 import org.eclipse.e4.ui.model.application.MApplication;
-import org.eclipse.e4.ui.model.application.ui.MCoreExpression;
 import org.eclipse.e4.ui.model.application.ui.MElementContainer;
 import org.eclipse.e4.ui.model.application.ui.MUIElement;
 import org.eclipse.e4.ui.model.application.ui.MUILabel;
@@ -1097,24 +1096,21 @@ MenuManagerEventHelper.getInstance()
 	 * @param element
 	 * @param evalContext
 	 */
-	public static void updateVisibility(MenuManager menuManager,
-			MMenuElement element, ExpressionContext evalContext) {
+	public static void updateVisibility(MenuManager menuManager, MMenuElement element, ExpressionContext evalContext) {
 		boolean current = element.isVisible();
 		boolean visible = true;
 		boolean evaluated = false;
 		if (element.getPersistedState().get(VISIBILITY_IDENTIFIER) != null) {
 			evaluated = true;
-			String identifier = element.getPersistedState().get(
-					VISIBILITY_IDENTIFIER);
+			String identifier = element.getPersistedState().get(VISIBILITY_IDENTIFIER);
 			Object rc = evalContext.eclipseContext.get(identifier);
 			if (rc instanceof Boolean) {
 				visible = ((Boolean) rc).booleanValue();
 			}
 		}
-		if (visible && (element.getVisibleWhen() instanceof MCoreExpression)) {
+		if (visible && element.getVisibleWhen() != null) {
 			evaluated = true;
-			visible = ContributionsAnalyzer.isVisible(
-					(MCoreExpression) element.getVisibleWhen(), evalContext);
+			visible = ContributionsAnalyzer.isVisible(element.getVisibleWhen(), evalContext);
 		}
 		if (evaluated && visible != current) {
 			element.setVisible(visible);
