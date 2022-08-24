@@ -11,8 +11,8 @@
 
    <plugins>
       <plugin id="com.ibm.icu"/>
-      <plugin id="org.apache.commons.fileupload"/>
-      <plugin id="org.apache.commons.io"/>
+      <plugin id="org.apache.commons.commons-fileupload"/>
+      <plugin id="org.apache.commons.commons-io"/>
       <plugin id="org.apache.felix.gogo.command"/>
       <plugin id="org.apache.felix.gogo.runtime"/>
       <plugin id="org.apache.felix.gogo.shell"/>
