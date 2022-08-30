@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2022 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,8 +11,12 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.textsize;
 
+import static org.eclipse.rap.rwt.internal.RWTProperties.ENABLE_LOAD_TESTS;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
+import static org.eclipse.rap.rwt.internal.textsize.TextSizeUtil.STRING_EXTENT;
+import static org.eclipse.rap.rwt.internal.textsize.TextSizeUtil.TEXT_EXTENT;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
@@ -43,6 +47,7 @@ public class TextSizeUtil_Test {
   @After
   public void tearDown() {
     Fixture.tearDown();
+    System.getProperties().remove( ENABLE_LOAD_TESTS );
   }
 
   @Test
@@ -121,6 +126,18 @@ public class TextSizeUtil_Test {
   }
 
   @Test
+  public void testStringExtend_withLoadTestsEnabled_doesNotAssignsStringsToTextSizeMeasurement() {
+    System.setProperty( ENABLE_LOAD_TESTS, "true" );
+
+    TextSizeUtil.stringExtent( getFont(), TEST_STRING );
+
+    assertEquals( 0, getMeasurementItems().length );
+    assertEquals( 0, getProbes().length );
+    assertNotNull( TextSizeStorageUtil.lookup( FONT_DATA, TEST_STRING, -1, STRING_EXTENT ) );
+    assertTrue( ProbeResultStore.getInstance().containsProbeResult( FONT_DATA ) );
+  }
+
+  @Test
   public void testTextExtent_expandLineBreaks() {
     Point singleLine = TextSizeUtil.textExtent( getFont(), "First Line", 0 );
     Point multiLine = TextSizeUtil.textExtent( getFont(), "First Line\nSecond Line", 0 );
@@ -155,6 +172,18 @@ public class TextSizeUtil_Test {
   }
 
   @Test
+  public void testTextExtend_withLoadTestsEnabled_doesNotAssignsStringsToTextSizeMeasurement() {
+    System.setProperty( ENABLE_LOAD_TESTS, "true" );
+
+    TextSizeUtil.textExtent( getFont(), TEST_STRING, 0, false );
+
+    assertEquals( 0, getMeasurementItems().length );
+    assertEquals( 0, getProbes().length );
+    assertNotNull( TextSizeStorageUtil.lookup( FONT_DATA, TEST_STRING, -1, TEXT_EXTENT ) );
+    assertTrue( ProbeResultStore.getInstance().containsProbeResult( FONT_DATA ) );
+  }
+
+  @Test
   public void testGetCharHeightAssignsUnknownFontToFontProbing() {
     TextSizeUtil.getCharHeight( getFont() );
 
@@ -182,6 +211,16 @@ public class TextSizeUtil_Test {
   }
 
   @Test
+  public void testGetCharHeight_withLoadTestsEnabled_doesNotAssignsStringsToTextSizeMeasurement() {
+    System.setProperty( ENABLE_LOAD_TESTS, "true" );
+
+    TextSizeUtil.getCharHeight( getFont() );
+
+    assertEquals( 0, getProbes().length );
+    assertTrue( ProbeResultStore.getInstance().containsProbeResult( FONT_DATA ) );
+  }
+
+  @Test
   public void testGetAvgCharWidthAssignsUnknownFontToFontProbing() {
     TextSizeUtil.getAvgCharWidth( getFont() );
 
@@ -206,6 +245,16 @@ public class TextSizeUtil_Test {
     float determined = TextSizeUtil.getAvgCharWidth( getFont() );
 
     assertEquals( 4, determined, 0 );
+  }
+
+  @Test
+  public void testGetAvgCharWidth_withLoadTestsEnabled_doesNotAssignsStringsToTextSizeMeasurement() {
+    System.setProperty( ENABLE_LOAD_TESTS, "true" );
+
+    TextSizeUtil.getAvgCharWidth( getFont() );
+
+    assertEquals( 0, getProbes().length );
+    assertTrue( ProbeResultStore.getInstance().containsProbeResult( FONT_DATA ) );
   }
 
   @Test
