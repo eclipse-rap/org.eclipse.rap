@@ -12,9 +12,9 @@
 package org.eclipse.rap.rwt.internal.textsize;
 
 
-import static org.eclipse.rap.rwt.internal.RWTProperties.isLoadTestsEnabled;
 import static org.eclipse.rap.rwt.internal.textsize.Probe.DEFAULT_PROBE_STRING;
 
+import org.eclipse.rap.rwt.internal.RWTProperties;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.internal.util.EncodingUtil;
@@ -30,6 +30,12 @@ public class TextSizeUtil {
   static final int STRING_EXTENT = 0;
   static final int TEXT_EXTENT = 1;
   static final int MARKUP_EXTENT = 2;
+
+  // For performance reasons keep the value of the system property in a static field
+  static boolean loadTestsEnabled;
+  static {
+    loadTestsEnabled = RWTProperties.isLoadTestsEnabled();
+  }
 
   public static Point stringExtent( Font font, String string, boolean markup ) {
     if( markup ) {
@@ -57,7 +63,7 @@ public class TextSizeUtil {
   }
 
   public static int getCharHeight( Font font ) {
-    if( isLoadTestsEnabled() ) {
+    if( loadTestsEnabled ) {
       ensureFontProbeResult( font );
     }
     int result;
@@ -71,7 +77,7 @@ public class TextSizeUtil {
   }
 
   public static float getAvgCharWidth( Font font ) {
-    if( isLoadTestsEnabled() ) {
+    if( loadTestsEnabled ) {
       ensureFontProbeResult( font );
     }
     float result;
@@ -102,14 +108,14 @@ public class TextSizeUtil {
   }
 
   private static Point determineTextSize( Font font, String string, int wrapWidth, int mode ) {
-    if( isLoadTestsEnabled() ) {
+    if( loadTestsEnabled ) {
       ensureFontProbeResult( font );
     }
     int normalizedWrapWidth = normalizeWrapWidth( wrapWidth );
     Point result = lookup( font, string, normalizedWrapWidth, mode );
     if( result == null ) {
       result = estimate( font, string, normalizedWrapWidth, mode );
-      if( isLoadTestsEnabled() ) {
+      if( loadTestsEnabled ) {
         store( font, string, normalizedWrapWidth, mode, result );
       } else if( !isTemporaryResize() ) {
         addItemToMeasure( font, string, normalizedWrapWidth, mode );

@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.textsize;
 
-import static org.eclipse.rap.rwt.internal.RWTProperties.ENABLE_LOAD_TESTS;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.eclipse.rap.rwt.internal.textsize.TextSizeUtil.STRING_EXTENT;
 import static org.eclipse.rap.rwt.internal.textsize.TextSizeUtil.TEXT_EXTENT;
@@ -47,7 +46,7 @@ public class TextSizeUtil_Test {
   @After
   public void tearDown() {
     Fixture.tearDown();
-    System.getProperties().remove( ENABLE_LOAD_TESTS );
+    TextSizeUtil.loadTestsEnabled = false;
   }
 
   @Test
@@ -127,7 +126,7 @@ public class TextSizeUtil_Test {
 
   @Test
   public void testStringExtend_withLoadTestsEnabled_doesNotAssignsStringsToTextSizeMeasurement() {
-    System.setProperty( ENABLE_LOAD_TESTS, "true" );
+    TextSizeUtil.loadTestsEnabled = true;
 
     TextSizeUtil.stringExtent( getFont(), TEST_STRING );
 
@@ -173,7 +172,7 @@ public class TextSizeUtil_Test {
 
   @Test
   public void testTextExtend_withLoadTestsEnabled_doesNotAssignsStringsToTextSizeMeasurement() {
-    System.setProperty( ENABLE_LOAD_TESTS, "true" );
+    TextSizeUtil.loadTestsEnabled = true;
 
     TextSizeUtil.textExtent( getFont(), TEST_STRING, 0, false );
 
@@ -212,7 +211,7 @@ public class TextSizeUtil_Test {
 
   @Test
   public void testGetCharHeight_withLoadTestsEnabled_doesNotAssignsStringsToTextSizeMeasurement() {
-    System.setProperty( ENABLE_LOAD_TESTS, "true" );
+    TextSizeUtil.loadTestsEnabled = true;
 
     TextSizeUtil.getCharHeight( getFont() );
 
@@ -249,7 +248,7 @@ public class TextSizeUtil_Test {
 
   @Test
   public void testGetAvgCharWidth_withLoadTestsEnabled_doesNotAssignsStringsToTextSizeMeasurement() {
-    System.setProperty( ENABLE_LOAD_TESTS, "true" );
+    TextSizeUtil.loadTestsEnabled = true;
 
     TextSizeUtil.getAvgCharWidth( getFont() );
 
