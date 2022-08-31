@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2022 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,9 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.textsize;
 
+
+import static org.eclipse.rap.rwt.internal.RWTProperties.isLoadTestsEnabled;
+import static org.eclipse.rap.rwt.internal.textsize.Probe.DEFAULT_PROBE_STRING;
 
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
@@ -54,6 +57,9 @@ public class TextSizeUtil {
   }
 
   public static int getCharHeight( Font font ) {
+    if( isLoadTestsEnabled() ) {
+      ensureFontProbeResult( font );
+    }
     int result;
     if( containsProbeResult( font ) ) {
       result = lookupCharHeight( font );
@@ -65,6 +71,9 @@ public class TextSizeUtil {
   }
 
   public static float getAvgCharWidth( Font font ) {
+    if( isLoadTestsEnabled() ) {
+      ensureFontProbeResult( font );
+    }
     float result;
     if( containsProbeResult( font ) ) {
       result = lookupAvgCharWidth( font );
@@ -93,11 +102,16 @@ public class TextSizeUtil {
   }
 
   private static Point determineTextSize( Font font, String string, int wrapWidth, int mode ) {
+    if( isLoadTestsEnabled() ) {
+      ensureFontProbeResult( font );
+    }
     int normalizedWrapWidth = normalizeWrapWidth( wrapWidth );
     Point result = lookup( font, string, normalizedWrapWidth, mode );
     if( result == null ) {
       result = estimate( font, string, normalizedWrapWidth, mode );
-      if( !isTemporaryResize() ) {
+      if( isLoadTestsEnabled() ) {
+        store( font, string, normalizedWrapWidth, mode, result );
+      } else if( !isTemporaryResize() ) {
         addItemToMeasure( font, string, normalizedWrapWidth, mode );
       }
     }
@@ -122,6 +136,24 @@ public class TextSizeUtil {
     String measurementString = createMeasurementString( string, mode );
     FontData fontData = FontUtil.getData( font );
     return TextSizeStorageUtil.lookup( fontData, measurementString, wrapWidth, mode );
+  }
+
+  private static void store( Font font, String string, int wrapWidth, int mode, Point size ) {
+    String measurementString = createMeasurementString( string, mode );
+    FontData fontData = FontUtil.getData( font );
+    TextSizeStorageUtil.store( fontData, measurementString, wrapWidth, mode, size );
+  }
+
+  private static void ensureFontProbeResult( Font font ) {
+    if( !containsProbeResult( font ) ) {
+      storeProbeResult( font, estimate( font, DEFAULT_PROBE_STRING, SWT.DEFAULT, STRING_EXTENT ) );
+    }
+  }
+
+  private static void storeProbeResult( Font font, Point size ) {
+    FontData fontData = FontUtil.getData( font );
+    Probe probe = new Probe( fontData );
+    ProbeResultStore.getInstance().createProbeResult( probe, size );
   }
 
   private static Point estimate( Font font, String string, int wrapWidth, int mode ) {
