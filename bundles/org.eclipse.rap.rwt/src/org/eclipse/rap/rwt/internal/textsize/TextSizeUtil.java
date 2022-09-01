@@ -32,10 +32,7 @@ public class TextSizeUtil {
   static final int MARKUP_EXTENT = 2;
 
   // For performance reasons keep the value of the system property in a static field
-  static boolean loadTestsEnabled;
-  static {
-    loadTestsEnabled = RWTProperties.isLoadTestsEnabled();
-  }
+  static boolean loadTestsEnabled = RWTProperties.isLoadTestsEnabled();
 
   public static Point stringExtent( Font font, String string, boolean markup ) {
     if( markup ) {
