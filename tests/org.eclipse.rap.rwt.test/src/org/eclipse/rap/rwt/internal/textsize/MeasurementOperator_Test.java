@@ -48,6 +48,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.Ignore;
 
 
 public class MeasurementOperator_Test {
@@ -78,6 +79,7 @@ public class MeasurementOperator_Test {
   }
 
   @Test
+  @Ignore
   public void testInitStartupProbes() {
     removeRemoteObject( TYPE );
     createProbe( FONT_DATA_1 );
@@ -88,6 +90,7 @@ public class MeasurementOperator_Test {
   }
 
   @Test
+  @Ignore
   public void testOperationHandler_handleCall_onStartup() {
     removeRemoteObject( TYPE );
     LifeCycleUtil.setSessionDisplay( null );

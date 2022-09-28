@@ -36,6 +36,9 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.SerializableCompatibility;
 
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.service.UISessionImpl;
+
 
 class MeasurementOperator implements SerializableCompatibility {
 
@@ -59,7 +62,7 @@ class MeasurementOperator implements SerializableCompatibility {
   }
 
   private void addStartupProbesToBuffer() {
-    Probe[] probeList = getApplicationContext().getProbeStore().getProbes();
+    Probe[] probeList = ((UISessionImpl) RWT.getUISession()).getProbeStore().getProbes();
     probes.addAll( Arrays.asList( probeList ) );
   }
 
@@ -72,9 +75,9 @@ class MeasurementOperator implements SerializableCompatibility {
   }
 
   void addProbeToMeasure( FontData fontData ) {
-    Probe probe = getApplicationContext().getProbeStore().getProbe( fontData );
+    Probe probe = ((UISessionImpl) RWT.getUISession()).getProbeStore().getProbe( fontData );
     if( probe == null ) {
-      probe = getApplicationContext().getProbeStore().createProbe( fontData );
+      probe = ((UISessionImpl) RWT.getUISession()).getProbeStore().createProbe( fontData );
     }
     probes.add( probe );
   }

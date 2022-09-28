@@ -10,13 +10,14 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.textsize;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.swt.graphics.FontData;
 
 
-public class ProbeStore {
+public class ProbeStore implements Serializable {
   private final Map<FontData,Probe> probes;
   private final TextSizeStorage textSizeStorage;
 
