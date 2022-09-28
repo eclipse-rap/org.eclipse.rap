@@ -29,7 +29,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * would still be filtered according to user input.
  * </p>
  *
- * @since 3.116
+ * @since 3.23
  */
 public interface IQuickAccessComputerExtension extends IQuickAccessComputer {
 

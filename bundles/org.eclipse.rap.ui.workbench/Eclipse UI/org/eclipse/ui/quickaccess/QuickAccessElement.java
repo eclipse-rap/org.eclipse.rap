@@ -20,7 +20,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
  * A QuickAccessElement describes one of the possible actions to show in Quick
  * Access.
  *
- * @since 3.115
+ * @since 3.23
  */
 public abstract class QuickAccessElement {
 
