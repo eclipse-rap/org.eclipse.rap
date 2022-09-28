@@ -22,7 +22,7 @@ package org.eclipse.ui.quickaccess;
  * and return new results whenever filter text change.
  * </p>
  *
- * @since 3.115
+ * @since 3.23
  */
 public interface IQuickAccessComputer {
 
