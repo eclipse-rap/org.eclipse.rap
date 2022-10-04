@@ -41,6 +41,9 @@ import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.UISessionEvent;
 import org.eclipse.rap.rwt.service.UISessionListener;
 
+import org.eclipse.rap.rwt.internal.textsize.ProbeStore;
+import org.eclipse.rap.rwt.internal.textsize.TextSizeStorage;
+
 
 public class UISessionImpl
   implements UISession, ApplicationContextListener, HttpSessionBindingListener
@@ -61,6 +64,9 @@ public class UISessionImpl
   private transient HttpSession httpSession;
   private transient ISessionShutdownAdapter shutdownAdapter;
   private transient ApplicationContextImpl applicationContext;
+  
+  private final TextSizeStorage textSizeStorage;
+  private final ProbeStore probeStore;
 
   public UISessionImpl( ApplicationContextImpl applicationContext, HttpSession httpSession ) {
     this( applicationContext, httpSession, null );
@@ -80,6 +86,17 @@ public class UISessionImpl
     id = Integer.toHexString( hashCode() );
     bound = true;
     connection = new ConnectionImpl( this );
+    
+    textSizeStorage = new TextSizeStorage();
+    probeStore = new ProbeStore( textSizeStorage );
+  }
+  
+    public TextSizeStorage getTextSizeStorage() {
+    return textSizeStorage;
+  }
+
+  public ProbeStore getProbeStore() {
+    return probeStore;
   }
 
   public static UISessionImpl getInstanceFromSession( HttpSession httpSession, String connectionId )
