@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2012 The Pampered Chef, Inc and others.
+ * Copyright (c) 2006, 2022 The Pampered Chef, Inc and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.beans.BeansObservables;
+import org.eclipse.core.databinding.beans.typed.BeanProperties;
 import org.eclipse.core.databinding.observable.Observables;
 import org.eclipse.core.databinding.observable.Realm;
 import org.eclipse.core.databinding.observable.map.IObservableMap;
@@ -28,10 +28,20 @@ import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.databinding.viewers.ObservableMapLabelProvider;
 import org.eclipse.jface.databinding.viewers.ViewersObservables;
-import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Text;
 
 /**
  * Demonstrates nested selection.<br>
@@ -42,7 +52,7 @@ import org.eclipse.swt.widgets.*;
 public class Snippet001NestedSelectionWithCombo extends Group {
 
   private final ViewModel viewModel = new ViewModel();
-  
+
   // Minimal JavaBeans support
   public static abstract class AbstractModelObject {
     private final PropertyChangeSupport propertyChangeSupport
@@ -79,7 +89,7 @@ public class Snippet001NestedSelectionWithCombo extends Group {
                                                 newValue );
     }
   }
-  
+
   // The data model class. This is normally a persistent class of some sort.
   //
   // This example implements full JavaBeans bound properties so that changes
@@ -115,7 +125,7 @@ public class Snippet001NestedSelectionWithCombo extends Group {
       firePropertyChange( "city", oldValue, city );
     }
   }
-  
+
   // The View's model--the root of our GUI's Model graph
   //
   // Typically each View class has a corresponding ViewModel class.
@@ -152,7 +162,7 @@ public class Snippet001NestedSelectionWithCombo extends Group {
     }
   }
 
-  
+
   public Snippet001NestedSelectionWithCombo( final Composite parent, final int style ) {
     super( parent, style );
     createPartControl();
@@ -193,10 +203,8 @@ public class Snippet001NestedSelectionWithCombo extends Group {
     IObservableSet staticObservableSet
       = Observables.staticObservableSet(realm,
                                         new HashSet( viewModel.getPeople() ) );
-    IObservableMap attributeMap
-      = BeansObservables.observeMap( staticObservableSet,
-                                     Person.class,
-                                     "name" );
+    IObservableMap<Person, String> attributeMap
+      = BeanProperties.value( Person.class, "name", String.class ).observeDetail( staticObservableSet );
     ObservableMapLabelProvider omlProvider
       = new ObservableMapLabelProvider( attributeMap );
     peopleListViewer.setLabelProvider( omlProvider );
@@ -218,23 +226,13 @@ public class Snippet001NestedSelectionWithCombo extends Group {
     IObservableValue selectedPerson
       = ViewersObservables.observeSingleSelection( peopleListViewer );
     dbc.bindValue( SWTObservables.observeText( name, SWT.Modify ),
-                   BeansObservables.observeDetailValue( realm,
-                                                        selectedPerson,
-                                                        "name",
-                                                        String.class ),
-                   null,
-                   null );
+                   BeanProperties.value( Person.class, "name", String.class ).observeDetail( selectedPerson ) );
     ComboViewer cityViewer = new ComboViewer( city );
     cityViewer.setContentProvider( new ArrayContentProvider() );
     cityViewer.setInput( viewModel.getCities() );
     IObservableValue citySelection
       = ViewersObservables.observeSingleSelection( cityViewer );
     dbc.bindValue( citySelection,
-                   BeansObservables.observeDetailValue( realm,
-                                                        selectedPerson,
-                                                        "city",
-                                                        String.class ),
-                   null,
-                   null );
+                   BeanProperties.value( Person.class, "city", String.class ).observeDetail( selectedPerson ) );
   }
 }
