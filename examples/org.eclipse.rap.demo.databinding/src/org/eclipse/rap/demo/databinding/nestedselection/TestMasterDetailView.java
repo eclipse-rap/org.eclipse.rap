@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2007 IBM Corporation and others.
+ * Copyright (c) 2006, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,18 +9,22 @@
  *     IBM Corporation - initial API and implementation
  *     Brad Reynolds - bug 116920
  *     Samy Abou-Shama (NOMAD business software GmbH) Adapted as view for RAP
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.rap.demo.databinding.nestedselection;
 
-import org.eclipse.core.databinding.*;
-import org.eclipse.core.databinding.beans.BeansObservables;
+import org.eclipse.core.databinding.Binding;
+import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.UpdateValueStrategy;
+import org.eclipse.core.databinding.beans.typed.BeanProperties;
 import org.eclipse.core.databinding.conversion.IConverter;
 import org.eclipse.core.databinding.observable.IObserving;
 import org.eclipse.core.databinding.observable.Realm;
 import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.databinding.observable.list.WritableList;
 import org.eclipse.core.databinding.observable.map.IObservableMap;
+import org.eclipse.core.databinding.observable.set.IObservableSet;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.validation.IValidator;
 import org.eclipse.core.databinding.validation.ValidationStatus;
@@ -29,12 +33,22 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.databinding.swt.ISWTObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
-import org.eclipse.jface.databinding.viewers.*;
+import org.eclipse.jface.databinding.viewers.ObservableListContentProvider;
+import org.eclipse.jface.databinding.viewers.ObservableMapLabelProvider;
+import org.eclipse.jface.databinding.viewers.ViewersObservables;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.rap.demo.databinding.DatabindingSnippetsView;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
 
 /**
@@ -62,6 +76,7 @@ public class TestMasterDetailView extends ViewPart {
     extends UpdateValueStrategy
   {
 
+    @Override
     protected IStatus doSet( final IObservableValue observableValue,
                              final Object value )
     {
@@ -123,15 +138,10 @@ public class TestMasterDetailView extends ViewPart {
     ObservableListContentProvider peopleViewerContent
       = new ObservableListContentProvider();
     peopleViewer.setContentProvider( peopleViewerContent );
-    
-    String[] attrSimplePerson = new String[]{
-      "name",
-      "state"
-    };
-    IObservableMap[] attributeMaps 
-      = BeansObservables.observeMaps( peopleViewerContent.getKnownElements(),
-                                      SimplePerson.class,
-                                      attrSimplePerson );
+    IObservableSet knownElements = peopleViewerContent.getKnownElements();
+    IObservableMap names = BeanProperties.value( SimplePerson.class, "name" ).observeDetail( knownElements );
+    IObservableMap states = BeanProperties.value( SimplePerson.class, "state" ).observeDetail( knownElements );
+    IObservableMap[] attributeMaps = { names, states };
     ObservableMapLabelProvider omlProvider
       = new ObservableMapLabelProvider( attributeMaps );
     peopleViewer.setLabelProvider( omlProvider );
@@ -141,6 +151,7 @@ public class TestMasterDetailView extends ViewPart {
     IObservableValue selectedPerson
       = ViewersObservables.observeSingleSelection( peopleViewer );
     DataBindingContext dbc = new DataBindingContext( realm ) {
+      @Override
       protected UpdateValueStrategy
         createTargetToModelUpdateValueStrategy( IObservableValue fromValue,
                                                 IObservableValue toValue )
@@ -149,17 +160,21 @@ public class TestMasterDetailView extends ViewPart {
       }
     };
     IConverter upperCaseConverter = new IConverter() {
+      @Override
       public Object convert( Object fromObject ) {
         return ( ( String )fromObject ).toUpperCase();
       }
+      @Override
       public Object getFromType() {
         return String.class;
       }
+      @Override
       public Object getToType() {
         return String.class;
       }
     };
     IValidator vowelValidator = new IValidator() {
+      @Override
       public IStatus validate( Object value ) {
         String s = ( String )value;
         if( !s.matches( "[aeiouAEIOU]*" ) ) {
@@ -168,24 +183,21 @@ public class TestMasterDetailView extends ViewPart {
         return Status.OK_STATUS;
       }
     };
-    
-    IObservableValue modelObservableValue 
-      = BeansObservables.observeDetailValue( realm,
-                                             selectedPerson,
-                                             "name",
-                                             String.class );
+
+    IObservableValue modelObservableValue
+      = BeanProperties.value( SimplePerson.class, "name", String.class ).observeDetail( selectedPerson );
     ISWTObservableValue targetObservableValue
       = SWTObservables.observeText( name, SWT.Modify );
     CustomUpdateValueStrategy customUpdateValueStrategy
       = new CustomUpdateValueStrategy();
     customUpdateValueStrategy.setConverter( upperCaseConverter );
-    UpdateValueStrategy targetToModel 
+    UpdateValueStrategy targetToModel
       = customUpdateValueStrategy.setAfterGetValidator( vowelValidator );
     Binding binding = dbc.bindValue( targetObservableValue,
                                      modelObservableValue,
                                      targetToModel,
                                      null );
-    
+
     UpdateValueStrategy updateValueStrategy = new UpdateValueStrategy();
     updateValueStrategy.setConverter( new ObjectToStringConverter() );
     dbc.bindValue( SWTObservables.observeText( validationStatus, SWT.NONE ),
@@ -193,49 +205,28 @@ public class TestMasterDetailView extends ViewPart {
                    null,
                    updateValueStrategy );
     dbc.bindValue( SWTObservables.observeText( address, SWT.Modify ),
-                   BeansObservables.observeDetailValue( realm,
-                                                        selectedPerson,
-                                                        "address",
-                                                        String.class ),
-                   null,
-                   null );
+                   BeanProperties.value( SimplePerson.class, "address", String.class ).observeDetail( selectedPerson ) );
     dbc.bindValue( SWTObservables.observeText( city, SWT.Modify ),
-                   BeansObservables.observeDetailValue( realm,
-                                                        selectedPerson,
-                                                        "city",
-                                                        String.class ),
-                   null,
-                   null );
+                   BeanProperties.value( SimplePerson.class, "city", String.class ).observeDetail( selectedPerson ) );
     dbc.bindValue( SWTObservables.observeText( state, SWT.Modify ),
-                   BeansObservables.observeDetailValue( realm,
-                                                        selectedPerson,
-                                                        "state",
-                                                        String.class ),
-                   null,
-                   null );
+                   BeanProperties.value( SimplePerson.class, "state", String.class ).observeDetail( selectedPerson ) );
     TableViewer ordersViewer = new TableViewer( ordersTable );
     ObservableListContentProvider ordersViewerContent
       = new ObservableListContentProvider();
     ordersViewer.setContentProvider( ordersViewerContent );
-    String[] propertyNames = new String[]{
-      "orderNumber",
-      "date"
-    };
-    IObservableMap[] observeMaps
-      = BeansObservables.observeMaps( ordersViewerContent.getKnownElements(),
-                                      SimpleOrder.class,
-                                      propertyNames );
+    knownElements = ordersViewerContent.getKnownElements();
+    IObservableMap orderNumbers = BeanProperties.value( SimpleOrder.class, "orderNumber" ).observeDetail( knownElements );
+    IObservableMap dates = BeanProperties.value( SimpleOrder.class, "date" ).observeDetail( knownElements );
+    IObservableMap[] observeMaps = { orderNumbers, dates };
     ObservableMapLabelProvider observableMapLabelProvider
       = new ObservableMapLabelProvider( observeMaps );
     ordersViewer.setLabelProvider( observableMapLabelProvider );
     IObservableList orders
-      = BeansObservables.observeDetailList( realm,
-                                            selectedPerson,
-                                            "orders",
-                                            SimpleOrder.class );
+      = BeanProperties.list( "orders", SimpleOrder.class ).observeDetail( selectedPerson );
     ordersViewer.setInput( orders );
   }
 
+  @Override
   public void createPartControl( final Composite parent ) {
     FormLayout formLayout = new FormLayout();
     formLayout.marginHeight = DatabindingSnippetsView.GROUP_MARGIN_HEIGHT;
@@ -313,6 +304,7 @@ public class TestMasterDetailView extends ViewPart {
     bind( parent );
   }
 
+  @Override
   public void setFocus() {
   }
 }

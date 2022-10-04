@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2012 The Pampered Chef, Inc and others.
+ * Copyright (c) 2006, 2022 The Pampered Chef, Inc and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,13 +14,19 @@
 package org.eclipse.rap.demo.databinding;
 
 import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.beans.BeansObservables;
+import org.eclipse.core.databinding.beans.typed.BeanProperties;
 import org.eclipse.core.databinding.observable.Realm;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.rap.demo.databinding.nestedselection.ModelObject;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 
 /**
  * Hello, databinding. Bind changes in a GUI to a Model object but don't worry
@@ -33,7 +39,7 @@ public class Snippet000HelloWorld extends Group {
   private final ViewModel viewModel = new ViewModel();
   private Text name;
   private Label labelName;
-  
+
   // The data model class. This is normally a persistent class of some sort.
   //
   // In this example, we only push changes from the GUI to the model, so we
@@ -42,14 +48,14 @@ public class Snippet000HelloWorld extends Group {
   // Person object would need to implement the JavaBeans property change
   // listener methods.
   static class Person extends ModelObject {
-    
+
     // A property...
     String name = "HelloWorld";
-    
+
     public String getName() {
       return name;
     }
-    
+
     public void setName( final String name ) {
       String oldValue = this.name;
       this.name = name;
@@ -64,16 +70,16 @@ public class Snippet000HelloWorld extends Group {
   // DAO. Since this snippet doesn't have any persistent objects to
   // retrieve, this ViewModel just instantiates a model object to edit.
   static class ViewModel {
-    
+
     // The model to bind
     private final Person person = new Person();
-    
+
     public Person getPerson() {
       return person;
     }
   }
 
-  
+
   public Snippet000HelloWorld( final Composite parent, final int style ) {
     super( parent, style );
     createPartControl();
@@ -115,21 +121,15 @@ public class Snippet000HelloWorld extends Group {
     data.left = new FormAttachment( 0, 0 );
     labelName.setLayoutData( data );
     labelName.setText( "not changed yet..." );
-    
+
     Realm realm = SWTObservables.getRealm( Display.getCurrent() );
     DataBindingContext bindingContext = new DataBindingContext( realm );
     Person person = viewModel.getPerson();
     bindingContext.bindValue( SWTObservables.observeText( name, SWT.Modify ),
-                              BeansObservables.observeValue( realm,
-                                                             person,
-                                                             "name" ),
-                              null,
-                              null );
+                              BeanProperties.value( "name" ).observe( realm, person ) );
+
     bindingContext.bindValue( SWTObservables.observeText( labelName ),
-                              BeansObservables.observeValue( realm,
-                                                             person,
-                                                             "name" ),
-                              null,
-                              null );
+                              BeanProperties.value( "name" ).observe( realm, person ) );
+
   }
 }
