@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2018 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2024 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,8 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
+
+import static org.eclipse.rap.rwt.internal.RWTProperties.isTextSizeStoreSessionScoped;
 
 import java.text.MessageFormat;
 import java.util.Enumeration;
@@ -32,6 +34,8 @@ import org.eclipse.rap.rwt.internal.client.ClientSelector;
 import org.eclipse.rap.rwt.internal.lifecycle.ContextUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.ISessionShutdownAdapter;
 import org.eclipse.rap.rwt.internal.remote.ConnectionImpl;
+import org.eclipse.rap.rwt.internal.textsize.ProbeStore;
+import org.eclipse.rap.rwt.internal.textsize.TextSizeStorage;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.internal.util.SerializableLock;
 import org.eclipse.rap.rwt.remote.Connection;
@@ -40,7 +44,6 @@ import org.eclipse.rap.rwt.service.ApplicationContextListener;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.UISessionEvent;
 import org.eclipse.rap.rwt.service.UISessionListener;
-
 
 public class UISessionImpl
   implements UISession, ApplicationContextListener, HttpSessionBindingListener
@@ -62,6 +65,9 @@ public class UISessionImpl
   private transient ISessionShutdownAdapter shutdownAdapter;
   private transient ApplicationContextImpl applicationContext;
 
+  private final TextSizeStorage textSizeStorage;
+  private final ProbeStore probeStore;
+
   public UISessionImpl( ApplicationContextImpl applicationContext, HttpSession httpSession ) {
     this( applicationContext, httpSession, null );
   }
@@ -80,6 +86,18 @@ public class UISessionImpl
     id = Integer.toHexString( hashCode() );
     bound = true;
     connection = new ConnectionImpl( this );
+
+    boolean textSizeStoreSessionScoped = isTextSizeStoreSessionScoped();
+    textSizeStorage = textSizeStoreSessionScoped ? new TextSizeStorage() : null;
+    probeStore = textSizeStoreSessionScoped ? new ProbeStore( textSizeStorage ) : null;
+  }
+
+  public TextSizeStorage getTextSizeStorage() {
+    return textSizeStorage;
+  }
+
+  public ProbeStore getProbeStore() {
+    return probeStore;
   }
 
   public static UISessionImpl getInstanceFromSession( HttpSession httpSession, String connectionId )

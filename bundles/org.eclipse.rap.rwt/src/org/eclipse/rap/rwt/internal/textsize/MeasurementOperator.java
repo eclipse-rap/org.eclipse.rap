@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 Frank Appel and others.
+ * Copyright (c) 2011, 2024 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,11 +11,11 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.textsize;
 
-import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getProtocolWriter;
 import static org.eclipse.rap.rwt.internal.textsize.MeasurementUtil.createItemParamObject;
 import static org.eclipse.rap.rwt.internal.textsize.MeasurementUtil.createProbeParamObject;
 import static org.eclipse.rap.rwt.internal.textsize.MeasurementUtil.getId;
+import static org.eclipse.rap.rwt.internal.textsize.TextSizeStorageUtil.getProbeStore;
 import static org.eclipse.rap.rwt.remote.JsonMapping.readPoint;
 
 import java.util.Arrays;
@@ -59,7 +59,7 @@ class MeasurementOperator implements SerializableCompatibility {
   }
 
   private void addStartupProbesToBuffer() {
-    Probe[] probeList = getApplicationContext().getProbeStore().getProbes();
+    Probe[] probeList = getProbeStore().getProbes();
     probes.addAll( Arrays.asList( probeList ) );
   }
 
@@ -72,9 +72,10 @@ class MeasurementOperator implements SerializableCompatibility {
   }
 
   void addProbeToMeasure( FontData fontData ) {
-    Probe probe = getApplicationContext().getProbeStore().getProbe( fontData );
+    ProbeStore probeStore = getProbeStore();
+    Probe probe = probeStore.getProbe( fontData );
     if( probe == null ) {
-      probe = getApplicationContext().getProbeStore().createProbe( fontData );
+      probe = probeStore.createProbe( fontData );
     }
     probes.add( probe );
   }
