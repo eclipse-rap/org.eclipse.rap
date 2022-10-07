@@ -17,13 +17,17 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
 
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.RWTProperties;
+import org.eclipse.rap.rwt.internal.service.UISessionImpl;
+
 
 final class TextSizeStorageUtil {
 
   static Point lookup( FontData fontData, String string, int wrapWidth, int mode ) {
     Point result = null;
     if( ProbeResultStore.getInstance().containsProbeResult( fontData ) ) {
-      TextSizeStorage textSizeStorage = getApplicationContext().getTextSizeStorage();
+      TextSizeStorage textSizeStorage = getTextSizeStorage();
       Integer key = getKey( fontData, string, wrapWidth, mode );
       result = textSizeStorage.lookupTextSize( key );
       if( result == null && wrapWidth > 0 ) {
@@ -47,7 +51,7 @@ final class TextSizeStorageUtil {
   {
     checkFontExists( fontData );
     Integer key = getKey( fontData, string, wrapWidth, mode );
-    getApplicationContext().getTextSizeStorage().storeTextSize( key, measuredTextSize );
+    getTextSizeStorage().storeTextSize( key, measuredTextSize );
   }
 
   static Integer getKey( FontData fontData, String string, int wrapWidth, int mode ) {
@@ -65,6 +69,13 @@ final class TextSizeStorageUtil {
     return Integer.valueOf( hashCode );
   }
 
+  static TextSizeStorage getTextSizeStorage() {
+    if(RWTProperties.isTextSizeStoreSessionScoped()) {
+      return ((UISessionImpl) RWT.getUISession()).getTextSizeStorage(); 
+    } else {
+      return getApplicationContext().getTextSizeStorage();
+    }
+  }
 
   private static void checkFontExists( FontData fontData ) {
     if( !ProbeResultStore.getInstance().containsProbeResult( fontData ) ) {
