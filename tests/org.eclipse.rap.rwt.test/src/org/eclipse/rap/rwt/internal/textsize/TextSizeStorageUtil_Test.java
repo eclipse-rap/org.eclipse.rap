@@ -11,8 +11,10 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.textsize;
 
+import static org.eclipse.rap.rwt.internal.RWTProperties.TEXT_SIZE_STORE_SESSION_SCOPED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
@@ -37,6 +39,7 @@ public class TextSizeStorageUtil_Test {
   @Before
   public void setUp() {
     Fixture.setUp();
+    System.clearProperty( TEXT_SIZE_STORE_SESSION_SCOPED );
   }
 
   @After
@@ -118,6 +121,49 @@ public class TextSizeStorageUtil_Test {
       assertFalse( takenKeys.contains( key ) );
       takenKeys.add( key );
     }
+  }
+
+  @Test
+  public void testSessionScopedStore() {
+    Point storedSize = new Point( 100, 10 );
+    ProbeResultStore.getInstance().createProbeResult( new Probe( FONT_DATA ), new Point( 2, 10 ) );
+    TextSizeStorageUtil.store( FONT_DATA, TEST_STRING, SWT.DEFAULT, MODE, storedSize );
+    Point lookupSize = TextSizeStorageUtil.lookup( FONT_DATA, TEST_STRING, SWT.DEFAULT, MODE );
+    assertEquals(storedSize, lookupSize);
+
+    System.setProperty( TEXT_SIZE_STORE_SESSION_SCOPED , "true" );
+    Fixture.disposeOfServiceContext();
+    Fixture.createServiceContext();
+
+    ProbeResultStore.getInstance().createProbeResult( new Probe( FONT_DATA ), new Point( 2, 10 ) );
+    lookupSize = TextSizeStorageUtil.lookup( FONT_DATA, TEST_STRING, SWT.DEFAULT, MODE );
+    assertNull( lookupSize );
+  }
+
+  @Test
+  public void testSeparateTextSizeStorageIfSessionScoped() {
+    TextSizeStorage tss1 = TextSizeStorageUtil.getTextSizeStorage();
+
+    System.setProperty( TEXT_SIZE_STORE_SESSION_SCOPED , "true" );
+    Fixture.disposeOfServiceContext();
+    Fixture.createServiceContext();
+
+    TextSizeStorage tss2 = TextSizeStorageUtil.getTextSizeStorage();
+
+    assertNotEquals( tss1, tss2 );
+  }
+
+  @Test
+  public void testSeparateProbeStoresIfSessionScoped() {
+    ProbeStore pb1 = TextSizeStorageUtil.getProbeStore();
+
+    System.setProperty( TEXT_SIZE_STORE_SESSION_SCOPED , "true" );
+    Fixture.disposeOfServiceContext();
+    Fixture.createServiceContext();
+
+    ProbeStore pb2 = TextSizeStorageUtil.getProbeStore();
+
+    assertNotEquals( pb1, pb2 );
   }
 
 }

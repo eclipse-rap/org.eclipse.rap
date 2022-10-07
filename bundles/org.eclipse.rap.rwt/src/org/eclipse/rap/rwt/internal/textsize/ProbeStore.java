@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 EclipseSource and others.
+ * Copyright (c) 2011, 2024 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,13 +10,14 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.textsize;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.swt.graphics.FontData;
 
 
-public class ProbeStore {
+public class ProbeStore implements Serializable {
   private final Map<FontData,Probe> probes;
   private final TextSizeStorage textSizeStorage;
 

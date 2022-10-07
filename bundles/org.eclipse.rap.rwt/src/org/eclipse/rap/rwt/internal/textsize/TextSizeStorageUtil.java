@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2024 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,8 @@ package org.eclipse.rap.rwt.internal.textsize;
 
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
@@ -23,7 +25,7 @@ final class TextSizeStorageUtil {
   static Point lookup( FontData fontData, String string, int wrapWidth, int mode ) {
     Point result = null;
     if( ProbeResultStore.getInstance().containsProbeResult( fontData ) ) {
-      TextSizeStorage textSizeStorage = getApplicationContext().getTextSizeStorage();
+      TextSizeStorage textSizeStorage = getTextSizeStorage();
       Integer key = getKey( fontData, string, wrapWidth, mode );
       result = textSizeStorage.lookupTextSize( key );
       if( result == null && wrapWidth > 0 ) {
@@ -47,7 +49,7 @@ final class TextSizeStorageUtil {
   {
     checkFontExists( fontData );
     Integer key = getKey( fontData, string, wrapWidth, mode );
-    getApplicationContext().getTextSizeStorage().storeTextSize( key, measuredTextSize );
+    getTextSizeStorage().storeTextSize( key, measuredTextSize );
   }
 
   static Integer getKey( FontData fontData, String string, int wrapWidth, int mode ) {
@@ -65,6 +67,21 @@ final class TextSizeStorageUtil {
     return Integer.valueOf( hashCode );
   }
 
+  static TextSizeStorage getTextSizeStorage() {
+    TextSizeStorage result = ( ( UISessionImpl ) RWT.getUISession() ).getTextSizeStorage();
+    if( result == null ) {
+      result = getApplicationContext().getTextSizeStorage();
+    }
+    return result;
+  }
+
+  static ProbeStore getProbeStore() {
+    ProbeStore result = ( ( UISessionImpl ) RWT.getUISession() ).getProbeStore();
+    if( result == null ) {
+      result = getApplicationContext().getProbeStore();
+    }
+    return result;
+  }
 
   private static void checkFontExists( FontData fontData ) {
     if( !ProbeResultStore.getInstance().containsProbeResult( fontData ) ) {
