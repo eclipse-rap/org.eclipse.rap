@@ -24,6 +24,8 @@ import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 
 final class TextSizeStorageUtil {
 
+  private static final boolean sizeStoreSessionScoped = RWTProperties.isTextSizeStoreSessionScoped();
+
   static Point lookup( FontData fontData, String string, int wrapWidth, int mode ) {
     Point result = null;
     if( ProbeResultStore.getInstance().containsProbeResult( fontData ) ) {
@@ -70,8 +72,8 @@ final class TextSizeStorageUtil {
   }
 
   static TextSizeStorage getTextSizeStorage() {
-    if(RWTProperties.isTextSizeStoreSessionScoped()) {
-      return ((UISessionImpl) RWT.getUISession()).getTextSizeStorage(); 
+    if( sizeStoreSessionScoped ) {
+      return ( (UISessionImpl) RWT.getUISession() ).getTextSizeStorage();
     } else {
       return getApplicationContext().getTextSizeStorage();
     }
