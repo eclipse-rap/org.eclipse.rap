@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2022 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -56,7 +56,7 @@ public class NLS_Test {
   public void testNLS_german() {
     RWT.setLocale( Locale.GERMAN );
 
-    assertEquals( "Meine Nachricht", TestMessages.get().MyMessage );
+    assertEquals( "Meine Nachricht (äüö)", TestMessages.get().MyMessage );
   }
 
   @Test
@@ -80,7 +80,7 @@ public class NLS_Test {
   public void testNLS_UTF8_german() {
     RWT.setLocale( Locale.GERMAN );
 
-    assertEquals( "Meine Nachricht", TestMessagesUTF8.get().MyMessage );
+    assertEquals( "Meine Nachricht (äüö)", TestMessagesUTF8.get().MyMessage );
   }
 
   @Test

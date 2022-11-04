@@ -106,11 +106,12 @@ public final class RWT {
      *
      * @param bundleName the resource bundle to load.
      * @param clazz the class of the NLS object to load.
+     *
+     * @deprecated use <code>get(String bundleName, Class<T> clazz)</code> instead.
      */
+    @Deprecated
     public static <T> T getISO8859_1Encoded( String bundleName, Class<T> clazz ) {
-      ClassLoader loader = clazz.getClassLoader();
-      ResourceBundle bundle = ResourceBundle.getBundle( bundleName, getLocale(), loader );
-      return internalGet( bundle, clazz );
+      return get( bundleName, clazz );
     }
 
     /**
@@ -122,16 +123,28 @@ public final class RWT {
      *
      * @param bundleName the resource bundle to load.
      * @param clazz the class of the NLS object to load.
+     *
+     * @deprecated use <code>get(String bundleName, Class<T> clazz)</code> instead.
      */
+    @Deprecated
     public static <T> T getUTF8Encoded( String bundleName, Class<T> clazz ) {
-      ClassLoader loader = clazz.getClassLoader();
-      ResourceBundle bundle = Utf8ResourceBundle.getBundle( bundleName, getLocale(), loader );
-      return internalGet( bundle, clazz );
+      return get( bundleName, clazz );
     }
 
+    /**
+     * Returns a NLS object for the given resource bundle and type. See
+     * class description for usage information.
+     *
+     * @param bundleName the resource bundle to load.
+     * @param clazz the class of the NLS object to load.
+     *
+     * @since 3.23
+     */
     @SuppressWarnings( "unchecked" )
-    private static <T> T internalGet( ResourceBundle bundle, Class<T> clazz ) {
+    public static <T> T get( String bundleName, Class<T> clazz ) {
       T result;
+      ClassLoader loader = clazz.getClassLoader();
+      ResourceBundle bundle = ResourceBundle.getBundle( bundleName, getLocale(), loader );
       synchronized( map ) {
         result = ( T )map.get( bundle );
         if( result == null ) {
