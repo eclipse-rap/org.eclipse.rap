@@ -67,7 +67,7 @@
               <value></value>
             </replacement>
             <replacement>
-              <token>reference\\:file\\:org.eclipse.jetty.servlet-api.*?jar@4,</token>
+              <token>reference\\:file\\:jakarta.servlet-api.*?jar@4,</token>
               <value></value>
             </replacement>
           </replacements>

@@ -10,7 +10,7 @@
       <outputDirectory>/WEB-INF</outputDirectory>
       <excludes>
         <exclude>plugins/javax.servlet*.jar</exclude>
-        <exclude>plugins/org.eclipse.jetty.servlet-api*.jar</exclude>
+        <exclude>plugins/jakarta.servlet-api*.jar</exclude>
       </excludes>
     </fileSet>
     <fileSet>

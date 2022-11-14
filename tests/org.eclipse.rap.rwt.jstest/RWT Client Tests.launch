@@ -35,7 +35,7 @@
         <setEntry value="org.eclipse.jetty.io@default:default"/>
         <setEntry value="org.eclipse.jetty.security@default:default"/>
         <setEntry value="org.eclipse.jetty.server@default:default"/>
-        <setEntry value="org.eclipse.jetty.servlet-api@default:default"/>
+        <setEntry value="jakarta.servlet-api@default:default"/>
         <setEntry value="org.eclipse.jetty.servlet@default:default"/>
         <setEntry value="org.eclipse.jetty.util.ajax@default:default"/>
         <setEntry value="org.eclipse.jetty.util@default:default"/>
