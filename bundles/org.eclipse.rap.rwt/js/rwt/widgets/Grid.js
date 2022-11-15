@@ -387,7 +387,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
 
     setAutoHeight : function( value ) {
       this._config.autoHeight = value;
-      this._scheduleUpdate();
+      rwt.client.Timer.once( this._scheduleUpdate, this, 0 );
     },
 
     setCellCheck : function( column, value ) {
