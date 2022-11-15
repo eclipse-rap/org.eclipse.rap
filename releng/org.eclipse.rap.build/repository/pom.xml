@@ -53,7 +53,7 @@
           <extraArtifactRepositoryProperties>
             <p2.statsURI>https://download.eclipse.org/stats/rt/rap</p2.statsURI>
           </extraArtifactRepositoryProperties>
-          <includeAllDependencies>false</includeAllDependencies>
+          <includeAllDependencies>true</includeAllDependencies>
           <compress>true</compress>
           <finalName>rap-${unqualifiedVersion}-${buildType}-${build}</finalName>
         </configuration>
