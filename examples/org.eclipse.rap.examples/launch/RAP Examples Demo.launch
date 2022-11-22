@@ -96,6 +96,7 @@
         <setEntry value="org.osgi.util.promise"/>
         <setEntry value="org.osgi.util.xml"/>
         <setEntry value="slf4j.api"/>
+        <setEntry value="slf4j.nop"/>
     </setAttribute>
     <setAttribute key="selected_workspace_bundles">
         <setEntry value="org.eclipse.rap.examples"/>
