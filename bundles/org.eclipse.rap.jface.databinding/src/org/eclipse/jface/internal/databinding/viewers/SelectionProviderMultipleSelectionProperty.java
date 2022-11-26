@@ -1,9 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 Matthew Hall and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * Copyright (c) 2008, 2015 Matthew Hall and others.
+ *
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     Matthew Hall - initial API and implementation (bug 194734)
@@ -26,51 +29,70 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 
 /**
+ * @param <S> type of the source object
+ * @param <E> type of the elements in the list
+ *
  * @since 3.3
- * 
+ *
  */
-public class SelectionProviderMultipleSelectionProperty extends
-		ViewerListProperty {
+public class SelectionProviderMultipleSelectionProperty<S extends ISelectionProvider, E>
+		extends ViewerListProperty<S, E> {
 
 	private final boolean isPostSelection;
+	private final Object elementType;
 
 	/**
 	 * Constructor.
-	 * 
-	 * @param isPostSelection
-	 *            Whether the post selection or the normal selection is to be
-	 *            observed.
+	 *
+	 * @param isPostSelection Whether the post selection or the normal selection is
+	 *                        to be observed.
+	 * @param elementType     Element type of the property.
+	 */
+	public SelectionProviderMultipleSelectionProperty(boolean isPostSelection, Object elementType) {
+		this.isPostSelection = isPostSelection;
+		this.elementType = elementType;
+	}
+
+	/**
+	 * Creates a property with a null value type.
+	 *
+	 * @param isPostSelection Whether the post selection or the normal selection is
+	 *                        to be observed.
 	 */
 	public SelectionProviderMultipleSelectionProperty(boolean isPostSelection) {
-		this.isPostSelection = isPostSelection;
+		this(isPostSelection, null);
 	}
 
+	@Override
 	public Object getElementType() {
-		return Object.class;
+		return elementType;
 	}
 
-	protected List doGetList(Object source) {
-		ISelection selection = ((ISelectionProvider) source).getSelection();
+	@Override
+	protected List<E> doGetList(ISelectionProvider source) {
+		ISelection selection = source.getSelection();
 		if (selection instanceof IStructuredSelection) {
 			return ((IStructuredSelection) selection).toList();
 		}
-		return Collections.EMPTY_LIST;
+		return Collections.emptyList();
 	}
 
-	protected void doSetList(Object source, List list, ListDiff diff) {
+	@Override
+	protected void doSetList(S source, List<E> list, ListDiff<E> diff) {
 		doSetList(source, list);
 	}
 
-	protected void doSetList(Object source, List list) {
-		((ISelectionProvider) source)
-				.setSelection(new StructuredSelection(list));
+	@Override
+	protected void doSetList(S source, List<E> list) {
+		source.setSelection(new StructuredSelection(list));
 	}
 
-	public INativePropertyListener adaptListener(
-			ISimplePropertyListener listener) {
-		return new SelectionChangedListener(this, listener, isPostSelection);
+	@Override
+	public INativePropertyListener<S> adaptListener(ISimplePropertyListener<S, ListDiff<E>> listener) {
+		return new SelectionChangedListener<>(this, listener, isPostSelection);
 	}
 
+	@Override
 	public String toString() {
 		return isPostSelection ? "IPostSelectionProvider.postSelection[]" //$NON-NLS-1$
 				: "ISelectionProvider.selection[]"; //$NON-NLS-1$

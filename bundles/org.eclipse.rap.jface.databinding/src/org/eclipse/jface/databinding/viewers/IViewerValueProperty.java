@@ -1,9 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2009 Matthew Hall and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * Copyright (c) 2009, 2015 Matthew Hall and others.
+ *
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     Matthew Hall - initial API and implementation (bug 264286)
@@ -30,7 +33,7 @@ public interface IViewerValueProperty<S, T> extends IValueProperty<S, T> {
 	/**
 	 * Returns an {@link IViewerObservableValue} observing this value property
 	 * on the given viewer
-	 * 
+	 *
 	 * @param viewer
 	 *            the source viewer
 	 * @return an observable value observing this value property on the given
@@ -56,7 +59,7 @@ public interface IViewerValueProperty<S, T> extends IValueProperty<S, T> {
 	 * <p>
 	 * This method is equivalent to
 	 * <code>ViewersObservables.observeDelayedValue(delay, observe(viewer))</code>.
-	 * 
+	 *
 	 * @param delay
 	 *            the delay in milliseconds.
 	 * @param viewer

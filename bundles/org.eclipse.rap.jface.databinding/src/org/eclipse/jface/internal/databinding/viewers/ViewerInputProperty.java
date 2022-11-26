@@ -1,9 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 Matthew Hall and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * Copyright (c) 2008, 2015 Matthew Hall and others.
+ *
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     Matthew Hall - initial API and implementation (bug 194734)
@@ -23,7 +26,7 @@ import org.eclipse.jface.viewers.Viewer;
  * @param <T> type of the value of the property
  *
  * @since 3.3
- * 
+ *
  */
 public class ViewerInputProperty<S, T> extends ViewerValueProperty<S, T> {
 	private final Object valueType;

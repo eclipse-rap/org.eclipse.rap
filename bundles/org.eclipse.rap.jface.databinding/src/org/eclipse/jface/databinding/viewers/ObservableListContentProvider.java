@@ -1,9 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2009 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * Copyright (c) 2006, 2015 IBM Corporation and others.
+ *
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -36,69 +39,73 @@ import org.eclipse.jface.viewers.Viewer;
  * elements of an {@link IObservableList} when set as the viewer's input.
  * Objects of this class listen for changes to the observable list, and will
  * insert and remove viewer elements to reflect observed changes.
- * 
+ *
+ * @param <E> type of the values that are provided by this object TODO: Probably
+ *            remove this!
+ *
  * @noextend This class is not intended to be subclassed by clients.
  * @since 1.1
  */
-public class ObservableListContentProvider implements
-		IStructuredContentProvider {
-	private ObservableCollectionContentProvider impl;
+public class ObservableListContentProvider<E> implements IStructuredContentProvider {
+	private ObservableCollectionContentProvider<E> impl;
 
-	private static class Impl extends ObservableCollectionContentProvider
-			implements IListChangeListener {
+	private static class Impl<E> extends ObservableCollectionContentProvider<E> implements IListChangeListener<E> {
 		private Viewer viewer;
 
-		Impl(IViewerUpdater explicitViewerUpdater) {
+		Impl(IViewerUpdater<E> explicitViewerUpdater) {
 			super(explicitViewerUpdater);
 		}
 
+		@Override
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 			this.viewer = viewer;
 			super.inputChanged(viewer, oldInput, newInput);
 		}
 
+		@Override
 		protected void checkInput(Object input) {
 			Assert.isTrue(input instanceof IObservableList,
 					"This content provider only works with input of type IObservableList"); //$NON-NLS-1$
 		}
 
-		protected void addCollectionChangeListener(
-				IObservableCollection collection) {
-			((IObservableList) collection).addListChangeListener(this);
+		@Override
+		protected void addCollectionChangeListener(IObservableCollection<E> collection) {
+			((IObservableList<E>) collection).addListChangeListener(this);
 		}
 
-		protected void removeCollectionChangeListener(
-				IObservableCollection collection) {
-			((IObservableList) collection).removeListChangeListener(this);
+		@Override
+		protected void removeCollectionChangeListener(IObservableCollection<E> collection) {
+			((IObservableList<E>) collection).removeListChangeListener(this);
 		}
 
-		public void handleListChange(ListChangeEvent event) {
+		@Override
+		public void handleListChange(ListChangeEvent<? extends E> event) {
 			if (isViewerDisposed())
 				return;
 
 			// Determine which elements were added and removed
-			final Set knownElementAdditions = ViewerElementSet
-					.withComparer(comparer);
-			final Set knownElementRemovals = ViewerElementSet
-					.withComparer(comparer);
+			final Set<E> knownElementAdditions = ViewerElementSet.withComparer(comparer);
+			final Set<E> knownElementRemovals = ViewerElementSet.withComparer(comparer);
 			final boolean[] suspendRedraw = new boolean[] { false };
-			event.diff.accept(new ListDiffVisitor() {
-				public void handleAdd(int index, Object element) {
+			event.diff.accept(new ListDiffVisitor<E>() {
+				@Override
+				public void handleAdd(int index, E element) {
 					knownElementAdditions.add(element);
 				}
 
-				public void handleRemove(int index, Object element) {
+				@Override
+				public void handleRemove(int index, E element) {
 					knownElementRemovals.add(element);
 				}
 
-				public void handleMove(int oldIndex, int newIndex,
-						Object element) {
+				@Override
+				public void handleMove(int oldIndex, int newIndex, E element) {
 					suspendRedraw[0] = true;
 					super.handleMove(oldIndex, newIndex, element);
 				}
 
-				public void handleReplace(int index, Object oldElement,
-						Object newElement) {
+				@Override
+				public void handleReplace(int index, E oldElement, E newElement) {
 					suspendRedraw[0] = true;
 					super.handleReplace(index, oldElement, newElement);
 				}
@@ -114,22 +121,24 @@ public class ObservableListContentProvider implements
 			if (suspendRedraw[0])
 				viewer.getControl().setRedraw(false);
 			try {
-				event.diff.accept(new ListDiffVisitor() {
-					public void handleAdd(int index, Object element) {
+				event.diff.accept(new ListDiffVisitor<E>() {
+					@Override
+					public void handleAdd(int index, E element) {
 						viewerUpdater.insert(element, index);
 					}
 
-					public void handleRemove(int index, Object element) {
+					@Override
+					public void handleRemove(int index, E element) {
 						viewerUpdater.remove(element, index);
 					}
 
-					public void handleReplace(int index, Object oldElement,
-							Object newElement) {
+					@Override
+					public void handleReplace(int index, E oldElement, E newElement) {
 						viewerUpdater.replace(oldElement, newElement, index);
 					}
 
-					public void handleMove(int oldIndex, int newIndex,
-							Object element) {
+					@Override
+					public void handleMove(int oldIndex, int newIndex, E element) {
 						viewerUpdater.move(element, oldIndex, newIndex);
 					}
 				});
@@ -156,20 +165,22 @@ public class ObservableListContentProvider implements
 	/**
 	 * Constructs an ObservableListContentProvider with the given viewer
 	 * updater. Must be called from the display thread.
-	 * 
+	 *
 	 * @param viewerUpdater
 	 *            the viewer updater to use when elements are added, removed,
 	 *            moved or replaced in the input observable list.
 	 * @since 1.3
 	 */
-	public ObservableListContentProvider(IViewerUpdater viewerUpdater) {
-		impl = new Impl(viewerUpdater);
+	public ObservableListContentProvider(IViewerUpdater<E> viewerUpdater) {
+		impl = new Impl<>(viewerUpdater);
 	}
 
+	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		impl.inputChanged(viewer, oldInput, newInput);
 	}
 
+	@Override
 	public Object[] getElements(Object inputElement) {
 		return impl.getElements(inputElement);
 	}
@@ -186,6 +197,7 @@ public class ObservableListContentProvider implements
 	 * disposal.
 	 * </p>
 	 */
+	@Override
 	public void dispose() {
 		impl.dispose();
 	}
@@ -196,10 +208,10 @@ public class ObservableListContentProvider implements
 	 * before the viewer sees the added element, and notified about removals
 	 * after the element was removed from the viewer. This is intended for use
 	 * by label providers, as it will always return the items that need labels.
-	 * 
+	 *
 	 * @return readableSet of items that will need labels
 	 */
-	public IObservableSet getKnownElements() {
+	public IObservableSet<E> getKnownElements() {
 		return impl.getKnownElements();
 	}
 
@@ -207,11 +219,11 @@ public class ObservableListContentProvider implements
 	 * Returns the set of known elements which have been realized in the viewer.
 	 * Clients may track this set in order to perform custom actions on elements
 	 * while they are known to be present in the viewer.
-	 * 
+	 *
 	 * @return the set of known elements which have been realized in the viewer.
 	 * @since 1.3
 	 */
-	public IObservableSet getRealizedElements() {
+	public IObservableSet<E> getRealizedElements() {
 		return impl.getRealizedElements();
 	}
 }

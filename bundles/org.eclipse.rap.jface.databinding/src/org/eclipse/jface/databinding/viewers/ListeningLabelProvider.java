@@ -1,9 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2007 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * Copyright (c) 2006, 2015 IBM Corporation and others.
+ *
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -11,56 +14,54 @@
 
 package org.eclipse.jface.databinding.viewers;
 
-import java.util.Iterator;
-
 import org.eclipse.core.databinding.observable.set.IObservableSet;
 import org.eclipse.core.databinding.observable.set.ISetChangeListener;
-import org.eclipse.core.databinding.observable.set.SetChangeEvent;
 import org.eclipse.jface.internal.databinding.provisional.viewers.ViewerLabelProvider;
 
 /**
+ * @param <E> type of the viewer elements that labels are provided for
+ *
  * @since 1.1
- * 
+ *
  */
-public abstract class ListeningLabelProvider extends ViewerLabelProvider {
+public abstract class ListeningLabelProvider<E> extends ViewerLabelProvider {
 
-	private ISetChangeListener listener = new ISetChangeListener() {
-		public void handleSetChange(SetChangeEvent event) {
-			for (Iterator it = event.diff.getAdditions().iterator(); it.hasNext();) {
-				addListenerTo(it.next());
-			}
-			for (Iterator it = event.diff.getRemovals().iterator(); it.hasNext();) {
-				removeListenerFrom(it.next());
-			}
+	private ISetChangeListener<E> listener = event -> {
+		for (E element : event.diff.getAdditions()) {
+			addListenerTo(element);
+		}
+		for (E element : event.diff.getRemovals()) {
+			removeListenerFrom(element);
 		}
 	};
 
-	private IObservableSet items;
+	private IObservableSet<E> items;
 
 	/**
-	 * @param itemsThatNeedLabels
+	 * @param itemsThatNeedLabels the managed elements
 	 */
-	public ListeningLabelProvider(IObservableSet itemsThatNeedLabels) {
+	public ListeningLabelProvider(IObservableSet<E> itemsThatNeedLabels) {
 		this.items = itemsThatNeedLabels;
 		items.addSetChangeListener(listener);
-		for (Iterator it = items.iterator(); it.hasNext();) {
-			addListenerTo(it.next());
+		for (E element : items) {
+			addListenerTo(element);
 		}
 	}
 
 	/**
-	 * @param next
+	 * @param next element to remove listener from
 	 */
-	protected abstract void removeListenerFrom(Object next);
+	protected abstract void removeListenerFrom(E next);
 
 	/**
-	 * @param next
+	 * @param next element to add listener to
 	 */
-	protected abstract void addListenerTo(Object next);
+	protected abstract void addListenerTo(E next);
 
+	@Override
 	public void dispose() {
-		for (Iterator iter = items.iterator(); iter.hasNext();) {
-			removeListenerFrom(iter.next());
+		for (E element : items) {
+			removeListenerFrom(element);
 		}
 		items.removeSetChangeListener(listener);
 		super.dispose();

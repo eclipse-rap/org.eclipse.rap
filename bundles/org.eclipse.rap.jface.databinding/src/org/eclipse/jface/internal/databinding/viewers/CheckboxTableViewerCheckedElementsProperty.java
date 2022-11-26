@@ -1,9 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 Matthew Hall and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * Copyright (c) 2008, 2015 Matthew Hall and others.
+ *
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     Matthew Hall - initial API and implementation (bug 194734)
@@ -13,17 +16,21 @@
 package org.eclipse.jface.internal.databinding.viewers;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.databinding.observable.set.SetDiff;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
+import org.eclipse.jface.viewers.ICheckable;
 
 /**
+ * @param <S> type of the source object
+ * @param <E> type of the elements in the set
+ *
  * @since 3.3
- * 
  */
-public class CheckboxTableViewerCheckedElementsProperty extends
-		CheckboxViewerCheckedElementsProperty {
+public class CheckboxTableViewerCheckedElementsProperty<S extends ICheckable, E>
+		extends CheckboxViewerCheckedElementsProperty<S, E> {
 	/**
 	 * @param elementType
 	 */
@@ -31,22 +38,27 @@ public class CheckboxTableViewerCheckedElementsProperty extends
 		super(elementType);
 	}
 
-	protected Set doGetSet(Object source) {
+	@SuppressWarnings("unchecked")
+	@Override
+	protected Set<E> doGetSet(S source) {
 		CheckboxTableViewer viewer = (CheckboxTableViewer) source;
-		Set set = createElementSet(viewer);
-		set.addAll(Arrays.asList(viewer.getCheckedElements()));
+		Set<E> set = createElementSet(viewer);
+		set.addAll((List<E>) Arrays.asList(viewer.getCheckedElements()));
 		return set;
 	}
 
-	protected void doSetSet(Object source, Set set, SetDiff diff) {
+	@Override
+	protected void doSetSet(S source, Set<E> set, SetDiff<E> diff) {
 		doSetSet(source, set);
 	}
 
-	protected void doSetSet(Object source, Set set) {
+	@Override
+	protected void doSetSet(S source, Set<E> set) {
 		CheckboxTableViewer viewer = (CheckboxTableViewer) source;
 		viewer.setCheckedElements(set.toArray());
 	}
 
+	@Override
 	public String toString() {
 		String s = "CheckboxTableViewer.checkedElements{}"; //$NON-NLS-1$
 		if (getElementType() != null)
