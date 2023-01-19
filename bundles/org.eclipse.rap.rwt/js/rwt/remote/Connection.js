@@ -276,7 +276,8 @@ rwt.qx.Class.define( "rwt.remote.Connection", {
                  || statusCode === 12030    // ERROR_INTERNET_CONNECTION_ABORTED
                  || statusCode === 12031    // ERROR_INTERNET_CONNECTION_RESET
                  || statusCode === 12152    // ERROR_HTTP_INVALID_SERVER_RESPONSE
-                 || statusCode === 0 );
+                 || statusCode === 0 
+				 || statusCode === undefined );
       },
       "gecko" : function( statusCode ) {
         // Firefox 3 reports other statusCode than oder versions (bug #249814)
@@ -284,14 +285,14 @@ rwt.qx.Class.define( "rwt.remote.Connection", {
         // Check if Gecko > 1.9 is running (used in FF 3)
         // Gecko/app integration overview: http://developer.mozilla.org/en/Gecko
         if( Client.getMajor() * 10 + Client.getMinor() >= 19 ) {
-          result = ( statusCode === 0 );
+          result = ( statusCode === 0 || statusCode === undefined );
         } else {
-          result = ( statusCode === -1 );
+          result = ( statusCode === -1 || statusCode === undefined );
         }
         return result;
       },
       "default" : function( statusCode ) {
-        return statusCode === 0;
+        return statusCode === 0 || statusCode === undefined;
       }
     } ),
 
