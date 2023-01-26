@@ -94,7 +94,11 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
       }
       var retryHyperlink = document.getElementById( "rwt_retryActionHyperlink" );
       if( retryHyperlink ) {
-        retryHyperlink.addEventListener( "click", function() { rwt.remote.Connection.getInstance()._retry(); } );
+        retryHyperlink.addEventListener( "click", function(e) { 
+			e.preventDefault();
+			rwt.remote.Connection.getInstance()._retry();
+			return false;
+		} );
       }
       var detailsHyperlink = document.getElementById( "rwt_detailsActionHyperlink" );
       if( detailsHyperlink ) {
@@ -347,7 +351,7 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
         case "connection error":
           result.title = messages.getMessage( "ConnectionError" );
           result.description = messages.getMessage( "ConnectionErrorDescription" );
-          result.action = "<a id=\"rwt_retryActionHyperlink\" href=\"\">"
+          result.action = "<a id=\"rwt_retryActionHyperlink\" href=\"#\">"
                         + messages.getMessage( "Retry" ) + "</a>";
           break;
         case "client error":
