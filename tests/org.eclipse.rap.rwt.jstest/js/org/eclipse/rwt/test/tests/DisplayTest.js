@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 EclipseSource and others.
+ * Copyright (c) 2011, 2023 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -151,11 +151,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
     },
 
     testSendStartupParameters : function() {
-      var system = rwt.runtime.System.getInstance();
-      var oldGetStartupParameters = system.getStartupParameters;
-      system.getStartupParameters = function() {
-        return { param1 : [ "foo" ], param2 : [ "bar" ] };
-      };
+      display._startupParameters = "param1=foo&param2=bar"
 
       display._appendStartupParameters();
       rwt.remote.Connection.getInstance().send();
@@ -164,7 +160,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
       var expected = { param1 : [ "foo" ], param2 : [ "bar" ] };
       var actual = message.findSetProperty( "rwt.client.StartupParameters", "parameters" );
       assertEquals( expected, actual );
-      system.getStartupParameters = oldGetStartupParameters;
+      delete display._startupParameters;
     },
 
     testSendColorDepth : function() {
