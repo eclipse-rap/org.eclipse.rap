@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 EclipseSource and others.
+ * Copyright (c) 2011, 2023 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,9 +11,12 @@
 
 namespace( "rwt.widgets" );
 
-rwt.widgets.Display = function() {
+rwt.widgets.Display = function( properties ) {
   this._document = rwt.widgets.base.ClientDocument.getInstance();
   this._connection = rwt.remote.Connection.getInstance();
+  if( properties ) {
+    this._startupParameters = properties.startupParameters;
+  }
   this._exitConfirmation = null;
   this._hasResizeListener = false;
   this._sendResizeDelayed = false;
@@ -254,8 +257,8 @@ rwt.widgets.Display.prototype = {
   },
 
   _appendStartupParameters : function() {
-    var parameters = rwt.runtime.System.getInstance().getStartupParameters();
-    if( parameters ) {
+    if( this._startupParameters ) {
+      var parameters = rwt.runtime.System.getInstance()._parseQueryString( this._startupParameters );
       var writer = this._connection.getMessageWriter();
       writer.appendSet( "rwt.client.StartupParameters", "parameters", parameters );
     }
