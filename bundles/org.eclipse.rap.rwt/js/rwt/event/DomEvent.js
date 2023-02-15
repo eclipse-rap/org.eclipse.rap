@@ -142,6 +142,16 @@ rwt.qx.Class.define( "rwt.event.DomEvent", {
     isAltPressed : function() {
       return this.getDomEvent().altKey;
     },
+    
+    /**
+     * Returns whether both the Alt and Ctrl keys are pressed or the AltGr key is pressed.
+     *
+     * @type member
+     * @return {Boolean} whether both the Alt and Ctrl keys are pressed or the AltGr key is pressed.
+     */
+    isAltGrPressed : function() {
+      return this.getDomEvent().getModifierState("AltGraph");
+    },
 
     /**
      * Returns whether the the meta key is pressed.
