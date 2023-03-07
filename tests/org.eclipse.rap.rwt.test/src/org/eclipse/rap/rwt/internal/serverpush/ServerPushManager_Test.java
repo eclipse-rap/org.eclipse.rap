@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2017 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2023 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -414,26 +414,26 @@ public class ServerPushManager_Test {
 
   @Test
   public void testMustBlockCallBackRequest() {
-    assertFalse( manager.mustBlockCallBackRequest() );
+    assertFalse( manager.mustBlockCallBackRequest( 0, 1 ) );
   }
 
   @Test
   public void testMustBlockCallBackRequestWhenActive() {
     manager.activateServerPushFor( HANDLE_1 );
-    assertTrue( manager.mustBlockCallBackRequest() );
+    assertTrue( manager.mustBlockCallBackRequest( 0, 1 ) );
   }
 
   @Test
   public void testMustBlockCallBackRequestWhenActiveAndRunnablesPending() {
     manager.activateServerPushFor( HANDLE_1 );
     manager.setHasRunnables( true );
-    assertFalse( manager.mustBlockCallBackRequest() );
+    assertFalse( manager.mustBlockCallBackRequest( 0, 1 ) );
   }
 
   @Test
   public void testMustBlockCallBackRequestWhenDeactivatedAndRunnablesPending() {
     manager.setHasRunnables( true );
-    assertFalse( manager.mustBlockCallBackRequest() );
+    assertFalse( manager.mustBlockCallBackRequest( 0, 1 ) );
   }
 
   @Test
