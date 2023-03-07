@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2017 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2023 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import org.eclipse.swt.internal.SerializableCompatibility;
 public final class ServerPushManager implements SerializableCompatibility {
 
   private static final int DEFAULT_REQUEST_CHECK_INTERVAL = 30000;
+  private static final int DEFAULT_REQUEST_RELEASE_INTERVAL = 0;
   private static final String FORCE_PUSH = ServerPushManager.class.getName() + "#forcePush";
 
   private final ServerPushActivationTracker serverPushActivationTracker;
@@ -40,6 +41,7 @@ public final class ServerPushManager implements SerializableCompatibility {
   // indicates whether the display has runnables to execute
   private boolean hasRunnables;
   private int requestCheckInterval;
+  private int requestReleaseInterval;
   private transient ServerPushRequestTracker serverPushRequestTracker;
 
   private ServerPushManager() {
@@ -47,6 +49,7 @@ public final class ServerPushManager implements SerializableCompatibility {
     serverPushActivationTracker = new ServerPushActivationTracker();
     uiThreadRunning = false;
     requestCheckInterval = DEFAULT_REQUEST_CHECK_INTERVAL;
+    requestReleaseInterval = DEFAULT_REQUEST_RELEASE_INTERVAL;
     serverPushRequestTracker = new ServerPushRequestTracker();
   }
 
@@ -86,6 +89,10 @@ public final class ServerPushManager implements SerializableCompatibility {
 
   public void setRequestCheckInterval( int requestCheckInterval ) {
     this.requestCheckInterval = requestCheckInterval;
+  }
+
+  public void setRequestReleaseInterval( int requestReleaseInterval ) {
+    this.requestReleaseInterval = requestReleaseInterval;
   }
 
   public void notifyUIThreadStart() {
@@ -129,8 +136,8 @@ public final class ServerPushManager implements SerializableCompatibility {
       if( isCallBackRequestBlocked() ) {
         releaseBlockedRequest();
       }
-      if( mustBlockCallBackRequest() ) {
-        long requestStartTime = System.currentTimeMillis();
+      long requestStartTime = System.currentTimeMillis();
+      if( mustBlockCallBackRequest( requestStartTime ) ) {
         serverPushRequestTracker.activate( Thread.currentThread() );
         TerminationListener listener = attachTerminationListener();
         try {
@@ -151,7 +158,7 @@ public final class ServerPushManager implements SerializableCompatibility {
 
   private boolean canReleaseBlockedRequest( HttpServletResponse response, long requestStartTime ) {
     boolean result = false;
-    if( !mustBlockCallBackRequest() ) {
+    if( !mustBlockCallBackRequest( requestStartTime ) ) {
       result = true;
     } else if( isSessionExpired( requestStartTime ) ) {
       result = true;
@@ -163,8 +170,13 @@ public final class ServerPushManager implements SerializableCompatibility {
     return result;
   }
 
-  boolean mustBlockCallBackRequest() {
-    return isServerPushActive() && !hasRunnables;
+  private boolean mustBlockCallBackRequest( long requestStartTime ) {
+    return mustBlockCallBackRequest( requestStartTime, System.currentTimeMillis() );
+  }
+
+  boolean mustBlockCallBackRequest( long requestStartTime, long currentTime ) {
+    return isServerPushActive()
+        && ( !hasRunnables || ( currentTime - requestStartTime < requestReleaseInterval ) ) ;
   }
 
   public boolean isServerPushActive() {
