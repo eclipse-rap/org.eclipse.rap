@@ -14,7 +14,7 @@ package org.eclipse.rap.rwt.internal.service;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
@@ -49,12 +49,13 @@ public class StartupPageTemplate_Test {
     template.writePage( printWriter, variableValueProvider );
 
     assertEquals( templateWithoutVariables, getWrittenOutput() );
-    verifyZeroInteractions( variableValueProvider );
+    verifyNoInteractions( variableValueProvider );
   }
 
   @Test
   public void testWritePageWithVariable() throws UnsupportedEncodingException {
     doAnswer( new Answer() {
+      @Override
       public Object answer( InvocationOnMock invocation ) throws Throwable {
         printWriter.write( "value" );
         return null;

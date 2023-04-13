@@ -11,7 +11,7 @@
 package org.eclipse.rap.rwt.widgets;
 
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.same;
+import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 

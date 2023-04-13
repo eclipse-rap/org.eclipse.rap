@@ -12,7 +12,7 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;

@@ -11,14 +11,13 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.osgi.internal;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-
-import java.util.Dictionary;
 
 import org.eclipse.rap.rwt.osgi.ApplicationLauncher;
 import org.junit.Before;
@@ -50,7 +49,7 @@ public class Activator_Test {
 
     verify( context ).registerService( eq( ApplicationLauncher.class.getName() ),
                                        any( ApplicationLauncherImpl.class ),
-                                       any( Dictionary.class ) );
+                                       isNull() );
   }
 
   @Test
@@ -79,7 +78,7 @@ public class Activator_Test {
     doReturn( serviceRegistration )
       .when( context ).registerService( eq( ApplicationLauncher.class.getName() ),
                                         any( ApplicationLauncherImpl.class ),
-                                        any( Dictionary.class ) );
+                                        isNull() );
   }
 
 }

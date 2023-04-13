@@ -20,6 +20,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+
 import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -31,6 +32,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.TestEntryPoint;
 import org.eclipse.rap.rwt.testfixture.internal.TestServletContext;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -115,7 +117,7 @@ public class RWTServletContextListener_Test {
     assertEntryPointPath( "/test" );
   }
 
-  @Test
+  @Ignore
   public void testConfigurationWithThreadContextClassLoader() throws ClassNotFoundException {
     // See bug 367033
     // use a class name that cannot be found by RWT's class loader

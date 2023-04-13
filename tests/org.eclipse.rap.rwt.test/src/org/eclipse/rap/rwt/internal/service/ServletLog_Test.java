@@ -13,8 +13,8 @@ package org.eclipse.rap.rwt.internal.service;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getUISession;
 import static org.eclipse.rap.rwt.testfixture.internal.ConcurrencyTestUtil.runInThread;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.same;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
