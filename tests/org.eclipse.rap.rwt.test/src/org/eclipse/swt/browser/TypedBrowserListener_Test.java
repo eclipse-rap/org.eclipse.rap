@@ -12,7 +12,7 @@ package org.eclipse.swt.browser;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,7 +52,7 @@ public class TypedBrowserListener_Test {
 
     browserListener.handleEvent( event );
 
-    verifyZeroInteractions( wrappedListener );
+    verifyNoInteractions( wrappedListener );
   }
 
   @Test

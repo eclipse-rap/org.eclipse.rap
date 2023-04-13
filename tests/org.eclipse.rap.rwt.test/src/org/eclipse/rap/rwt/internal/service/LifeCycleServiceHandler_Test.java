@@ -19,7 +19,8 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -44,7 +45,6 @@ import org.eclipse.rap.rwt.internal.protocol.ResponseMessage;
 import org.eclipse.rap.rwt.internal.remote.MessageChainElement;
 import org.eclipse.rap.rwt.internal.remote.MessageChainReference;
 import org.eclipse.rap.rwt.internal.remote.MessageFilter;
-import org.eclipse.rap.rwt.internal.remote.MessageFilterChain;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.UISessionEvent;
@@ -343,7 +343,7 @@ public class LifeCycleServiceHandler_Test {
 
     service( serviceHandler );
 
-    verify( filter ).handleMessage( messageCaptor.capture(), any( MessageFilterChain.class ) );
+    verify( filter ).handleMessage( messageCaptor.capture(), isNull() );
     assertEquals( message, messageCaptor.getValue().toJson() );
   }
 
@@ -351,7 +351,7 @@ public class LifeCycleServiceHandler_Test {
   public void testUIRequest_shutsDownUISession_ifRuntimeExceptionInHandler() throws IOException {
     simulateUiRequest();
     doThrow( new RuntimeException() )
-      .when( filter ).handleMessage( any( RequestMessage.class ), any( MessageFilterChain.class ) );
+      .when( filter ).handleMessage( any( RequestMessage.class ), isNull() );
 
     try {
       service( new LifeCycleServiceHandler( messageChainReference ) );
@@ -399,7 +399,7 @@ public class LifeCycleServiceHandler_Test {
     MessageFilter filter = mock( MessageFilter.class );
     ResponseMessage responseMessage = new TestResponseMessage();
     responseMessage.getHead().add( "test", true );
-    when( filter.handleMessage( any( RequestMessage.class ), any( MessageFilterChain.class ) ) )
+    when( filter.handleMessage( any( RequestMessage.class ), isNull() ) )
       .thenReturn( responseMessage  );
     return filter;
   }
@@ -453,6 +453,7 @@ public class LifeCycleServiceHandler_Test {
       this.serviceHandler = serviceHandler;
     }
 
+    @Override
     public void run() {
       ContextProvider.setContext( context );
       try {

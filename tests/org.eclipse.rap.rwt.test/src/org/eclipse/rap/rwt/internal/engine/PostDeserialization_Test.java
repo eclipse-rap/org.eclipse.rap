@@ -12,7 +12,7 @@ package org.eclipse.rap.rwt.internal.engine;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
@@ -57,7 +57,7 @@ public class PostDeserialization_Test {
     UISessionImpl differentUiSession = createUISession();
     PostDeserialization.runProcessors( differentUiSession );
 
-    verifyZeroInteractions( processor );
+    verifyNoInteractions( processor );
   }
 
   private static UISessionImpl createUISession() {

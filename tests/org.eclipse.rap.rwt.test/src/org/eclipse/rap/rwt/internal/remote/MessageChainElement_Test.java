@@ -13,8 +13,9 @@ package org.eclipse.rap.rwt.internal.remote;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -56,7 +57,7 @@ public class MessageChainElement_Test {
   public void testHandleMessage_returnsResultFromFilter() {
     ResponseMessage response = new TestResponseMessage();
     MessageFilter filter = mock( MessageFilter.class );
-    when( filter.handleMessage( any( RequestMessage.class ), any( MessageFilterChain.class ) ) )
+    when( filter.handleMessage( any( RequestMessage.class ), isNull() ) )
       .thenReturn( response );
     MessageChainElement element = new MessageChainElement( filter, null );
 
@@ -124,6 +125,7 @@ public class MessageChainElement_Test {
 
   private MessageFilter createLoggingFilter( final String name ) {
     return new MessageFilter() {
+      @Override
       public ResponseMessage handleMessage( RequestMessage message, MessageFilterChain parent ) {
         log.add( name );
         if( parent != null ) {

@@ -23,14 +23,14 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.same;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -1760,7 +1760,7 @@ public class Display_Test {
     display.removeListener( 123, listener );
     display.sendEvent( 123, new Event() );
 
-    verifyZeroInteractions( listener );
+    verifyNoInteractions( listener );
   }
 
   @Test
@@ -1800,7 +1800,7 @@ public class Display_Test {
     display.removeListener( 123, listener );
     display.sendEvent( 123, new Event() );
 
-    verifyZeroInteractions( listener );
+    verifyNoInteractions( listener );
   }
 
   @Test
