@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2023 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package org.eclipse.swt.internal.graphics;
 
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
@@ -213,6 +214,33 @@ public class InternalImageFactory_Test {
     stream.close();
 
     assertTrue( internalImage.getResourceName().endsWith( ".png" ) );
+  }
+
+  @Test
+  public void testDestroyInternalImage_deregisterFromResourceManager() throws IOException {
+    InputStream stream1 = CLASS_LOADER.getResourceAsStream( Fixture.IMAGE_100x50 );
+    InternalImage internalImage1 = internalImageFactory.findInternalImage( "image.png", stream1);
+    stream1.close();
+
+    assertTrue( RWT.getResourceManager().isRegistered( internalImage1.getResourceName() ) );
+
+    internalImageFactory.destroyInternalImage( "image.png" );
+
+    assertFalse( RWT.getResourceManager().isRegistered( internalImage1.getResourceName() ) );
+  }
+
+  @Test
+  public void testDestroyInternalImage_removeFromCache() throws IOException {
+    InputStream stream1 = CLASS_LOADER.getResourceAsStream( Fixture.IMAGE_100x50 );
+    InternalImage internalImage1 = internalImageFactory.findInternalImage( "image.png", stream1);
+    stream1.close();
+
+    internalImageFactory.destroyInternalImage( "image.png" );
+
+    InputStream stream2 = CLASS_LOADER.getResourceAsStream( Fixture.IMAGE_100x50 );
+    InternalImage internalImage2 = internalImageFactory.findInternalImage( "image.png", stream2);
+    stream2.close();
+    assertNotSame( internalImage1, internalImage2 );
   }
 
   private ImageData createImageDataWithoutType() {
