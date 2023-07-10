@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 Frank Appel and others.
+ * Copyright (c) 2011, 2023 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.osgi.internal;
 
+import java.util.Collections;
 import java.util.Enumeration;
 
 import javax.servlet.ServletContext;
@@ -72,7 +73,7 @@ public class HttpSessionWrapper implements HttpSession {
   @Override
   @Deprecated
   public Object getValue( String name ) {
-    return session.getValue( name );
+    return session.getAttribute( name );
   }
 
   @Override
@@ -83,7 +84,7 @@ public class HttpSessionWrapper implements HttpSession {
   @Override
   @Deprecated
   public String[] getValueNames() {
-    return session.getValueNames();
+    return Collections.list( session.getAttributeNames() ).toArray( new String[ 0 ] );
   }
 
   @Override
@@ -94,7 +95,7 @@ public class HttpSessionWrapper implements HttpSession {
   @Override
   @Deprecated
   public void putValue( String name, Object value ) {
-    session.putValue( name, value );
+    session.setAttribute( name, value );
   }
 
   @Override
@@ -105,7 +106,7 @@ public class HttpSessionWrapper implements HttpSession {
   @Override
   @Deprecated
   public void removeValue( String name ) {
-    session.removeValue( name );
+    session.removeAttribute( name );
   }
 
   @Override

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 Frank Appel and others.
+ * Copyright (c) 2011, 2023 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,12 +14,7 @@ package org.eclipse.rap.rwt.osgi.internal;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Enumeration;
-import java.util.EventListener;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import javax.servlet.*;
 import javax.servlet.ServletRegistration.Dynamic;
@@ -91,34 +86,33 @@ class ServletContextWrapper implements ServletContext {
   @Override
   @Deprecated
   public Servlet getServlet( String name ) throws ServletException {
-    return servletContext.getServlet( name );
+    return null;
   }
 
   @Override
   @Deprecated
   public Enumeration<Servlet> getServlets() {
-    return servletContext.getServlets();
+    return Collections.emptyEnumeration();
   }
 
   @Override
   @Deprecated
   public Enumeration<String> getServletNames() {
-    return servletContext.getServletNames();
+    return Collections.emptyEnumeration();
   }
 
   @Override
-  public void log( String msg ) {
-    servletContext.log( msg );
-  }
-
-  @Override
-  @Deprecated
-  public void log( Exception exception, String msg ) {
-    servletContext.log( exception, msg );
+  public void log( String message ) {
+    servletContext.log( message );
   }
 
   @Override
   @Deprecated
+  public void log( Exception exception, String message ) {
+    servletContext.log( message, exception );
+  }
+
+  @Override
   public void log( String message, Throwable throwable ) {
     servletContext.log( message, throwable );
   }
