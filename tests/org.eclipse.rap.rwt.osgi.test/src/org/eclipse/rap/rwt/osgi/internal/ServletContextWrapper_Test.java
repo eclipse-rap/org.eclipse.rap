@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 Frank Appel and others.
+ * Copyright (c) 2011, 2023 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,13 +12,18 @@
 package org.eclipse.rap.rwt.osgi.internal;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Enumeration;
+
+import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
 
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
@@ -120,25 +125,28 @@ public class ServletContextWrapper_Test {
   @Test
   public void testGetServlet() throws Exception {
     String name = "name";
-    wrapper.getServlet( name );
+    Servlet servlet = wrapper.getServlet( name );
 
-    verify( context ).getServlet( name );
+    verify( context, never() ).getServlet( name );
+    assertNull( servlet );
   }
 
   @SuppressWarnings( "deprecation" )
   @Test
   public void testGetServlets() {
-    wrapper.getServlets();
+    Enumeration<Servlet> servlets = wrapper.getServlets();
 
-    verify( context ).getServlets();
+    verify( context, never() ).getServlets();
+    assertFalse( servlets.hasMoreElements() );
   }
 
   @SuppressWarnings( "deprecation" )
   @Test
   public void testGetServletNames() {
-    wrapper.getServletNames();
+    Enumeration<String> servletNames = wrapper.getServletNames();
 
-    verify( context ).getServletNames();
+    verify( context, never() ).getServletNames();
+    assertFalse( servletNames.hasMoreElements() );
   }
 
   @Test
@@ -156,10 +164,10 @@ public class ServletContextWrapper_Test {
     String msg = "msg";
     wrapper.log( exception, msg );
 
-    verify( context ).log( exception, msg );
+    verify( context, never() ).log( exception, msg );
+    verify( context ).log( msg, exception );
   }
 
-  @SuppressWarnings( "deprecation" )
   @Test
   public void testLogWithThrowable() {
     Throwable throwable = new Throwable();
