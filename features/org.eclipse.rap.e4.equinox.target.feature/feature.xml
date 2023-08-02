@@ -807,14 +807,14 @@
          unpack="false"/>
 
    <plugin
-         id="javax.annotation"
+         id="jakarta.annotation-api"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="javax.annotation.source"
+         id="jakarta.annotation-api.source"
          download-size="0"
          install-size="0"
          version="0.0.0"

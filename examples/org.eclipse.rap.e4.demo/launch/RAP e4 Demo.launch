@@ -39,7 +39,7 @@
     <setAttribute key="selected_target_bundles">
         <setEntry value="com.ibm.icu@default:default"/>
         <setEntry value="jakarta.servlet-api@default:default"/>
-        <setEntry value="javax.annotation@default:default"/>
+        <setEntry value="jakarta.annotation-api@default:default"/>
         <setEntry value="javax.el-api@default:default"/>
         <setEntry value="javax.inject@default:default"/>
         <setEntry value="javax.servlet.jsp-api@default:default"/>

@@ -29,7 +29,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.help.internal.entityresolver.LocalEntityResolver;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.util.SafeRunnable;
@@ -64,7 +63,6 @@ public class CheatSheetPlugin extends AbstractUIPlugin {
 	//private boolean resourceBundleInitialized = false;
 	//private ResourceBundle resourceBundle;
 	private CheatSheetHistory history = null;
-	private DocumentBuilder documentBuilder = null;
 
 	private static final String HISTORY_FILENAME = "history.xml"; //$NON-NLS-1$
 	private static final String MEMENTO_TAG_CHEATSHEET = "cheatsheet"; //$NON-NLS-1$
@@ -136,22 +134,6 @@ public class CheatSheetPlugin extends AbstractUIPlugin {
 		IPath path = CheatSheetPlugin.getPlugin().getStateLocation();
 		path = path.append(filename);
 		return path.toFile();
-	}
-
-	/**
-	 * Returns the DocumentBuilder to be used by the cheat sheets.
-	 */
-	public DocumentBuilder getDocumentBuilder() {
-		if(documentBuilder == null) {
-			try {
-				documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-				documentBuilder.setEntityResolver(new LocalEntityResolver());
-			} catch (Exception e) {
-				IStatus status = new Status(IStatus.ERROR, ICheatSheetResource.CHEAT_SHEET_PLUGIN_ID, IStatus.OK, Messages.get().ERROR_CREATING_DOCUMENT_BUILDER, e);
-				CheatSheetPlugin.getPlugin().getLog().log(status);
-			}
-		}
-		return documentBuilder;
 	}
 
 	/**

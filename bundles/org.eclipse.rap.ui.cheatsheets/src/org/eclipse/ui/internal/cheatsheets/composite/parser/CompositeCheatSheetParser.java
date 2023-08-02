@@ -17,6 +17,7 @@ import java.net.URL;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -40,8 +41,6 @@ import org.xml.sax.SAXParseException;
 
 public class CompositeCheatSheetParser implements IStatusContainer {
 
-	private DocumentBuilder documentBuilder;
-
 	private IStatus status;
 
 	private int nextTaskId = 0;
@@ -53,21 +52,6 @@ public class CompositeCheatSheetParser implements IStatusContainer {
 
 	public IStatus getStatus() {
 		return status;
-	}
-
-	/**
-	 * Returns the DocumentBuilder to be used by composite cheat sheets.
-	 */
-	public DocumentBuilder getDocumentBuilder() {
-		if(documentBuilder == null) {
-			try {
-				documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-				documentBuilder.setEntityResolver(new LocalEntityResolver());
-			} catch (Exception e) {
-				addStatus(IStatus.ERROR, Messages.get().ERROR_CREATING_DOCUMENT_BUILDER, e);
-			}
-		}
-		return documentBuilder;
 	}
 
 	public void addStatus(int severity, String message, Throwable exception) {
@@ -108,7 +92,10 @@ public class CompositeCheatSheetParser implements IStatusContainer {
 		String filename = url.getFile();
 		try {
 			InputSource inputSource = new InputSource(is);
-			document = getDocumentBuilder().parse(inputSource);
+			document = LocalEntityResolver.parse(inputSource);
+		} catch (ParserConfigurationException e) {
+      addStatus(IStatus.ERROR, Messages.get().ERROR_DOCUMENT_BUILDER_NOT_INIT, null);
+      return null;
 		} catch (IOException e) {
 			String message = NLS.bind(Messages.get().ERROR_OPENING_FILE_IN_PARSER, (new Object[] {filename}));
 			addStatus(IStatus.ERROR,  message,  e);
