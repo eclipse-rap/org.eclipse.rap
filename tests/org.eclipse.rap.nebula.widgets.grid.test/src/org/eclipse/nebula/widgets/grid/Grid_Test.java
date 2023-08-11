@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 EclipseSource and others.
+ * Copyright (c) 2012, 2023 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -169,6 +169,18 @@ public class Grid_Test {
     grid.setItemCount( 12 );
 
     assertTrue( Arrays.equals( items, grid.getItems() ) );
+  }
+
+  @Test
+  public void testSetItemCount_WithSelectedCells() {
+    createGridItems( grid, 3, 3 );
+    createGridColumns( grid, 3, SWT.NONE );
+    grid.setCellSelectionEnabled( true );
+    grid.setCellSelection( new Point( 1, 1 ) );
+
+    grid.setItemCount( 1 );
+
+    assertEquals( 0, grid.getCellSelectionCount() );
   }
 
   @Test

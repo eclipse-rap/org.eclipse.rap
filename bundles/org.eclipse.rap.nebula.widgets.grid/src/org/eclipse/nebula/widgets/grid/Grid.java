@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 EclipseSource and others.
+ * Copyright (c) 2012, 2023 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -307,6 +307,9 @@ public class Grid extends Composite {
   public void setItemCount( int count ) {
     checkWidget();
     int itemCount = Math.max( 0, count );
+    if( itemCount < items.size() ) {
+      selectedCells.clear();
+    }
     while( itemCount < items.size() ) {
       int flatIndex = items.size() - 1;
       items.get( flatIndex ).dispose( flatIndex );
