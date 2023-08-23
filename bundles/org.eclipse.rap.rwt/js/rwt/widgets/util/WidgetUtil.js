@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2023 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -104,7 +104,8 @@ rwt.qx.Class.define( "rwt.widgets.util.WidgetUtil", {
           "ctrlKey" : false,
           "altKey" : false,
           "metaKey" : false,
-          "preventDefault" : function(){}
+          "preventDefault" : function(){},
+          "getModifierState" : rwt.util.Functions.returnFalse
         };
         var event = new rwt.event.MouseEvent( type,
                                               domEvent,
