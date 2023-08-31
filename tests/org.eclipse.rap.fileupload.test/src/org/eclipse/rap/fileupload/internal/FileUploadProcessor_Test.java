@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2015 EclipseSource and others.
+ * Copyright (c) 2013, 2023 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -74,6 +74,20 @@ public class FileUploadProcessor_Test {
     uploadProcessor.handleFileUpload( RWT.getRequest(), RWT.getResponse() );
 
     assertEquals( "progress.finished.", testListener.getLog() );
+  }
+
+  @Test
+  public void testHandleFileUpload_singleFile_stripsFileName() throws IOException {
+    uploadHandler.addUploadListener( testListener );
+
+    fakeUploadRequest( uploadHandler, "foo", "text/plain", "/..\\..\\webapps\\foo.txt" );
+    uploadProcessor.handleFileUpload( RWT.getRequest(), RWT.getResponse() );
+
+    FileUploadEvent event = testListener.getLastEvent();
+    FileDetails[] fileDetails = event.getFileDetails();
+    assertEquals( "foo.txt", fileDetails[ 0 ].getFileName() );
+    assertEquals( "text/plain", fileDetails[ 0 ].getContentType() );
+    assertEquals( event.getContentLength(), event.getBytesRead() );
   }
 
   @Test
