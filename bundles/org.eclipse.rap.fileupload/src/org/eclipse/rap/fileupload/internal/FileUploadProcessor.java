@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 EclipseSource and others.
+ * Copyright (c) 2011, 2023 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.FileUploadBase.FileSizeLimitExceededException;
 import org.apache.commons.fileupload.ProgressListener;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.FilenameUtils;
 import org.eclipse.rap.fileupload.FileDetails;
 import org.eclipse.rap.fileupload.FileUploadHandler;
 import org.eclipse.rap.fileupload.FileUploadReceiver;
@@ -121,7 +122,7 @@ final class FileUploadProcessor {
   private void receive( FileItemStream item ) throws IOException {
     InputStream stream = item.openStream();
     try {
-      fileName = stripFileName( item.getName() );
+      fileName = FilenameUtils.getName( item.getName() );
       String contentType = item.getContentType();
       FileDetails details = new FileDetailsImpl( fileName, contentType );
       FileUploadReceiver receiver = handler.getReceiver();
@@ -130,20 +131,6 @@ final class FileUploadProcessor {
     } finally {
       stream.close();
     }
-  }
-
-  private static String stripFileName( String name ) {
-    String result = name;
-    int lastSlash = result.lastIndexOf( '/' );
-    if( lastSlash != -1 ) {
-      result = result.substring( lastSlash + 1 );
-    } else {
-      int lastBackslash = result.lastIndexOf( '\\' );
-      if( lastBackslash != -1 ) {
-        result = result.substring( lastBackslash + 1 );
-      }
-    }
-    return result;
   }
 
 }
