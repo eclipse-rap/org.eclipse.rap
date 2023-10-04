@@ -27,9 +27,9 @@
     <!-- disabled due to bug 393977
     <tycho-baseline-repo.url>http://download.eclipse.org/rt/rap/3.2/</tycho-baseline-repo.url>
      -->
-    <jetty-repo.url>https://download.eclipse.org/oomph/jetty/release/10.0.15/</jetty-repo.url>
-    <orbit-repo.url>https://download.eclipse.org/tools/orbit/simrel/orbit-aggregation/2023-09/</orbit-repo.url>
-    <platform-repo.url>https://download.eclipse.org/eclipse/updates/4.29/R-4.29-202309031000/</platform-repo.url>
+    <jetty-repo.url>https://download.eclipse.org/oomph/jetty/release/10.0.16/</jetty-repo.url>
+    <orbit-repo.url>https://download.eclipse.org/tools/orbit/simrel/orbit-aggregation/2023-12/</orbit-repo.url>
+    <platform-repo.url>https://download.eclipse.org/eclipse/updates/4.30-I-builds/I20230927-1800/</platform-repo.url>
     <rap-extra-repo.url>https://download.eclipse.org/rt/rap/base-platforms/3.14/extra-dependencies/</rap-extra-repo.url>
     <license-repo.url>https://download.eclipse.org/cbi/updates/license/1.0.1.v20140414-1359/</license-repo.url>
     <!-- The build type, N for nighty builds, S for stable builds. S-builds will be signed. -->
