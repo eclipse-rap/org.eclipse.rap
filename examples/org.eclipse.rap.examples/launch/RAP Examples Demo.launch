@@ -66,7 +66,7 @@
         <setEntry value="org.eclipse.jetty.io"/>
         <setEntry value="org.eclipse.jetty.security"/>
         <setEntry value="org.eclipse.jetty.server"/>
-        <setEntry value="org.eclipse.jetty.servlet"/>
+        <setEntry value="org.eclipse.jetty.ee8.servlet"/>
         <setEntry value="org.eclipse.jetty.util"/>
         <setEntry value="org.eclipse.jetty.util.ajax"/>
         <setEntry value="org.eclipse.osgi"/>
