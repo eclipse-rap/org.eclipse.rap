@@ -12,7 +12,7 @@
 package org.eclipse.e4.core.commands.internal;
 
 import java.util.Map;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import org.eclipse.core.commands.Category;
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.CommandManager;
