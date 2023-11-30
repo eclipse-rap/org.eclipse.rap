@@ -12,7 +12,7 @@ package org.eclipse.e4.ui.workbench.renderers.swt;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import org.eclipse.core.commands.ParameterizedCommand;
 import org.eclipse.core.expressions.ExpressionInfo;
 import org.eclipse.core.runtime.ISafeRunnable;

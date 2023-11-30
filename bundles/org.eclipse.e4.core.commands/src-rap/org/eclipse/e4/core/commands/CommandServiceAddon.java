@@ -14,9 +14,9 @@ package org.eclipse.e4.core.commands;
 
 import java.lang.reflect.Field;
 import java.util.LinkedList;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.inject.Inject;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import jakarta.inject.Inject;
 import org.eclipse.core.commands.CommandManager;
 import org.eclipse.e4.core.commands.internal.CommandServiceImpl;
 import org.eclipse.e4.core.commands.internal.HandlerServiceCreationFunction;

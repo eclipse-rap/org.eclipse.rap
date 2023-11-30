@@ -3,7 +3,7 @@ package org.eclipse.rap.e4.internal;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.core.di.suppliers.IObjectDescriptor;

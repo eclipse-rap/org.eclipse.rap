@@ -19,7 +19,7 @@ package org.eclipse.e4.ui.workbench.renderers.swt;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import org.eclipse.core.commands.IStateListener;
 import org.eclipse.core.commands.ParameterizedCommand;
 import org.eclipse.core.commands.State;

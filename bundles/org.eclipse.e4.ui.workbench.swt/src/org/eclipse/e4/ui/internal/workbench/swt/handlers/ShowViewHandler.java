@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.e4.ui.internal.workbench.swt.handlers;
 
-import javax.inject.Named;
+import jakarta.inject.Named;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.e4.core.di.annotations.Optional;
