@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.internal.textsize;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
@@ -20,6 +21,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.internal.RWTProperties;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
@@ -27,6 +29,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 
 public class TextSizeStorageUtil_Test {
 
@@ -42,6 +46,7 @@ public class TextSizeStorageUtil_Test {
   @After
   public void tearDown() {
     Fixture.tearDown();
+    System.getProperties().remove( RWTProperties.TEXT_SIZE_STORE_SESSION_SCOPED );
   }
 
   @Test
@@ -120,4 +125,20 @@ public class TextSizeStorageUtil_Test {
     }
   }
 
+  @Test
+  public void testSessionScopedStore() {
+    Point storedSize = new Point( 100, 10 );
+    ProbeResultStore.getInstance().createProbeResult( new Probe( FONT_DATA ), new Point( 2, 10 ) );
+    TextSizeStorageUtil.store( FONT_DATA, TEST_STRING, SWT.DEFAULT, MODE, storedSize );
+    Point lookupSize = TextSizeStorageUtil.lookup( FONT_DATA, TEST_STRING, SWT.DEFAULT, MODE );
+    assertEquals(storedSize, lookupSize);
+
+    System.setProperty( RWTProperties.TEXT_SIZE_STORE_SESSION_SCOPED , "true" );
+    Fixture.disposeOfServiceContext();
+    Fixture.createServiceContext();
+
+    ProbeResultStore.getInstance().createProbeResult( new Probe( FONT_DATA ), new Point( 2, 10 ) );
+    lookupSize = TextSizeStorageUtil.lookup( FONT_DATA, TEST_STRING, SWT.DEFAULT, MODE );
+    assertNull( lookupSize );
+  }
 }

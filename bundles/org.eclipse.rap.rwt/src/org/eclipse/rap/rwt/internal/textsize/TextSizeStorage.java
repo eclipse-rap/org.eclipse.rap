@@ -26,13 +26,15 @@ import java.util.Set;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
 
+import org.eclipse.rap.rwt.internal.util.SerializableLock;
 
-public final class TextSizeStorage {
+
+public final class TextSizeStorage implements Serializable {
 
   public static final int MIN_STORE_SIZE = 1000;
   public static final int DEFAULT_STORE_SIZE = 10000;
 
-  private final Object lock;
+  private final SerializableLock lock;
   // access is guarded by 'lock'
   private final Set<FontData> fontDatas;
   // access is guarded by 'lock'
@@ -42,7 +44,7 @@ public final class TextSizeStorage {
   private long clock;
 
 
-  private static class Entry {
+  private static class Entry implements Serializable {
     private Point point;
     private long timeStamp;
   }
@@ -63,7 +65,7 @@ public final class TextSizeStorage {
 
 
   public TextSizeStorage() {
-    lock = new Object();
+    lock = new SerializableLock();
     data = new HashMap<>();
     fontDatas = new HashSet<>();
     setMaximumStoreSize( getTextSizeStoreSize( DEFAULT_STORE_SIZE ) );

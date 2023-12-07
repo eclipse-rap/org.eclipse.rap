@@ -27,14 +27,19 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.RWTProperties;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.internal.remote.ConnectionImpl;
+import org.eclipse.rap.rwt.internal.textsize.ProbeStore;
 import org.eclipse.rap.rwt.remote.AbstractOperationHandler;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.SerializableCompatibility;
+
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 
 
 class MeasurementOperator implements SerializableCompatibility {
@@ -45,11 +50,14 @@ class MeasurementOperator implements SerializableCompatibility {
   static final String METHOD_STORE_MEASUREMENTS = "storeMeasurements";
   static final String PARAM_RESULTS = "results";
 
+  private final boolean sizeStoreSessionScoped;
+
   private final RemoteObject remoteObject;
   private final Set<Probe> probes;
   private final Set<MeasurementItem> items;
 
   MeasurementOperator() {
+    sizeStoreSessionScoped = RWTProperties.isTextSizeStoreSessionScoped();
     ConnectionImpl connection = ( ConnectionImpl )RWT.getUISession().getConnection();
     remoteObject = connection.createServiceObject( TYPE );
     remoteObject.setHandler( new MeasurementOperatorHandler() );
@@ -59,7 +67,7 @@ class MeasurementOperator implements SerializableCompatibility {
   }
 
   private void addStartupProbesToBuffer() {
-    Probe[] probeList = getApplicationContext().getProbeStore().getProbes();
+    Probe[] probeList = getProbeStore().getProbes();
     probes.addAll( Arrays.asList( probeList ) );
   }
 
@@ -72,11 +80,20 @@ class MeasurementOperator implements SerializableCompatibility {
   }
 
   void addProbeToMeasure( FontData fontData ) {
-    Probe probe = getApplicationContext().getProbeStore().getProbe( fontData );
+    ProbeStore probeStore = getProbeStore();
+    Probe probe = probeStore.getProbe( fontData );
     if( probe == null ) {
-      probe = getApplicationContext().getProbeStore().createProbe( fontData );
+      probe = probeStore.createProbe( fontData );
     }
     probes.add( probe );
+  }
+
+  ProbeStore getProbeStore() {
+    if( sizeStoreSessionScoped ) {
+      return ( (UISessionImpl) RWT.getUISession() ).getProbeStore();
+    } else {
+      return getApplicationContext().getProbeStore();
+    }
   }
 
   int getItemCount() {
