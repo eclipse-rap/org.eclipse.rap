@@ -50,13 +50,14 @@ class MeasurementOperator implements SerializableCompatibility {
   static final String METHOD_STORE_MEASUREMENTS = "storeMeasurements";
   static final String PARAM_RESULTS = "results";
 
-  private static final boolean sizeStoreSessionScoped = RWTProperties.isTextSizeStoreSessionScoped();
+  private final boolean sizeStoreSessionScoped;
 
   private final RemoteObject remoteObject;
   private final Set<Probe> probes;
   private final Set<MeasurementItem> items;
 
   MeasurementOperator() {
+    sizeStoreSessionScoped = RWTProperties.isTextSizeStoreSessionScoped();
     ConnectionImpl connection = ( ConnectionImpl )RWT.getUISession().getConnection();
     remoteObject = connection.createServiceObject( TYPE );
     remoteObject.setHandler( new MeasurementOperatorHandler() );
