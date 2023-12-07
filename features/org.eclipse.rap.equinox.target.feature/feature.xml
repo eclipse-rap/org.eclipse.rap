@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.rap.equinox.target.feature"
       label="RAP Basic Equinox Target"
-      version="3.23.0.qualifier"
+      version="3.27.0.qualifier"
       provider-name="Eclipse.org - RAP"
       license-feature="org.eclipse.license"
       license-feature-version="0.0.0">
@@ -20,18 +20,18 @@
    </license>
 
    <requires>
-      <import feature="org.eclipse.rap.feature" version="3.23.0" match="greaterOrEqual"/>
+      <import feature="org.eclipse.rap.feature" version="3.27.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
-         id="org.eclipse.jetty.servlet-api"
+         id="jakarta.servlet-api"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.jetty.servlet-api.source"
+         id="jakarta.servlet-api.source"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -737,14 +737,14 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.jetty.servlet"
+         id="org.eclipse.jetty.ee8.servlet"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.jetty.servlet.source"
+         id="org.eclipse.jetty.ee8.servlet.source"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -807,17 +807,10 @@
          unpack="false"/>
 
    <plugin
-         id="org.slf4j.api"
+         id="slf4j.api"
          download-size="0"
          install-size="0"
-         version="1.7.30.v20200204-2150"
-         unpack="false"/>
-
-   <plugin
-         id="org.slf4j.api.source"
-         download-size="0"
-         install-size="0"
-         version="1.7.30.v20200204-2150"
+         version="0.0.0"
          unpack="false"/>
 
 </feature>

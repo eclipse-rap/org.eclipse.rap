@@ -25,7 +25,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 import java.io.IOException;
 import java.util.List;
@@ -199,7 +199,7 @@ public class TableLCA_Test {
     table.setItemCount( 0 );
     while( display.readAndDispatch() ) {
     }
-    verifyZeroInteractions( setDataListener );
+    verifyNoInteractions( setDataListener );
   }
 
   @Test

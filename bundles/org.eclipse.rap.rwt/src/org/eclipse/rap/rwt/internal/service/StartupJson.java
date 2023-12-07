@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 EclipseSource and others.
+ * Copyright (c) 2012, 2023 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,11 +10,16 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
+import static java.net.URLEncoder.encode;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getRequest;
 import static org.eclipse.rap.rwt.internal.theme.ThemeUtil.getThemeIdFor;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -30,6 +35,7 @@ import org.eclipse.rap.rwt.internal.util.HTTP;
 public class StartupJson {
 
   static final String PROPERTY_URL = "url";
+  static final String PROPERTY_STARTUP_PARAMETERS = "startupParameters";
   static final String DISPLAY_TYPE = "rwt.widgets.Display";
   static final String THEME_STORE_TYPE = "rwt.theme.ThemeStore";
   static final String METHOD_LOAD_FALLBACK_THEME = "loadFallbackTheme";
@@ -62,7 +68,28 @@ public class StartupJson {
 
   private static void appendCreateDisplay( String id, ProtocolMessageWriter writer ) {
     writer.appendCreate( id, DISPLAY_TYPE );
+    String startupParameters = getStartupParameters();
+    if( !startupParameters.isEmpty() ) {
+      writer.appendSet( id, PROPERTY_STARTUP_PARAMETERS, startupParameters );
+    }
     writer.appendHead( PROPERTY_URL, JsonValue.valueOf( getUrl() ) );
+  }
+
+  private static String getStartupParameters() {
+    List<String> parameters = new ArrayList<>();
+    Map<String, String[]> parameterMap = getRequest().getParameterMap();
+    try {
+      for ( String name : parameterMap.keySet() ) {
+        for( String value : parameterMap.get( name ) ) {
+          String encName = encode( name, HTTP.CHARSET_UTF_8 );
+          String encValue = encode( value, HTTP.CHARSET_UTF_8 );
+          parameters.add( encName + "=" + encValue );
+        }
+      }
+    } catch ( @SuppressWarnings( "unused" ) UnsupportedEncodingException ex ) {
+      // should never happen
+    }
+    return String.join( "&", parameters );
   }
 
   private static void appendLoadThemeDefinitions( ProtocolMessageWriter writer ) {

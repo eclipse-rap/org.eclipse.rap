@@ -13,15 +13,15 @@ package org.eclipse.rap.rwt.internal.remote;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getProtocolWriter;
 import static org.eclipse.rap.rwt.testfixture.internal.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
@@ -67,7 +67,7 @@ public class DeferredRemoteObject_Test {
     remoteObject.render( writer );
 
     verify( writer ).appendCreate( anyString(), anyString() );
-    verify( writer ).appendCall( anyString(), anyString(), any( JsonObject.class ) );
+    verify( writer ).appendCall( anyString(), anyString(), isNull() );
   }
 
   @Test
@@ -255,7 +255,7 @@ public class DeferredRemoteObject_Test {
 
     remoteObject.render( writer );
 
-    verifyZeroInteractions( writer );
+    verifyNoInteractions( writer );
   }
 
   @Test

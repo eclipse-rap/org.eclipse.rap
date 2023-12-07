@@ -1,9 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 Matthew Hall and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * Copyright (c) 2008, 2015 Matthew Hall and others.
+ *
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     Matthew Hall - initial API and implementation (bug 194734)
@@ -24,39 +27,43 @@ import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 
 /**
+ * @param <S> type of the source object
+ *
  * @since 3.3
- * 
+ *
  */
-public class StructuredViewerFiltersProperty extends ViewerSetProperty {
+public class StructuredViewerFiltersProperty<S extends StructuredViewer> extends ViewerSetProperty<S, ViewerFilter> {
+	@Override
 	public Object getElementType() {
 		return ViewerFilter.class;
 	}
 
-	protected Set doGetSet(Object source) {
-		return new HashSet(Arrays.asList(((StructuredViewer) source)
-				.getFilters()));
+	@Override
+	protected Set<ViewerFilter> doGetSet(S source) {
+		return new HashSet<>(Arrays.asList(source.getFilters()));
 	}
 
-	public void doSetSet(Object source, Set set, SetDiff diff) {
+	@Override
+	public void doSetSet(S source, Set<ViewerFilter> set, SetDiff<ViewerFilter> diff) {
 		doSetSet(source, set);
 	}
 
-	protected void doSetSet(Object source, Set set) {
-		StructuredViewer viewer = (StructuredViewer) source;
-		viewer.getControl().setRedraw(false);
+	@Override
+	protected void doSetSet(S source, Set<ViewerFilter> set) {
+		source.getControl().setRedraw(false);
 		try {
-			viewer.setFilters((ViewerFilter[]) set.toArray(new ViewerFilter[set
-					.size()]));
+			source.setFilters(set.toArray(new ViewerFilter[set.size()]));
 		} finally {
-			viewer.getControl().setRedraw(true);
+			source.getControl().setRedraw(true);
 		}
 	}
 
-	public INativePropertyListener adaptListener(
-			ISimplePropertyListener listener) {
+	@Override
+	public INativePropertyListener<S> adaptListener(ISimplePropertyListener<S, SetDiff<ViewerFilter>> listener) {
 		return null;
 	}
 
+	@Override
 	public String toString() {
 		return "StructuredViewer.filters{} <ViewerFilter>"; //$NON-NLS-1$
 	}

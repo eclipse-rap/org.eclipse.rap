@@ -153,6 +153,7 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
 
     _createCanvas : function() {
       this._canvas = document.createElement( "canvas" );
+      this._canvas.style.display = 'block';
       this._context = this._canvas.getContext( "2d" );
     },
 

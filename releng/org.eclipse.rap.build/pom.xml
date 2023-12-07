@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Copyright (C) 2011, 2022 EclipseSource and others.
+  Copyright (C) 2011, 2023 EclipseSource and others.
   All rights reserved. This program and the accompanying materials
   are made available under the terms of the Eclipse Public License v1.0
   which accompanies this distribution, and is available at
@@ -16,22 +16,22 @@
 
   <groupId>org.eclipse.rap</groupId>
   <artifactId>org.eclipse.rap.runtime-parent</artifactId>
-  <version>3.23.0-SNAPSHOT</version>
+  <version>3.27.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
-    <tycho.version>2.7.5</tycho.version>
+    <tycho.version>3.0.4</tycho.version>
     <tycho.scmUrl>scm:git:https://github.com/eclipse-rap/org.eclipse.rap</tycho.scmUrl>
     <!-- disabled due to bug 393977
     <tycho-baseline-repo.url>http://download.eclipse.org/rt/rap/3.2/</tycho-baseline-repo.url>
      -->
-    <jetty-repo.url>https://download.eclipse.org/webtools/jetty/10.0.11/repository/</jetty-repo.url>
-    <orbit-repo.url>https://download.eclipse.org/tools/orbit/downloads/2022-12/</orbit-repo.url>
-    <platform-repo.url>https://download.eclipse.org/eclipse/updates/4.26-I-builds/I20220928-1800/</platform-repo.url>
+    <jetty-repo.url>https://download.eclipse.org/tools/orbit/simrel/maven-jetty/release/12.0.3/</jetty-repo.url>
+    <orbit-repo.url>https://download.eclipse.org/tools/orbit/simrel/orbit-aggregation/2023-12/</orbit-repo.url>
+    <platform-repo.url>https://download.eclipse.org/eclipse/updates/4.30/R-4.30-202312010110/</platform-repo.url>
     <rap-extra-repo.url>https://download.eclipse.org/rt/rap/base-platforms/3.14/extra-dependencies/</rap-extra-repo.url>
-    <license-repo.url>https://download.eclipse.org/cbi/updates/license/</license-repo.url>
+    <license-repo.url>https://download.eclipse.org/cbi/updates/license/1.0.1.v20140414-1359/</license-repo.url>
     <!-- The build type, N for nighty builds, S for stable builds. S-builds will be signed. -->
     <buildType>N</buildType>
     <build>${maven.build.timestamp}</build>
@@ -80,7 +80,7 @@
         <version>${tycho.version}</version>
         <dependencies>
           <dependency>
-            <groupId>org.eclipse.tycho.extras</groupId>
+            <groupId>org.eclipse.tycho</groupId>
             <artifactId>tycho-buildtimestamp-jgit</artifactId>
             <version>${tycho.version}</version>
           </dependency>
@@ -213,23 +213,6 @@
             <groupId>org.eclipse.tycho</groupId>
             <artifactId>target-platform-configuration</artifactId>
             <version>${tycho.version}</version>
-            <configuration>
-              <includePackedArtifacts>true</includePackedArtifacts>
-            </configuration>
-          </plugin>
-
-          <plugin>
-            <groupId>org.eclipse.tycho.extras</groupId>
-            <artifactId>tycho-pack200a-plugin</artifactId>
-            <version>${tycho.version}</version>
-            <executions>
-              <execution>
-                <id>pack200-normalize</id>
-                <goals>
-                  <goal>normalize</goal>
-                </goals>
-              </execution>
-            </executions>
           </plugin>
 
           <plugin>
@@ -241,20 +224,6 @@
                 <id>sign</id>
                 <goals>
                   <goal>sign</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <groupId>org.eclipse.tycho.extras</groupId>
-            <artifactId>tycho-pack200b-plugin</artifactId>
-            <version>${tycho.version}</version>
-            <executions>
-              <execution>
-                <id>pack200-pack</id>
-                <goals>
-                  <goal>pack</goal>
                 </goals>
               </execution>
             </executions>

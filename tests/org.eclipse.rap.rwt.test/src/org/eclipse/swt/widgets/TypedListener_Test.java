@@ -15,11 +15,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ArmEvent;
@@ -85,7 +85,7 @@ public class TypedListener_Test {
     TypedListener typedListener = new TypedListener( listener );
     typedListener.handleEvent( createEvent( -1 ) );
 
-    verifyZeroInteractions( listener );
+    verifyNoInteractions( listener );
   }
 
   @Test

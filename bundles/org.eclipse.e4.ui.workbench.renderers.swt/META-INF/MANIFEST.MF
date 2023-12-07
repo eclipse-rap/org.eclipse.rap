@@ -5,7 +5,7 @@ Bundle-Version: 0.13.0.qualifier
 Bundle-Name: %pluginName
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Bundle: org.eclipse.e4.ui.workbench;bundle-version="0.9.0",
  org.eclipse.e4.core.services;bundle-version="0.9.0",
  org.eclipse.e4.core.contexts;bundle-version="1.0.0",
@@ -29,8 +29,8 @@ Require-Capability: org.eclipse.rap;filter:="(org.eclipse.rap.rwt=true)"
 Export-Package: org.eclipse.e4.ui.internal.workbench.renderers.swt;x-friends:="org.eclipse.ui.workbench",
  org.eclipse.e4.ui.workbench.renderers.swt;x-friends:="org.eclipse.e4.ui.workbench.addons.swt,org.eclipse.ui.workbench"
 Bundle-ActivationPolicy: lazy
-Import-Package: javax.annotation;version="1.0.0",
- javax.inject;version="1.0.0",
+Import-Package: jakarta.annotation;version="[2.1.0,3.0.0)",
+ jakarta.inject;version="[2.0.0,3.0.0)",
  org.osgi.service.event;version="1.3.0",
  org.w3c.dom.css
 Bundle-Activator: org.eclipse.e4.ui.internal.workbench.renderers.swt.SWTRenderersActivator

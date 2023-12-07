@@ -14,8 +14,9 @@ package org.eclipse.rap.rwt.osgi.internal;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -26,7 +27,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
-import java.util.Dictionary;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServlet;
@@ -311,7 +311,7 @@ public class ApplicationLauncherImpl_Test {
   private ServiceRegistration<?> checkApplicationReferenceHasBeenRegisteredAsService() {
     return verify( bundleContext ).registerService( eq( ApplicationReference.class.getName() ),
                                                     any( ApplicationReference.class ),
-                                                    any( Dictionary.class ) );
+                                                    isNull() );
   }
 
   private void checkApplicationReferenceHasBeenUnregisteredAsService() {
@@ -338,7 +338,7 @@ public class ApplicationLauncherImpl_Test {
     try {
       verify( httpService, times( times ) ).registerServlet( eq( alias ),
                                                              any( HttpServlet.class ),
-                                                             any( Dictionary.class ),
+                                                             isNull(),
                                                              any( HttpContext.class ) );
       verify( httpService, times( times ) ).registerResources( eq( getResourcesDirectory( alias ) ),
                                                                any( String.class ),
@@ -483,7 +483,7 @@ public class ApplicationLauncherImpl_Test {
       doAnswer( mockServletConfigForServletContextRetrieval() )
        .when( service ).registerServlet( eq( alias ),
                                         any( HttpServlet.class ),
-                                        any( Dictionary.class ),
+                                        isNull(),
                                         any( HttpContext.class ) );
     } catch( Exception shouldNotHappen ) {
       throw new RuntimeException( shouldNotHappen );
@@ -531,7 +531,7 @@ public class ApplicationLauncherImpl_Test {
     doReturn( serviceRegistration )
       .when( bundleContext ).registerService( eq( ApplicationReference.class.getName() ),
                                               any( ApplicationReference.class ),
-                                              any( Dictionary.class ) );
+                                              isNull() );
   }
 
   private ApplicationReference launchApplication() {

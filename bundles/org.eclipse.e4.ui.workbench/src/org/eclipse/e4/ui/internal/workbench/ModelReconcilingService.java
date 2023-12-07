@@ -14,7 +14,7 @@ package org.eclipse.e4.ui.internal.workbench;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;

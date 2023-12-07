@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 EclipseSource and others.
+ * Copyright (c) 2012, 2023 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,10 +14,12 @@ import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicatio
 import static org.eclipse.rap.rwt.internal.service.StartupJson.DISPLAY_TYPE;
 import static org.eclipse.rap.rwt.internal.service.StartupJson.METHOD_LOAD_ACTIVE_THEME;
 import static org.eclipse.rap.rwt.internal.service.StartupJson.METHOD_LOAD_FALLBACK_THEME;
+import static org.eclipse.rap.rwt.internal.service.StartupJson.PROPERTY_STARTUP_PARAMETERS;
 import static org.eclipse.rap.rwt.internal.service.StartupJson.PROPERTY_URL;
 import static org.eclipse.rap.rwt.internal.service.StartupJson.THEME_STORE_TYPE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
@@ -89,6 +91,47 @@ public class StartupJson_Test {
 
     TestMessage message = new TestMessage( content );
     assertNotNull( message.findCreateOperation( "w1" ) );
+  }
+
+  @Test
+  public void testGet_createDisplay_withoutStartupParameters() {
+    JsonObject content = StartupJson.get();
+
+    TestMessage message = new TestMessage( content );
+    JsonObject properties = message.findCreateOperation( "w1" ).getProperties();
+    assertNull( properties.get( PROPERTY_STARTUP_PARAMETERS ) );
+  }
+
+  @Test
+  public void testGet_createDisplay_withStartupParameters() {
+    TestRequest request = ( TestRequest )ContextProvider.getRequest();
+    request.addParameter( "foo", "1" );
+    request.addParameter( "bar", "2" );
+
+    JsonObject content = StartupJson.get();
+
+    TestMessage message = new TestMessage( content );
+    JsonObject properties = message.findCreateOperation( "w1" ).getProperties();
+    String startupParameters = properties.get( PROPERTY_STARTUP_PARAMETERS ).asString();
+    assertTrue( startupParameters.contains( "foo=1" ) );
+    assertTrue( startupParameters.contains( "bar=2" ) );
+  }
+
+  @Test
+  public void testGet_createDisplay_withStartupParametersAndMultipleValues() {
+    TestRequest request = ( TestRequest )ContextProvider.getRequest();
+    request.addParameter( "foo", "1" );
+    request.addParameter( "foo", "3" );
+    request.addParameter( "bar", "2" );
+
+    JsonObject content = StartupJson.get();
+
+    TestMessage message = new TestMessage( content );
+    JsonObject properties = message.findCreateOperation( "w1" ).getProperties();
+    String startupParameters = properties.get( PROPERTY_STARTUP_PARAMETERS ).asString();
+    assertTrue( startupParameters.contains( "foo=1" ) );
+    assertTrue( startupParameters.contains( "foo=3" ) );
+    assertTrue( startupParameters.contains( "bar=2" ) );
   }
 
   @Test

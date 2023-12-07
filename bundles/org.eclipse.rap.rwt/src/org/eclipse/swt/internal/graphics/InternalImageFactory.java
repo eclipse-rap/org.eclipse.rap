@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2015 EclipseSource and others.
+ * Copyright (c) 2010, 2023 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,6 +39,7 @@ public class InternalImageFactory {
 
   public InternalImage findInternalImage( final String fileName ) {
     return cache.get( fileName, new InstanceCreator<String, InternalImage>() {
+      @Override
       public InternalImage createInstance( String fileName ) {
         return createInternalImage( fileName );
       }
@@ -50,6 +51,7 @@ public class InternalImageFactory {
     final ImageData imageData = readImageData( bufferedStream );
     final String path = createGeneratedImagePath( imageData );
     return cache.get( path, new InstanceCreator<String, InternalImage>() {
+      @Override
       public InternalImage createInstance( String path ) {
         return createInternalImage( path, bufferedStream, imageData );
       }
@@ -59,6 +61,7 @@ public class InternalImageFactory {
   public InternalImage findInternalImage( final ImageData imageData ) {
     final String path = createGeneratedImagePath( imageData );
     return cache.get( path, new InstanceCreator<String, InternalImage>() {
+      @Override
       public InternalImage createInstance( String path ) {
         InputStream stream = createInputStream( imageData );
         return createInternalImage( path, stream, imageData );
@@ -68,6 +71,7 @@ public class InternalImageFactory {
 
   InternalImage findInternalImage( String key, final InputStream inputStream ) {
     return cache.get( key, new InstanceCreator<String, InternalImage>() {
+      @Override
       public InternalImage createInstance( String key ) {
         BufferedInputStream bufferedStream = new BufferedInputStream( inputStream );
         ImageData imageData = readImageData( bufferedStream );
@@ -75,6 +79,11 @@ public class InternalImageFactory {
         return createInternalImage( path, bufferedStream, imageData );
       }
     } );
+  }
+
+  public void destroyInternalImage( String key ) {
+    InternalImage internalImage = cache.remove( key );
+    RWT.getResourceManager().unregister( internalImage.getResourceName() );
   }
 
   static ImageData readImageData( InputStream stream ) throws SWTException {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2020 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2010, 2022 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -387,7 +387,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
 
     setAutoHeight : function( value ) {
       this._config.autoHeight = value;
-      this._scheduleUpdate();
+      rwt.client.Timer.once( this._scheduleUpdate, this, 0 );
     },
 
     setCellCheck : function( column, value ) {
@@ -932,13 +932,12 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       } else if( this._config.cellSelection ) {
         var item = this._focusItem;
         var cell = this._focusCell;
-        while( cell - 1 > 0
-               && ( !this._columnOrder[ cell - 1 ].getVisibility()
-                    || !item.isCellVisible( cell - 1 ) ) )
-        {
-          cell--;
+        for( var i = cell - 1, found = false; i > 0 && !found; i-- ) {
+          if( this._columnOrder[ i ].getVisibility() && item.isCellVisible( i ) ) {
+            cell = i;
+            found = true;
+          }
         }
-        cell = Math.max( 1, cell - 1 );
         var itemIndex = item.getFlatIndex();
         this._handleKeyboardSelect( event, item, itemIndex, false, cell );
       } else if( this._focusItem.isExpanded() ) {
@@ -958,13 +957,12 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       } else if( this._config.cellSelection ) {
         var item = this._focusItem;
         var cell = this._focusCell;
-        while( cell + 1 < this._config.columnCount - 1
-               && ( !this._columnOrder[ cell + 1 ].getVisibility()
-                    || !item.isCellVisible( cell + 1 ) ) )
-        {
-          cell++;
+        for( var i = cell + 1, found = false; i < this._config.columnCount && !found; i++ ) {
+          if( this._columnOrder[ i ].getVisibility() && item.isCellVisible( i ) ) {
+            cell = i;
+            found = true;
+          }
         }
-        cell = Math.min( this._config.columnCount - 1, cell + 1 );
         var itemIndex = item.getFlatIndex();
         this._handleKeyboardSelect( event, item, itemIndex, false, cell );
       } else if( this._focusItem.hasChildren() ) {

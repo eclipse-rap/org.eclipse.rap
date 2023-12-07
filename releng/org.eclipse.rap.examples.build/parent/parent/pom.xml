@@ -7,12 +7,12 @@
 
   <groupId>org.eclipse.rap</groupId>
   <artifactId>org.eclipse.rap.examples.parent.parent</artifactId>
-  <version>3.23.0-SNAPSHOT</version>
+  <version>3.27.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <tycho.version>2.7.5</tycho.version>
+    <tycho.version>3.0.4</tycho.version>
     <tycho.showEclipseLog>true</tycho.showEclipseLog>
     <assembly.version>3.3.0</assembly.version>
     <replacer.version>1.4.1</replacer.version>

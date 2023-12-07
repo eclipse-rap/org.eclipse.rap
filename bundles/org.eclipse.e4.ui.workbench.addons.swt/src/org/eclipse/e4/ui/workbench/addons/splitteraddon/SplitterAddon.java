@@ -12,7 +12,7 @@
 package org.eclipse.e4.ui.workbench.addons.splitteraddon;
 
 import java.util.List;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.ui.di.UIEventTopic;
 import org.eclipse.e4.ui.model.application.ui.MElementContainer;

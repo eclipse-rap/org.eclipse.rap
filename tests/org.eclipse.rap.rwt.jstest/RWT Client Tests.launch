@@ -12,6 +12,7 @@
     <intAttribute key="default_start_level" value="4"/>
     <setAttribute key="deselected_workspace_bundles"/>
     <booleanAttribute key="includeOptional" value="false"/>
+    <booleanAttribute key="org.eclipse.debug.core.ATTR_FORCE_SYSTEM_CONSOLE_ENCODING" value="false"/>
     <listAttribute key="org.eclipse.debug.ui.favoriteGroups">
         <listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
         <listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
@@ -23,31 +24,47 @@
     <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Declipse.ignoreApp=true -Dosgi.noShutdown=true&#13;&#10;-Dorg.osgi.service.http.port=8081&#13;&#10;-Dorg.eclipse.rap.rwt.developmentMode=true"/>
     <stringAttribute key="pde.version" value="3.3"/>
     <setAttribute key="selected_target_bundles">
-        <setEntry value="org.apache.felix.gogo.command@default:default"/>
-        <setEntry value="org.apache.felix.gogo.runtime@default:default"/>
-        <setEntry value="org.apache.felix.gogo.shell@default:default"/>
-        <setEntry value="org.apache.felix.scr@1:true"/>
-        <setEntry value="org.eclipse.equinox.common@2:true"/>
-        <setEntry value="org.eclipse.equinox.console@default:default"/>
-        <setEntry value="org.eclipse.equinox.http.jetty@default:default"/>
-        <setEntry value="org.eclipse.equinox.http.servlet@default:default"/>
-        <setEntry value="org.eclipse.jetty.http@default:default"/>
-        <setEntry value="org.eclipse.jetty.io@default:default"/>
-        <setEntry value="org.eclipse.jetty.security@default:default"/>
-        <setEntry value="org.eclipse.jetty.server@default:default"/>
-        <setEntry value="org.eclipse.jetty.servlet-api@default:default"/>
-        <setEntry value="org.eclipse.jetty.servlet@default:default"/>
-        <setEntry value="org.eclipse.jetty.util.ajax@default:default"/>
-        <setEntry value="org.eclipse.jetty.util@default:default"/>
-        <setEntry value="org.eclipse.osgi.services@default:default"/>
-        <setEntry value="org.eclipse.osgi.util@default:default"/>
-        <setEntry value="org.eclipse.osgi@-1:true"/>
-        <setEntry value="org.slf4j.api@default:default"/>
+        <setEntry value="jakarta.servlet-api"/>
+        <setEntry value="org.apache.felix.gogo.command"/>
+        <setEntry value="org.apache.felix.gogo.runtime"/>
+        <setEntry value="org.apache.felix.gogo.shell"/>
+        <setEntry value="org.apache.felix.scr"/>
+        <setEntry value="org.eclipse.equinox.common"/>
+        <setEntry value="org.eclipse.equinox.console"/>
+        <setEntry value="org.eclipse.equinox.http.jetty"/>
+        <setEntry value="org.eclipse.equinox.http.servlet"/>
+        <setEntry value="org.eclipse.jetty.http"/>
+        <setEntry value="org.eclipse.jetty.io"/>
+        <setEntry value="org.eclipse.jetty.security"/>
+        <setEntry value="org.eclipse.jetty.server"/>
+        <setEntry value="org.eclipse.jetty.ee8.servlet"/>
+        <setEntry value="org.eclipse.jetty.util"/>
+        <setEntry value="org.eclipse.jetty.util.ajax"/>
+        <setEntry value="org.eclipse.osgi"/>
+        <setEntry value="org.eclipse.osgi.services"/>
+        <setEntry value="org.eclipse.osgi.util"/>
+        <setEntry value="org.osgi.service.cm"/>
+        <setEntry value="org.osgi.service.component"/>
+        <setEntry value="org.osgi.service.device"/>
+        <setEntry value="org.osgi.service.event"/>
+        <setEntry value="org.osgi.service.metatype"/>
+        <setEntry value="org.osgi.service.prefs"/>
+        <setEntry value="org.osgi.service.provisioning"/>
+        <setEntry value="org.osgi.service.upnp"/>
+        <setEntry value="org.osgi.service.useradmin"/>
+        <setEntry value="org.osgi.service.wireadmin"/>
+        <setEntry value="org.osgi.util.function"/>
+        <setEntry value="org.osgi.util.measurement"/>
+        <setEntry value="org.osgi.util.position"/>
+        <setEntry value="org.osgi.util.promise"/>
+        <setEntry value="org.osgi.util.xml"/>
+        <setEntry value="slf4j.api"/>
+        <setEntry value="slf4j.nop@default:default"/>
     </setAttribute>
     <setAttribute key="selected_workspace_bundles">
-        <setEntry value="org.eclipse.rap.rwt.jstest@default:default"/>
-        <setEntry value="org.eclipse.rap.rwt.osgi@default:default"/>
-        <setEntry value="org.eclipse.rap.rwt@default:default"/>
+        <setEntry value="org.eclipse.rap.rwt"/>
+        <setEntry value="org.eclipse.rap.rwt.jstest"/>
+        <setEntry value="org.eclipse.rap.rwt.osgi"/>
     </setAttribute>
     <booleanAttribute key="show_selected_only" value="true"/>
     <booleanAttribute key="tracing" value="false"/>

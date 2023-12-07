@@ -333,6 +333,7 @@ function setStateMask( event, originalEvent ) {
   event.stateMask |= originalEvent.isCtrlPressed() ? SWT.CTRL : 0;
   event.stateMask |= originalEvent.isAltPressed() ? SWT.ALT : 0;
   event.stateMask |= originalEvent.isMetaPressed() ? SWT.COMMAND : 0;
+  event.stateMask |= originalEvent.isAltGrPressed() ? SWT.CTRL | SWT.ALT : 0;
 }
 
 function postProcessVerifyEvent( event, wrappedEvent, originalEvent ) {

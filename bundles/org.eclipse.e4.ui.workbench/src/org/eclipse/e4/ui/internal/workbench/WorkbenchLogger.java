@@ -11,8 +11,8 @@
 package org.eclipse.e4.ui.internal.workbench;
 
 import java.util.ArrayList;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;

@@ -312,9 +312,7 @@ public abstract class QuickAccessContents {
 					item.setData(entry);
 					item.setText(0, entry.firstInCategory? entry.provider.getName() : "");
 					item.setText(1, entry.element.getLabel());
-					if (Util.isWpf()) {
-						item.setImage(1, entry.getImage(entry.element, resourceManager));
-					}
+					item.setImage(1, entry.getImage(entry.element, resourceManager));
 					index++;
 				}
 			}

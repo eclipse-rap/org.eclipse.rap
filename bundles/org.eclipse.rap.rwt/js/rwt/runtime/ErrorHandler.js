@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 EclipseSource and others.
+ * Copyright (c) 2011, 2023 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -91,6 +91,14 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
       if( hyperlink ) {
         this._styleHyperlinkAsButton( hyperlink );
         hyperlink.focus();
+      }
+      var retryHyperlink = document.getElementById( "rwt_retryActionHyperlink" );
+      if( retryHyperlink ) {
+        retryHyperlink.addEventListener( "click", function( event ) {
+          event.preventDefault();
+          rwt.remote.Connection.getInstance()._retry();
+          return false;
+        } );
       }
       var detailsHyperlink = document.getElementById( "rwt_detailsActionHyperlink" );
       if( detailsHyperlink ) {
@@ -343,7 +351,7 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
         case "connection error":
           result.title = messages.getMessage( "ConnectionError" );
           result.description = messages.getMessage( "ConnectionErrorDescription" );
-          result.action = "<a href=\"javascript:rwt.remote.Connection.getInstance()._retry();\">"
+          result.action = "<a id=\"rwt_retryActionHyperlink\" href=\"#\">"
                         + messages.getMessage( "Retry" ) + "</a>";
           break;
         case "client error":

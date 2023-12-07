@@ -1,9 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 Matthew Hall and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * Copyright (c) 2008, 2015 Matthew Hall and others.
+ *
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     Matthew Hall - initial API and implementation (bug 194734)
@@ -17,22 +20,24 @@ import org.eclipse.jface.databinding.viewers.IViewerObservableSet;
 import org.eclipse.jface.viewers.Viewer;
 
 /**
+ * @param <E>
+ *            the type of the elements in this set
+ *
  * @since 3.3
- * 
  */
-public class ViewerObservableSetDecorator extends DecoratingObservableSet
-		implements IViewerObservableSet {
+public class ViewerObservableSetDecorator<E> extends DecoratingObservableSet<E> implements IViewerObservableSet<E> {
 	private final Viewer viewer;
 
 	/**
 	 * @param decorated
 	 * @param viewer
 	 */
-	public ViewerObservableSetDecorator(IObservableSet decorated, Viewer viewer) {
+	public ViewerObservableSetDecorator(IObservableSet<E> decorated, Viewer viewer) {
 		super(decorated, true);
 		this.viewer = viewer;
 	}
 
+	@Override
 	public Viewer getViewer() {
 		return viewer;
 	}
