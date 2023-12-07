@@ -23,6 +23,7 @@ import static org.eclipse.rap.rwt.internal.textsize.MeasurementUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -45,6 +46,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.rap.rwt.internal.RWTProperties;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -75,6 +77,7 @@ public class MeasurementOperator_Test {
   @After
   public void tearDown() {
     Fixture.tearDown();
+    System.getProperties().remove( RWTProperties.TEXT_SIZE_STORE_SESSION_SCOPED );
   }
 
   @Test
@@ -203,6 +206,19 @@ public class MeasurementOperator_Test {
     operator.renderMeasurementItems();
 
     checkResponseContainsMeasurementCall();
+  }
+
+  @Test
+  public void testSeparateProbeStoresIfSessionScoped() {
+    ProbeStore pb1 = MeasurementUtil.getMeasurementOperator().getProbeStore();
+
+    System.setProperty( RWTProperties.TEXT_SIZE_STORE_SESSION_SCOPED , "true" );
+    Fixture.disposeOfServiceContext();
+    Fixture.createServiceContext();
+
+    ProbeStore pb2 = MeasurementUtil.getMeasurementOperator().getProbeStore();
+
+    assertNotEquals( pb1, pb2 );
   }
 
   private boolean probesContainFontData( FontData fontData ) {

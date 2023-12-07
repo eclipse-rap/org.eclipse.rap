@@ -26,12 +26,15 @@ import javax.servlet.http.HttpSessionBindingListener;
 
 import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.client.service.ClientInfo;
+import org.eclipse.rap.rwt.internal.RWTProperties;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.client.ClientMessages;
 import org.eclipse.rap.rwt.internal.client.ClientSelector;
 import org.eclipse.rap.rwt.internal.lifecycle.ContextUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.ISessionShutdownAdapter;
 import org.eclipse.rap.rwt.internal.remote.ConnectionImpl;
+import org.eclipse.rap.rwt.internal.textsize.ProbeStore;
+import org.eclipse.rap.rwt.internal.textsize.TextSizeStorage;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.internal.util.SerializableLock;
 import org.eclipse.rap.rwt.remote.Connection;
@@ -40,7 +43,6 @@ import org.eclipse.rap.rwt.service.ApplicationContextListener;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.UISessionEvent;
 import org.eclipse.rap.rwt.service.UISessionListener;
-
 
 public class UISessionImpl
   implements UISession, ApplicationContextListener, HttpSessionBindingListener
@@ -62,6 +64,9 @@ public class UISessionImpl
   private transient ISessionShutdownAdapter shutdownAdapter;
   private transient ApplicationContextImpl applicationContext;
 
+  private final TextSizeStorage textSizeStorage;
+  private final ProbeStore probeStore;
+
   public UISessionImpl( ApplicationContextImpl applicationContext, HttpSession httpSession ) {
     this( applicationContext, httpSession, null );
   }
@@ -80,6 +85,18 @@ public class UISessionImpl
     id = Integer.toHexString( hashCode() );
     bound = true;
     connection = new ConnectionImpl( this );
+
+    boolean textSizeStoreSessionScoped = RWTProperties.isTextSizeStoreSessionScoped();
+    textSizeStorage = textSizeStoreSessionScoped ? new TextSizeStorage() : null;
+    probeStore = textSizeStoreSessionScoped ? new ProbeStore( textSizeStorage ) : null;
+  }
+
+  public TextSizeStorage getTextSizeStorage() {
+    return textSizeStorage;
+  }
+
+  public ProbeStore getProbeStore() {
+    return probeStore;
   }
 
   public static UISessionImpl getInstanceFromSession( HttpSession httpSession, String connectionId )
