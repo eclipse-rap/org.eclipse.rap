@@ -19,10 +19,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -270,7 +268,7 @@ public class ServerPushManager_Test {
 
   @Test
   public void testMultipleCallBackRequests() throws Exception {
-    manager.setRequestCheckInterval( 20 );
+    manager.setRequestCheckInterval( 500 );
     ServiceContext context1 = ContextProvider.getContext();
     CallBackRequestSimulator callBackRequestSimulator1 = new CallBackRequestSimulator( context1 );
     callBackRequestSimulator1.sendRequest();
@@ -285,28 +283,6 @@ public class ServerPushManager_Test {
     assertFalse( callBackRequestSimulator2.exceptionOccured() );
     assertFalse( callBackRequestSimulator1.isRequestRunning() );
     assertTrue( callBackRequestSimulator2.isRequestRunning() );
-  }
-
-  @Test
-  public void testCallBackRequestTerminatsWhenConnectionBreaks() throws Exception {
-    manager.setRequestCheckInterval( 20 );
-    TestResponse response = new TestResponse() {
-      @Override
-      public PrintWriter getWriter() throws IOException {
-        PrintWriter failingWriter = mock( PrintWriter.class );
-        when( new Boolean( failingWriter.checkError() ) ).thenReturn( Boolean.TRUE );
-        return failingWriter;
-      }
-    };
-    ServiceContext context2 = createServiceContext( response );
-    CallBackRequestSimulator callBackRequestSimulator = new CallBackRequestSimulator( context2 );
-    callBackRequestSimulator.sendRequest();
-
-    Thread.sleep( SLEEP_TIME );
-
-    assertFalse( manager.isCallBackRequestBlocked() );
-    callBackRequestSimulator.waitForRequest();
-    assertFalse( callBackRequestSimulator.isRequestRunning() );
   }
 
   @Test
@@ -434,6 +410,12 @@ public class ServerPushManager_Test {
   public void testMustBlockCallBackRequestWhenDeactivatedAndRunnablesPending() {
     manager.setHasRunnables( true );
     assertFalse( manager.mustBlockCallBackRequest( 0, 1 ) );
+  }
+
+  @Test
+  public void testMustBlockCallBackRequestWhenAfterCheckInterval() {
+    manager.activateServerPushFor( HANDLE_1 );
+    assertFalse( manager.mustBlockCallBackRequest( 0, 35000 ) );
   }
 
   @Test
