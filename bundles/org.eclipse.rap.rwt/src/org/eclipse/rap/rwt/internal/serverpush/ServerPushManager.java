@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2023 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2024 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,9 +10,6 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.serverpush;
-
-import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -29,7 +26,7 @@ import org.eclipse.swt.internal.SerializableCompatibility;
 
 public final class ServerPushManager implements SerializableCompatibility {
 
-  private static final int DEFAULT_REQUEST_CHECK_INTERVAL = 30000;
+  private static final int DEFAULT_REQUEST_CHECK_INTERVAL = 60000;
   private static final int DEFAULT_REQUEST_RELEASE_INTERVAL = 0;
   private static final String FORCE_PUSH = ServerPushManager.class.getName() + "#forcePush";
 
@@ -156,13 +153,12 @@ public final class ServerPushManager implements SerializableCompatibility {
     }
   }
 
+  @SuppressWarnings( "unused" )
   private boolean canReleaseBlockedRequest( HttpServletResponse response, long requestStartTime ) {
     boolean result = false;
     if( !mustBlockCallBackRequest( requestStartTime ) ) {
       result = true;
     } else if( isSessionExpired( requestStartTime ) ) {
-      result = true;
-    } else if( !isConnectionAlive( response ) ) {
       result = true;
     } else if( !serverPushRequestTracker.isActive( Thread.currentThread() ) ) {
       result = true;
@@ -176,7 +172,8 @@ public final class ServerPushManager implements SerializableCompatibility {
 
   boolean mustBlockCallBackRequest( long requestStartTime, long currentTime ) {
     return isServerPushActive()
-        && ( !hasRunnables || ( currentTime - requestStartTime < requestReleaseInterval ) ) ;
+        && ( !hasRunnables || ( currentTime - requestStartTime < requestReleaseInterval ) )
+        && ( currentTime - requestStartTime < requestCheckInterval );
   }
 
   public boolean isServerPushActive() {
@@ -210,16 +207,6 @@ public final class ServerPushManager implements SerializableCompatibility {
       return currentTime > requestStartTime + maxInactiveInterval * 1000;
     }
     return false;
-  }
-
-  private static boolean isConnectionAlive( HttpServletResponse response ) {
-    try {
-      PrintWriter writer = response.getWriter();
-      writer.write( " " );
-      return !writer.checkError();
-    } catch( @SuppressWarnings( "unused" ) IOException ioe ) {
-      return false;
-    }
   }
 
   private static boolean forceServerPushForPendingRunnables() {
