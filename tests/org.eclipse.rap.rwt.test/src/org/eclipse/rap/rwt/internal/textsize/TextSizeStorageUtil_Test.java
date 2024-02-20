@@ -45,6 +45,7 @@ public class TextSizeStorageUtil_Test {
   @After
   public void tearDown() {
     Fixture.tearDown();
+    System.clearProperty( TEXT_SIZE_STORE_SESSION_SCOPED );
   }
 
   @Test

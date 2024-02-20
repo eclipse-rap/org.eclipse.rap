@@ -415,7 +415,7 @@ public class ServerPushManager_Test {
   @Test
   public void testMustBlockCallBackRequestWhenAfterCheckInterval() {
     manager.activateServerPushFor( HANDLE_1 );
-    assertFalse( manager.mustBlockCallBackRequest( 0, 35000 ) );
+    assertFalse( manager.mustBlockCallBackRequest( 0, 65000 ) );
   }
 
   @Test
