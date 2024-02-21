@@ -5,7 +5,7 @@
 
 # How To Report a Vulnerability
 
-If you think you have found a vulnerability in Eclipse EE4J you can report it using one of the following ways:
+If you think you have found a vulnerability in Eclipse RAP you can report it using one of the following ways:
 
 * Contact the [Eclipse Foundation Security Team](mailto:security@eclipse-foundation.org)
 * Create a [confidential issue](https://gitlab.eclipse.org/security/vulnerability-reports/-/issues/new?issuable_template=new_vulnerability)
@@ -14,13 +14,7 @@ You can find more information about reporting and disclosure at the [Eclipse Fou
 
 # Supported Versions
 
-<!--
-    Which releases of the project's software are actively maintaned and receive security updates?
--->
-Supported versions are:
-* RAP 3.24
-* RAP 3.25
-* RAP 3.26 M2
+The project team is small, and as a result, it can only provide free support for the latest released version. Since Eclipse RAP versions are generally backward compatible, the project team advises users to always use the latest release. Commercial support is available for older versions.
 
 # Security Policy
 
