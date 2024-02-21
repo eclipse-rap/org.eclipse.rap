@@ -125,6 +125,7 @@ public class TimerExecScheduler_Test {
   public void testSerializationIsThreadSafe() throws Exception {
     scheduler = new TimerExecScheduler( display );
     Runnable runnable = new Runnable() {
+      @Override
       public void run() {
         try {
           scheduler.schedule( 1, new NoOpRunnable() );
@@ -141,6 +142,19 @@ public class TimerExecScheduler_Test {
     joinThreads( threads );
 
     assertEquals( 0, exceptions.size() );
+  }
+
+  @Test
+  public void testDispose_cancelsTimerAndTask() {
+    Runnable runnable = mock( Runnable.class );
+    scheduler.schedule( 23, runnable );
+
+    scheduler.dispose();
+
+    ArgumentCaptor<TimerExecTask> taskCaptor = ArgumentCaptor.forClass( TimerExecTask.class );
+    verify( timer ).schedule( taskCaptor.capture(), eq( 23L ) );
+    verify( timer ).cancel();
+    verify( taskCaptor.getValue() ).cancel();
   }
 
 }

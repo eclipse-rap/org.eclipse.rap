@@ -15,6 +15,7 @@ import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectInputValidation;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
@@ -58,6 +59,8 @@ class TimerExecScheduler implements SerializableCompatibility {
 
   void dispose() {
     synchronized( display.getDeviceLock() ) {
+      Collection<TimerExecTask> tasksToCancel = new ArrayList<>( tasks );
+      tasksToCancel.forEach( task -> task.cancel() );
       if( timer != null ) {
         timer.cancel();
       }
