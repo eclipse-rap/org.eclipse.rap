@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 Frank Appel and others.
+ * Copyright (c) 2011, 2024 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.textsize;
 
+import static org.eclipse.rap.rwt.internal.RWTProperties.TEXT_SIZE_STORE_SESSION_SCOPED;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
@@ -49,7 +50,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-
 public class MeasurementOperator_Test {
 
   private static final FontData FONT_DATA_1 = new FontData( "arial", 12, SWT.NONE );
@@ -66,6 +66,7 @@ public class MeasurementOperator_Test {
 
   @Before
   public void setUp() {
+    System.clearProperty( TEXT_SIZE_STORE_SESSION_SCOPED );
     Fixture.setUp();
     display = new Display();
     operator = MeasurementUtil.getMeasurementOperator();
