@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 EclipseSource and others.
+ * Copyright (c) 2011, 2024 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -94,7 +94,7 @@ public class FileUploadServiceHandler_Test {
     serviceHandler.service( RWT.getRequest(), RWT.getResponse() );
 
     assertEquals( 0, getResponseErrorStatus() );
-    String expected = "progress(4096/12134).progress(8174/12134).progress(12134/12134).finished.";
+    String expected = "progress(8192/12134).progress(12134/12134).finished.";
     assertEquals( expected, testListener.getLog() );
     FileUploadEvent uploadedItem = testListener.getLastEvent();
     assertEquals( content, new String( testReceiver.getContent() ) );

@@ -19,7 +19,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.fileupload2.javax.JavaxServletFileUpload;
 import org.eclipse.rap.fileupload.FileUploadHandler;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.service.ServiceHandler;
@@ -47,7 +47,7 @@ public final class FileUploadServiceHandler implements ServiceHandler {
       } else if( !"POST".equals( request.getMethod().toUpperCase() ) ) {
         String message = "Only POST requests allowed";
         response.sendError( HttpServletResponse.SC_METHOD_NOT_ALLOWED, message );
-      } else if( !ServletFileUpload.isMultipartContent( request ) ) {
+      } else if( !JavaxServletFileUpload.isMultipartContent( request ) ) {
         String message = "Content must be in multipart type";
         response.sendError( HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, message );
       } else {
