@@ -22,10 +22,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItem;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.fileupload2.core.*;
+import org.apache.commons.fileupload2.javax.JavaxServletFileUpload;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.http.runtime.dto.ServletDTO;
@@ -52,15 +50,12 @@ public class MultipartSupportImpl implements MultipartSupport {
 
 		baseStorage.mkdirs();
 
-		DiskFileItemFactory factory = new DiskFileItemFactory();
+		DiskFileItemFactory factory = DiskFileItemFactory.builder()
+			.setPath(baseStorage.toPath())
+			.setBufferSize(servletDTO.multipartFileSizeThreshold)
+			.get();
 
-		factory.setRepository(baseStorage);
-
-		if (servletDTO.multipartFileSizeThreshold > 0) {
-			factory.setSizeThreshold(servletDTO.multipartFileSizeThreshold);
-		}
-
-		upload = new ServletFileUpload(factory);
+		upload = new JavaxServletFileUpload(factory);
 
 		if (servletDTO.multipartMaxFileSize > -1L) {
 			upload.setFileSizeMax(servletDTO.multipartMaxFileSize);
@@ -90,7 +85,7 @@ public class MultipartSupportImpl implements MultipartSupport {
 			throw new IllegalStateException("No multipart config on " + servletDTO); //$NON-NLS-1$
 		}
 
-		if (!ServletFileUpload.isMultipartContent(request)) {
+		if (!JavaxServletFileUpload.isMultipartContent(request)) {
 			throw new ServletException("Not a multipart request!"); //$NON-NLS-1$
 		}
 
@@ -110,6 +105,6 @@ public class MultipartSupportImpl implements MultipartSupport {
 	}
 
 	private final ServletDTO servletDTO;
-	private final ServletFileUpload upload;
+	private final JavaxServletFileUpload upload;
 
 }

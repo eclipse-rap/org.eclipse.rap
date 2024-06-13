@@ -13,11 +13,13 @@
  *******************************************************************************/
 package org.eclipse.rap.http.servlet.internal.multipart;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Paths;
 import java.util.*;
 import javax.servlet.http.Part;
-import org.apache.commons.fileupload.FileItemHeaders;
-import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.commons.fileupload2.core.DiskFileItem;
+import org.apache.commons.fileupload2.core.FileItemHeaders;
 
 public class MultipartSupportPart implements Part {
 
@@ -54,14 +56,14 @@ public class MultipartSupportPart implements Part {
 	@Override
 	public void write(String fileName) throws IOException {
 		try {
-			item.write(new File(item.getStoreLocation(), fileName));
+			item.write(Paths.get(item.getPath().toString(), fileName));
 		} catch (Exception e) {
 			throw new IOException(e);
 		}
 	}
 
 	@Override
-	public void delete() {
+	public void delete() throws IOException {
 		item.delete();
 	}
 
