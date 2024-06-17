@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %bundleName
+Bundle-Vendor: %providerName
+Bundle-SymbolicName: org.eclipse.rap.servletbridge;singleton:=true
+Bundle-Version: 1.7.100.qualifier
+Bundle-Localization: plugin
+Import-Package: javax.servlet;version="2.3.0",
+ javax.servlet.http;version="2.3.0"
+Export-Package: org.eclipse.rap.servletbridge;version="1.1.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-17
+Automatic-Module-Name: org.eclipse.rap.servletbridge
