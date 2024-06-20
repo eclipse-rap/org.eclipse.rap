@@ -2,14 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests for RWT-OSGi Integration Bundle
 Bundle-SymbolicName: org.eclipse.rap.rwt.osgi.test
-Bundle-Version: 3.29.0.qualifier
+Bundle-Version: 4.0.0.qualifier
 Bundle-Vendor: Eclipse.org - RAP
-Fragment-Host: org.eclipse.rap.rwt.osgi;bundle-version="3.29.0"
+Fragment-Host: org.eclipse.rap.rwt.osgi;bundle-version="4.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.junit;bundle-version="4.8.2",
  net.bytebuddy.byte-buddy,
  net.bytebuddy.byte-buddy-agent
-Import-Package: org.eclipse.rap.rwt.testfixture.internal;version="[3.29.0,4.0.0)",
+Import-Package: org.eclipse.rap.rwt.testfixture.internal;version="[4.0.0,5.0.0)",
  org.mockito;version="[5.0.0,6.0.0)",
  org.mockito.invocation;version="[5.0.0,6.0.0)",
  org.mockito.stubbing;version="[5.0.0,6.0.0)",
