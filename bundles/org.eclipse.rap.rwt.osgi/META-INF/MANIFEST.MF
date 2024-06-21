@@ -5,7 +5,7 @@ Bundle-Vendor: %Bundle-Vendor
 Bundle-Localization: plugin
 Bundle-SymbolicName: org.eclipse.rap.rwt.osgi
 Bundle-Version: 4.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Import-Package: javax.servlet;version="4.0.0",
  javax.servlet.descriptor;version="4.0.0";resolution:=optional,
  javax.servlet.http;version="4.0.0",
