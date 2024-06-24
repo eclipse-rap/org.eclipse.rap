@@ -40,6 +40,11 @@
       <layout>p2</layout>
       <url>${jetty-repo.url}</url>
     </repository>
+    <repository>
+      <id>rap-apache-fileupload-repo</id>
+      <layout>p2</layout>
+      <url>${rap-apache-fileupload-repo.url}</url>
+    </repository>
   </repositories>
 
   <build>
