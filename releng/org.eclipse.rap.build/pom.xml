@@ -31,6 +31,7 @@
     <orbit-repo.url>https://download.eclipse.org/tools/orbit/simrel/orbit-aggregation/2024-06/</orbit-repo.url>
     <platform-repo.url>https://download.eclipse.org/eclipse/updates/4.32/R-4.32-202406010610/</platform-repo.url>
     <rap-extra-repo.url>https://download.eclipse.org/rt/rap/base-platforms/3.14/extra-dependencies/</rap-extra-repo.url>
+    <rap-apache-fileupload-repo.url>https://download.eclipse.org/rt/rap/base-platforms/3.14/commons-fileupload2/</rap-apache-fileupload-repo.url>
     <license-repo.url>https://download.eclipse.org/cbi/updates/license/1.0.1.v20140414-1359/</license-repo.url>
     <!-- The build type, N for nighty builds, S for stable builds. S-builds will be signed. -->
     <buildType>N</buildType>
@@ -61,6 +62,11 @@
       <id>license-repo</id>
       <layout>p2</layout>
       <url>${license-repo.url}</url>
+    </repository>
+    <repository>
+      <id>rap-apache-fileupload-repo</id>
+      <layout>p2</layout>
+      <url>${rap-apache-fileupload-repo.url}</url>
     </repository>
   </repositories>
 
