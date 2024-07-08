@@ -38,6 +38,10 @@
     <module>bundles/org.eclipse.rap.ui.views</module>
     <module>bundles/org.eclipse.rap.ui.workbench</module>
     <module>bundles/org.eclipse.rap.e4</module>
+    <module>bundles/org.eclipse.rap.http.jetty</module>
+    <module>bundles/org.eclipse.rap.http.servlet</module>
+    <module>bundles/org.eclipse.rap.http.servletbridge</module>
+    <module>bundles/org.eclipse.rap.servletbridge</module>
     <module>bundles/org.eclipse.e4.core.commands</module>
     <module>bundles/org.eclipse.e4.ui.bindings</module>
     <module>bundles/org.eclipse.e4.ui.workbench.addons.swt</module>
