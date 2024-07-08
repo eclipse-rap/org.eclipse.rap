@@ -10,7 +10,8 @@ Import-Package: javax.servlet;version="3.1.0",
  javax.servlet.http;version="3.1.0",
  org.apache.commons.fileupload2.core;version="[2.0.0, 3.0.0)",
  org.apache.commons.fileupload2.javax;version="[2.0.0, 3.0.0)",
- org.apache.commons.io;version="[2.11.0,3.0.0)"
+ org.apache.commons.io;version="[2.11.0,3.0.0)",
+ org.apache.commons.io.build;version="[2.11.0,3.0.0)"
 Export-Package: org.eclipse.rap.fileupload;version="4.0.0",
  org.eclipse.rap.fileupload.internal;version="4.0.0";x-friends:="org.eclipse.rap.fileupload.test"
 Bundle-Localization: plugin
