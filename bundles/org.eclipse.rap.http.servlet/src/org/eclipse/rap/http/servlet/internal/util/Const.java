@@ -52,5 +52,16 @@ public class Const {
 	public static final String EQUINOX_LEGACY_CONTEXT_HELPER = "equinox.legacy.context.helper"; //$NON-NLS-1$
 	public static final String EQUINOX_LEGACY_HTTP_CONTEXT_INITIATING_ID = "equinox.legacy.http.context.initiating.id"; //$NON-NLS-1$
 	public static final String EQUINOX_HTTP_WHITEBOARD_CONTEXT_HELPER_DEFAULT = "equinox.http.whiteboard.context.helper.default"; //$NON-NLS-1$
-
+	/**
+	 * If a servlet filter, error page or listener wants to be registered with
+	 * the Http Context(s) managed by the Http Service, they can select the
+	 * contexts having this property.
+	 * <p>
+	 * Servlets or resources registered using this property are treated as an
+	 * invalid registration.
+	 * 
+	 * @see #HTTP_SERVICE_CONTEXT_FILTER
+	 * @since 1.1
+	 */
+	public static final String HTTP_SERVICE_CONTEXT_PROPERTY = "osgi.http.whiteboard.context.httpservice"; //$NON-NLS-1$
 }

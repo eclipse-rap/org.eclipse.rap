@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;

@@ -16,16 +16,14 @@
 
 package org.eclipse.rap.http.jetty.internal;
 
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
-import org.eclipse.jetty.ee8.nested.SessionHandler;
-import org.eclipse.jetty.ee8.servlet.ServletContextHandler;
-import org.eclipse.jetty.ee8.servlet.ServletHolder;
+import org.eclipse.jetty.ee10.servlet.*;
 import org.eclipse.jetty.http.UriCompliance;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.session.DefaultSessionIdManager;
@@ -42,7 +40,7 @@ import org.osgi.service.cm.ManagedServiceFactory;
 public class HttpServerManager implements ManagedServiceFactory {
 
 	private static final int DEFAULT_IDLE_TIMEOUT = 30000;
-	private static final String CONTEXT_TEMPDIR = "javax.servlet.context.tempdir"; //$NON-NLS-1$
+	private static final String CONTEXT_TEMPDIR = "jakarta.servlet.context.tempdir"; //$NON-NLS-1$
 	private static final String DIR_PREFIX = "pid_"; //$NON-NLS-1$
 	private static final String INTERNAL_CONTEXT_CLASSLOADER = "org.eclipse.rap.http.jetty.internal.ContextClassLoader"; //$NON-NLS-1$
 

@@ -21,9 +21,6 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
@@ -44,6 +41,9 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Widget;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 
 /**
@@ -633,6 +633,7 @@ public final class RWT {
    * </p>
    *
    * @return the currently processed request
+   * @since 4.0
    */
   public static HttpServletRequest getRequest() {
     checkContext();
@@ -650,6 +651,7 @@ public final class RWT {
    * </p>
    *
    * @return the response object that will be sent to the client
+   * @since 4.0
    */
   public static HttpServletResponse getResponse() {
     checkContext();

@@ -14,8 +14,7 @@
 
 package org.eclipse.rap.http.servlet.internal.customizer;
 
-import static org.osgi.service.http.whiteboard.HttpWhiteboardConstants.HTTP_SERVICE_CONTEXT_PROPERTY;
-import static org.osgi.service.http.whiteboard.HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_SELECT;
+import static org.osgi.service.servlet.whiteboard.HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_SELECT;
 
 import java.util.concurrent.atomic.AtomicReference;
 import org.eclipse.rap.http.servlet.internal.HttpServiceRuntimeImpl;
@@ -27,7 +26,7 @@ import org.eclipse.rap.http.servlet.internal.util.StringPlus;
 import org.osgi.framework.*;
 import org.osgi.service.http.runtime.dto.DTOConstants;
 import org.osgi.service.http.runtime.dto.FailedResourceDTO;
-import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
+import org.osgi.service.servlet.whiteboard.HttpWhiteboardConstants;
 
 /**
  * @author Raymond Augé
@@ -67,7 +66,7 @@ public class ContextResourceTrackerCustomizer
 																									// service
 					(serviceReference.getProperty(HTTP_WHITEBOARD_CONTEXT_SELECT) != null)
 					&& (((String) serviceReference.getProperty(HTTP_WHITEBOARD_CONTEXT_SELECT)))
-							.contains(HTTP_SERVICE_CONTEXT_PROPERTY.concat(Const.EQUAL))) {
+							.contains(Const.HTTP_SERVICE_CONTEXT_PROPERTY.concat(Const.EQUAL))) {
 
 				// don't allow whiteboard Servlets that specifically attempt to bind to a legacy
 				// context

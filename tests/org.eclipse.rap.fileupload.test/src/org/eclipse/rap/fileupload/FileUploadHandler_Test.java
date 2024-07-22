@@ -21,8 +21,8 @@ import static org.junit.Assert.assertThat;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.eclipse.rap.fileupload.internal.FileUploadHandlerStore;
 import org.eclipse.rap.fileupload.internal.FileUploadServiceHandler;

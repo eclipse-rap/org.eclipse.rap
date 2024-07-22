@@ -14,7 +14,7 @@
 
 package org.eclipse.rap.http.servlet.internal.error;
 
-import javax.servlet.Filter;
+import jakarta.servlet.Filter;
 import org.osgi.service.http.runtime.dto.DTOConstants;
 
 /**

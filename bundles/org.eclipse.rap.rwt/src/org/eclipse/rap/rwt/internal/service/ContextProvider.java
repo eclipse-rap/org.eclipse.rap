@@ -14,8 +14,8 @@ package org.eclipse.rap.rwt.internal.service;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;

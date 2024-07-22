@@ -15,13 +15,13 @@
 
 package org.eclipse.rap.http.servlet.internal.registration;
 
-import javax.servlet.Servlet;
+import jakarta.servlet.Servlet;
 import org.eclipse.rap.http.servlet.internal.context.ContextController;
 import org.eclipse.rap.http.servlet.internal.context.ServiceHolder;
 import org.eclipse.rap.http.servlet.internal.dto.ExtendedErrorPageDTO;
 import org.eclipse.rap.http.servlet.internal.servlet.Match;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.http.context.ServletContextHelper;
+import org.osgi.service.servlet.context.ServletContextHelper;
 
 /**
  * @author Raymond Augé

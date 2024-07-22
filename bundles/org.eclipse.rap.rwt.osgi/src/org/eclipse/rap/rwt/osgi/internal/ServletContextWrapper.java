@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 Frank Appel and others.
+ * Copyright (c) 2011, 2024 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,11 +16,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
-import javax.servlet.*;
-import javax.servlet.ServletRegistration.Dynamic;
-import javax.servlet.descriptor.JspConfigDescriptor;
-
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
+
+import jakarta.servlet.*;
+import jakarta.servlet.ServletRegistration.Dynamic;
+import jakarta.servlet.descriptor.JspConfigDescriptor;
 
 
 class ServletContextWrapper implements ServletContext {
@@ -84,32 +84,8 @@ class ServletContextWrapper implements ServletContext {
   }
 
   @Override
-  @Deprecated
-  public Servlet getServlet( String name ) throws ServletException {
-    return null;
-  }
-
-  @Override
-  @Deprecated
-  public Enumeration<Servlet> getServlets() {
-    return Collections.emptyEnumeration();
-  }
-
-  @Override
-  @Deprecated
-  public Enumeration<String> getServletNames() {
-    return Collections.emptyEnumeration();
-  }
-
-  @Override
   public void log( String message ) {
     servletContext.log( message );
-  }
-
-  @Override
-  @Deprecated
-  public void log( Exception exception, String message ) {
-    servletContext.log( message, exception );
   }
 
   @Override
@@ -260,17 +236,17 @@ class ServletContextWrapper implements ServletContext {
   }
 
   @Override
-  public javax.servlet.FilterRegistration.Dynamic addFilter( String filterName, String className ) {
+  public jakarta.servlet.FilterRegistration.Dynamic addFilter( String filterName, String className ) {
     return null;
   }
 
   @Override
-  public javax.servlet.FilterRegistration.Dynamic addFilter( String filterName, Filter filter ) {
+  public jakarta.servlet.FilterRegistration.Dynamic addFilter( String filterName, Filter filter ) {
     return null;
   }
 
   @Override
-  public javax.servlet.FilterRegistration.Dynamic addFilter( String filterName,
+  public jakarta.servlet.FilterRegistration.Dynamic addFilter( String filterName,
                                                              Class<? extends Filter> filterClass )
   {
     return null;

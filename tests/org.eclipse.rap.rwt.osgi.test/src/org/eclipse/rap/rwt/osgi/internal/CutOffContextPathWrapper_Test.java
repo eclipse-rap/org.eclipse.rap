@@ -18,8 +18,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
 
 import org.eclipse.rap.rwt.osgi.internal.CutOffContextPathWrapper.RequestWrapper;
 import org.junit.Before;

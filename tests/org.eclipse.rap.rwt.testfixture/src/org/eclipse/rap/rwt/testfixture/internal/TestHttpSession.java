@@ -16,11 +16,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpSessionBindingEvent;
-import javax.servlet.http.HttpSessionBindingListener;
-import javax.servlet.http.HttpSessionContext;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSessionBindingEvent;
+import jakarta.servlet.http.HttpSessionBindingListener;
 
 
 /**
@@ -46,6 +45,7 @@ public class TestHttpSession implements HttpSession {
     id = String.valueOf( hashCode() );
   }
 
+  @Override
   public long getCreationTime() {
     return 0;
   }
@@ -54,6 +54,7 @@ public class TestHttpSession implements HttpSession {
     this.id = id;
   }
 
+  @Override
   public String getId() {
     if( isInvalidated ) {
       String text = "Unable to obtain session id. Session already invalidated.";
@@ -62,10 +63,12 @@ public class TestHttpSession implements HttpSession {
     return id;
   }
 
+  @Override
   public long getLastAccessedTime() {
     return 0;
   }
 
+  @Override
   public ServletContext getServletContext() {
     return servletContext ;
   }
@@ -74,21 +77,17 @@ public class TestHttpSession implements HttpSession {
     this.servletContext = servletContext;
   }
 
+  @Override
   public void setMaxInactiveInterval( int maxInactiveInterval ) {
     this.maxInactiveInterval = maxInactiveInterval;
   }
 
+  @Override
   public int getMaxInactiveInterval() {
     return maxInactiveInterval;
   }
 
-  /**
-   * @deprecated
-   */
-  public HttpSessionContext getSessionContext() {
-    return null;
-  }
-
+  @Override
   public Object getAttribute( String arg0 ) {
     return attributes.get( arg0 );
   }
@@ -97,12 +96,15 @@ public class TestHttpSession implements HttpSession {
     return null;
   }
 
+  @Override
   public Enumeration<String> getAttributeNames() {
     final Iterator iterator = attributes.keySet().iterator();
     return new Enumeration<String>() {
+      @Override
       public boolean hasMoreElements() {
         return iterator.hasNext();
       }
+      @Override
       public String nextElement() {
         return ( String )iterator.next();
       }
@@ -113,6 +115,7 @@ public class TestHttpSession implements HttpSession {
     return null;
   }
 
+  @Override
   public void setAttribute( String arg0, Object arg1 ) {
     if( arg1 instanceof HttpSessionBindingListener ) {
       HttpSessionBindingListener listener = ( HttpSessionBindingListener )arg1;
@@ -124,6 +127,7 @@ public class TestHttpSession implements HttpSession {
   public void putValue( String arg0, Object arg1 ) {
   }
 
+  @Override
   public void removeAttribute( String arg0 ) {
     Object removed = attributes.remove( arg0 );
     if( removed instanceof HttpSessionBindingListener ) {
@@ -136,6 +140,7 @@ public class TestHttpSession implements HttpSession {
   public void removeValue( String arg0 ) {
   }
 
+  @Override
   public void invalidate() {
     Object[] keys = attributes.keySet().toArray();
     for( int i = 0; i < keys.length; i++ ) {
@@ -154,6 +159,7 @@ public class TestHttpSession implements HttpSession {
     return isInvalidated;
   }
 
+  @Override
   public boolean isNew() {
     return newSession;
   }

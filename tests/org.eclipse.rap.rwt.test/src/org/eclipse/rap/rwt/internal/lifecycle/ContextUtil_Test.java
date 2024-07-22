@@ -15,8 +15,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;

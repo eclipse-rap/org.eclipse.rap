@@ -16,8 +16,8 @@
 package org.eclipse.rap.http.servlet.internal.servlet;
 
 import java.util.*;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletContext;
 
 public class ServletConfigImpl implements ServletConfig {
 

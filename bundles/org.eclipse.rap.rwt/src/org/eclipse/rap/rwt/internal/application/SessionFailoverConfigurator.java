@@ -13,12 +13,12 @@ package org.eclipse.rap.rwt.internal.application;
 import java.util.Collection;
 import java.util.EnumSet;
 
-import javax.servlet.DispatcherType;
-import javax.servlet.Filter;
-import javax.servlet.FilterRegistration;
-import javax.servlet.FilterRegistration.Dynamic;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletRegistration;
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterRegistration;
+import jakarta.servlet.FilterRegistration.Dynamic;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletRegistration;
 
 import org.eclipse.rap.rwt.engine.RWTServlet;
 import org.eclipse.rap.rwt.internal.engine.RWTClusterSupport;

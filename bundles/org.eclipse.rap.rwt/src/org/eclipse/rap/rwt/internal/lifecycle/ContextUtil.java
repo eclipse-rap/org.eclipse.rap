@@ -14,8 +14,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;

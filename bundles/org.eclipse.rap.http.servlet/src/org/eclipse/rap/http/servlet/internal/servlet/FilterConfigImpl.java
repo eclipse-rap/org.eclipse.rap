@@ -15,8 +15,8 @@
 package org.eclipse.rap.http.servlet.internal.servlet;
 
 import java.util.*;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletContext;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletContext;
 
 public class FilterConfigImpl implements FilterConfig {
 

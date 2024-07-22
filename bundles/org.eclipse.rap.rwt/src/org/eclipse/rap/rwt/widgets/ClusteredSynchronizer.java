@@ -14,9 +14,9 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.service.ServiceHandler;

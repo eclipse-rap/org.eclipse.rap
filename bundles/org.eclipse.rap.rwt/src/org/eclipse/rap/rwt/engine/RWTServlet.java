@@ -12,21 +12,21 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.engine;
 
-import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
-import static javax.servlet.http.HttpServletResponse.SC_SERVICE_UNAVAILABLE;
+import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
+import static jakarta.servlet.http.HttpServletResponse.SC_SERVICE_UNAVAILABLE;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.CONNECTION_ID;
 import static org.eclipse.rap.rwt.internal.util.HTTP.CONTENT_TYPE_JSON;
 import static org.eclipse.rap.rwt.internal.util.HTTP.METHOD_POST;
 
 import java.io.IOException;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;

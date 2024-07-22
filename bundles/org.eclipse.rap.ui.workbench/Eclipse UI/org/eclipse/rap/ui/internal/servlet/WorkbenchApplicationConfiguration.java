@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2022 EclipseSource and others.
+ * Copyright (c) 2006, 2024 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,6 +42,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.DefaultEntryPointFactory;
 import org.eclipse.rap.rwt.service.ResourceLoader;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.SettingStoreFactory;
+import org.eclipse.rap.service.http.HttpService;
 import org.eclipse.rap.ui.internal.application.EntryPointApplicationWrapper;
 import org.eclipse.rap.ui.internal.branding.AbstractBranding;
 import org.eclipse.rap.ui.internal.branding.BrandingExtension;
@@ -56,8 +57,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.http.HttpService;
-
 
 public class WorkbenchApplicationConfiguration implements ApplicationConfiguration {
 

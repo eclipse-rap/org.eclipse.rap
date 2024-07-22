@@ -13,20 +13,20 @@ package org.eclipse.rap.fileupload.internal;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.fileupload2.core.FileItemInput;
 import org.apache.commons.fileupload2.core.FileItemInputIterator;
 import org.apache.commons.fileupload2.core.FileUploadByteCountLimitException;
 import org.apache.commons.fileupload2.core.ProgressListener;
-import org.apache.commons.fileupload2.javax.JavaxServletFileUpload;
+import org.apache.commons.fileupload2.jakarta.servlet6.JakartaServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
 import org.eclipse.rap.fileupload.FileDetails;
 import org.eclipse.rap.fileupload.FileUploadHandler;
 import org.eclipse.rap.fileupload.FileUploadReceiver;
 import org.eclipse.rap.fileupload.UploadSizeLimitExceededException;
 import org.eclipse.rap.fileupload.UploadTimeLimitExceededException;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 
 final class FileUploadProcessor {
@@ -49,7 +49,7 @@ final class FileUploadProcessor {
       deadline = System.currentTimeMillis() + handler.getUploadTimeLimit();
     }
     try {
-      JavaxServletFileUpload upload = createUpload();
+      JakartaServletFileUpload upload = createUpload();
       FileItemInputIterator iter = upload.getItemIterator( request );
       while( iter.hasNext() ) {
         FileItemInput item = iter.next();
@@ -85,8 +85,8 @@ final class FileUploadProcessor {
     }
   }
 
-  private JavaxServletFileUpload createUpload() {
-    JavaxServletFileUpload upload = new JavaxServletFileUpload();
+  private JakartaServletFileUpload createUpload() {
+    JakartaServletFileUpload upload = new JakartaServletFileUpload();
     upload.setFileSizeMax( handler.getMaxFileSize() );
     upload.setProgressListener( createProgressListener() );
     return upload;

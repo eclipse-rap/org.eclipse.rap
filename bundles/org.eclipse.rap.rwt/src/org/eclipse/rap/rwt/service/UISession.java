@@ -14,11 +14,11 @@ package org.eclipse.rap.rwt.service;
 import java.util.Enumeration;
 import java.util.Locale;
 
-import javax.servlet.http.HttpSession;
-
 import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.client.service.ClientInfo;
 import org.eclipse.rap.rwt.remote.Connection;
+
+import jakarta.servlet.http.HttpSession;
 
 
 /**
@@ -132,6 +132,7 @@ public interface UISession {
    * Returns the underlying HttpSession instance.
    *
    * @return the HttpSession instance
+   * @since 4.0
    */
   HttpSession getHttpSession();
 

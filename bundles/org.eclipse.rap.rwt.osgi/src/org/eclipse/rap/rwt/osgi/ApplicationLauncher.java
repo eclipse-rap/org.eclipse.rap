@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Frank Appel and others.
+ * Copyright (c) 2011, 2024 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,8 +12,8 @@
 package org.eclipse.rap.rwt.osgi;
 
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
-import org.osgi.service.http.HttpContext;
-import org.osgi.service.http.HttpService;
+import org.eclipse.rap.service.http.HttpContext;
+import org.eclipse.rap.service.http.HttpService;
 
 
 /**
@@ -54,7 +54,7 @@ public interface ApplicationLauncher {
    *          the application
    * @param contextDirectory the name of a directory to store static web resources
    * @return a reference to the application started
-   * @since 2.0
+   * @since 4.0
    */
   ApplicationReference launch( ApplicationConfiguration configuration,
                                HttpService httpService,

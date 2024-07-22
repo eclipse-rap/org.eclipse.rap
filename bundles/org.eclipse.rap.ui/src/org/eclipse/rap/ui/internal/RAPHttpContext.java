@@ -15,12 +15,12 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.rap.service.http.HttpContext;
 import org.osgi.framework.Bundle;
-import org.osgi.service.http.HttpContext;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 // NOTE: This was added to org.eclipse.rap.ui to avoid starting
 //       the workbench bundle before the context is established. The latter

@@ -14,8 +14,8 @@ package org.eclipse.rap.rwt.service;
 import java.io.File;
 import java.io.IOException;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServletLog;
@@ -30,7 +30,7 @@ import org.eclipse.rap.rwt.internal.util.ParamCheck;
  * <ol>
  * <li>Use the directory specified by the init-parameter
  * <code>"org.eclipse.rap.rwt.service.FileSettingStore.dir"</code> in the web.xml.</li>
- * <li>Use the directory specified by the <code>"javax.servlet.context.tempdir"</code> attribute in
+ * <li>Use the directory specified by the <code>"jakarta.servlet.context.tempdir"</code> attribute in
  * the servlet context.</li>
  * <li>Use the directory specified by the <code>"java.io.tempdir"</code> property.</li>
  * </ol>
@@ -97,7 +97,7 @@ public final class FileSettingStoreFactory implements SettingStoreFactory {
   }
 
   private static File getDirectoryFromServletContextTempDir() {
-    File parent = ( File )getServletContext().getAttribute( "javax.servlet.context.tempdir" );
+    File parent = ( File )getServletContext().getAttribute( "jakarta.servlet.context.tempdir" );
     return parent != null ? new File( parent, FileSettingStore.class.getName() ) : null;
   }
 

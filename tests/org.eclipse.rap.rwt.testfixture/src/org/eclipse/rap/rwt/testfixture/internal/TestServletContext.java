@@ -21,17 +21,17 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterRegistration;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.Servlet;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRegistration;
-import javax.servlet.ServletRegistration.Dynamic;
-import javax.servlet.SessionCookieConfig;
-import javax.servlet.SessionTrackingMode;
-import javax.servlet.descriptor.JspConfigDescriptor;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterRegistration;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.Servlet;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRegistration;
+import jakarta.servlet.ServletRegistration.Dynamic;
+import jakarta.servlet.SessionCookieConfig;
+import jakarta.servlet.SessionTrackingMode;
+import jakarta.servlet.descriptor.JspConfigDescriptor;
 
 
 /**
@@ -113,28 +113,8 @@ public class TestServletContext implements ServletContext {
   }
 
   @Override
-  public Servlet getServlet( String arg0 ) throws ServletException {
-    return null;
-  }
-
-  @Override
-  public Enumeration<Servlet> getServlets() {
-    return null;
-  }
-
-  @Override
-  public Enumeration<String> getServletNames() {
-    return null;
-  }
-
-  @Override
   public void log( String arg0 ) {
     log( arg0, null );
-  }
-
-  @Override
-  public void log( Exception arg0, String arg1 ) {
-    log( arg1, arg0 );
   }
 
   @Override
@@ -264,19 +244,19 @@ public class TestServletContext implements ServletContext {
   }
 
   @Override
-  public javax.servlet.FilterRegistration.Dynamic addFilter( String filterName, String className ) {
+  public jakarta.servlet.FilterRegistration.Dynamic addFilter( String filterName, String className ) {
     return null;
   }
 
   @Override
-  public javax.servlet.FilterRegistration.Dynamic addFilter( String filterName, Filter filter ) {
+  public jakarta.servlet.FilterRegistration.Dynamic addFilter( String filterName, Filter filter ) {
     TestFilterRegistration result = new TestFilterRegistration( filterName, filter );
     filters.put( filterName, result );
     return result;
   }
 
   @Override
-  public javax.servlet.FilterRegistration.Dynamic addFilter( String filterName,
+  public jakarta.servlet.FilterRegistration.Dynamic addFilter( String filterName,
                                                              Class<? extends Filter> filterClass )
   {
     return null;

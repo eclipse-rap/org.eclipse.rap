@@ -16,9 +16,9 @@ package org.eclipse.rap.http.servlet.internal.multipart;
 
 import java.io.IOException;
 import java.util.List;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.Part;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.Part;
 
 public interface MultipartSupport {
 

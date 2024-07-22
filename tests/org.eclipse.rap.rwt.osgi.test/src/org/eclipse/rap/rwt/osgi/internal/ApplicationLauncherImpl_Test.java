@@ -28,20 +28,20 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 
-import javax.servlet.*;
-import javax.servlet.http.HttpServlet;
-
 import org.eclipse.rap.rwt.application.*;
 import org.eclipse.rap.rwt.osgi.ApplicationReference;
 import org.eclipse.rap.rwt.testfixture.internal.FileUtil;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.service.http.HttpContext;
+import org.eclipse.rap.service.http.HttpService;
 import org.junit.*;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.osgi.framework.*;
-import org.osgi.service.http.HttpContext;
-import org.osgi.service.http.HttpService;
 import org.osgi.service.log.LogService;
+
+import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServlet;
 
 
 public class ApplicationLauncherImpl_Test {

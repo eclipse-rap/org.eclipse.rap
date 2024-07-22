@@ -16,8 +16,8 @@ package org.eclipse.rap.http.servlet.internal.registration;
 
 import java.lang.reflect.*;
 import java.util.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
 import org.eclipse.rap.http.servlet.internal.context.ContextController;
 import org.eclipse.rap.http.servlet.internal.context.ServiceHolder;
 import org.eclipse.rap.http.servlet.internal.servlet.HttpSessionAdaptor;

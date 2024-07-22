@@ -24,7 +24,7 @@ import org.eclipse.rap.http.servlet.internal.util.StringPlus;
 import org.osgi.framework.*;
 import org.osgi.service.http.runtime.dto.DTOConstants;
 import org.osgi.service.http.runtime.dto.FailedListenerDTO;
-import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
+import org.osgi.service.servlet.whiteboard.HttpWhiteboardConstants;
 
 /**
  * @author Raymond Augé

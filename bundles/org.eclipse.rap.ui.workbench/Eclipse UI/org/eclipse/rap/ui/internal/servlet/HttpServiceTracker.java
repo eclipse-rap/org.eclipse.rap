@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2013 EclipseSource and others.
+ * Copyright (c) 2008, 2024 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,12 +16,14 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.http.registry.HttpContextExtensionService;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
-import org.eclipse.rap.rwt.osgi.ApplicationReference;
 import org.eclipse.rap.rwt.osgi.ApplicationLauncher;
+import org.eclipse.rap.rwt.osgi.ApplicationReference;
+import org.eclipse.rap.service.http.HttpContext;
+import org.eclipse.rap.service.http.HttpService;
 import org.eclipse.ui.PlatformUI;
-import org.osgi.framework.*;
-import org.osgi.service.http.HttpContext;
-import org.osgi.service.http.HttpService;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 
 

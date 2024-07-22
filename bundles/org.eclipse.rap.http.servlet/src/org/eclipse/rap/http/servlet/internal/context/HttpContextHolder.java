@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 Liferay, Inc.
+ * Copyright (c) 2014, 2024 Liferay, Inc.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -17,9 +17,9 @@ package org.eclipse.rap.http.servlet.internal.context;
 
 import java.util.concurrent.atomic.AtomicLong;
 import org.eclipse.rap.http.servlet.internal.DefaultServletContextHelper;
+import org.eclipse.rap.service.http.HttpContext;
+import org.osgi.service.servlet.context.ServletContextHelper;
 import org.osgi.framework.*;
-import org.osgi.service.http.HttpContext;
-import org.osgi.service.http.context.ServletContextHelper;
 
 public class HttpContextHolder {
 

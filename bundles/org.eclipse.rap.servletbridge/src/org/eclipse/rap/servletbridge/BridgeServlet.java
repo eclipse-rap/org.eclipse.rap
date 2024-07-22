@@ -18,8 +18,8 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Optional;
 import java.util.StringTokenizer;
-import javax.servlet.ServletException;
-import javax.servlet.http.*;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.*;
 
 /**
  * The BridgeServlet provides a means to bridge the servlet and OSGi runtimes.
@@ -31,9 +31,9 @@ import javax.servlet.http.*;
  */
 public class BridgeServlet extends HttpServlet {
 
-	static final String INCLUDE_REQUEST_URI_ATTRIBUTE = "javax.servlet.include.request_uri"; //$NON-NLS-1$
-	static final String INCLUDE_SERVLET_PATH_ATTRIBUTE = "javax.servlet.include.servlet_path"; //$NON-NLS-1$
-	static final String INCLUDE_PATH_INFO_ATTRIBUTE = "javax.servlet.include.path_info"; //$NON-NLS-1$
+	static final String INCLUDE_REQUEST_URI_ATTRIBUTE = "jakarta.servlet.include.request_uri"; //$NON-NLS-1$
+	static final String INCLUDE_SERVLET_PATH_ATTRIBUTE = "jakarta.servlet.include.servlet_path"; //$NON-NLS-1$
+	static final String INCLUDE_PATH_INFO_ATTRIBUTE = "jakarta.servlet.include.path_info"; //$NON-NLS-1$
 
 	private static final long serialVersionUID = 2825667412474494674L;
 	private static BridgeServlet instance;

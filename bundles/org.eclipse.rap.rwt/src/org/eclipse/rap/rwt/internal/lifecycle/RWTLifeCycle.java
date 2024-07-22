@@ -13,7 +13,7 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;

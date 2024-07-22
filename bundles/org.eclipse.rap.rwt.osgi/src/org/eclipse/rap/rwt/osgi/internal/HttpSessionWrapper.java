@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 Frank Appel and others.
+ * Copyright (c) 2011, 2024 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,12 +10,10 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.osgi.internal;
 
-import java.util.Collections;
 import java.util.Enumeration;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpSessionContext;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpSession;
 
 
 @SuppressWarnings( "deprecation" )
@@ -60,19 +58,7 @@ public class HttpSessionWrapper implements HttpSession {
   }
 
   @Override
-  @Deprecated
-  public HttpSessionContext getSessionContext() {
-    return session.getSessionContext();
-  }
-
-  @Override
   public Object getAttribute( String name ) {
-    return session.getAttribute( name );
-  }
-
-  @Override
-  @Deprecated
-  public Object getValue( String name ) {
     return session.getAttribute( name );
   }
 
@@ -82,30 +68,12 @@ public class HttpSessionWrapper implements HttpSession {
   }
 
   @Override
-  @Deprecated
-  public String[] getValueNames() {
-    return Collections.list( session.getAttributeNames() ).toArray( new String[ 0 ] );
-  }
-
-  @Override
   public void setAttribute( String name, Object value ) {
     session.setAttribute( name, value );
   }
 
   @Override
-  @Deprecated
-  public void putValue( String name, Object value ) {
-    session.setAttribute( name, value );
-  }
-
-  @Override
   public void removeAttribute( String name ) {
-    session.removeAttribute( name );
-  }
-
-  @Override
-  @Deprecated
-  public void removeValue( String name ) {
     session.removeAttribute( name );
   }
 

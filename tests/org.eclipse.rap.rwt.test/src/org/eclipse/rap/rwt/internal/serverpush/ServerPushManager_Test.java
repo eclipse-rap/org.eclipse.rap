@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpSessionBindingListener;
+import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSessionBindingListener;
 
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;

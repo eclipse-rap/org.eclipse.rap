@@ -17,7 +17,7 @@
 package org.eclipse.rap.http.servlet.internal;
 
 import org.osgi.framework.*;
-import org.osgi.service.http.HttpService;
+import org.eclipse.rap.service.http.HttpService;
 
 // Factory to create http services. This is because the service needs to be
 // customized for each bundle in order to implement the default resource

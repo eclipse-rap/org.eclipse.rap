@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.eclipse.rap.fileupload.FileDetails;
 import org.eclipse.rap.fileupload.FileUploadEvent;

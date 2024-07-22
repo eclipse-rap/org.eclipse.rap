@@ -16,22 +16,22 @@
 
 package org.eclipse.rap.http.servlet.internal;
 
-import static org.osgi.service.http.whiteboard.HttpWhiteboardConstants.*;
+import static org.osgi.service.servlet.whiteboard.HttpWhiteboardConstants.*;
 
+import jakarta.servlet.*;
 import java.security.*;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.concurrent.atomic.AtomicLong;
-import javax.servlet.*;
 import org.eclipse.rap.http.servlet.ExtendedHttpService;
 import org.eclipse.rap.http.servlet.internal.context.HttpContextHolder;
 import org.eclipse.rap.http.servlet.internal.context.WrappedHttpContext;
 import org.eclipse.rap.http.servlet.internal.util.Const;
 import org.eclipse.rap.http.servlet.internal.util.Throw;
+import org.eclipse.rap.service.http.*;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.http.*;
-import org.osgi.service.http.context.ServletContextHelper;
+import org.osgi.service.servlet.context.ServletContextHelper;
 
 public class HttpServiceImpl implements HttpService, ExtendedHttpService {
 
@@ -173,7 +173,7 @@ public class HttpServiceImpl implements HttpService, ExtendedHttpService {
 			props.put(HTTP_WHITEBOARD_CONTEXT_NAME, legacyId);
 			props.put(HTTP_WHITEBOARD_CONTEXT_PATH, "/"); //$NON-NLS-1$
 			props.put(HTTP_WHITEBOARD_TARGET, httpServiceRuntime.getTargetFilter());
-			props.put(HTTP_SERVICE_CONTEXT_PROPERTY, legacyId);
+			props.put(Const.HTTP_SERVICE_CONTEXT_PROPERTY, legacyId);
 			props.put(Const.EQUINOX_LEGACY_CONTEXT_HELPER, Boolean.TRUE);
 			props.put(Const.EQUINOX_LEGACY_HTTP_CONTEXT_INITIATING_ID, bundle.getBundleId());
 

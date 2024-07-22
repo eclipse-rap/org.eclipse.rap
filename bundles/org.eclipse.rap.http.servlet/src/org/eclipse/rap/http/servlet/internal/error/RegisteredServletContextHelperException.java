@@ -14,7 +14,7 @@
 
 package org.eclipse.rap.http.servlet.internal.error;
 
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 
 /**
  * @author Raymond Augé

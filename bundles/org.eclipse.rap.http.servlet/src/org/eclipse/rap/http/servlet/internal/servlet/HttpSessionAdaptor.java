@@ -15,10 +15,10 @@
  *******************************************************************************/
 package org.eclipse.rap.http.servlet.internal.servlet;
 
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.*;
 import java.io.Serializable;
 import java.util.*;
-import javax.servlet.ServletContext;
-import javax.servlet.http.*;
 import org.eclipse.rap.http.servlet.internal.context.ContextController;
 
 // This class adapts HttpSessions in order to return the right ServletContext and attributes
@@ -228,13 +228,6 @@ public class HttpSessionAdaptor implements HttpSession, Serializable {
 	public int getMaxInactiveInterval() {
 		// Not sure this can be done per context helper
 		return session.getMaxInactiveInterval();
-	}
-
-	/** @deprecated */
-	public javax.servlet.http.HttpSessionContext getSessionContext() {
-		// Not sure this can be done per context helper and I think null is returned
-		// anyway
-		return session.getSessionContext();
 	}
 
 	public boolean isNew() {

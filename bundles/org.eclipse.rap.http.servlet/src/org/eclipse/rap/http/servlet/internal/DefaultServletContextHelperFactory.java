@@ -16,7 +16,7 @@
 package org.eclipse.rap.http.servlet.internal;
 
 import org.osgi.framework.*;
-import org.osgi.service.http.context.ServletContextHelper;
+import org.osgi.service.servlet.context.ServletContextHelper;
 
 public class DefaultServletContextHelperFactory implements ServiceFactory<ServletContextHelper> {
 	@Override

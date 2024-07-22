@@ -18,7 +18,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.Client;

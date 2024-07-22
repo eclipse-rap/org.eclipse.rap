@@ -34,7 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;

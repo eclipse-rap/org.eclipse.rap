@@ -14,7 +14,7 @@
 
 package org.eclipse.rap.http.servlet.internal.util;
 
-import static org.osgi.service.http.whiteboard.HttpWhiteboardConstants.*;
+import static org.osgi.service.servlet.whiteboard.HttpWhiteboardConstants.*;
 
 import java.lang.reflect.Array;
 import java.util.*;

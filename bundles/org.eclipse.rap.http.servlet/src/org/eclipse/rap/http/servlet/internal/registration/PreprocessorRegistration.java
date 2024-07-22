@@ -16,15 +16,15 @@
 package org.eclipse.rap.http.servlet.internal.registration;
 
 import java.io.IOException;
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.eclipse.rap.http.servlet.internal.HttpServiceRuntimeImpl;
 import org.eclipse.rap.http.servlet.internal.context.ServiceHolder;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.service.http.runtime.dto.PreprocessorDTO;
-import org.osgi.service.http.whiteboard.Preprocessor;
+import org.osgi.service.servlet.whiteboard.Preprocessor;
 
 /**
  * @author Raymond Augé
