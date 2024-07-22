@@ -21,7 +21,7 @@ import static org.mockito.Mockito.mock;
 import java.io.IOException;
 import java.io.NotSerializableException;
 
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.service.UISessionEvent;

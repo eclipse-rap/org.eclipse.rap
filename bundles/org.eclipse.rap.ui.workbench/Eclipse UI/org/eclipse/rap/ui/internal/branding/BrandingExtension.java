@@ -26,10 +26,10 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.service.ResourceLoader;
+import org.eclipse.rap.service.http.HttpService;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Filter;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.http.HttpService;
 
 
 public final class BrandingExtension {
@@ -137,6 +137,7 @@ public final class BrandingExtension {
     if( favIcon != null ) {
       final Bundle bundle = Platform.getBundle( element.getContributor().getName() );
       application.addResource( favIcon, new ResourceLoader() {
+        @Override
         public InputStream getResourceAsStream( String resourceName ) throws IOException {
           return FileLocator.openStream( bundle, new Path( favIcon ), false );
         }

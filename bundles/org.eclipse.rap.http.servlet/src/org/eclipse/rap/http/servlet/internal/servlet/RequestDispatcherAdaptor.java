@@ -16,9 +16,9 @@
 package org.eclipse.rap.http.servlet.internal.servlet;
 
 import java.io.IOException;
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.eclipse.rap.http.servlet.internal.context.DispatchTargets;
 
 //This class unwraps the request so it can be processed by the underlying servlet container.

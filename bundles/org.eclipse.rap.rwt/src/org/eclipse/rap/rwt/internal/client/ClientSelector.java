@@ -13,7 +13,7 @@ package org.eclipse.rap.rwt.internal.client;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.service.UISession;

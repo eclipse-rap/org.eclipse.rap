@@ -12,7 +12,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
-import javax.servlet.http.Cookie;
+import jakarta.servlet.http.Cookie;
 
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.service.UISession;

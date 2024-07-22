@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 Frank Appel and others.
+ * Copyright (c) 2011, 2024 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,13 +19,13 @@ import static org.mockito.Mockito.verify;
 import java.io.File;
 import java.net.URL;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.eclipse.rap.rwt.testfixture.internal.FileUtil;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.service.http.HttpContext;
 import org.junit.*;
-import org.osgi.service.http.HttpContext;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 
 public class HttpContextWrapper_Test {

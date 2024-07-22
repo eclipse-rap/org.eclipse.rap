@@ -15,11 +15,11 @@
 
 package org.eclipse.rap.http.servlet.internal;
 
-import static org.osgi.service.http.whiteboard.HttpWhiteboardConstants.HTTP_WHITEBOARD_PREPROCESSOR_INIT_PARAM_PREFIX;
+import static org.osgi.service.servlet.whiteboard.HttpWhiteboardConstants.HTTP_WHITEBOARD_PREPROCESSOR_INIT_PARAM_PREFIX;
 
 import java.util.concurrent.atomic.AtomicReference;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
 import org.eclipse.rap.http.servlet.internal.context.ServiceHolder;
 import org.eclipse.rap.http.servlet.internal.error.HttpWhiteboardFailureException;
 import org.eclipse.rap.http.servlet.internal.registration.PreprocessorRegistration;
@@ -28,7 +28,7 @@ import org.eclipse.rap.http.servlet.internal.util.ServiceProperties;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.runtime.dto.*;
-import org.osgi.service.http.whiteboard.Preprocessor;
+import org.osgi.service.servlet.whiteboard.Preprocessor;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 /**

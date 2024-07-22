@@ -13,11 +13,11 @@ package org.eclipse.rap.rwt.service;
 
 import java.io.IOException;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 
 /**
@@ -51,6 +51,7 @@ public interface ServiceHandler {
    * @param response the response that will be sent to the client
    * @throws IOException
    * @throws ServletException
+   * @since 4.0
    */
   void service( HttpServletRequest request, HttpServletResponse response )
     throws IOException, ServletException;

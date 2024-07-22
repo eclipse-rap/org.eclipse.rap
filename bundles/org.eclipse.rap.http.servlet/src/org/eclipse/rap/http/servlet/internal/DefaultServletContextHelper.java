@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Jan. 27, 2019 Liferay, Inc.
+ * Copyright (c) Jan. 27, 2024 Liferay, Inc.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -17,9 +17,9 @@ package org.eclipse.rap.http.servlet.internal;
 
 import java.net.URL;
 import org.eclipse.rap.http.servlet.internal.util.Const;
+import org.eclipse.rap.service.http.HttpContext;
+import org.osgi.service.servlet.context.ServletContextHelper;
 import org.osgi.framework.Bundle;
-import org.osgi.service.http.HttpContext;
-import org.osgi.service.http.context.ServletContextHelper;
 
 public class DefaultServletContextHelper extends ServletContextHelper implements HttpContext {
 	private final Bundle bundle;

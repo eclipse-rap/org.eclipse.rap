@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.rap.http.servlet;
 
-import javax.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServlet;
 
 /**
  * @noextend This class is not intended to be subclassed by clients.

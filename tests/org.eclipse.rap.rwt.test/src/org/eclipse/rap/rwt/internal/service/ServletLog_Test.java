@@ -21,7 +21,7 @@ import static org.mockito.Mockito.verify;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.testfixture.internal.TestHttpSession;
 import org.junit.After;

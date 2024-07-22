@@ -15,7 +15,7 @@
 package org.eclipse.rap.http.servlet.internal.customizer;
 
 import java.util.concurrent.atomic.AtomicReference;
-import javax.servlet.Filter;
+import jakarta.servlet.Filter;
 import org.eclipse.rap.http.servlet.internal.HttpServiceRuntimeImpl;
 import org.eclipse.rap.http.servlet.internal.context.ContextController;
 import org.eclipse.rap.http.servlet.internal.error.HttpWhiteboardFailureException;
@@ -24,7 +24,7 @@ import org.eclipse.rap.http.servlet.internal.util.*;
 import org.osgi.framework.*;
 import org.osgi.service.http.runtime.dto.DTOConstants;
 import org.osgi.service.http.runtime.dto.FailedFilterDTO;
-import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
+import org.osgi.service.servlet.whiteboard.HttpWhiteboardConstants;
 
 /**
  * @author Raymond Augé

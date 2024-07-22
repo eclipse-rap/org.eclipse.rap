@@ -14,11 +14,11 @@
 
 package org.eclipse.rap.http.servlet.internal.registration;
 
-import javax.servlet.Servlet;
+import jakarta.servlet.Servlet;
 import org.eclipse.rap.http.servlet.internal.context.ContextController;
 import org.eclipse.rap.http.servlet.internal.context.ServiceHolder;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.http.context.ServletContextHelper;
+import org.osgi.service.servlet.context.ServletContextHelper;
 import org.osgi.service.http.runtime.dto.ResourceDTO;
 
 /**

@@ -14,8 +14,8 @@ package org.eclipse.rap.rwt.osgi.internal;
 import java.io.IOException;
 import java.util.Enumeration;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
 
 
 class CutOffContextPathWrapper extends HttpServlet {

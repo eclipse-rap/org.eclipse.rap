@@ -20,7 +20,7 @@ import static org.mockito.Mockito.mock;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.internal.SingletonManager;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;

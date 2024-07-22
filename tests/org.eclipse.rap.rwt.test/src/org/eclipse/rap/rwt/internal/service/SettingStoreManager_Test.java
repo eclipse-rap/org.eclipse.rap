@@ -23,7 +23,7 @@ import static org.junit.Assert.fail;
 
 import java.util.regex.Pattern;
 
-import javax.servlet.http.Cookie;
+import jakarta.servlet.http.Cookie;
 
 import org.eclipse.rap.rwt.service.SettingStore;
 import org.eclipse.rap.rwt.service.SettingStoreFactory;

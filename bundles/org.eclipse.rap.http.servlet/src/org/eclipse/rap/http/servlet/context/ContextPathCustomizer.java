@@ -15,8 +15,8 @@
 
 package org.eclipse.rap.http.servlet.context;
 
+import org.osgi.service.servlet.context.ServletContextHelper;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.http.context.ServletContextHelper;
 
 /**
  * A customizer that is called by the Http Whiteboard runtime in order to allow

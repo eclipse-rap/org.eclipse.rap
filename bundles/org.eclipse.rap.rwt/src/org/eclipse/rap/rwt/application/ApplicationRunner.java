@@ -11,13 +11,13 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.application;
 
-import javax.servlet.ServletContext;
-
 import org.eclipse.rap.rwt.internal.SingletonManager;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.service.ApplicationContext;
+
+import jakarta.servlet.ServletContext;
 
 
 /**
@@ -42,8 +42,8 @@ import org.eclipse.rap.rwt.service.ApplicationContext;
  * @since 2.0
  * @see ApplicationConfiguration
  * @see org.eclipse.rap.rwt.engine.RWTServletContextListener
- * @see javax.servlet.ServletContext
- * @see javax.servlet.ServletContextListener
+ * @see jakarta.servlet.ServletContext
+ * @see jakarta.servlet.ServletContextListener
  * @noextend This class is not intended to be subclassed by clients.
  */
 public class ApplicationRunner {
@@ -60,6 +60,7 @@ public class ApplicationRunner {
    *          <code>null</code>.
    * @param servletContext the servlet context this application is bound to.
    *          Must not be <code>null</code>.
+   * @since 4.0
    */
   public ApplicationRunner( ApplicationConfiguration configuration, ServletContext servletContext )
   {

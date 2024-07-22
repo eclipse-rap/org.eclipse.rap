@@ -21,8 +21,8 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
 import org.eclipse.rap.http.servlet.internal.context.ContextController;
 import org.eclipse.rap.http.servlet.internal.context.DispatchTargets;
 import org.eclipse.rap.http.servlet.internal.registration.EndpointRegistration;
@@ -196,7 +196,7 @@ public class HttpServletRequestWrapperImpl extends HttpServletRequestWrapper {
 		DispatcherType dispatcherType = current.getDispatcherType();
 
 		if ((dispatcherType == DispatcherType.ASYNC) || (dispatcherType == DispatcherType.REQUEST)
-				|| !attributeName.startsWith("javax.servlet.")) { //$NON-NLS-1$
+				|| !attributeName.startsWith("jakarta.servlet.")) { //$NON-NLS-1$
 
 			return request.getAttribute(attributeName);
 		}
@@ -205,12 +205,12 @@ public class HttpServletRequestWrapperImpl extends HttpServletRequestWrapper {
 		Map<String, Object> specialOverides = current.getSpecialOverides();
 
 		if (dispatcherType == DispatcherType.ERROR) {
-			if (dispatcherAttributes.contains(attributeName) && !attributeName.startsWith("javax.servlet.error.")) { //$NON-NLS-1$
+			if (dispatcherAttributes.contains(attributeName) && !attributeName.startsWith("jakarta.servlet.error.")) { //$NON-NLS-1$
 
 				return null;
 			}
 		} else if (dispatcherType == DispatcherType.INCLUDE) {
-			if (hasServletName && attributeName.startsWith("javax.servlet.include")) { //$NON-NLS-1$
+			if (hasServletName && attributeName.startsWith("jakarta.servlet.include")) { //$NON-NLS-1$
 				return null;
 			}
 
@@ -246,7 +246,7 @@ public class HttpServletRequestWrapperImpl extends HttpServletRequestWrapper {
 				return null;
 			}
 		} else if (dispatcherType == DispatcherType.FORWARD) {
-			if (hasServletName && attributeName.startsWith("javax.servlet.forward")) { //$NON-NLS-1$
+			if (hasServletName && attributeName.startsWith("jakarta.servlet.forward")) { //$NON-NLS-1$
 				return null;
 			}
 

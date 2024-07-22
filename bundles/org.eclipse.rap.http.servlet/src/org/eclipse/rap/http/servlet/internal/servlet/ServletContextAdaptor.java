@@ -22,13 +22,13 @@ import java.lang.reflect.*;
 import java.net.URL;
 import java.security.*;
 import java.util.*;
-import javax.servlet.*;
+import jakarta.servlet.*;
 import org.eclipse.rap.http.servlet.internal.context.*;
 import org.eclipse.rap.http.servlet.internal.util.Const;
 import org.eclipse.rap.http.servlet.internal.util.EventListeners;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.wiring.BundleWiring;
-import org.osgi.service.http.context.ServletContextHelper;
+import org.osgi.service.servlet.context.ServletContextHelper;
 
 public class ServletContextAdaptor {
 
@@ -225,7 +225,7 @@ public class ServletContextAdaptor {
 	}
 
 	/**
-	 * @see javax.servlet.ServletContext#getResourcePaths(java.lang.String)
+	 * @see jakarta.servlet.ServletContext#getResourcePaths(java.lang.String)
 	 */
 	public Set<String> getResourcePaths(final String name) {
 		if (name == null || !name.startsWith(Const.SLASH))

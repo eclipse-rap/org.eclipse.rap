@@ -14,11 +14,11 @@
  *******************************************************************************/
 package org.eclipse.rap.http.servlet;
 
+import jakarta.servlet.Filter;
+import jakarta.servlet.ServletException;
 import java.util.Dictionary;
-import javax.servlet.Filter;
-import javax.servlet.ServletException;
+import org.eclipse.rap.service.http.*;
 import org.osgi.annotation.versioning.ProviderType;
-import org.osgi.service.http.*;
 
 /**
  * @since 1.1
@@ -36,7 +36,7 @@ public interface ExtendedHttpService extends HttpService {
 	 * @param context    the <code>HttpContext</code> object for the registered
 	 *                   filter, or <code>null</code> if a default
 	 *                   <code>HttpContext</code> is to be created and used.
-	 * @throws javax.servlet.ServletException     if the filter's <code>init</code>
+	 * @throws jakarta.servlet.ServletException     if the filter's <code>init</code>
 	 *                                            method throws an exception, or the
 	 *                                            given filter object has already
 	 *                                            been registered at a different

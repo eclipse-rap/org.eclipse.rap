@@ -12,7 +12,7 @@ package org.eclipse.rap.rwt.widgets;
 
 import static org.junit.Assert.assertEquals;
 
-import javax.servlet.http.Cookie;
+import jakarta.servlet.http.Cookie;
 
 import org.eclipse.rap.rwt.testfixture.internal.TestRequest;
 import org.junit.Test;

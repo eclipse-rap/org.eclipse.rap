@@ -14,16 +14,16 @@
  *******************************************************************************/
 package org.eclipse.rap.http.servlet.internal.multipart;
 
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.Part;
 import java.io.*;
 import java.security.AccessControlContext;
 import java.util.ArrayList;
 import java.util.List;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.Part;
 import org.apache.commons.fileupload2.core.*;
-import org.apache.commons.fileupload2.javax.JavaxServletFileUpload;
+import org.apache.commons.fileupload2.jakarta.servlet6.JakartaServletFileUpload;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.http.runtime.dto.ServletDTO;
@@ -55,7 +55,7 @@ public class MultipartSupportImpl implements MultipartSupport {
 			.setBufferSize(servletDTO.multipartFileSizeThreshold)
 			.get();
 
-		upload = new JavaxServletFileUpload(factory);
+		upload = new JakartaServletFileUpload(factory);
 
 		if (servletDTO.multipartMaxFileSize > -1L) {
 			upload.setFileSizeMax(servletDTO.multipartMaxFileSize);
@@ -85,7 +85,7 @@ public class MultipartSupportImpl implements MultipartSupport {
 			throw new IllegalStateException("No multipart config on " + servletDTO); //$NON-NLS-1$
 		}
 
-		if (!JavaxServletFileUpload.isMultipartContent(request)) {
+		if (!JakartaServletFileUpload.isMultipartContent(request)) {
 			throw new ServletException("Not a multipart request!"); //$NON-NLS-1$
 		}
 
@@ -105,6 +105,6 @@ public class MultipartSupportImpl implements MultipartSupport {
 	}
 
 	private final ServletDTO servletDTO;
-	private final JavaxServletFileUpload upload;
+	private final JakartaServletFileUpload upload;
 
 }

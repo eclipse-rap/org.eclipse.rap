@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.rap.http.servlet.internal.multipart;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import org.apache.commons.fileupload2.core.FileUploadException;
 import org.osgi.service.http.runtime.dto.ServletDTO;
 

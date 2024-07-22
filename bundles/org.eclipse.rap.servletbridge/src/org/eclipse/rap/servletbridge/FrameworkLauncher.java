@@ -25,8 +25,8 @@ import java.nio.file.StandardCopyOption;
 import java.security.*;
 import java.util.*;
 import java.util.jar.*;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletContext;
 
 /**
  * The FrameworkLauncher provides the logic to:
@@ -168,7 +168,7 @@ public class FrameworkLauncher {
 			return;
 		}
 
-		File servletTemp = (File) context.getAttribute("javax.servlet.context.tempdir"); //$NON-NLS-1$
+		File servletTemp = (File) context.getAttribute("jakarta.servlet.context.tempdir"); //$NON-NLS-1$
 		platformDirectory = new File(servletTemp, "eclipse"); //$NON-NLS-1$
 		if (!platformDirectory.exists()) {
 			platformDirectory.mkdirs();
@@ -259,10 +259,10 @@ public class FrameworkLauncher {
 			String servletVersion = context.getMajorVersion() + "." + context.getMinorVersion(); //$NON-NLS-1$
 			packageExports = "org.eclipse.rap.servletbridge; version=1.1" + //$NON-NLS-1$
 					", javax.servlet; version=" + servletVersion + //$NON-NLS-1$
-					", javax.servlet.annotation; version=" + servletVersion + //$NON-NLS-1$
-					", javax.servlet.descriptor; version=" + servletVersion + //$NON-NLS-1$
-					", javax.servlet.http; version=" + servletVersion + //$NON-NLS-1$
-					", javax.servlet.resources; version=" + servletVersion; //$NON-NLS-1$
+					", jakarta.servlet.annotation; version=" + servletVersion + //$NON-NLS-1$
+					", jakarta.servlet.descriptor; version=" + servletVersion + //$NON-NLS-1$
+					", jakarta.servlet.http; version=" + servletVersion + //$NON-NLS-1$
+					", jakarta.servlet.resources; version=" + servletVersion; //$NON-NLS-1$
 		} else if (context.getMajorVersion() == 3) {
 			// We know spec version 3.0 corresponds to package version 2.6
 			// we are guessing future 3.x spec versions will increment package versions
@@ -272,21 +272,21 @@ public class FrameworkLauncher {
 			packageExports = "org.eclipse.rap.servletbridge; version=1.1" + //$NON-NLS-1$
 					", javax.servlet; version=" + servletVersion + //$NON-NLS-1$
 					", javax.servlet; version=" + specVersion + //$NON-NLS-1$
-					", javax.servlet.annotation; version=" + servletVersion + //$NON-NLS-1$
-					", javax.servlet.annotation; version=" + specVersion + //$NON-NLS-1$
-					", javax.servlet.descriptor; version=" + servletVersion + //$NON-NLS-1$
-					", javax.servlet.descriptor; version=" + specVersion + //$NON-NLS-1$
-					", javax.servlet.http; version=" + servletVersion + //$NON-NLS-1$
-					", javax.servlet.http; version=" + specVersion + //$NON-NLS-1$
-					", javax.servlet.resources; version=" + servletVersion + //$NON-NLS-1$
-					", javax.servlet.resources; version=" + specVersion; //$NON-NLS-1$
+					", jakarta.servlet.annotation; version=" + servletVersion + //$NON-NLS-1$
+					", jakarta.servlet.annotation; version=" + specVersion + //$NON-NLS-1$
+					", jakarta.servlet.descriptor; version=" + servletVersion + //$NON-NLS-1$
+					", jakarta.servlet.descriptor; version=" + specVersion + //$NON-NLS-1$
+					", jakarta.servlet.http; version=" + servletVersion + //$NON-NLS-1$
+					", jakarta.servlet.http; version=" + specVersion + //$NON-NLS-1$
+					", jakarta.servlet.resources; version=" + servletVersion + //$NON-NLS-1$
+					", jakarta.servlet.resources; version=" + specVersion; //$NON-NLS-1$
 		} else {
 			// We know spec version 2.x directly correspond to package versions
 			String servletVersion = context.getMajorVersion() + "." + context.getMinorVersion(); //$NON-NLS-1$
 			packageExports = "org.eclipse.rap.servletbridge; version=1.1" + //$NON-NLS-1$
 					", javax.servlet; version=" + servletVersion + //$NON-NLS-1$
-					", javax.servlet.http; version=" + servletVersion + //$NON-NLS-1$
-					", javax.servlet.resources; version=" + servletVersion; //$NON-NLS-1$
+					", jakarta.servlet.http; version=" + servletVersion + //$NON-NLS-1$
+					", jakarta.servlet.resources; version=" + servletVersion; //$NON-NLS-1$
 		}
 
 		String extendedExports = config.getInitParameter(CONFIG_EXTENDED_FRAMEWORK_EXPORTS);

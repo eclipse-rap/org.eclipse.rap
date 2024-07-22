@@ -16,7 +16,7 @@
 package org.eclipse.rap.http.servlet.internal.util;
 
 import java.util.*;
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import org.osgi.framework.ServiceReference;
 
 public class ServiceProperties {

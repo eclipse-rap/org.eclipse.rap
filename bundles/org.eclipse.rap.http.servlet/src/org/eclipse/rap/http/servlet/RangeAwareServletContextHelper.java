@@ -15,8 +15,8 @@
 
 package org.eclipse.rap.http.servlet;
 
+import org.osgi.service.servlet.context.ServletContextHelper;
 import org.osgi.framework.Bundle;
-import org.osgi.service.http.context.ServletContextHelper;
 
 /**
  * A custom servlet context helper type providing support for predicting the

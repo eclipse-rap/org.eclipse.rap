@@ -18,15 +18,15 @@ package org.eclipse.rap.http.servlet.internal.registration;
 
 import java.io.IOException;
 import java.util.*;
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.Part;
+import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.Part;
 import org.eclipse.rap.http.servlet.internal.context.ContextController;
 import org.eclipse.rap.http.servlet.internal.context.ServiceHolder;
 import org.eclipse.rap.http.servlet.internal.multipart.MultipartSupport;
 import org.eclipse.rap.http.servlet.internal.multipart.MultipartSupportFactory;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.http.context.ServletContextHelper;
+import org.osgi.service.servlet.context.ServletContextHelper;
 import org.osgi.service.http.runtime.dto.ServletDTO;
 
 //This class wraps the servlet object registered in the HttpService.registerServlet call, to manage the context classloader when handleRequests are being asked.

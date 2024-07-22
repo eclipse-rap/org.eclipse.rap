@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 EclipseSource and others.
+ * Copyright (c) 2002, 2024 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,14 +15,14 @@ package org.eclipse.rap.fileupload.internal;
 
 import java.io.IOException;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.fileupload2.javax.JavaxServletFileUpload;
+import org.apache.commons.fileupload2.jakarta.servlet6.JakartaServletFileUpload;
 import org.eclipse.rap.fileupload.FileUploadHandler;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.service.ServiceHandler;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 
 public final class FileUploadServiceHandler implements ServiceHandler {
@@ -47,7 +47,7 @@ public final class FileUploadServiceHandler implements ServiceHandler {
       } else if( !"POST".equals( request.getMethod().toUpperCase() ) ) {
         String message = "Only POST requests allowed";
         response.sendError( HttpServletResponse.SC_METHOD_NOT_ALLOWED, message );
-      } else if( !JavaxServletFileUpload.isMultipartContent( request ) ) {
+      } else if( !JakartaServletFileUpload.isMultipartContent( request ) ) {
         String message = "Content must be in multipart type";
         response.sendError( HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, message );
       } else {

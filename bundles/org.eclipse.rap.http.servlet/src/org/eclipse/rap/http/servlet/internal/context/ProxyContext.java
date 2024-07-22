@@ -21,7 +21,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import org.eclipse.rap.http.servlet.internal.util.Const;
 
 /**
@@ -37,7 +37,7 @@ import org.eclipse.rap.http.servlet.internal.util.Const;
  * dir deleteted.
  */
 public class ProxyContext {
-	private static final String JAVAX_SERVLET_CONTEXT_TEMPDIR = "javax.servlet.context.tempdir"; //$NON-NLS-1$
+	private static final String JAVAX_SERVLET_CONTEXT_TEMPDIR = "jakarta.servlet.context.tempdir"; //$NON-NLS-1$
 
 	private final ConcurrentMap<ContextController, ContextAttributes> attributesMap = new ConcurrentHashMap<>();
 	File proxyContextTempDir;

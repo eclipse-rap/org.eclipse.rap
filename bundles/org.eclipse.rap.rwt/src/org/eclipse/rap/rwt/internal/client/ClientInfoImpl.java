@@ -13,7 +13,7 @@ package org.eclipse.rap.rwt.internal.client;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Locale;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;

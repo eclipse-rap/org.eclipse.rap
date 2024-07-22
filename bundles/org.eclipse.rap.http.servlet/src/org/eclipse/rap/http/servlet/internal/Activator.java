@@ -16,17 +16,17 @@
 
 package org.eclipse.rap.http.servlet.internal;
 
+import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServlet;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import javax.servlet.*;
-import javax.servlet.http.HttpServlet;
 import org.eclipse.rap.http.servlet.ExtendedHttpService;
 import org.eclipse.rap.http.servlet.internal.servlet.ProxyServlet;
 import org.eclipse.rap.http.servlet.internal.util.*;
+import org.eclipse.rap.service.http.HttpService;
 import org.osgi.framework.*;
-import org.osgi.service.http.HttpService;
 import org.osgi.service.http.runtime.HttpServiceRuntime;
 import org.osgi.service.http.runtime.HttpServiceRuntimeConstants;
 import org.osgi.util.tracker.ServiceTracker;

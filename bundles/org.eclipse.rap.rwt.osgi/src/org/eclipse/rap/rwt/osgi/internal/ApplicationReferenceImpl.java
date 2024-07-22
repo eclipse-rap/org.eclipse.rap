@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Frank Appel and others.
+ * Copyright (c) 2011, 2024 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,18 +13,18 @@ package org.eclipse.rap.rwt.osgi.internal;
 
 import java.util.Collection;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServlet;
-
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.application.ApplicationRunner;
 import org.eclipse.rap.rwt.engine.RWTServlet;
 import org.eclipse.rap.rwt.osgi.ApplicationReference;
 import org.eclipse.rap.rwt.service.ApplicationContext;
+import org.eclipse.rap.service.http.HttpContext;
+import org.eclipse.rap.service.http.HttpService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.http.HttpContext;
-import org.osgi.service.http.HttpService;
+
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServlet;
 
 
 class ApplicationReferenceImpl implements ApplicationReference {

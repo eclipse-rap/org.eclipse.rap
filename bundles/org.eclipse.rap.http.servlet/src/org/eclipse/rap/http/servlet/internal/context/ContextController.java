@@ -14,8 +14,11 @@
 
 package org.eclipse.rap.http.servlet.internal.context;
 
-import static org.osgi.service.http.whiteboard.HttpWhiteboardConstants.*;
+import static org.osgi.service.servlet.whiteboard.HttpWhiteboardConstants.*;
 
+import jakarta.servlet.*;
+import jakarta.servlet.Filter;
+import jakarta.servlet.http.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.AccessController;
@@ -24,9 +27,6 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-import javax.servlet.*;
-import javax.servlet.Filter;
-import javax.servlet.http.*;
 import org.eclipse.rap.http.servlet.internal.HttpServiceRuntimeImpl;
 import org.eclipse.rap.http.servlet.internal.customizer.*;
 import org.eclipse.rap.http.servlet.internal.dto.ExtendedErrorPageDTO;
@@ -38,8 +38,8 @@ import org.eclipse.rap.http.servlet.internal.registration.ServletRegistration;
 import org.eclipse.rap.http.servlet.internal.servlet.*;
 import org.eclipse.rap.http.servlet.internal.util.*;
 import org.osgi.framework.*;
-import org.osgi.service.http.context.ServletContextHelper;
 import org.osgi.service.http.runtime.dto.*;
+import org.osgi.service.servlet.context.ServletContextHelper;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
@@ -588,7 +588,7 @@ public class ContextController {
 	}
 
 	public boolean isLegacyContext() {
-		return serviceReference.getProperty(HTTP_SERVICE_CONTEXT_PROPERTY) != null;
+		return serviceReference.getProperty(Const.HTTP_SERVICE_CONTEXT_PROPERTY) != null;
 	}
 
 	public String getContextName() {
@@ -1125,8 +1125,8 @@ public class ContextController {
 			classes.add(HttpSessionAttributeListener.class);
 		}
 
-		if (objectClassList.contains(javax.servlet.http.HttpSessionIdListener.class.getName())) {
-			classes.add(javax.servlet.http.HttpSessionIdListener.class);
+		if (objectClassList.contains(jakarta.servlet.http.HttpSessionIdListener.class.getName())) {
+			classes.add(jakarta.servlet.http.HttpSessionIdListener.class);
 		}
 
 		return classes;
@@ -1193,8 +1193,8 @@ public class ContextController {
 			return;
 		}
 
-		List<javax.servlet.http.HttpSessionIdListener> listeners = eventListeners
-				.get(javax.servlet.http.HttpSessionIdListener.class);
+		List<jakarta.servlet.http.HttpSessionIdListener> listeners = eventListeners
+				.get(jakarta.servlet.http.HttpSessionIdListener.class);
 
 		if (listeners.isEmpty()) {
 			return;
@@ -1202,7 +1202,7 @@ public class ContextController {
 
 		for (HttpSessionAdaptor httpSessionAdaptor : activeSessions.values()) {
 			HttpSessionEvent httpSessionEvent = new HttpSessionEvent(httpSessionAdaptor);
-			for (javax.servlet.http.HttpSessionIdListener listener : listeners) {
+			for (jakarta.servlet.http.HttpSessionIdListener listener : listeners) {
 				listener.sessionIdChanged(httpSessionEvent, oldSessionId);
 			}
 		}

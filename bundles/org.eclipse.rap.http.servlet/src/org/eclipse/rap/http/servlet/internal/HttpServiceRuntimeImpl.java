@@ -15,8 +15,11 @@
 package org.eclipse.rap.http.servlet.internal;
 
 import static org.osgi.service.http.runtime.HttpServiceRuntimeConstants.HTTP_SERVICE_ENDPOINT;
-import static org.osgi.service.http.whiteboard.HttpWhiteboardConstants.*;
+import static org.osgi.service.servlet.whiteboard.HttpWhiteboardConstants.*;
 
+import jakarta.servlet.*;
+import jakarta.servlet.Filter;
+import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -26,9 +29,6 @@ import java.util.Map.Entry;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
-import javax.servlet.*;
-import javax.servlet.Filter;
-import javax.servlet.http.*;
 import org.eclipse.rap.http.servlet.context.ContextPathCustomizer;
 import org.eclipse.rap.http.servlet.internal.context.*;
 import org.eclipse.rap.http.servlet.internal.dto.ExtendedErrorPageDTO;
@@ -39,16 +39,16 @@ import org.eclipse.rap.http.servlet.internal.servlet.HttpSessionTracker;
 import org.eclipse.rap.http.servlet.internal.servlet.Match;
 import org.eclipse.rap.http.servlet.internal.util.*;
 import org.eclipse.rap.http.servlet.session.HttpSessionInvalidator;
+import org.eclipse.rap.service.http.HttpContext;
+import org.eclipse.rap.service.http.NamespaceException;
 import org.osgi.framework.*;
 import org.osgi.framework.dto.ServiceReferenceDTO;
-import org.osgi.service.http.HttpContext;
-import org.osgi.service.http.NamespaceException;
-import org.osgi.service.http.context.ServletContextHelper;
 import org.osgi.service.http.runtime.HttpServiceRuntime;
 import org.osgi.service.http.runtime.dto.*;
-import org.osgi.service.http.whiteboard.Preprocessor;
 import org.osgi.service.log.Logger;
 import org.osgi.service.log.LoggerFactory;
+import org.osgi.service.servlet.context.ServletContextHelper;
+import org.osgi.service.servlet.whiteboard.Preprocessor;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
@@ -814,7 +814,7 @@ public class HttpServiceRuntimeImpl implements HttpServiceRuntime,
 
 	private Object getFilter(ServiceReference<? extends ServletContextHelper> serviceReference) {
 		String ctxName = (String) serviceReference.getProperty(HTTP_WHITEBOARD_CONTEXT_NAME);
-		return String.format("(&(%s=%s)(%s=%s))", HTTP_SERVICE_CONTEXT_PROPERTY, ctxName, HTTP_WHITEBOARD_CONTEXT_NAME, //$NON-NLS-1$
+		return String.format("(&(%s=%s)(%s=%s))", Const.HTTP_SERVICE_CONTEXT_PROPERTY, ctxName, HTTP_WHITEBOARD_CONTEXT_NAME, //$NON-NLS-1$
 				ctxName);
 	}
 

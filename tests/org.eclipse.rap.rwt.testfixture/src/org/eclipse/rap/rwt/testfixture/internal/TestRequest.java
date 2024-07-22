@@ -25,21 +25,22 @@ import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.servlet.AsyncContext;
-import javax.servlet.DispatcherType;
-import javax.servlet.ReadListener;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletInputStream;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpUpgradeHandler;
-import javax.servlet.http.Part;
+import jakarta.servlet.AsyncContext;
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.ReadListener;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletConnection;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletInputStream;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpUpgradeHandler;
+import jakarta.servlet.http.Part;
 
 
 /**
@@ -88,6 +89,7 @@ public final class TestRequest implements HttpServletRequest {
     cookies = new LinkedList<Cookie>();
   }
 
+  @Override
   public String getAuthType() {
     return null;
   }
@@ -96,14 +98,17 @@ public final class TestRequest implements HttpServletRequest {
     cookies.add( cookie );
   }
 
+  @Override
   public Cookie[] getCookies() {
     return cookies.toArray( new Cookie[ cookies.size() ] );
   }
 
+  @Override
   public long getDateHeader( String arg0 ) {
     return 0;
   }
 
+  @Override
   public String getHeader( String arg0 ) {
     return headers.get( arg0 );
   }
@@ -112,26 +117,32 @@ public final class TestRequest implements HttpServletRequest {
     headers.put( arg0, arg1 );
   }
 
+  @Override
   public Enumeration<String> getHeaders( String arg0 ) {
     return null;
   }
 
+  @Override
   public Enumeration<String> getHeaderNames() {
     return new Enumeration<String>() {
       private final Iterator iterator = headers.keySet().iterator();
+      @Override
       public boolean hasMoreElements() {
         return iterator.hasNext();
       }
+      @Override
       public String nextElement() {
         return ( String )iterator.next();
       }
     };
   }
 
+  @Override
   public int getIntHeader( String arg0 ) {
     return 0;
   }
 
+  @Override
   public String getMethod() {
     return method;
   }
@@ -140,6 +151,7 @@ public final class TestRequest implements HttpServletRequest {
     this.method = method;
   }
 
+  @Override
   public String getPathInfo() {
     return pathInfo;
   }
@@ -148,10 +160,12 @@ public final class TestRequest implements HttpServletRequest {
     this.pathInfo = pathInfo;
   }
 
+  @Override
   public String getPathTranslated() {
     return null;
   }
 
+  @Override
   public String getContextPath() {
     return contextPath;
   }
@@ -160,26 +174,32 @@ public final class TestRequest implements HttpServletRequest {
     this.contextPath = contextPath;
   }
 
+  @Override
   public String getQueryString() {
     return null;
   }
 
+  @Override
   public String getRemoteUser() {
     return null;
   }
 
+  @Override
   public boolean isUserInRole( String arg0 ) {
     return false;
   }
 
+  @Override
   public Principal getUserPrincipal() {
     return null;
   }
 
+  @Override
   public String getRequestedSessionId() {
     return null;
   }
 
+  @Override
   public String getRequestURI() {
     return requestURI;
   }
@@ -188,10 +208,12 @@ public final class TestRequest implements HttpServletRequest {
     this.requestURI = requestURI;
   }
 
+  @Override
   public StringBuffer getRequestURL() {
     return requestURL;
   }
 
+  @Override
   public String getServletPath() {
     return servletPath;
   }
@@ -200,22 +222,27 @@ public final class TestRequest implements HttpServletRequest {
     this.servletPath = servletPath;
   }
 
+  @Override
   public HttpSession getSession( boolean arg0 ) {
     return session;
   }
 
+  @Override
   public HttpSession getSession() {
     return session;
   }
 
+  @Override
   public boolean isRequestedSessionIdValid() {
     return false;
   }
 
+  @Override
   public boolean isRequestedSessionIdFromCookie() {
     return false;
   }
 
+  @Override
   public boolean isRequestedSessionIdFromURL() {
     return false;
   }
@@ -224,31 +251,38 @@ public final class TestRequest implements HttpServletRequest {
     return false;
   }
 
+  @Override
   public Object getAttribute( String arg0 ) {
     return attributes.get( arg0 );
   }
 
+  @Override
   public Enumeration<String> getAttributeNames() {
     return null;
   }
 
+  @Override
   public String getCharacterEncoding() {
     return null;
   }
 
+  @Override
   public void setCharacterEncoding( String arg0 )
     throws UnsupportedEncodingException
   {
   }
 
+  @Override
   public int getContentLength() {
     return body != null ? body.length() : 0;
   }
 
+  @Override
   public long getContentLengthLong() {
     return getContentLength();
   }
 
+  @Override
   public String getContentType() {
     return contentType;
   }
@@ -257,6 +291,7 @@ public final class TestRequest implements HttpServletRequest {
     this.contentType = contentType;
   }
 
+  @Override
   public ServletInputStream getInputStream() throws IOException {
     final StringReader reader = new StringReader( body );
     return new ServletInputStream() {
@@ -278,6 +313,7 @@ public final class TestRequest implements HttpServletRequest {
     };
   }
 
+  @Override
   public String getParameter( String arg0 ) {
     String[] value = parameters.get( arg0 );
     String result = null;
@@ -287,19 +323,23 @@ public final class TestRequest implements HttpServletRequest {
     return result;
   }
 
+  @Override
   public Enumeration<String> getParameterNames() {
     return new Enumeration<String>() {
       private final Iterator iterator = parameters.keySet().iterator();
+      @Override
       public boolean hasMoreElements() {
         return iterator.hasNext();
       }
 
+      @Override
       public String nextElement() {
         return ( String )iterator.next();
       }
     };
   }
 
+  @Override
   public String[] getParameterValues( String arg0 ) {
     return parameters.get( arg0 );
   }
@@ -324,14 +364,17 @@ public final class TestRequest implements HttpServletRequest {
     }
   }
 
+  @Override
   public Map<String,String[]> getParameterMap() {
     return parameters;
   }
 
+  @Override
   public String getProtocol() {
     return null;
   }
 
+  @Override
   public String getScheme() {
     return scheme;
   }
@@ -340,6 +383,7 @@ public final class TestRequest implements HttpServletRequest {
     this.scheme = scheme;
   }
 
+  @Override
   public String getServerName() {
     return serverName;
   }
@@ -348,10 +392,12 @@ public final class TestRequest implements HttpServletRequest {
     this.serverName = serverName;
   }
 
+  @Override
   public int getServerPort() {
     return PORT;
   }
 
+  @Override
   public BufferedReader getReader() throws IOException {
     return new BufferedReader( new StringReader( body != null ? body : "" ) );
   }
@@ -364,25 +410,31 @@ public final class TestRequest implements HttpServletRequest {
     return body;
   }
 
+  @Override
   public String getRemoteAddr() {
     return null;
   }
 
+  @Override
   public String getRemoteHost() {
     return null;
   }
 
+  @Override
   public void setAttribute( String arg0, Object arg1 ) {
     attributes.put( arg0, arg1 );
   }
 
+  @Override
   public void removeAttribute( String arg0 ) {
   }
 
+  @Override
   public Locale getLocale() {
     return locales == null || locales.length == 0 ? Locale.getDefault() : locales[ 0 ] ;
   }
 
+  @Override
   public Enumeration<Locale> getLocales() {
     Locale[] returnedLocales = locales;
     if( locales == null || locales.length == 0 ) {
@@ -391,10 +443,12 @@ public final class TestRequest implements HttpServletRequest {
     final Iterator<Locale> iterator = Arrays.asList( returnedLocales ).iterator();
     return new Enumeration<Locale>() {
 
+      @Override
       public Locale nextElement() {
         return iterator.next();
       }
 
+      @Override
       public boolean hasMoreElements() {
         return iterator.hasNext();
       }
@@ -405,10 +459,12 @@ public final class TestRequest implements HttpServletRequest {
     this.locales = locales;
   }
 
+  @Override
   public boolean isSecure() {
     return false;
   }
 
+  @Override
   public RequestDispatcher getRequestDispatcher( String arg0 ) {
     return null;
   }
@@ -421,77 +477,110 @@ public final class TestRequest implements HttpServletRequest {
     this.session = session;
   }
 
+  @Override
   public String getLocalAddr() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public String getLocalName() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public int getLocalPort() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public int getRemotePort() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public ServletContext getServletContext() {
     return null;
   }
 
+  @Override
   public AsyncContext startAsync() throws IllegalStateException {
     return null;
   }
 
+  @Override
   public AsyncContext startAsync( ServletRequest servletRequest, ServletResponse servletResponse )
     throws IllegalStateException
   {
     return null;
   }
 
+  @Override
   public boolean isAsyncStarted() {
     return false;
   }
 
+  @Override
   public boolean isAsyncSupported() {
     return false;
   }
 
+  @Override
   public AsyncContext getAsyncContext() {
     return null;
   }
 
+  @Override
   public DispatcherType getDispatcherType() {
     return null;
   }
 
+  @Override
   public boolean authenticate( HttpServletResponse response ) throws IOException, ServletException {
     return false;
   }
 
+  @Override
   public void login( String username, String password ) throws ServletException {
   }
 
+  @Override
   public void logout() throws ServletException {
   }
 
+  @Override
   public Collection<Part> getParts() throws IOException, ServletException {
     return null;
   }
 
+  @Override
   public Part getPart( String name ) throws IOException, ServletException {
     return null;
   }
 
+  @Override
   public String changeSessionId() {
     return null;
   }
 
+  @Override
   public <T extends HttpUpgradeHandler> T upgrade( Class<T> handlerClass )
     throws IOException, ServletException
   {
+    return null;
+  }
+
+  @Override
+  public String getRequestId() {
+    return null;
+  }
+
+  @Override
+  public String getProtocolRequestId() {
+    return null;
+  }
+
+  @Override
+  public ServletConnection getServletConnection() {
     return null;
   }
 

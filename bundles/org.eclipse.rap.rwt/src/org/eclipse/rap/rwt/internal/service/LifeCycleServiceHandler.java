@@ -11,8 +11,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
-import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
-import static javax.servlet.http.HttpServletResponse.SC_PRECONDITION_FAILED;
+import static jakarta.servlet.http.HttpServletResponse.SC_FORBIDDEN;
+import static jakarta.servlet.http.HttpServletResponse.SC_PRECONDITION_FAILED;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.REQUEST_COUNTER;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.SHUTDOWN;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getUISession;
@@ -23,9 +23,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;

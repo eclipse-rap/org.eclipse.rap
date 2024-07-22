@@ -22,10 +22,10 @@ import java.net.URLConnection;
 import java.security.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.servlet.http.*;
+import jakarta.servlet.http.*;
 import org.eclipse.rap.http.servlet.RangeAwareServletContextHelper;
 import org.eclipse.rap.http.servlet.internal.util.Const;
-import org.osgi.service.http.context.ServletContextHelper;
+import org.osgi.service.servlet.context.ServletContextHelper;
 
 public class ResourceServlet extends HttpServlet {
 	private static final long serialVersionUID = 3586876493076122102L;

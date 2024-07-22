@@ -14,8 +14,8 @@
 
 package org.eclipse.rap.http.servlet.internal.servlet;
 
+import jakarta.servlet.http.*;
 import java.util.Locale;
-import javax.servlet.http.*;
 
 /**
  * @author Istvan Sajtos
@@ -93,12 +93,6 @@ public class IncludeDispatchResponseWrapper extends HttpServletResponseWrapper {
 
 	@Override
 	public void setLocale(Locale loc) {
-		return;
-	}
-
-	@Override
-	@SuppressWarnings("deprecation")
-	public void setStatus(int sc, String sm) {
 		return;
 	}
 

@@ -14,7 +14,7 @@
 
 package org.eclipse.rap.http.servlet.internal.error;
 
-import org.osgi.service.http.NamespaceException;
+import org.eclipse.rap.service.http.NamespaceException;
 
 /**
  * @author Raymond Augé

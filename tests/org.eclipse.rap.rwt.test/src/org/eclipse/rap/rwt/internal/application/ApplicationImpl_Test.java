@@ -16,8 +16,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
-import javax.servlet.FilterRegistration;
-import javax.servlet.Servlet;
+import jakarta.servlet.FilterRegistration;
+import jakarta.servlet.Servlet;
 
 import org.eclipse.rap.rwt.application.Application.OperationMode;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
