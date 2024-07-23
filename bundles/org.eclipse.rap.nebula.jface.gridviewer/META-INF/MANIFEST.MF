@@ -8,4 +8,11 @@ Bundle-Vendor: %Bundle-Vendor
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.rap.nebula.widgets.grid;bundle-version="4.0.0",
  org.eclipse.rap.jface;bundle-version="[4.0.0,5.0.0)"
-Export-Package: org.eclipse.nebula.jface.gridviewer
+Export-Package: org.eclipse.nebula.jface.gridviewer;
+  uses:="org.eclipse.swt.events,
+   org.eclipse.swt.graphics,
+   org.eclipse.swt.widgets,
+   org.eclipse.nebula.widgets.grid,
+   org.eclipse.jface.layout,
+   org.eclipse.jface.viewers",
+ org.eclipse.nebula.jface.gridviewer.internal;x-internal:=true
