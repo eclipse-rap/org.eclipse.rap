@@ -17,19 +17,19 @@
  *******************************************************************************/
 package org.eclipse.rap.http.servlet.internal.servlet;
 
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import jakarta.servlet.*;
-import jakarta.servlet.http.*;
 import org.eclipse.rap.http.servlet.internal.context.ContextController;
 import org.eclipse.rap.http.servlet.internal.context.DispatchTargets;
 import org.eclipse.rap.http.servlet.internal.registration.EndpointRegistration;
 import org.eclipse.rap.http.servlet.internal.registration.ServletRegistration;
 import org.eclipse.rap.http.servlet.internal.util.Const;
 import org.eclipse.rap.http.servlet.internal.util.EventListeners;
-import org.osgi.service.http.HttpContext;
+import org.eclipse.rap.service.http.HttpContext;
 
 public class HttpServletRequestWrapperImpl extends HttpServletRequestWrapper {
 

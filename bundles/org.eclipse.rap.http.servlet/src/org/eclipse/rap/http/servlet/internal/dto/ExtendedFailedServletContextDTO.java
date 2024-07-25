@@ -15,7 +15,7 @@
 
 package org.eclipse.rap.http.servlet.internal.dto;
 
-import org.osgi.service.http.runtime.dto.FailedServletContextDTO;
+import org.osgi.service.servlet.runtime.dto.FailedServletContextDTO;
 
 /**
  * Internal Extended DTO model used for simplifying handling logic.

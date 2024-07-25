@@ -27,8 +27,8 @@ import org.eclipse.rap.http.servlet.internal.servlet.ProxyServlet;
 import org.eclipse.rap.http.servlet.internal.util.*;
 import org.eclipse.rap.service.http.HttpService;
 import org.osgi.framework.*;
-import org.osgi.service.http.runtime.HttpServiceRuntime;
-import org.osgi.service.http.runtime.HttpServiceRuntimeConstants;
+import org.osgi.service.servlet.runtime.HttpServiceRuntime;
+import org.osgi.service.servlet.runtime.HttpServiceRuntimeConstants;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
@@ -170,7 +170,7 @@ public class Activator implements BundleActivator, ServiceTrackerCustomizer<Http
 			ServiceRegistration<?> hsfRegistration = currentContext.registerService(HTTP_SERVICES_CLASSES,
 					httpServiceFactory, serviceProperties);
 
-			serviceProperties.put(HttpServiceRuntimeConstants.HTTP_SERVICE_ID,
+			serviceProperties.put(Const.HTTP_SERVICE_ID,
 					Collections.singletonList(hsfRegistration.getReference().getProperty(Constants.SERVICE_ID)));
 
 			ServiceRegistration<HttpServiceRuntime> hsrRegistration = currentContext

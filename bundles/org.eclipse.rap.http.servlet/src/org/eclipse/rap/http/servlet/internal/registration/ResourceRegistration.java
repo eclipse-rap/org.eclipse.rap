@@ -19,7 +19,7 @@ import org.eclipse.rap.http.servlet.internal.context.ContextController;
 import org.eclipse.rap.http.servlet.internal.context.ServiceHolder;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.servlet.context.ServletContextHelper;
-import org.osgi.service.http.runtime.dto.ResourceDTO;
+import org.osgi.service.servlet.runtime.dto.ResourceDTO;
 
 /**
  * @author Raymond Augé

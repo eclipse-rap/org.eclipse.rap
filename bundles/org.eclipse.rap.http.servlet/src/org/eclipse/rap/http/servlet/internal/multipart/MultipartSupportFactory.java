@@ -14,7 +14,7 @@
 package org.eclipse.rap.http.servlet.internal.multipart;
 
 import jakarta.servlet.ServletContext;
-import org.osgi.service.http.runtime.dto.ServletDTO;
+import org.osgi.service.servlet.runtime.dto.ServletDTO;
 
 public interface MultipartSupportFactory {
 

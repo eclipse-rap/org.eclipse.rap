@@ -14,7 +14,7 @@
 
 package org.eclipse.rap.http.servlet.internal;
 
-import static org.osgi.service.http.runtime.HttpServiceRuntimeConstants.HTTP_SERVICE_ENDPOINT;
+import static org.osgi.service.servlet.runtime.HttpServiceRuntimeConstants.HTTP_SERVICE_ENDPOINT;
 import static org.osgi.service.servlet.whiteboard.HttpWhiteboardConstants.*;
 
 import jakarta.servlet.*;
@@ -43,11 +43,11 @@ import org.eclipse.rap.service.http.HttpContext;
 import org.eclipse.rap.service.http.NamespaceException;
 import org.osgi.framework.*;
 import org.osgi.framework.dto.ServiceReferenceDTO;
-import org.osgi.service.http.runtime.HttpServiceRuntime;
-import org.osgi.service.http.runtime.dto.*;
 import org.osgi.service.log.Logger;
 import org.osgi.service.log.LoggerFactory;
 import org.osgi.service.servlet.context.ServletContextHelper;
+import org.osgi.service.servlet.runtime.HttpServiceRuntime;
+import org.osgi.service.servlet.runtime.dto.*;
 import org.osgi.service.servlet.whiteboard.Preprocessor;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;

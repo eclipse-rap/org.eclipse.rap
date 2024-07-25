@@ -38,8 +38,8 @@ import org.eclipse.rap.http.servlet.internal.registration.ServletRegistration;
 import org.eclipse.rap.http.servlet.internal.servlet.*;
 import org.eclipse.rap.http.servlet.internal.util.*;
 import org.osgi.framework.*;
-import org.osgi.service.http.runtime.dto.*;
 import org.osgi.service.servlet.context.ServletContextHelper;
+import org.osgi.service.servlet.runtime.dto.*;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
