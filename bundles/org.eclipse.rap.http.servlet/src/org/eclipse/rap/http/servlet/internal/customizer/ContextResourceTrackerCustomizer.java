@@ -24,8 +24,8 @@ import org.eclipse.rap.http.servlet.internal.registration.ResourceRegistration;
 import org.eclipse.rap.http.servlet.internal.util.Const;
 import org.eclipse.rap.http.servlet.internal.util.StringPlus;
 import org.osgi.framework.*;
-import org.osgi.service.http.runtime.dto.DTOConstants;
-import org.osgi.service.http.runtime.dto.FailedResourceDTO;
+import org.osgi.service.servlet.runtime.dto.DTOConstants;
+import org.osgi.service.servlet.runtime.dto.FailedResourceDTO;
 import org.osgi.service.servlet.whiteboard.HttpWhiteboardConstants;
 
 /**

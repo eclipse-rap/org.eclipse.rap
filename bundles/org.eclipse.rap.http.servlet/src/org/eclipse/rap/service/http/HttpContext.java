@@ -61,20 +61,20 @@ public interface HttpContext {
 	 * {@code HttpServletRequest} attribute specifying the name of the
 	 * authenticated user. The value of the attribute can be retrieved by
 	 * {@code HttpServletRequest.getRemoteUser}. This attribute name is
-	 * {@code org.osgi.service.http.authentication.remote.user}.
+	 * {@code org.osgi.service.servlet.authentication.remote.user}.
 	 * 
 	 * @since 1.1
 	 */
-	public static final String	REMOTE_USER			= "org.osgi.service.http.authentication.remote.user";
+	public static final String	REMOTE_USER			= "org.osgi.service.servlet.authentication.remote.user";
 	/**
 	 * {@code HttpServletRequest} attribute specifying the scheme used in
 	 * authentication. The value of the attribute can be retrieved by
 	 * {@code HttpServletRequest.getAuthType}. This attribute name is
-	 * {@code org.osgi.service.http.authentication.type}.
+	 * {@code org.osgi.service.servlet.authentication.type}.
 	 * 
 	 * @since 1.1
 	 */
-	public static final String	AUTHENTICATION_TYPE	= "org.osgi.service.http.authentication.type";
+	public static final String	AUTHENTICATION_TYPE	= "org.osgi.service.servlet.authentication.type";
 	/**
 	 * {@code HttpServletRequest} attribute specifying the {@code Authorization}
 	 * object obtained from the {@code org.osgi.service.useradmin.UserAdmin}

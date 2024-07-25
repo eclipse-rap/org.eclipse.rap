@@ -15,7 +15,7 @@
 
 package org.eclipse.rap.http.servlet.internal.dto;
 
-import org.osgi.service.http.runtime.dto.ErrorPageDTO;
+import org.osgi.service.servlet.runtime.dto.ErrorPageDTO;
 
 /**
  * Internal Extended DTO model used for simplifying handling logic.

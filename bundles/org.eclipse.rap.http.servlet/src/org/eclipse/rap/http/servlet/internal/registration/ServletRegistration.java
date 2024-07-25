@@ -27,7 +27,7 @@ import org.eclipse.rap.http.servlet.internal.multipart.MultipartSupport;
 import org.eclipse.rap.http.servlet.internal.multipart.MultipartSupportFactory;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.servlet.context.ServletContextHelper;
-import org.osgi.service.http.runtime.dto.ServletDTO;
+import org.osgi.service.servlet.runtime.dto.ServletDTO;
 
 //This class wraps the servlet object registered in the HttpService.registerServlet call, to manage the context classloader when handleRequests are being asked.
 public class ServletRegistration extends EndpointRegistration<ServletDTO> {

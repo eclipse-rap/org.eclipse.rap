@@ -22,8 +22,8 @@ import org.eclipse.rap.http.servlet.internal.error.HttpWhiteboardFailureExceptio
 import org.eclipse.rap.http.servlet.internal.registration.FilterRegistration;
 import org.eclipse.rap.http.servlet.internal.util.*;
 import org.osgi.framework.*;
-import org.osgi.service.http.runtime.dto.DTOConstants;
-import org.osgi.service.http.runtime.dto.FailedFilterDTO;
+import org.osgi.service.servlet.runtime.dto.DTOConstants;
+import org.osgi.service.servlet.runtime.dto.FailedFilterDTO;
 import org.osgi.service.servlet.whiteboard.HttpWhiteboardConstants;
 
 /**

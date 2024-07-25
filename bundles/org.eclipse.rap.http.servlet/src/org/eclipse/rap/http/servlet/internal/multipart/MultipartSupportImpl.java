@@ -26,7 +26,7 @@ import org.apache.commons.fileupload2.core.*;
 import org.apache.commons.fileupload2.jakarta.servlet6.JakartaServletFileUpload;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.service.http.runtime.dto.ServletDTO;
+import org.osgi.service.servlet.runtime.dto.ServletDTO;
 
 public class MultipartSupportImpl implements MultipartSupport {
 

@@ -24,7 +24,7 @@ import org.eclipse.rap.http.servlet.internal.error.HttpWhiteboardFailureExceptio
 import org.osgi.dto.DTO;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.http.runtime.dto.*;
+import org.osgi.service.servlet.runtime.dto.*;
 
 /**
  * @author Raymond Augé
