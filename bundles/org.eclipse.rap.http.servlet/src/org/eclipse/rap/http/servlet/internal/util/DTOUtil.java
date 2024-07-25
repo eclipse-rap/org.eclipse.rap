@@ -14,17 +14,17 @@
 
 package org.eclipse.rap.http.servlet.internal.util;
 
-import static org.osgi.service.servlet.whiteboard.HttpWhiteboardConstants.*;
+import static org.eclipse.rap.service.servlet.internal.whiteboard.HttpWhiteboardConstants.*;
 
 import java.lang.reflect.Array;
 import java.util.*;
 import org.eclipse.rap.http.servlet.internal.dto.ExtendedErrorPageDTO;
 import org.eclipse.rap.http.servlet.internal.dto.ExtendedErrorPageDTO.ErrorCodeType;
 import org.eclipse.rap.http.servlet.internal.error.HttpWhiteboardFailureException;
+import org.eclipse.rap.service.servlet.internal.runtime.dto.*;
 import org.osgi.dto.DTO;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.servlet.runtime.dto.*;
 
 /**
  * @author Raymond Augé

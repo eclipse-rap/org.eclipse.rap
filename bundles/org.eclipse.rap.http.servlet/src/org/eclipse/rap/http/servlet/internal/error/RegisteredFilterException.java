@@ -15,7 +15,7 @@
 package org.eclipse.rap.http.servlet.internal.error;
 
 import jakarta.servlet.Filter;
-import org.osgi.service.servlet.runtime.dto.DTOConstants;
+import org.eclipse.rap.service.servlet.internal.runtime.dto.DTOConstants;
 
 /**
  * @author Raymond Augé

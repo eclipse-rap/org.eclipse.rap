@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 import jakarta.servlet.http.*;
 import org.eclipse.rap.http.servlet.RangeAwareServletContextHelper;
 import org.eclipse.rap.http.servlet.internal.util.Const;
-import org.osgi.service.servlet.context.ServletContextHelper;
+import org.eclipse.rap.service.servlet.internal.context.ServletContextHelper;
 
 public class ResourceServlet extends HttpServlet {
 	private static final long serialVersionUID = 3586876493076122102L;

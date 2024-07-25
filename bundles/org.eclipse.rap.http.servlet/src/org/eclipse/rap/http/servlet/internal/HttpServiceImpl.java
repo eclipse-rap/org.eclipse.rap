@@ -16,7 +16,7 @@
 
 package org.eclipse.rap.http.servlet.internal;
 
-import static org.osgi.service.servlet.whiteboard.HttpWhiteboardConstants.*;
+import static org.eclipse.rap.service.servlet.internal.whiteboard.HttpWhiteboardConstants.*;
 
 import jakarta.servlet.*;
 import java.security.*;
@@ -29,9 +29,9 @@ import org.eclipse.rap.http.servlet.internal.context.WrappedHttpContext;
 import org.eclipse.rap.http.servlet.internal.util.Const;
 import org.eclipse.rap.http.servlet.internal.util.Throw;
 import org.eclipse.rap.service.http.*;
+import org.eclipse.rap.service.servlet.internal.context.ServletContextHelper;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.servlet.context.ServletContextHelper;
 
 public class HttpServiceImpl implements HttpService, ExtendedHttpService {
 

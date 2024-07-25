@@ -14,8 +14,8 @@
 
 package org.eclipse.rap.http.servlet.internal;
 
-import static org.osgi.service.servlet.runtime.HttpServiceRuntimeConstants.HTTP_SERVICE_ENDPOINT;
-import static org.osgi.service.servlet.whiteboard.HttpWhiteboardConstants.*;
+import static org.eclipse.rap.service.servlet.internal.runtime.HttpServiceRuntimeConstants.HTTP_SERVICE_ENDPOINT;
+import static org.eclipse.rap.service.servlet.internal.whiteboard.HttpWhiteboardConstants.*;
 
 import jakarta.servlet.*;
 import jakarta.servlet.Filter;
@@ -41,14 +41,14 @@ import org.eclipse.rap.http.servlet.internal.util.*;
 import org.eclipse.rap.http.servlet.session.HttpSessionInvalidator;
 import org.eclipse.rap.service.http.HttpContext;
 import org.eclipse.rap.service.http.NamespaceException;
+import org.eclipse.rap.service.servlet.internal.context.ServletContextHelper;
+import org.eclipse.rap.service.servlet.internal.runtime.HttpServiceRuntime;
+import org.eclipse.rap.service.servlet.internal.runtime.dto.*;
+import org.eclipse.rap.service.servlet.internal.whiteboard.Preprocessor;
 import org.osgi.framework.*;
 import org.osgi.framework.dto.ServiceReferenceDTO;
 import org.osgi.service.log.Logger;
 import org.osgi.service.log.LoggerFactory;
-import org.osgi.service.servlet.context.ServletContextHelper;
-import org.osgi.service.servlet.runtime.HttpServiceRuntime;
-import org.osgi.service.servlet.runtime.dto.*;
-import org.osgi.service.servlet.whiteboard.Preprocessor;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 

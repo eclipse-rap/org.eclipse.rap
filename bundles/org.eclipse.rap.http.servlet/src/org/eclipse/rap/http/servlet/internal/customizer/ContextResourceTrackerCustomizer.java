@@ -14,7 +14,7 @@
 
 package org.eclipse.rap.http.servlet.internal.customizer;
 
-import static org.osgi.service.servlet.whiteboard.HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_SELECT;
+import static org.eclipse.rap.service.servlet.internal.whiteboard.HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_SELECT;
 
 import java.util.concurrent.atomic.AtomicReference;
 import org.eclipse.rap.http.servlet.internal.HttpServiceRuntimeImpl;
@@ -23,10 +23,10 @@ import org.eclipse.rap.http.servlet.internal.error.HttpWhiteboardFailureExceptio
 import org.eclipse.rap.http.servlet.internal.registration.ResourceRegistration;
 import org.eclipse.rap.http.servlet.internal.util.Const;
 import org.eclipse.rap.http.servlet.internal.util.StringPlus;
+import org.eclipse.rap.service.servlet.internal.runtime.dto.DTOConstants;
+import org.eclipse.rap.service.servlet.internal.runtime.dto.FailedResourceDTO;
+import org.eclipse.rap.service.servlet.internal.whiteboard.HttpWhiteboardConstants;
 import org.osgi.framework.*;
-import org.osgi.service.servlet.runtime.dto.DTOConstants;
-import org.osgi.service.servlet.runtime.dto.FailedResourceDTO;
-import org.osgi.service.servlet.whiteboard.HttpWhiteboardConstants;
 
 /**
  * @author Raymond Augé

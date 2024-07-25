@@ -21,10 +21,10 @@ import org.eclipse.rap.http.servlet.internal.context.ContextController;
 import org.eclipse.rap.http.servlet.internal.error.HttpWhiteboardFailureException;
 import org.eclipse.rap.http.servlet.internal.registration.ListenerRegistration;
 import org.eclipse.rap.http.servlet.internal.util.StringPlus;
+import org.eclipse.rap.service.servlet.internal.runtime.dto.DTOConstants;
+import org.eclipse.rap.service.servlet.internal.runtime.dto.FailedListenerDTO;
+import org.eclipse.rap.service.servlet.internal.whiteboard.HttpWhiteboardConstants;
 import org.osgi.framework.*;
-import org.osgi.service.servlet.runtime.dto.DTOConstants;
-import org.osgi.service.servlet.runtime.dto.FailedListenerDTO;
-import org.osgi.service.servlet.whiteboard.HttpWhiteboardConstants;
 
 /**
  * @author Raymond Augé

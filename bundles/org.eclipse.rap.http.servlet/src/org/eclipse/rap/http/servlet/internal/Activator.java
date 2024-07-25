@@ -26,9 +26,9 @@ import org.eclipse.rap.http.servlet.ExtendedHttpService;
 import org.eclipse.rap.http.servlet.internal.servlet.ProxyServlet;
 import org.eclipse.rap.http.servlet.internal.util.*;
 import org.eclipse.rap.service.http.HttpService;
+import org.eclipse.rap.service.servlet.internal.runtime.HttpServiceRuntime;
+import org.eclipse.rap.service.servlet.internal.runtime.HttpServiceRuntimeConstants;
 import org.osgi.framework.*;
-import org.osgi.service.servlet.runtime.HttpServiceRuntime;
-import org.osgi.service.servlet.runtime.HttpServiceRuntimeConstants;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 

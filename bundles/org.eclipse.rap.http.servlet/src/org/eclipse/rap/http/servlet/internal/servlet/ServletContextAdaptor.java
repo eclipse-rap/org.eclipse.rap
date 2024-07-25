@@ -26,9 +26,9 @@ import jakarta.servlet.*;
 import org.eclipse.rap.http.servlet.internal.context.*;
 import org.eclipse.rap.http.servlet.internal.util.Const;
 import org.eclipse.rap.http.servlet.internal.util.EventListeners;
+import org.eclipse.rap.service.servlet.internal.context.ServletContextHelper;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.wiring.BundleWiring;
-import org.osgi.service.servlet.context.ServletContextHelper;
 
 public class ServletContextAdaptor {
 

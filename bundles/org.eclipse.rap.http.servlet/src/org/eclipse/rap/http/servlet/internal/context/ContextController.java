@@ -14,7 +14,7 @@
 
 package org.eclipse.rap.http.servlet.internal.context;
 
-import static org.osgi.service.servlet.whiteboard.HttpWhiteboardConstants.*;
+import static org.eclipse.rap.service.servlet.internal.whiteboard.HttpWhiteboardConstants.*;
 
 import jakarta.servlet.*;
 import jakarta.servlet.Filter;
@@ -37,9 +37,9 @@ import org.eclipse.rap.http.servlet.internal.registration.FilterRegistration;
 import org.eclipse.rap.http.servlet.internal.registration.ServletRegistration;
 import org.eclipse.rap.http.servlet.internal.servlet.*;
 import org.eclipse.rap.http.servlet.internal.util.*;
+import org.eclipse.rap.service.servlet.internal.context.ServletContextHelper;
+import org.eclipse.rap.service.servlet.internal.runtime.dto.*;
 import org.osgi.framework.*;
-import org.osgi.service.servlet.context.ServletContextHelper;
-import org.osgi.service.servlet.runtime.dto.*;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**

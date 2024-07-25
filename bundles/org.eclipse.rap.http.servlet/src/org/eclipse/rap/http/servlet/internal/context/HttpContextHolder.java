@@ -18,7 +18,7 @@ package org.eclipse.rap.http.servlet.internal.context;
 import java.util.concurrent.atomic.AtomicLong;
 import org.eclipse.rap.http.servlet.internal.DefaultServletContextHelper;
 import org.eclipse.rap.service.http.HttpContext;
-import org.osgi.service.servlet.context.ServletContextHelper;
+import org.eclipse.rap.service.servlet.internal.context.ServletContextHelper;
 import org.osgi.framework.*;
 
 public class HttpContextHolder {

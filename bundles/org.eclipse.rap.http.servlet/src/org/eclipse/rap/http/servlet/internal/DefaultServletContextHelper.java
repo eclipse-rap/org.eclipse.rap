@@ -18,7 +18,7 @@ package org.eclipse.rap.http.servlet.internal;
 import java.net.URL;
 import org.eclipse.rap.http.servlet.internal.util.Const;
 import org.eclipse.rap.service.http.HttpContext;
-import org.osgi.service.servlet.context.ServletContextHelper;
+import org.eclipse.rap.service.servlet.internal.context.ServletContextHelper;
 import org.osgi.framework.Bundle;
 
 public class DefaultServletContextHelper extends ServletContextHelper implements HttpContext {

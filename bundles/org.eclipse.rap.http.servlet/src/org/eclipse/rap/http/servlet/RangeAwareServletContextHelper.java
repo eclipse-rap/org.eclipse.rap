@@ -15,7 +15,7 @@
 
 package org.eclipse.rap.http.servlet;
 
-import org.osgi.service.servlet.context.ServletContextHelper;
+import org.eclipse.rap.service.servlet.internal.context.ServletContextHelper;
 import org.osgi.framework.Bundle;
 
 /**
