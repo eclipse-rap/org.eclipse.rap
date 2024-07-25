@@ -14,7 +14,7 @@ package org.eclipse.rap.ui.internal.servlet;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.equinox.http.registry.HttpContextExtensionService;
+import org.eclipse.rap.http.registry.HttpContextExtensionService;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.osgi.ApplicationLauncher;
 import org.eclipse.rap.rwt.osgi.ApplicationReference;
