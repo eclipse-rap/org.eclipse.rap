@@ -16,8 +16,8 @@ package org.eclipse.rap.http.servlet.internal.util;
 
 import org.eclipse.rap.http.servlet.internal.*;
 import org.eclipse.rap.http.servlet.internal.servlet.ProxyServlet;
+import org.eclipse.rap.service.servlet.internal.runtime.HttpServiceRuntime;
 import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.servlet.runtime.HttpServiceRuntime;
 
 public class HttpTuple {
 

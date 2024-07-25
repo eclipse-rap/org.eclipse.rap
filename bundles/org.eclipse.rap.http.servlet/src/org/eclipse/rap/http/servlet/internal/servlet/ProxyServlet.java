@@ -28,8 +28,8 @@ import org.eclipse.rap.http.servlet.internal.HttpServiceRuntimeImpl;
 import org.eclipse.rap.http.servlet.internal.context.DispatchTargets;
 import org.eclipse.rap.http.servlet.internal.registration.PreprocessorRegistration;
 import org.eclipse.rap.http.servlet.internal.util.Const;
+import org.eclipse.rap.service.servlet.internal.whiteboard.Preprocessor;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.servlet.whiteboard.Preprocessor;
 
 /**
  * The ProxyServlet is the private side of a Servlet that when registered (and

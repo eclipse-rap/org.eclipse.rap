@@ -21,10 +21,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.eclipse.rap.http.servlet.internal.HttpServiceRuntimeImpl;
 import org.eclipse.rap.http.servlet.internal.context.ServiceHolder;
+import org.eclipse.rap.service.servlet.internal.runtime.dto.PreprocessorDTO;
+import org.eclipse.rap.service.servlet.internal.whiteboard.Preprocessor;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.wiring.BundleWiring;
-import org.osgi.service.servlet.runtime.dto.PreprocessorDTO;
-import org.osgi.service.servlet.whiteboard.Preprocessor;
 
 /**
  * @author Raymond Augé

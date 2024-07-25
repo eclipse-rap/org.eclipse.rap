@@ -21,8 +21,8 @@ import jakarta.servlet.http.*;
 import org.eclipse.rap.http.servlet.internal.context.ContextController;
 import org.eclipse.rap.http.servlet.internal.context.ServiceHolder;
 import org.eclipse.rap.http.servlet.internal.servlet.HttpSessionAdaptor;
+import org.eclipse.rap.service.servlet.internal.runtime.dto.ListenerDTO;
 import org.osgi.framework.wiring.BundleWiring;
-import org.osgi.service.servlet.runtime.dto.ListenerDTO;
 
 /**
  * @author Raymond Augé

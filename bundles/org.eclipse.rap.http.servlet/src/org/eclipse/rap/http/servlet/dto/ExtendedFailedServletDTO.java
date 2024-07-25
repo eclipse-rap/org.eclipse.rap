@@ -14,7 +14,7 @@
 
 package org.eclipse.rap.http.servlet.dto;
 
-import org.osgi.service.servlet.runtime.dto.FailedServletDTO;
+import org.eclipse.rap.service.servlet.internal.runtime.dto.FailedServletDTO;
 
 /**
  * This type may become irrelevant if the properties appear as part of a future

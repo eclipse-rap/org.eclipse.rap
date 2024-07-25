@@ -25,10 +25,10 @@ import org.eclipse.rap.http.servlet.internal.context.ServiceHolder;
 import org.eclipse.rap.http.servlet.internal.servlet.FilterChainImpl;
 import org.eclipse.rap.http.servlet.internal.servlet.Match;
 import org.eclipse.rap.http.servlet.internal.util.Const;
+import org.eclipse.rap.service.servlet.internal.runtime.dto.FilterDTO;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.wiring.BundleWiring;
-import org.osgi.service.servlet.runtime.dto.FilterDTO;
 
 //This class wraps the filter object registered in the HttpService.registerFilter call, to manage the context classloader when handleRequests are being asked.
 public class FilterRegistration extends MatchableRegistration<Filter, FilterDTO>

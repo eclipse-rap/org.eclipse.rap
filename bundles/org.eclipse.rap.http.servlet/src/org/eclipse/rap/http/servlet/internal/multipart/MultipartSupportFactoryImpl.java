@@ -15,7 +15,7 @@ package org.eclipse.rap.http.servlet.internal.multipart;
 
 import jakarta.servlet.ServletContext;
 import org.apache.commons.fileupload2.core.FileUploadException;
-import org.osgi.service.servlet.runtime.dto.ServletDTO;
+import org.eclipse.rap.service.servlet.internal.runtime.dto.ServletDTO;
 
 public class MultipartSupportFactoryImpl implements MultipartSupportFactory {
 

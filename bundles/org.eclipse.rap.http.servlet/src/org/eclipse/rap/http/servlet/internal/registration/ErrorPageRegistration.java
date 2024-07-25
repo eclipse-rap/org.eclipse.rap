@@ -20,8 +20,8 @@ import org.eclipse.rap.http.servlet.internal.context.ContextController;
 import org.eclipse.rap.http.servlet.internal.context.ServiceHolder;
 import org.eclipse.rap.http.servlet.internal.dto.ExtendedErrorPageDTO;
 import org.eclipse.rap.http.servlet.internal.servlet.Match;
+import org.eclipse.rap.service.servlet.internal.context.ServletContextHelper;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.servlet.context.ServletContextHelper;
 
 /**
  * @author Raymond Augé

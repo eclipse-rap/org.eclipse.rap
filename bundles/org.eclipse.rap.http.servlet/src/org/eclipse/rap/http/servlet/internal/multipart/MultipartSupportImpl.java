@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.fileupload2.core.*;
 import org.apache.commons.fileupload2.jakarta.servlet6.JakartaServletFileUpload;
+import org.eclipse.rap.service.servlet.internal.runtime.dto.ServletDTO;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.service.servlet.runtime.dto.ServletDTO;
 
 public class MultipartSupportImpl implements MultipartSupport {
 
