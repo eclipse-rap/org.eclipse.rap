@@ -670,6 +670,12 @@ public class Grid extends Composite {
     }
     GridColumn overThis = null;
     int x2 = 0;
+    if ( isRowHeaderVisible() ) {
+      if ( point.x <= rowHeadersColumn.getWidth() ) {
+        return null;
+      }
+      x2 += rowHeadersColumn.getWidth();
+    }
     x2 -= hScroll.getSelection();
     for( GridColumn column : displayOrderedColumns ) {
       if( !column.isVisible() ) {
