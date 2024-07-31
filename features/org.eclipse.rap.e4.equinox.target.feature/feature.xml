@@ -702,6 +702,20 @@
          unpack="false"/>
 
    <plugin
+         id="org.eclipse.jetty.logging"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.jetty.logging.source"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.eclipse.jetty.security"
          download-size="0"
          install-size="0"
