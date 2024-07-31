@@ -34,14 +34,28 @@
          id="jakarta.servlet-api"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="4.0.0"
          unpack="false"/>
 
    <plugin
          id="jakarta.servlet-api.source"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="4.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="jakarta.servlet-api"
+         download-size="0"
+         install-size="0"
+         version="6.1.0"
+         unpack="false"/>
+
+   <plugin
+         id="jakarta.servlet-api.source"
+         download-size="0"
+         install-size="0"
+         version="6.1.0"
          unpack="false"/>
 
    <plugin
