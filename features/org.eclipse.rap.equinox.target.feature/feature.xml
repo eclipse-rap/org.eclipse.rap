@@ -276,56 +276,56 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.equinox.http.jetty"
+         id="org.eclipse.rap.http.jetty"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.equinox.http.jetty.source"
+         id="org.eclipse.rap.http.jetty.source"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.equinox.http.registry"
+         id="org.eclipse.rap.http.registry"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.equinox.http.registry.source"
+         id="org.eclipse.rap.http.registry.source"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.equinox.http.servlet"
+         id="org.eclipse.rap.http.servlet"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.equinox.http.servlet.source"
+         id="org.eclipse.rap.http.servlet.source"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.equinox.http.servletbridge"
+         id="org.eclipse.rap.http.servletbridge"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.equinox.servletbridge"
+         id="org.eclipse.rap.servletbridge"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -424,20 +424,6 @@
 
    <plugin
          id="org.eclipse.osgi.source"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osgi.services"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osgi.services.source"
          download-size="0"
          install-size="0"
          version="0.0.0"
