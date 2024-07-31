@@ -39,6 +39,7 @@
     <module>bundles/org.eclipse.rap.ui.workbench</module>
     <module>bundles/org.eclipse.rap.e4</module>
     <module>bundles/org.eclipse.rap.http.jetty</module>
+    <module>bundles/org.eclipse.rap.http.registry</module>
     <module>bundles/org.eclipse.rap.http.servlet</module>
     <module>bundles/org.eclipse.rap.http.servletbridge</module>
     <module>bundles/org.eclipse.rap.servletbridge</module>
