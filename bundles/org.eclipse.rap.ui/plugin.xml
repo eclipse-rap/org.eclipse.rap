@@ -2372,7 +2372,7 @@
            uses the context already on startup
    -->
    <extension
-        point="org.eclipse.equinox.http.registry.httpcontexts">
+        point="org.eclipse.rap.http.registry.httpcontexts">
      <httpcontext
            class="org.eclipse.rap.ui.internal.RAPHttpContext"
            id="org.eclipse.rap.httpcontext">
