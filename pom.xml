@@ -44,6 +44,7 @@
     <module>bundles/org.eclipse.rap.http.servletbridge</module>
     <module>bundles/org.eclipse.rap.servletbridge</module>
     <module>bundles/org.eclipse.e4.core.commands</module>
+    <module>bundles/org.eclipse.e4.emf.xpath</module>
     <module>bundles/org.eclipse.e4.ui.bindings</module>
     <module>bundles/org.eclipse.e4.ui.workbench.addons.swt</module>
     <module>bundles/org.eclipse.e4.ui.workbench.renderers.swt</module>
