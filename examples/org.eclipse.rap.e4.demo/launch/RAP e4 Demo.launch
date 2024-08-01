@@ -39,10 +39,9 @@
     <stringAttribute key="pde.version" value="3.3"/>
     <setAttribute key="selected_target_bundles">
         <setEntry value="com.ibm.icu@default:default"/>
-        <setEntry value="jakarta.annotation-api*2.1.1@default:default"/>
-        <setEntry value="jakarta.inject.jakarta.inject-api*2.0.1@default:default"/>
-        <setEntry value="jakarta.servlet-api*6.1.0@default:default"/>
-        <setEntry value="javax.el-api@default:default"/>
+        <setEntry value="jakarta.annotation-api@default:default"/>
+        <setEntry value="jakarta.inject.jakarta.inject-api@default:default"/>
+        <setEntry value="jakarta.servlet-api@default:default"/>
         <setEntry value="org.apache.aries.spifly.dynamic.bundle@default:default"/>
         <setEntry value="org.apache.commons.collections@default:default"/>
         <setEntry value="org.apache.commons.commons-beanutils@default:default"/>
@@ -103,7 +102,6 @@
         <setEntry value="org.eclipse.rap.jface@default:default"/>
         <setEntry value="org.eclipse.rap.rwt.osgi@default:default"/>
         <setEntry value="org.eclipse.rap.rwt@default:default"/>
-        <setEntry value="org.jdom@default:default"/>
         <setEntry value="org.objectweb.asm.commons@default:default"/>
         <setEntry value="org.objectweb.asm.tree.analysis@default:default"/>
         <setEntry value="org.objectweb.asm.tree@default:default"/>
@@ -127,7 +125,6 @@
         <setEntry value="slf4j.api@default:default"/>
     </setAttribute>
     <setAttribute key="selected_workspace_bundles">
-        <setEntry value="org.eclipse.e4.emf.xpath@default:default"/>
         <setEntry value="org.eclipse.rap.e4.demo@default:default"/>
     </setAttribute>
     <booleanAttribute key="show_selected_only" value="true"/>
