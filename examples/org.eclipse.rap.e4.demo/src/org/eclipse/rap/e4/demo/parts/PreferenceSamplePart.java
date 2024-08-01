@@ -1,7 +1,5 @@
 package org.eclipse.rap.e4.demo.parts;
 
-import javax.inject.Inject;
-
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.core.di.extensions.Preference;
 import org.eclipse.rap.e4.preferences.EPreference;
@@ -15,6 +13,8 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
+
+import jakarta.inject.Inject;
 
 @SuppressWarnings({ "restriction", "serial" })
 public class PreferenceSamplePart {

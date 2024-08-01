@@ -1,8 +1,5 @@
 package org.eclipse.rap.e4.demo.parts;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.core.di.extensions.EventTopic;
 import org.eclipse.e4.core.services.events.IEventBroker;
@@ -17,6 +14,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+
+import jakarta.annotation.PostConstruct;
+import jakarta.inject.Inject;
 
 @SuppressWarnings("restriction")
 public class EventSamplePart {
