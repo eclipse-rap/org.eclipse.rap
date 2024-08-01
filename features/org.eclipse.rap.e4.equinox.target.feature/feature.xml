@@ -24,27 +24,6 @@
    </requires>
 
    <plugin
-         id="javax.el-api"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="jakarta.servlet-api"
-         download-size="0"
-         install-size="0"
-         version="4.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="jakarta.servlet-api.source"
-         download-size="0"
-         install-size="0"
-         version="4.0.0"
-         unpack="false"/>
-
-   <plugin
          id="jakarta.servlet-api"
          download-size="0"
          install-size="0"
@@ -758,20 +737,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.jetty.ee8.servlet"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.jetty.ee8.servlet.source"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.jetty.util"
          download-size="0"
          install-size="0"
@@ -808,20 +773,6 @@
 
    <plugin
          id="org.hamcrest.core.source"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.commons.commons-fileupload2-jakarta-servlet5"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.commons.commons-fileupload2-javax"
          download-size="0"
          install-size="0"
          version="0.0.0"
