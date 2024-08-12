@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 EclipseSource and others.
+ * Copyright (c) 2011, 2024 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -326,6 +326,22 @@ public class RichTextEditor extends Composite {
   public String getText() {
     checkWidget();
     return text;
+  }
+
+  /**
+   * Insert text to the editing area.  Appends the text in the current cursor position
+   * Can contain HTML tags for styling.
+   *
+   * @param text The text to insert into the editing area.
+   * @since 4.0
+   */
+  public void insertText( String text ) {
+    checkWidget();
+    if( text == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    JsonObject parameters = new JsonObject().add( "text", text );
+    remoteObject.call( "insertText", parameters );
   }
 
   /**

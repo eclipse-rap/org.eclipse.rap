@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 EclipseSource and others.
+ * Copyright (c) 2016, 2024 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -94,7 +94,7 @@ public class NebulaRichTextTab extends ExampleTab {
   private void createText( Composite parent ) {
     Group group = new Group( parent, SWT.NONE );
     group.setText( "Text" );
-    group.setLayout( new GridLayout( 2, false ) );
+    group.setLayout( new GridLayout( 3, false ) );
     final Text setText = new Text( group, SWT.BORDER );
     setText.setLayoutData( new GridData( 200, SWT.DEFAULT ) );
     Button setButton = new Button( group, SWT.PUSH );
@@ -103,6 +103,14 @@ public class NebulaRichTextTab extends ExampleTab {
       @Override
       public void handleEvent( Event event ) {
         editor.setText( setText.getText() );
+      }
+    } );
+    Button insertButton = new Button( group, SWT.PUSH );
+    insertButton.setText( "Insert" );
+    insertButton.addListener( SWT.Selection, new Listener() {
+      @Override
+      public void handleEvent( Event event ) {
+        editor.insertText( setText.getText() );
       }
     } );
     Button getButton = new Button( group, SWT.PUSH );
