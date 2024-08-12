@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 EclipseSource and others.
+ * Copyright (c) 2016, 2024 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,9 @@
       return new rwt.widgets.RichTextEditor( properties );
     },
 
-    properties : [ "config", "text", "editable", "font" ]
+    properties : [ "config", "text", "editable", "font" ],
+
+    methods : [ "insertText" ]
 
   } );
 
