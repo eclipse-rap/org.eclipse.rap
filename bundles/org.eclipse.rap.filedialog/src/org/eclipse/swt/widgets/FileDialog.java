@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2019 IBM Corporation and others.
+ * Copyright (c) 2000, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -670,12 +670,13 @@ public class FileDialog extends Dialog {
   private final class SingleThreadExecutor extends ThreadPoolExecutor {
 
     public SingleThreadExecutor() {
-      super( 1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>() );
+      super( 1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>() );
     }
 
     @Override
-    protected void beforeExecute( Thread thread, Runnable runnable ) {
+    public void execute( Runnable command ) {
       setButtonEnabled( false );
+      super.execute( command );
     }
 
     @Override
