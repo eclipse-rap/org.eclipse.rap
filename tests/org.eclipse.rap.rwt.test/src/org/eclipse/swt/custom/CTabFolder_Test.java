@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2024 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -575,6 +575,26 @@ public class CTabFolder_Test {
     // Clean up
     item1.dispose();
     item2.dispose();
+  }
+
+  @Test
+  public void testSelection_doesNotHideSharedControl() {
+    shell.setSize( 150, 150 );
+    folder.setSize( 100, 100 );
+    shell.layout();
+    CTabItem item1 = new CTabItem( folder, SWT.NONE );
+    item1.setText( "item1" );
+    Label label = new Label( folder, SWT.NONE );
+    item1.setControl( label );
+    CTabItem item2 = new CTabItem( folder, SWT.NONE );
+    item2.setText( "item2" );
+    item2.setControl( label );
+
+    folder.setSelection( item1 );
+    assertTrue( label.getVisible() );
+
+    folder.setSelection( item2 );
+    assertTrue( label.getVisible() );
   }
 
   @Test

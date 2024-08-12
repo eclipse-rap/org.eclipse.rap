@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2017 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2024 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -356,7 +356,7 @@ public class CTabFolder extends Composite {
         // Hide control of previous selection (if any)
         if( oldSelectionIndex >= 0 && oldSelectionIndex < getItemCount() ) {
           Control oldControl = getItem( oldSelectionIndex ).getControl();
-          if( oldControl != null && !oldControl.isDisposed() ) {
+          if( oldControl != null && oldControl != control && !oldControl.isDisposed() ) {
             oldControl.setVisible( false );
           }
         }
