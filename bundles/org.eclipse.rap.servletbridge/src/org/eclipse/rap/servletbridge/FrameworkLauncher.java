@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2019 Cognos Incorporated, IBM Corporation and others.
+ * Copyright (c) 2005, 2024 Cognos Incorporated, IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -12,9 +12,12 @@
  *     Cognos Incorporated - initial API and implementation
  *     IBM Corporation - bug fixes and enhancements
  *     Code 9 - bug fixes and enhancements
+ *     EclipseSource - enhancements, switch to Jakarta Servlet 6
  *******************************************************************************/
 package org.eclipse.rap.servletbridge;
 
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletContext;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -25,8 +28,6 @@ import java.nio.file.StandardCopyOption;
 import java.security.*;
 import java.util.*;
 import java.util.jar.*;
-import jakarta.servlet.ServletConfig;
-import jakarta.servlet.ServletContext;
 
 /**
  * The FrameworkLauncher provides the logic to:
@@ -64,7 +65,7 @@ public class FrameworkLauncher {
 	protected static final String LAUNCH_INI = "launch.ini"; //$NON-NLS-1$
 
 	private static final String EXTENSIONBUNDLE_DEFAULT_BSN = "org.eclipse.rap.servletbridge.extensionbundle"; //$NON-NLS-1$
-	private static final String EXTENSIONBUNDLE_DEFAULT_VERSION = "1.3.0"; //$NON-NLS-1$
+	private static final String EXTENSIONBUNDLE_DEFAULT_VERSION = "4.0.0"; //$NON-NLS-1$
 	private static final String MANIFEST_VERSION = "Manifest-Version"; //$NON-NLS-1$
 	private static final String BUNDLE_MANIFEST_VERSION = "Bundle-ManifestVersion"; //$NON-NLS-1$
 	private static final String BUNDLE_NAME = "Bundle-Name"; //$NON-NLS-1$
@@ -186,7 +187,7 @@ public class FrameworkLauncher {
 	/**
 	 * deployExtensionBundle will generate the Servletbridge extensionbundle if it
 	 * is not already present in the platform's plugin directory. By default it
-	 * exports "org.eclipse.rap.servletbridge" and a versioned export of the
+	 * exports "org.eclipse.rap.servletbridge" and a versioned export of the Jakarta
 	 * Servlet API. Additional exports can be added by using the
 	 * "extendedFrameworkExports" initial-param in the ServletConfig
 	 */
@@ -253,40 +254,16 @@ public class FrameworkLauncher {
 		attribs.putValue(FRAGMENT_HOST, "system.bundle; extension:=framework"); //$NON-NLS-1$
 
 		String packageExports = null;
-		if (context.getMajorVersion() > 3) {
-			// we really have no idea what the packages or versions are, it all just a guess
-			// ...
-			String servletVersion = context.getMajorVersion() + "." + context.getMinorVersion(); //$NON-NLS-1$
-			packageExports = "org.eclipse.rap.servletbridge; version=1.1" + //$NON-NLS-1$
-					", javax.servlet; version=" + servletVersion + //$NON-NLS-1$
+		String servletVersion = context.getMajorVersion() + "." + context.getMinorVersion(); //$NON-NLS-1$
+		if (context.getMajorVersion() >= 6) {
+			packageExports = "org.eclipse.rap.servletbridge; version=4.0" + //$NON-NLS-1$
+					", jakarta.servlet; version=" + servletVersion + //$NON-NLS-1$
 					", jakarta.servlet.annotation; version=" + servletVersion + //$NON-NLS-1$
 					", jakarta.servlet.descriptor; version=" + servletVersion + //$NON-NLS-1$
 					", jakarta.servlet.http; version=" + servletVersion + //$NON-NLS-1$
 					", jakarta.servlet.resources; version=" + servletVersion; //$NON-NLS-1$
-		} else if (context.getMajorVersion() == 3) {
-			// We know spec version 3.0 corresponds to package version 2.6
-			// we are guessing future 3.x spec versions will increment package versions
-			// minor, so ...
-			String servletVersion = (context.getMajorVersion() - 1) + "." + (context.getMinorVersion() + 6); //$NON-NLS-1$
-			String specVersion = context.getMajorVersion() + "." + context.getMinorVersion(); //$NON-NLS-1$
-			packageExports = "org.eclipse.rap.servletbridge; version=1.1" + //$NON-NLS-1$
-					", javax.servlet; version=" + servletVersion + //$NON-NLS-1$
-					", javax.servlet; version=" + specVersion + //$NON-NLS-1$
-					", jakarta.servlet.annotation; version=" + servletVersion + //$NON-NLS-1$
-					", jakarta.servlet.annotation; version=" + specVersion + //$NON-NLS-1$
-					", jakarta.servlet.descriptor; version=" + servletVersion + //$NON-NLS-1$
-					", jakarta.servlet.descriptor; version=" + specVersion + //$NON-NLS-1$
-					", jakarta.servlet.http; version=" + servletVersion + //$NON-NLS-1$
-					", jakarta.servlet.http; version=" + specVersion + //$NON-NLS-1$
-					", jakarta.servlet.resources; version=" + servletVersion + //$NON-NLS-1$
-					", jakarta.servlet.resources; version=" + specVersion; //$NON-NLS-1$
 		} else {
-			// We know spec version 2.x directly correspond to package versions
-			String servletVersion = context.getMajorVersion() + "." + context.getMinorVersion(); //$NON-NLS-1$
-			packageExports = "org.eclipse.rap.servletbridge; version=1.1" + //$NON-NLS-1$
-					", javax.servlet; version=" + servletVersion + //$NON-NLS-1$
-					", jakarta.servlet.http; version=" + servletVersion + //$NON-NLS-1$
-					", jakarta.servlet.resources; version=" + servletVersion; //$NON-NLS-1$
+			throw new IllegalArgumentException("Unsupported Jakarta Servlet version: " + servletVersion); //$NON-NLS-1$
 		}
 
 		String extendedExports = config.getInitParameter(CONFIG_EXTENDED_FRAMEWORK_EXPORTS);
