@@ -9,7 +9,6 @@
       <directory>${basedir}/target/products/${artifactId}/linux/gtk/x86_64</directory>
       <outputDirectory>/WEB-INF</outputDirectory>
       <excludes>
-        <exclude>plugins/javax.servlet*.jar</exclude>
         <exclude>plugins/jakarta.servlet-api*.jar</exclude>
       </excludes>
     </fileSet>
@@ -21,7 +20,7 @@
       <directory>${basedir}/target/products/${artifactId}/linux/gtk/x86_64/plugins</directory>
       <outputDirectory>/WEB-INF/lib</outputDirectory>
       <includes>
-        <include>org.eclipse.equinox.servletbridge_*.jar</include>
+        <include>org.eclipse.rap.servletbridge_*.jar</include>
       </includes>
     </fileSet>
   </fileSets>

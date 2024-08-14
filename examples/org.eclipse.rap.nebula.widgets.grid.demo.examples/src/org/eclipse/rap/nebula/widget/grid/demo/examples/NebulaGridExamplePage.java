@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2020 EclipseSource and others.
+ * Copyright (c) 2013, 2024 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,7 +32,7 @@ public class NebulaGridExamplePage implements IExamplePage {
   private static final int NO_DATA = Integer.MIN_VALUE;
   private static final String EURO = "€ ";
   private static final String[] YEARS = new String[] {
-    "2016", "2017", "2018", "2019", "2020"
+    "2019", "2020", "2021", "2022", "2023"
   };
 
   private List<CompanyData> data;
@@ -65,7 +65,7 @@ public class NebulaGridExamplePage implements IExamplePage {
                                6138560, 10604917, 16593986, 21795550, 23650563 ) );
     data.add( new CompanyData( "Costs and expenses:",
                                NO_DATA, NO_DATA, NO_DATA, NO_DATA, NO_DATA ) );
-    data.add( new CompanyData( "Costs of ravenues",
+    data.add( new CompanyData( "Costs of revenues",
                                2577088, 4225027, 6649085, 8621506, 8844115 ) );
     data.add( new CompanyData( "Research and development",
                                599510, 1228589, 2119985, 2793192, 2843027 ) );

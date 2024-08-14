@@ -48,7 +48,6 @@
         </executions>
       </plugin>
 
-      <!-- Remove servlet spec (old javax.servlet, new o.e.jetty.servlet-api) from the bundles.info -->
       <plugin>
         <groupId>com.google.code.maven-replacer-plugin</groupId>
         <artifactId>maven-replacer-plugin</artifactId>
@@ -66,11 +65,7 @@
           <replacements>
             <replacement>
               <token>osgi.bundles=</token>
-              <value>osgi.bundles=org.eclipse.equinox.servletbridge.extensionbundle,</value>
-            </replacement>
-            <replacement>
-              <token>reference\\:file\\:javax.servlet.*?jar@4,</token>
-              <value></value>
+              <value>osgi.bundles=org.eclipse.rap.servletbridge.extensionbundle,</value>
             </replacement>
             <replacement>
               <token>reference\\:file\\:jakarta.servlet-api.*?jar@4,</token>
