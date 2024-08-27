@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 EclipseSource and others.
+ * Copyright (c) 2013, 2024 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -225,7 +225,7 @@ public class GridOperationHandler extends ControlOperationHandler<Grid> {
     if( item != null ) {
       Event event = createSelectionEvent( SWT.Selection, properties );
       event.item = item;
-      event.index = readIndex( properties );
+      event.index = readIndex( properties ) - getColumnOffset( grid );
       grid.notifyListeners( SWT.Selection, event );
     }
   }
