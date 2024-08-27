@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 EclipseSource and others.
+ * Copyright (c) 2013, 2024 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -256,6 +256,7 @@ public class GridOperationHandler_Test {
 
   @Test
   public void testHandleNotifySelection_withDetail_check() {
+    int dataCellIndex = 3;
     Grid spyGrid = spy( grid );
     handler = new GridOperationHandler( spyGrid );
     GridItem item = new GridItem( spyGrid, SWT.NONE );
@@ -263,7 +264,7 @@ public class GridOperationHandler_Test {
     JsonObject properties = new JsonObject()
       .add( "item", getId( item ) )
       .add( "detail", "check" )
-      .add( "index", 3 );
+      .add( "index", dataCellIndex );
     handler.handleNotify( EVENT_SELECTION, properties );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
@@ -271,7 +272,7 @@ public class GridOperationHandler_Test {
     Event event = captor.getValue();
     assertEquals( item, event.item );
     assertEquals( SWT.CHECK, event.detail );
-    assertEquals( 3, event.index );
+    assertEquals( dataCellIndex - 1, event.index );
   }
 
   @Test
