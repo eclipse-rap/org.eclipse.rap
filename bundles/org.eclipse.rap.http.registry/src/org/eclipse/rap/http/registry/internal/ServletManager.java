@@ -23,7 +23,7 @@ import org.osgi.framework.*;
 
 public class ServletManager implements ExtensionPointTracker.Listener {
 
-	private static final String SERVLETS_EXTENSION_POINT = "org.eclipse.equinox.http.registry.servlets"; //$NON-NLS-1$
+	private static final String SERVLETS_EXTENSION_POINT = "org.eclipse.rap.http.registry.servlets"; //$NON-NLS-1$
 
 	private static final String HTTPCONTEXT_NAME = "httpcontext-name"; //$NON-NLS-1$
 

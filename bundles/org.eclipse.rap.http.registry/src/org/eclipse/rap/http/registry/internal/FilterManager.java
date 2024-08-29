@@ -24,7 +24,7 @@ import org.osgi.framework.*;
 
 public class FilterManager implements ExtensionPointTracker.Listener {
 
-	private static final String FILTERS_EXTENSION_POINT = "org.eclipse.equinox.http.registry.filters"; //$NON-NLS-1$
+	private static final String FILTERS_EXTENSION_POINT = "org.eclipse.rap.http.registry.filters"; //$NON-NLS-1$
 
 	private static final String HTTPCONTEXT_NAME = "httpcontext-name"; //$NON-NLS-1$
 

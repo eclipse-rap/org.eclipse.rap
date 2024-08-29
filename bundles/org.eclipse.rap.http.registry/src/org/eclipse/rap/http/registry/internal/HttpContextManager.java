@@ -25,7 +25,7 @@ import org.osgi.framework.Bundle;
 
 public class HttpContextManager implements Listener {
 
-	private static final String HTTPCONTEXTS_EXTENSION_POINT = "org.eclipse.equinox.http.registry.httpcontexts"; //$NON-NLS-1$
+	private static final String HTTPCONTEXTS_EXTENSION_POINT = "org.eclipse.rap.http.registry.httpcontexts"; //$NON-NLS-1$
 	private static final String HTTPCONTEXT = "httpcontext"; //$NON-NLS-1$
 	private static final String NAME = "name"; //$NON-NLS-1$
 	private static final String ID = "id"; //$NON-NLS-1$
