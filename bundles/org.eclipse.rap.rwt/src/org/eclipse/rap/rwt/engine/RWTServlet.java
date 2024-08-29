@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2024 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,14 +19,7 @@ import static org.eclipse.rap.rwt.internal.util.HTTP.CONTENT_TYPE_JSON;
 import static org.eclipse.rap.rwt.internal.util.HTTP.METHOD_POST;
 
 import java.io.IOException;
-
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import java.io.UnsupportedEncodingException;
 
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
@@ -38,6 +31,14 @@ import org.eclipse.rap.rwt.internal.service.UISessionBuilder;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.service.ServiceHandler;
+
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 
 /**
@@ -104,6 +105,7 @@ public class RWTServlet extends HttpServlet {
   public void doPost( HttpServletRequest request, HttpServletResponse response )
     throws ServletException, IOException
   {
+    ensureCharacterEncoding( request );
     handleRequest( request, response );
   }
 
@@ -179,6 +181,21 @@ public class RWTServlet extends HttpServlet {
       context.setUISession( UISessionImpl.getInstanceFromSession( httpSession, connectionId ) );
     } else if( isUIRequest( request ) ) {
       context.setUISession( new UISessionBuilder( context ).buildUISession() );
+    }
+  }
+
+  private static void ensureCharacterEncoding( HttpServletRequest request ) {
+    try {
+      /*
+       * For POST request we can set the character encoding and get the properly decoded
+       * parameters via HttpServletRequest.getParameterMap API.
+       */
+      String characterEncoding = request.getCharacterEncoding();
+      if( characterEncoding == null || characterEncoding.isEmpty() ) {
+        request.setCharacterEncoding( HTTP.CHARSET_UTF_8 );
+      }
+    } catch ( @SuppressWarnings( "unused" ) UnsupportedEncodingException ex ) {
+      // should never happen
     }
   }
 

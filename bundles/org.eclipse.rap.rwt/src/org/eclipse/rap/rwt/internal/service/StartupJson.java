@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2024 EclipseSource and others.
+ * Copyright (c) 2012, 2023 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
@@ -28,9 +30,6 @@ import org.eclipse.rap.rwt.internal.textsize.MeasurementUtil;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.internal.util.HTTP;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 
 public class StartupJson {
@@ -78,14 +77,8 @@ public class StartupJson {
 
   private static String getStartupParameters() {
     List<String> parameters = new ArrayList<>();
+    Map<String, String[]> parameterMap = getRequest().getParameterMap();
     try {
-      /*
-       * For POST request we can set the character encoding and get the properly decoded
-       * parameters via HttpServletRequest.getParameterMap API.
-       */
-      HttpServletRequest request = getRequest();
-      request.setCharacterEncoding( HTTP.CHARSET_UTF_8 );
-      Map<String, String[]> parameterMap = request.getParameterMap();
       for ( String name : parameterMap.keySet() ) {
         for( String value : parameterMap.get( name ) ) {
           String encName = encode( name, HTTP.CHARSET_UTF_8 );
