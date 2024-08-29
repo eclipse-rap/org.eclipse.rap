@@ -22,7 +22,7 @@ import org.osgi.framework.*;
 
 public class ResourceManager implements ExtensionPointTracker.Listener {
 
-	private static final String RESOURCES_EXTENSION_POINT = "org.eclipse.equinox.http.registry.resources"; //$NON-NLS-1$
+	private static final String RESOURCES_EXTENSION_POINT = "org.eclipse.rap.http.registry.resources"; //$NON-NLS-1$
 
 	private static final String HTTPCONTEXT_NAME = "httpcontext-name"; //$NON-NLS-1$
 
