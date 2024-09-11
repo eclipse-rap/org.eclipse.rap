@@ -1029,6 +1029,8 @@ public final class PropertyResolver {
       }
     } else if( type == LexicalUnit.SAC_PIXEL ) {
       result = Integer.valueOf( ( int )unit.getFloatValue() );
+    } else if( type == LexicalUnit.SAC_POINT ) {
+      result = Integer.valueOf( Math.round( 1.33f * ( int )unit.getFloatValue() ) );
     }
     return result;
   }
