@@ -1,23 +1,23 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.eclipse.rap.fileupload.test
-Bundle-Version: 4.0.0.qualifier
-Fragment-Host: org.eclipse.rap.fileupload;bundle-version="[4.0.0,5.0.0)"
+Bundle-Version: 4.1.0.qualifier
+Fragment-Host: org.eclipse.rap.fileupload;bundle-version="[4.1.0,5.0.0)"
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-Name: %Bundle-Name
 Bundle-Vendor: %Bundle-Vendor
 Import-Package: jakarta.servlet;version="[6.0.0,7.0.0)",
  jakarta.servlet.http;version="[6.0.0,7.0.0)",
- org.eclipse.rap.rwt.testfixture;version="[4.0.0,5.0.0)",
- org.eclipse.rap.rwt.testfixture.internal;version="[4.0.0,5.0.0)",
- org.eclipse.rap.rwt.testfixture.internal.engine;version="[4.0.0,5.0.0)",
- org.eclipse.rap.rwt.testfixture.internal.service;version="[4.0.0,5.0.0)",
+ org.eclipse.rap.rwt.testfixture;version="[4.1.0,5.0.0)",
+ org.eclipse.rap.rwt.testfixture.internal;version="[4.1.0,5.0.0)",
+ org.eclipse.rap.rwt.testfixture.internal.engine;version="[4.1.0,5.0.0)",
+ org.eclipse.rap.rwt.testfixture.internal.service;version="[4.1.0,5.0.0)",
  org.mockito;version="[5.0.0,6.0.0)",
  org.mockito.invocation;version="[5.0.0,6.0.0)",
  org.mockito.stubbing;version="[5.0.0,6.0.0)",
  org.objenesis;version="[3.3.0,4.0.0)"
 Require-Bundle: org.junit;bundle-version="[4.8.2,5.0.0)",
- org.eclipse.rap.rwt;bundle-version="[4.0.0,5.0.0)",
+ org.eclipse.rap.rwt;bundle-version="[4.1.0,5.0.0)",
  net.bytebuddy.byte-buddy,
  net.bytebuddy.byte-buddy-agent
 Bundle-Localization: plugin
