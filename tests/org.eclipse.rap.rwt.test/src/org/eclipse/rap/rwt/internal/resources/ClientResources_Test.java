@@ -16,6 +16,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.RWTProperties;
@@ -81,7 +83,11 @@ public class ClientResources_Test {
 
     String content = getRegisteredContent( RAP_CLIENT_JS_PATH );
 
-    assertTrue( content.contains( "qxvariants = {\n  \"qx.debug\" : \"on\"\n};" ) );
+    // Pattern: .*qxvariants\W*=\W*\{\W*\"qx.debug\"\W*:\W*\"on\"\W*\};.*
+    String patternString = ".*qxvariants\\W*=\\W*\\{\\W*\\\"qx.debug\\\"\\W*:\\W*\\\"on\\\"\\W*\\};.*";
+    Pattern pattern = Pattern.compile(patternString, Pattern.MULTILINE);
+    Matcher matcher = pattern.matcher(content);
+    assertTrue( matcher.find());
   }
 
   @Test
