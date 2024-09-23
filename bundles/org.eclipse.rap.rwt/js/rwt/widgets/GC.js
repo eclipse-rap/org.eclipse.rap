@@ -73,12 +73,22 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
       this._paused = false;
       this._pendingOperations = null;
       this._cleanPendingImages();
+      
+      // reset lineDash and other properties according to GCData
+      // GCData is recreated every paint with default parameters,
+      // so this should simulate the same behaviour.
+      this._context.setLineDash([]);
+      this._context.lineWidth = 0;
+      this._context.globalAlpha = 1.0;
+      this._context.lineCap = "butt";
+      this._context.lineJoin = "miter";
+      
       this._draw( operations, 0 );
     },
 
     _draw : function( operations, startOffset ) {
       var offset = startOffset;
-      while( offset < operations.length ) {
+      while( offset < operations.length ) {        
         try {
           var op = operations[ offset ][ 0 ];
           switch( op ) {
@@ -92,7 +102,7 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
               this._setProperty( operations[ offset ] );
             break;
             case "lineDash":
-              this._context.setLineDash( operations[ offset ][ 1 ] );
+              this._context.setLineDash( operations[ offset ][ 1 ] );              
             break;
             case "createLinearGradient":
             case "addColorStop":
