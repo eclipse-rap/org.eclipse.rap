@@ -756,6 +756,7 @@ public class Browser extends Composite {
         case EventTypes.LOCALTION_CHANGING: {
           LocationListener locationListener = ( LocationListener )getEventListener();
           LocationEvent locationEvent = new LocationEvent( event );
+          locationEvent.doit = event.doit;
           locationListener.changing( locationEvent );
           event.doit = locationEvent.doit;
           break;
