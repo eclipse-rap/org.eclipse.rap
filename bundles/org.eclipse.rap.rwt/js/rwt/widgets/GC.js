@@ -230,15 +230,13 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
       var cy = operation[ 2 ];
       var rx = operation[ 3 ];
       var ry = operation[ 4 ];
-      //var rotation = operation[ 5 ]; // not supported
+      var rotation = operation[ 5 ];
       var startAngle = operation[ 6 ];
       var endAngle = operation[ 7 ];
       var dir = operation[ 8 ];
-      if( rx > 0 && ry > 0 ) {
-        this._context.translate( cx, cy );
-        // TODO [tb] : using scale here changes the stroke-width also, looks wrong
-        this._context.scale( 1, ry / rx );
-        this._context.arc( 0, 0, rx, startAngle, endAngle, dir );
+      if( rx > 0 && ry > 0 ) {        
+        // [pw] : lets just use ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, counterclockwise)
+        this._context.ellipse(cx, cy, rx, ry, rotation, startAngle, endAngle, dir);        
       }
     },
 
