@@ -21,6 +21,7 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
     this._control.addEventListener( "changeHeight", this._onControlChangeHeight, this );
     this._canvas = null;
     this._context = null;
+    this._scale = 2;
     this._createCanvas();
     this._canvas.rwtObject = this; // like "rwtWidget" in Widget.js, useful for custom JS components
     if( this._control.isCreated() ) {
@@ -83,11 +84,13 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
       this._context.lineCap = "butt";
       this._context.lineJoin = "miter";
       
+      this._ensureScaling();
+      
       this._draw( operations, 0 );
     },
 
     _draw : function( operations, startOffset ) {
-      var offset = startOffset;
+      var offset = startOffset;      
       while( offset < operations.length ) {        
         try {
           var op = operations[ offset ][ 0 ];
@@ -113,9 +116,11 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
             case "setTransform":
             case "resetClip":
               this[ "_" + op ]( operations[ offset ] );
+              this._ensureScaling();
             break;
             default:
               this._context[ op ].apply( this._context, operations[ offset ].slice( 1 ) );
+              this._ensureScaling();
             break;
           }
         } catch( ex ) {
@@ -163,8 +168,10 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
 
     _createCanvas : function() {
       this._canvas = document.createElement( "canvas" );
-      this._canvas.style.display = 'block';
+      this._canvas.style.display = 'block';      
       this._context = this._canvas.getContext( "2d" );
+            
+      this._context.scale(this._scale, this._scale);
     },
 
     _applyCurrentState: function(state) {
@@ -194,17 +201,24 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
 
     _onControlChangeWidth : function( event ) {
       var width = event.getValue();
-      this._canvas.width = width;
+      this._canvas.width = (width * this._scale);
       this._canvas.style.width = width + "px";
     },
 
     _onControlChangeHeight : function( event ) {
       var height = event.getValue();
-      this._canvas.height = height;
+      this._canvas.height = (height * this._scale);
       this._canvas.style.height = height + "px";
+    },
+    
+    _ensureScaling : function() {
+      // Reset current transformation matrix to the identity matrix
+      this._context.setTransform(1, 0, 0, 1, 0, 0);
+      this._context.scale(this._scale, this._scale);
     },
 
     _initClipping : function( x, y, width, height ) {
+      this._ensureScaling();
       this._context.clearRect( x, y, width, height );
       this._context.beginPath();
       this._context.rect( x, y, width, height );
