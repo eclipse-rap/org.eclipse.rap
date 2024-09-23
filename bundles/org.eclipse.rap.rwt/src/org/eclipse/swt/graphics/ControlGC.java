@@ -207,7 +207,8 @@ class ControlGC extends GCDelegate {
   @Override
   Rectangle getClipping() {
     if( clippingRect == null ) {
-      return control.getBounds();
+      Rectangle bounds = control.getBounds();
+      return new Rectangle( 0, 0, bounds.width, bounds.height );
     }
     return new Rectangle( clippingRect.x, clippingRect.y, clippingRect.width, clippingRect.height );
   }
