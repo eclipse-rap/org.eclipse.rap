@@ -12,14 +12,14 @@
  ******************************************************************************/
 package org.eclipse.e4.ui.workbench.addons.minmax;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.e4.ui.di.UIEventTopic;
@@ -664,7 +664,12 @@ public class TrimStack {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				minimizedElement.getTags().remove(IPresentationEngine.MINIMIZED);
+				if (minimizedElement != null) {
+					List<String> tags = minimizedElement.getTags();
+					if (tags != null) {
+						tags.remove(IPresentationEngine.MINIMIZED);
+					}
+				}
 			}
 		});
 
@@ -925,7 +930,8 @@ public class TrimStack {
 
 	private void updateTrimStackItems() {
 		// Prevent exceptions on shutdown
-		if (trimStackTB == null || trimStackTB.isDisposed() || minimizedElement.getWidget() == null)
+		if (trimStackTB == null || trimStackTB.isDisposed() || minimizedElement == null
+				|| minimizedElement.getWidget() == null)
 			return;
 
 		// Remove any current items except the 'restore' button
@@ -1024,6 +1030,10 @@ public class TrimStack {
 	 *            whether the stack should be visible
 	 */
 	public void showStack(boolean show) {
+		if (minimizedElement == null) {
+			return;
+		}
+
 		Control ctrl = (Control) minimizedElement.getWidget();
 		CTabFolder ctf = ctrl instanceof CTabFolder ? (CTabFolder) ctrl : null;
 
