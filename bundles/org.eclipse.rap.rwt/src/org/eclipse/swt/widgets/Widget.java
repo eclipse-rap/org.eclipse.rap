@@ -583,6 +583,17 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
    * @since 1.2
    */
   public void notifyListeners( int eventType, Event event ) {
+    notifyListenersInternal( eventType, event );
+  }
+
+  /**
+   * Private notifyListeners because childs override the normal notifyListeners, but dispose in
+   * normal swt calls around it.
+   * 
+   * @param eventType
+   * @param event
+   */
+  protected final void notifyListenersInternal( int eventType, Event event ) {
     checkWidget();
     Event newEvent = event == null ? new Event() : event;
     newEvent.widget = this;
@@ -838,7 +849,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
       }
       if( !hasState( DISPOSE_SENT ) ) {
         addState( DISPOSE_SENT );
-        notifyListeners( SWT.Dispose, new Event() );
+        notifyListenersInternal( SWT.Dispose, new Event() );
       }
       if( !hasState( DISPOSED ) ) {
         releaseChildren();
