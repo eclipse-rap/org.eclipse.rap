@@ -302,8 +302,7 @@ public class RWTLifeCycle extends LifeCycle {
           UISession uiSession = ContextProvider.getUISession();
           uiSession.setAttribute( UI_THREAD_WAITING_FOR_TERMINATION, Boolean.TRUE );
           // In any case: wait for the thread to be terminated by session timeout
-          // pw: no don't wait, because we cought that earlier and terminated normally
-          //uiThread.switchThread();
+          uiThread.switchThread();
         }
       } catch( @SuppressWarnings( "unused" ) UIThreadTerminatedError e ) {
         // If we get here, the session is being invalidated, see UIThread#terminateThread()
