@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.combokit;
 
+import static org.eclipse.rap.rwt.application.Application.OperationMode.SWT_COMPATIBILITY;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_DEFAULT_SELECTION;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_FOCUS_IN;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_FOCUS_OUT;
@@ -21,6 +22,7 @@ import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_MOU
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_MOUSE_UP;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_TRAVERSE;
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -34,8 +36,11 @@ import static org.mockito.Mockito.verify;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.rwt.application.Application.OperationMode;
+import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.internal.lifecycle.ProcessActionRunner;
+import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
@@ -314,7 +319,8 @@ public class ComboOperationHandler_Test {
   }
 
   @Test
-  public void testHandleNotifyMouseDown() {
+  public void testHandleNotifyMouseDownJeeMode() {
+    ensureOperationMode( OperationMode.JEE_COMPATIBILITY );
     Combo spyCombo = spy( combo );
     handler = new ComboOperationHandler( spyCombo );
     JsonObject properties = new JsonObject()
@@ -337,9 +343,37 @@ public class ComboOperationHandler_Test {
     assertEquals( 4, event.time );
     assertEquals( 1, event.count );
   }
+  
+  @Test
+  public void testHandleNotifyMouseDownSwtMode() {
+    ensureOperationMode( OperationMode.SWT_COMPATIBILITY );
+    Combo spyCombo = spy( combo );
+    handler = new ComboOperationHandler( spyCombo );
+    JsonObject properties = new JsonObject()
+      .add( "altKey", true )
+      .add( "shiftKey", true )
+      .add( "button", 1 )
+      .add( "x", 2 )
+      .add( "y", 3 )
+      .add( "time", 4 );
+
+    handler.handleNotify( EVENT_MOUSE_DOWN, properties );
+
+    ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
+    verify( spyCombo ).notifyListeners( eq( SWT.MouseDown ), captor.capture() );
+    Event event = captor.getValue();
+    assertEquals( SWT.ALT | SWT.SHIFT, event.stateMask );
+    assertEquals( 1, event.button );
+    assertEquals( 1, event.x );
+    assertEquals( 2, event.y );
+    assertEquals( 4, event.time );
+    assertEquals( 1, event.count );
+  }
+
 
   @Test
-  public void testHandleNotifyMouseDoubleClick() {
+  public void testHandleNotifyMouseDoubleClickJeeMode() {
+    ensureOperationMode( OperationMode.JEE_COMPATIBILITY );
     Combo spyCombo = spy( combo );
     handler = new ComboOperationHandler( spyCombo );
     JsonObject properties = new JsonObject()
@@ -362,6 +396,33 @@ public class ComboOperationHandler_Test {
     assertEquals( 4, event.time );
     assertEquals( 2, event.count );
   }
+  
+  @Test
+  public void testHandleNotifyMouseDoubleClickSwtMode() {
+    ensureOperationMode( OperationMode.SWT_COMPATIBILITY );
+    Combo spyCombo = spy( combo );
+    handler = new ComboOperationHandler( spyCombo );
+    JsonObject properties = new JsonObject()
+      .add( "altKey", true )
+      .add( "shiftKey", true )
+      .add( "button", 1 )
+      .add( "x", 2 )
+      .add( "y", 3 )
+      .add( "time", 4 );
+
+    handler.handleNotify( EVENT_MOUSE_DOUBLE_CLICK, properties );
+
+    ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
+    verify( spyCombo ).notifyListeners( eq( SWT.MouseDoubleClick ), captor.capture() );
+    Event event = captor.getValue();
+    assertEquals( SWT.ALT | SWT.SHIFT, event.stateMask );
+    assertEquals( 1, event.button );
+    assertEquals( 1, event.x );
+    assertEquals( 2, event.y );
+    assertEquals( 4, event.time );
+    assertEquals( 2, event.count );
+  }
+
 
   @Test
   public void testHandleNotifyMouseUp() {
@@ -481,4 +542,12 @@ public class ComboOperationHandler_Test {
     return ( Point )adapter.getPreserved( "selection" );
   }
 
+  private static void ensureOperationMode( OperationMode operationMode ) {
+    LifeCycleFactory lifeCycleFactory = getApplicationContext().getLifeCycleFactory();
+    lifeCycleFactory.deactivate();
+    if( SWT_COMPATIBILITY.equals( operationMode ) ) {
+      lifeCycleFactory.configure( RWTLifeCycle.class );
+    }
+    lifeCycleFactory.activate();
+  }
 }
