@@ -48,16 +48,16 @@ class ControlGC extends GCDelegate {
 
   ControlGC( Control control ) {
     this.control = control;
-    background = control.getBackground();
-    foreground = control.getForeground();
-    font = control.getFont();
+    font = control.getFontInternal();
+    background = control.getBackgroundInternal();
+    foreground = control.getForegroundInternal();
     alpha = 255;
     lineWidth = 0;
     lineCap = SWT.CAP_FLAT;
     lineJoin = SWT.JOIN_MITER;
     lineStyle = SWT.LINE_SOLID;
   }
-
+  
   @Override
   void setBackground( Color color ) {
     if( !background.equals( color ) ) {
