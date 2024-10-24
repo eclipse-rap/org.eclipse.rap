@@ -61,7 +61,6 @@
         <setEntry value="org.eclipse.jetty.ee10.servlet@default:default"/>
         <setEntry value="org.eclipse.jetty.http@default:default"/>
         <setEntry value="org.eclipse.jetty.io@default:default"/>
-        <setEntry value="org.eclipse.jetty.logging@default:default"/>
         <setEntry value="org.eclipse.jetty.security@default:default"/>
         <setEntry value="org.eclipse.jetty.server@default:default"/>
         <setEntry value="org.eclipse.jetty.session@default:default"/>
@@ -102,6 +101,7 @@
         <setEntry value="org.osgi.util.promise@default:default"/>
         <setEntry value="org.osgi.util.xml@default:default"/>
         <setEntry value="slf4j.api@default:default"/>
+        <setEntry value="slf4j.nop@default:default"/>
     </setAttribute>
     <setAttribute key="selected_workspace_bundles">
         <setEntry value="org.eclipse.rap.demo@default:default"/>
