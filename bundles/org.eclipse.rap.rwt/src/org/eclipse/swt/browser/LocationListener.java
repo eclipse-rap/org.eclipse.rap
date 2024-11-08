@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.swt.browser;
 
+import java.util.function.Consumer;
+
 import org.eclipse.swt.internal.SWTEventListener;
 
 
@@ -59,4 +61,35 @@ public void changing(LocationEvent event);
  */ 
 public void changed(LocationEvent event);
 
+/**
+ * Static helper method to create a <code>LocationListener</code> for the
+ * {@link #changing(LocationEvent e)}) method, given a lambda expression or a method reference.
+ *
+ * @param c the consumer of the event
+ * @return LocationListener
+ */
+public static LocationListener changingAdapter(Consumer<LocationEvent> c) {
+    return new LocationAdapter() {
+        @Override
+        public void changing(LocationEvent e) {
+            c.accept(e);
+        }
+    };
+}
+
+/**
+ * Static helper method to create a <code>LocationListener</code> for the
+ * {@link #changed(LocationEvent e)}) method, given a lambda expression or a method reference.
+ *
+ * @param c the consumer of the event
+ * @return LocationListener
+ */
+public static LocationListener changedAdapter(Consumer<LocationEvent> c) {
+    return new LocationAdapter() {
+        @Override
+        public void changed(LocationEvent e) {
+            c.accept(e);
+        }
+    };
+}
 }

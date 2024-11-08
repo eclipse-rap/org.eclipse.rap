@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.swt.browser;
 
+import java.util.function.Consumer;
+
 import org.eclipse.swt.internal.SWTEventListener;
 
 /**
@@ -54,4 +56,36 @@ public interface ProgressListener extends SWTEventListener {
    *          <code>Browser</code> that has loaded its current URL.
    */
   public void completed( ProgressEvent event );
+  
+  /**
+   * Static helper method to create a <code>ProgressListener</code> for the
+   * {@link #changed(ProgressEvent e)}) method, given a lambda expression or a method reference.
+   *
+   * @param c the consumer of the event
+   * @return LocationListener
+   */
+  public static ProgressListener changedAdapter(Consumer<ProgressEvent> c) {
+      return new ProgressAdapter() {
+          @Override
+          public void changed(ProgressEvent e) {
+              c.accept(e);
+          }
+      };
+  }
+
+  /**
+   * Static helper method to create a <code>ProgressListener</code> for the
+   * {@link #completed(ProgressEvent e)}) method, given a lambda expression or a method reference.
+   *
+   * @param c the consumer of the event
+   * @return LocationListener
+   */
+  public static ProgressListener completedAdapter(Consumer<ProgressEvent> c) {
+      return new ProgressAdapter() {
+          @Override
+          public void completed(ProgressEvent e) {
+              c.accept(e);
+          }
+      };
+  }
 }

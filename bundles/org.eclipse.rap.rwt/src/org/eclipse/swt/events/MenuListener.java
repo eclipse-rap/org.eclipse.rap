@@ -11,6 +11,8 @@
 
 package org.eclipse.swt.events;
 
+import java.util.function.Consumer;
+
 import org.eclipse.swt.internal.SWTEventListener;
 
 /**
@@ -44,4 +46,35 @@ public interface MenuListener extends SWTEventListener {
 	 */
 	public void menuShown(MenuEvent e);
 
+	/**
+	 * Static helper method to create a <code>MenuListener</code> for the
+	 * {@link #menuHidden(MenuEvent e)}) method, given a lambda expression or a method reference.
+	 *
+	 * @param c the consumer of the event
+	 * @return MenuListener
+	 */
+	static MenuListener menuHiddenAdapter(Consumer<MenuEvent> c) {
+	    return new MenuAdapter() {
+	        @Override
+	        public void menuHidden(MenuEvent e) {
+	            c.accept(e);
+	        }
+	    };
+	}
+
+	/**
+	 * Static helper method to create a <code>MenuListener</code> for the
+	 * {@link #menuShown(MenuEvent e)}) method, given a lambda expression or a method reference.
+	 *
+	 * @param c the consumer of the event
+	 * @return MenuListener
+	 */
+	static MenuListener menuShownAdapter(Consumer<MenuEvent> c) {
+	    return new MenuAdapter() {
+	        @Override
+	        public void menuShown(MenuEvent e) {
+	            c.accept(e);
+	        }
+	    };
+	}
 }

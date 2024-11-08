@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.swt.events;
 
+import java.util.function.Consumer;
+
 import org.eclipse.swt.internal.SWTEventListener;
 
 /**
@@ -43,4 +45,36 @@ public interface ExpandListener extends SWTEventListener {
    * @param e an event containing information about the operation
    */
   public void itemExpanded( ExpandEvent e );
+  
+  /**
+   * Static helper method to create a <code>ExpandListener</code> for the
+   * {@link #itemCollapsed(ExpandEvent e)}) method, given a lambda expression or a method reference.
+   *
+   * @param c the consumer of the event
+   * @return ExpandListener
+   */
+  static ExpandListener itemCollapsedAdapter(Consumer<ExpandEvent> c) {
+      return new ExpandAdapter() {
+          @Override
+          public void itemCollapsed(ExpandEvent e) {
+              c.accept(e);
+          }
+      };
+  }
+
+  /**
+   * Static helper method to create a <code>ExpandListener</code> for the
+   * {@link #itemExpanded(ExpandEvent e)}) method, given a lambda expression or a method reference.
+   *
+   * @param c the consumer of the event
+   * @return ExpandListener
+   */
+  static ExpandListener itemExpandedAdapter(Consumer<ExpandEvent> c) {
+      return new ExpandAdapter() {
+          @Override
+          public void itemExpanded(ExpandEvent e) {
+              c.accept(e);
+          }
+      };
+  }
 }

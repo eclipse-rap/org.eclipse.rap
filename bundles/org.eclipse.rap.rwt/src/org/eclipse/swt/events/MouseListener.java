@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.swt.events;
 
+import java.util.function.Consumer;
 
 import org.eclipse.swt.internal.SWTEventListener;
 
@@ -56,4 +57,52 @@ public void mouseDown(MouseEvent e);
  * @param e an event containing information about the mouse button release
  */
 public void mouseUp(MouseEvent e);
+
+/**
+ * Static helper method to create a <code>MouseListener</code> for the
+ * {@link #mouseDoubleClick(MouseEvent e)}) method with a lambda expression.
+ *
+ * @param c the consumer of the event
+ * @return MouseListener
+ */
+static MouseListener mouseDoubleClickAdapter(Consumer<MouseEvent> c) {
+    return new MouseAdapter() {
+        @Override
+        public void mouseDoubleClick(MouseEvent e) {
+            c.accept(e);
+        }
+    };
+}
+
+/**
+ * Static helper method to create a <code>MouseListener</code> for the
+ * {@link #mouseDown(MouseEvent e)}) method with a lambda expression.
+ *
+ * @param c the consumer of the event
+ * @return MouseListener
+ */
+static MouseListener mouseDownAdapter(Consumer<MouseEvent> c) {
+    return new MouseAdapter() {
+        @Override
+        public void mouseDown(MouseEvent e) {
+            c.accept(e);
+        }
+    };
+}
+
+/**
+ * Static helper method to create a <code>MouseListener</code> for the
+ * {@link #mouseUp(MouseEvent e)}) method with a lambda expression.
+ *
+ * @param c the consumer of the event
+ * @return MouseListener
+ */
+static MouseListener mouseUpAdapter(Consumer<MouseEvent> c) {
+    return new MouseAdapter() {
+        @Override
+        public void mouseUp(MouseEvent e) {
+            c.accept(e);
+        }
+    };
+}
 }

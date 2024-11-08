@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.swt.accessibility;
 
+import java.util.function.Consumer;
 
 import org.eclipse.swt.internal.SWTEventListener;
 
@@ -123,4 +124,68 @@ public interface AccessibleListener extends SWTEventListener {
 	 * </ul>
 	 */
 	public void getDescription(AccessibleEvent e);
+	
+    /**
+     * Static helper method to create a <code>AccessibleListener</code> for the
+     * {@link #getName(AccessibleEvent e)}) method with a lambda expression.
+     *
+     * @param c the consumer of the event
+     * @return AccessibleListener
+     */
+    public static AccessibleListener getNameAdapter(Consumer<AccessibleEvent> c) {
+        return new AccessibleAdapter() {
+            @Override
+            public void getName(AccessibleEvent e) {
+                c.accept(e);
+            }
+        };
+    }
+
+    /**
+     * Static helper method to create a <code>AccessibleListener</code> for the
+     * {@link #getHelp(AccessibleEvent e)}) method with a lambda expression.
+     *
+     * @param c the consumer of the event
+     * @return AccessibleListener
+     */
+    public static AccessibleListener getHelpAdapter(Consumer<AccessibleEvent> c) {
+        return new AccessibleAdapter() {
+            @Override
+            public void getHelp(AccessibleEvent e) {
+                c.accept(e);
+            }
+        };
+    }
+
+    /**
+     * Static helper method to create a <code>AccessibleListener</code> for the
+     * {@link #getKeyboardShortcut(AccessibleEvent e)}) method with a lambda expression.
+     *
+     * @param c the consumer of the event
+     * @return AccessibleListener
+     */
+    public static AccessibleListener getKeyboardShortcutAdapter(Consumer<AccessibleEvent> c) {
+        return new AccessibleAdapter() {
+            @Override
+            public void getKeyboardShortcut(AccessibleEvent e) {
+                c.accept(e);
+            }
+        };
+    }
+
+    /**
+     * Static helper method to create a <code>AccessibleListener</code> for the
+     * {@link #getDescription(AccessibleEvent e)}) method with a lambda expression.
+     *
+     * @param c the consumer of the event
+     * @return AccessibleListener
+     */
+    public static AccessibleListener getDescriptionAdapter(Consumer<AccessibleEvent> c) {
+        return new AccessibleAdapter() {
+            @Override
+            public void getDescription(AccessibleEvent e) {
+                c.accept(e);
+            }
+        };
+    }
 }
