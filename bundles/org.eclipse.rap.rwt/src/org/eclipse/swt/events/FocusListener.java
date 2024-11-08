@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.swt.events;
 
+import java.util.function.Consumer;
+
 import org.eclipse.swt.internal.SWTEventListener;
 
 /**
@@ -40,4 +42,36 @@ public interface FocusListener extends SWTEventListener {
    * @param event an event containing information about the focus change
    */
   public void focusLost( FocusEvent event );
+  
+  /**
+   * Static helper method to create a <code>FocusListener</code> for the
+   * {@link #focusGained(FocusEvent e)}) method with a lambda expression.
+   *
+   * @param c the consumer of the event
+   * @return FocusListener
+   */
+  static FocusListener focusGainedAdapter(Consumer<FocusEvent> c) {
+      return new FocusAdapter() {
+          @Override
+          public void focusGained(FocusEvent e) {
+              c.accept(e);
+          }
+      };
+  }
+
+  /**
+   * Static helper method to create a <code>FocusListener</code> for the
+   * {@link #focusLost(FocusEvent e)}) method with a lambda expression.
+   *
+   * @param c the consumer of the event
+   * @return FocusListener
+  */
+  static FocusListener focusLostAdapter(Consumer<FocusEvent> c) {
+      return new FocusAdapter() {
+          @Override
+          public void focusLost(FocusEvent e) {
+              c.accept(e);
+          }
+      };
+  }
 }

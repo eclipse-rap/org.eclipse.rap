@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.swt.events;
 
+import java.util.function.Consumer;
 
 import org.eclipse.swt.internal.SWTEventListener;
 
@@ -46,4 +47,36 @@ public void keyPressed(KeyEvent e);
  * @param e an event containing information about the key release
  */
 public void keyReleased(KeyEvent e);
+
+/**
+ * Static helper method to create a <code>KeyListener</code> for the
+ * {@link #keyPressed(KeyEvent e)}) method with a lambda expression.
+ *
+ * @param c the consumer of the event
+ * @return KeyListener
+ */
+static KeyListener keyPressedAdapter(Consumer<KeyEvent> c) {
+    return new KeyAdapter() {
+        @Override
+        public void keyPressed(KeyEvent e) {
+            c.accept(e);
+        }
+    };
+}
+
+/**
+ * Static helper method to create a <code>KeyListener</code> for the
+ * {@link #keyReleased(KeyEvent e)}) method with a lambda expression.
+ *
+ * @param c the consumer of the event
+ * @return KeyListener
+*/
+static KeyListener keyReleasedAdapter(Consumer<KeyEvent> c) {
+    return new KeyAdapter() {
+        @Override
+        public void keyReleased(KeyEvent e) {
+            c.accept(e);
+        }
+    };
+}
 }

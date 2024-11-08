@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.swt.events;
 
+import java.util.function.Consumer;
+
 import org.eclipse.swt.internal.SWTEventListener;
 
 /**
@@ -54,4 +56,52 @@ public interface MouseTrackListener extends SWTEventListener {
    * @param e an event containing information about the hover
    */
   public void mouseHover( MouseEvent e );
+  
+  /**
+   * Static helper method to create a <code>MouseTrackListener</code> for the
+   * {@link #mouseEnter(MouseEvent e)}) method, given a lambda expression or a method reference.
+   *
+   * @param c the consumer of the event
+   * @return MouseTrackListener
+   */
+  static MouseTrackListener mouseEnterAdapter(Consumer<MouseEvent> c) {
+      return new MouseTrackAdapter() {
+          @Override
+          public void mouseEnter(MouseEvent e) {
+              c.accept(e);
+          }
+      };
+  }
+
+  /**
+   * Static helper method to create a <code>MouseTrackListener</code> for the
+   * {@link #mouseExit(MouseEvent e)}) method, given a lambda expression or a method reference.
+   *
+   * @param c the consumer of the event
+   * @return MouseTrackListener
+   */
+  static MouseTrackListener mouseExitAdapter(Consumer<MouseEvent> c) {
+      return new MouseTrackAdapter() {
+          @Override
+          public void mouseExit(MouseEvent e) {
+              c.accept(e);
+          }
+      };
+  }
+
+  /**
+   * Static helper method to create a <code>MouseTrackListener</code> for the
+   * {@link #mouseHover(MouseEvent e)}) method, given a lambda expression or a method reference.
+   *
+   * @param c the consumer of the event
+   * @return MouseTrackListener
+   */
+  static MouseTrackListener mouseHoverAdapter(Consumer<MouseEvent> c) {
+      return new MouseTrackAdapter() {
+          @Override
+          public void mouseHover(MouseEvent e) {
+              c.accept(e);
+          }
+      };
+  }
 }

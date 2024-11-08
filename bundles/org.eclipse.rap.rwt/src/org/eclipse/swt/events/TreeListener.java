@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.swt.events;
 
+import java.util.function.Consumer;
+
 import org.eclipse.swt.internal.SWTEventListener;
 
 /**
@@ -40,4 +42,36 @@ public interface TreeListener extends SWTEventListener {
    * @param e an event containing information about the tree operation
    */
   void treeExpanded( TreeEvent e );
+  
+  /**
+   * Static helper method to create a <code>TreeListener</code> for the
+   * {@link #treeCollapsed(TreeEvent e)}) method, given a lambda expression or a method reference.
+   *
+   * @param c the consumer of the event
+   * @return TreeListener
+   */
+  static TreeListener treeCollapsedAdapter(Consumer<TreeEvent> c) {
+      return new TreeAdapter() {
+          @Override
+          public void treeCollapsed(TreeEvent e) {
+              c.accept(e);
+          }
+      };
+  }
+
+  /**
+   * Static helper method to create a <code>TreeListener</code> for the
+   * {@link #treeExpanded(TreeEvent e)}) method, given a lambda expression or a method reference.
+   *
+   * @param c the consumer of the event
+   * @return TreeListener
+   */
+  static TreeListener treeExpandedAdapter(Consumer<TreeEvent> c) {
+      return new TreeAdapter() {
+          @Override
+          public void treeExpanded(TreeEvent e) {
+              c.accept(e);
+          }
+      };
+  }
 }

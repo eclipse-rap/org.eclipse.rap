@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.swt.events;
 
+import java.util.function.Consumer;
+
 import org.eclipse.swt.internal.SWTEventListener;
 
 /**
@@ -41,4 +43,36 @@ public interface ControlListener extends SWTEventListener {
    * @param e an event containing information about the resize
    */
   void controlResized( ControlEvent e );
+  
+  /**
+   * Static helper method to create a <code>ControlListener</code> for the
+   * {@link #controlMoved(ControlEvent e)}) method, given a lambda expression or a method reference.
+   *
+   * @param c the consumer of the event
+   * @return ControlListener
+   */
+  static ControlListener controlMovedAdapter(Consumer<ControlEvent> c) {
+      return new ControlAdapter() {
+          @Override
+          public void controlMoved(ControlEvent e) {
+              c.accept(e);
+          }
+      };
+  }
+
+  /**
+   * Static helper method to create a <code>ControlListener</code> for the
+   * {@link #controlResized(ControlEvent e)}) method, given a lambda expression or a method reference.
+   *
+   * @param c the consumer of the event
+   * @return ControlListener
+   */
+  static ControlListener controlResizedAdapter(Consumer<ControlEvent> c) {
+      return new ControlAdapter() {
+          @Override
+          public void controlResized(ControlEvent e) {
+              c.accept(e);
+          }
+      };
+  }
 }

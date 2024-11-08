@@ -11,6 +11,7 @@
 
 package org.eclipse.swt.events;
 
+import java.util.function.Consumer;
 
 import org.eclipse.swt.internal.SWTEventListener;
 
@@ -65,5 +66,53 @@ public void shellDeactivated(ShellEvent e);
  * @param e an event containing information about the minimization
  */
 //public void shellIconified(ShellEvent e);
+
+/**
+ * Static helper method to create a <code>ShellListener</code> for the
+ * {@link #shellActivated(ShellEvent e)}) method, given a lambda expression or a method reference.
+ *
+ * @param c the consumer of the event
+ * @return ShellListener
+ */
+static ShellListener shellActivatedAdapter(Consumer<ShellEvent> c) {
+    return new ShellAdapter() {
+        @Override
+        public void shellActivated(ShellEvent e) {
+            c.accept(e);
+        }
+    };
+}
+
+/**
+ * Static helper method to create a <code>ShellListener</code> for the
+ * {@link #shellClosed(ShellEvent e)}) method, given a lambda expression or a method reference.
+ *
+ * @param c the consumer of the event
+ * @return ShellListener
+ */
+static ShellListener shellClosedAdapter(Consumer<ShellEvent> c) {
+    return new ShellAdapter() {
+        @Override
+        public void shellClosed(ShellEvent e) {
+            c.accept(e);
+        }
+    };
+}
+
+/**
+ * Static helper method to create a <code>ShellListener</code> for the
+ * {@link #shellDeactivated(ShellEvent e)}) method, given a lambda expression or a method reference.
+ *
+ * @param c the consumer of the event
+ * @return ShellListener
+ */
+static ShellListener shellDeactivatedAdapter(Consumer<ShellEvent> c) {
+    return new ShellAdapter() {
+        @Override
+        public void shellDeactivated(ShellEvent e) {
+            c.accept(e);
+        }
+    };
+}
 }
 
