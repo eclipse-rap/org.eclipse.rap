@@ -62,7 +62,8 @@ public interface ProgressListener extends SWTEventListener {
    * {@link #changed(ProgressEvent e)}) method, given a lambda expression or a method reference.
    *
    * @param c the consumer of the event
-   * @return LocationListener
+   * @return ProgressListener
+   * @since 4.1
    */
   public static ProgressListener changedAdapter(Consumer<ProgressEvent> c) {
       return new ProgressAdapter() {
@@ -78,7 +79,8 @@ public interface ProgressListener extends SWTEventListener {
    * {@link #completed(ProgressEvent e)}) method, given a lambda expression or a method reference.
    *
    * @param c the consumer of the event
-   * @return LocationListener
+   * @return ProgressListener
+   * @since 4.1
    */
   public static ProgressListener completedAdapter(Consumer<ProgressEvent> c) {
       return new ProgressAdapter() {

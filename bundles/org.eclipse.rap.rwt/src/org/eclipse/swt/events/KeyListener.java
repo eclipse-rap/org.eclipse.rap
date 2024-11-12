@@ -54,6 +54,7 @@ public void keyReleased(KeyEvent e);
  *
  * @param c the consumer of the event
  * @return KeyListener
+ * @since 4.1
  */
 static KeyListener keyPressedAdapter(Consumer<KeyEvent> c) {
     return new KeyAdapter() {
@@ -70,6 +71,7 @@ static KeyListener keyPressedAdapter(Consumer<KeyEvent> c) {
  *
  * @param c the consumer of the event
  * @return KeyListener
+ * @since 4.1
 */
 static KeyListener keyReleasedAdapter(Consumer<KeyEvent> c) {
     return new KeyAdapter() {

@@ -49,6 +49,7 @@ public interface FocusListener extends SWTEventListener {
    *
    * @param c the consumer of the event
    * @return FocusListener
+   * @since 4.1
    */
   static FocusListener focusGainedAdapter(Consumer<FocusEvent> c) {
       return new FocusAdapter() {
@@ -65,6 +66,7 @@ public interface FocusListener extends SWTEventListener {
    *
    * @param c the consumer of the event
    * @return FocusListener
+   * @since 4.1
   */
   static FocusListener focusLostAdapter(Consumer<FocusEvent> c) {
       return new FocusAdapter() {

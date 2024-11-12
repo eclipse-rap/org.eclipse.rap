@@ -52,6 +52,7 @@ public interface ExpandListener extends SWTEventListener {
    *
    * @param c the consumer of the event
    * @return ExpandListener
+   * @since 4.1
    */
   static ExpandListener itemCollapsedAdapter(Consumer<ExpandEvent> c) {
       return new ExpandAdapter() {
@@ -68,6 +69,7 @@ public interface ExpandListener extends SWTEventListener {
    *
    * @param c the consumer of the event
    * @return ExpandListener
+   * @since 4.1
    */
   static ExpandListener itemExpandedAdapter(Consumer<ExpandEvent> c) {
       return new ExpandAdapter() {

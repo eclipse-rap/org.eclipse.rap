@@ -118,6 +118,7 @@ public void showList(CTabFolderEvent event);
  *
  * @param c the consumer of the event
  * @return CTabFolder2Listener
+ * @since 4.1
  */
 public static CTabFolder2Listener closeAdapter(Consumer<CTabFolderEvent> c) {
     return new CTabFolder2Adapter() {
@@ -134,6 +135,7 @@ public static CTabFolder2Listener closeAdapter(Consumer<CTabFolderEvent> c) {
  *
  * @param c the consumer of the event
  * @return CTabFolder2Listener
+ * @since 4.1
  */
 public static CTabFolder2Listener minimizeAdapter(Consumer<CTabFolderEvent> c) {
     return new CTabFolder2Adapter() {
@@ -150,6 +152,7 @@ public static CTabFolder2Listener minimizeAdapter(Consumer<CTabFolderEvent> c) {
  *
  * @param c the consumer of the event
  * @return CTabFolder2Listener
+ * @since 4.1
  */
 public static CTabFolder2Listener maximizeAdapter(Consumer<CTabFolderEvent> c) {
     return new CTabFolder2Adapter() {
@@ -166,6 +169,7 @@ public static CTabFolder2Listener maximizeAdapter(Consumer<CTabFolderEvent> c) {
  *
  * @param c the consumer of the event
  * @return CTabFolder2Listener
+ * @since 4.1
  */
 public static CTabFolder2Listener restoreAdapter(Consumer<CTabFolderEvent> c) {
     return new CTabFolder2Adapter() {
@@ -182,6 +186,7 @@ public static CTabFolder2Listener restoreAdapter(Consumer<CTabFolderEvent> c) {
  *
  * @param c the consumer of the event
  * @return CTabFolder2Listener
+ * @since 4.1
  */
 public static CTabFolder2Listener showListAdapter(Consumer<CTabFolderEvent> c) {
     return new CTabFolder2Adapter() {

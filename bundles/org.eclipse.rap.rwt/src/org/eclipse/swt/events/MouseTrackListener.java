@@ -63,6 +63,7 @@ public interface MouseTrackListener extends SWTEventListener {
    *
    * @param c the consumer of the event
    * @return MouseTrackListener
+   * @since 4.1
    */
   static MouseTrackListener mouseEnterAdapter(Consumer<MouseEvent> c) {
       return new MouseTrackAdapter() {
@@ -79,6 +80,7 @@ public interface MouseTrackListener extends SWTEventListener {
    *
    * @param c the consumer of the event
    * @return MouseTrackListener
+   * @since 4.1
    */
   static MouseTrackListener mouseExitAdapter(Consumer<MouseEvent> c) {
       return new MouseTrackAdapter() {
@@ -95,6 +97,7 @@ public interface MouseTrackListener extends SWTEventListener {
    *
    * @param c the consumer of the event
    * @return MouseTrackListener
+   * @since 4.1
    */
   static MouseTrackListener mouseHoverAdapter(Consumer<MouseEvent> c) {
       return new MouseTrackAdapter() {

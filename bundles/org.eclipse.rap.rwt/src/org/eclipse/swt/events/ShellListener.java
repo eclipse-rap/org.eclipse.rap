@@ -73,6 +73,7 @@ public void shellDeactivated(ShellEvent e);
  *
  * @param c the consumer of the event
  * @return ShellListener
+ * @since 4.1
  */
 static ShellListener shellActivatedAdapter(Consumer<ShellEvent> c) {
     return new ShellAdapter() {
@@ -89,6 +90,7 @@ static ShellListener shellActivatedAdapter(Consumer<ShellEvent> c) {
  *
  * @param c the consumer of the event
  * @return ShellListener
+ * @since 4.1
  */
 static ShellListener shellClosedAdapter(Consumer<ShellEvent> c) {
     return new ShellAdapter() {
@@ -105,6 +107,7 @@ static ShellListener shellClosedAdapter(Consumer<ShellEvent> c) {
  *
  * @param c the consumer of the event
  * @return ShellListener
+ * @since 4.1
  */
 static ShellListener shellDeactivatedAdapter(Consumer<ShellEvent> c) {
     return new ShellAdapter() {
