@@ -69,6 +69,7 @@ public void widgetDefaultSelected(SelectionEvent e);
  *
  * @param c the consumer of the event
  * @return SelectionListener
+ * @since 4.1
  */
 static SelectionListener widgetSelectedAdapter(Consumer<SelectionEvent> c) {
     return new SelectionAdapter() {
@@ -86,6 +87,7 @@ static SelectionListener widgetSelectedAdapter(Consumer<SelectionEvent> c) {
  *
  * @param c the consumer of the event
  * @return SelectionListener
+ * @since 4.1
 */
 static SelectionListener widgetDefaultSelectedAdapter(Consumer<SelectionEvent> c) {
     return new SelectionAdapter() {

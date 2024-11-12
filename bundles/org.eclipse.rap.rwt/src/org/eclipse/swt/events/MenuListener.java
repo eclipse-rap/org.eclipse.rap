@@ -52,6 +52,7 @@ public interface MenuListener extends SWTEventListener {
 	 *
 	 * @param c the consumer of the event
 	 * @return MenuListener
+	 * @since 4.1
 	 */
 	static MenuListener menuHiddenAdapter(Consumer<MenuEvent> c) {
 	    return new MenuAdapter() {
@@ -68,6 +69,7 @@ public interface MenuListener extends SWTEventListener {
 	 *
 	 * @param c the consumer of the event
 	 * @return MenuListener
+	 * @since 4.1
 	 */
 	static MenuListener menuShownAdapter(Consumer<MenuEvent> c) {
 	    return new MenuAdapter() {

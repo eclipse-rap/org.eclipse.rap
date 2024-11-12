@@ -49,6 +49,7 @@ public interface TreeListener extends SWTEventListener {
    *
    * @param c the consumer of the event
    * @return TreeListener
+   * @since 4.1
    */
   static TreeListener treeCollapsedAdapter(Consumer<TreeEvent> c) {
       return new TreeAdapter() {
@@ -65,6 +66,7 @@ public interface TreeListener extends SWTEventListener {
    *
    * @param c the consumer of the event
    * @return TreeListener
+   * @since 4.1
    */
   static TreeListener treeExpandedAdapter(Consumer<TreeEvent> c) {
       return new TreeAdapter() {

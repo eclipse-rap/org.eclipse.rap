@@ -50,6 +50,7 @@ public interface ControlListener extends SWTEventListener {
    *
    * @param c the consumer of the event
    * @return ControlListener
+   * @since 4.1
    */
   static ControlListener controlMovedAdapter(Consumer<ControlEvent> c) {
       return new ControlAdapter() {
@@ -66,6 +67,7 @@ public interface ControlListener extends SWTEventListener {
    *
    * @param c the consumer of the event
    * @return ControlListener
+   * @since 4.1
    */
   static ControlListener controlResizedAdapter(Consumer<ControlEvent> c) {
       return new ControlAdapter() {

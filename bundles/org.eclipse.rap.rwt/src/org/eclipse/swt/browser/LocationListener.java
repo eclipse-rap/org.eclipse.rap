@@ -67,6 +67,7 @@ public void changed(LocationEvent event);
  *
  * @param c the consumer of the event
  * @return LocationListener
+ * @since 4.1
  */
 public static LocationListener changingAdapter(Consumer<LocationEvent> c) {
     return new LocationAdapter() {
@@ -83,6 +84,7 @@ public static LocationListener changingAdapter(Consumer<LocationEvent> c) {
  *
  * @param c the consumer of the event
  * @return LocationListener
+ * @since 4.1
  */
 public static LocationListener changedAdapter(Consumer<LocationEvent> c) {
     return new LocationAdapter() {

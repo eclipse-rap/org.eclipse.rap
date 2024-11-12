@@ -64,6 +64,7 @@ public void mouseUp(MouseEvent e);
  *
  * @param c the consumer of the event
  * @return MouseListener
+ * @since 4.1
  */
 static MouseListener mouseDoubleClickAdapter(Consumer<MouseEvent> c) {
     return new MouseAdapter() {
@@ -80,6 +81,7 @@ static MouseListener mouseDoubleClickAdapter(Consumer<MouseEvent> c) {
  *
  * @param c the consumer of the event
  * @return MouseListener
+ * @since 4.1
  */
 static MouseListener mouseDownAdapter(Consumer<MouseEvent> c) {
     return new MouseAdapter() {
@@ -96,6 +98,7 @@ static MouseListener mouseDownAdapter(Consumer<MouseEvent> c) {
  *
  * @param c the consumer of the event
  * @return MouseListener
+ * @since 4.1
  */
 static MouseListener mouseUpAdapter(Consumer<MouseEvent> c) {
     return new MouseAdapter() {

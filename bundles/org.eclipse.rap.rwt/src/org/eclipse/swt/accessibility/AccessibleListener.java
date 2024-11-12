@@ -131,6 +131,7 @@ public interface AccessibleListener extends SWTEventListener {
      *
      * @param c the consumer of the event
      * @return AccessibleListener
+     * @since 4.1
      */
     public static AccessibleListener getNameAdapter(Consumer<AccessibleEvent> c) {
         return new AccessibleAdapter() {
@@ -147,6 +148,7 @@ public interface AccessibleListener extends SWTEventListener {
      *
      * @param c the consumer of the event
      * @return AccessibleListener
+     * @since 4.1
      */
     public static AccessibleListener getHelpAdapter(Consumer<AccessibleEvent> c) {
         return new AccessibleAdapter() {
@@ -163,6 +165,7 @@ public interface AccessibleListener extends SWTEventListener {
      *
      * @param c the consumer of the event
      * @return AccessibleListener
+     * @since 4.1
      */
     public static AccessibleListener getKeyboardShortcutAdapter(Consumer<AccessibleEvent> c) {
         return new AccessibleAdapter() {
@@ -179,6 +182,7 @@ public interface AccessibleListener extends SWTEventListener {
      *
      * @param c the consumer of the event
      * @return AccessibleListener
+     * @since 4.1
      */
     public static AccessibleListener getDescriptionAdapter(Consumer<AccessibleEvent> c) {
         return new AccessibleAdapter() {
