@@ -29,7 +29,7 @@
      -->
     <jetty-repo.url>https://download.eclipse.org/tools/orbit/simrel/maven-jetty/release/12.0.15/</jetty-repo.url>
     <orbit-repo.url>https://download.eclipse.org/tools/orbit/simrel/orbit-aggregation/2024-12/</orbit-repo.url>
-    <platform-repo.url>https://download.eclipse.org/eclipse/updates/4.34-I-builds/I20241107-0510/</platform-repo.url>
+    <platform-repo.url>https://download.eclipse.org/eclipse/updates/4.34-I-builds/I20241113-1800/</platform-repo.url>
     <license-repo.url>https://download.eclipse.org/cbi/updates/license/1.0.1.v20140414-1359/</license-repo.url>
     <!-- The build type, N for nighty builds, S for stable builds. S-builds will be signed. -->
     <buildType>N</buildType>
