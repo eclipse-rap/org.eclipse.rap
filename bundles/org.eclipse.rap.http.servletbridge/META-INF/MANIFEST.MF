@@ -3,12 +3,12 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %bundleName
 Bundle-Vendor: %providerName
 Bundle-SymbolicName: org.eclipse.rap.http.servletbridge;singleton:=true
-Bundle-Version: 4.1.0.qualifier
+Bundle-Version: 4.2.0.qualifier
 Bundle-Activator: org.eclipse.rap.http.servletbridge.internal.Activator
 Bundle-Localization: plugin
 Import-Package: jakarta.servlet.http;version="[5.0.0,7.0.0)",
- org.eclipse.rap.http.servlet;version="4.1.0",
- org.eclipse.rap.servletbridge;version="4.1.0",
+ org.eclipse.rap.http.servlet;version="4.2.0",
+ org.eclipse.rap.servletbridge;version="4.2.0",
  org.osgi.framework;version="1.3.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: org.eclipse.rap.http.servletbridge
