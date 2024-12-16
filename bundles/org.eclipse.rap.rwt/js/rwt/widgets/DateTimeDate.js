@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2022 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2024 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
     this._long = rwt.util.Strings.contains( style, "long" );
     this._drop_down = rwt.util.Strings.contains( style, "drop_down" );
     this._internalDateChanged = false;
+    this._dateDirty = false;
     this._weekday = weekdayNames;
     this._monthname = monthNames;
     this._datePattern = datePattern;
@@ -343,28 +344,26 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
             this._dayTextField.setText( "" + this._getDaysInMonth() );
           }
         }
+        this._applyLimitRestriction();
         // Set the weekday field
         this._setWeekday();
         var newValue = this._focusedTextField.getText();
         if( oldValue != newValue ) {
           this._sendChanges();
         }
-        this._applyLimitRestriction();
       }
     },
 
     _applyLimitRestriction : function() {
-      var day = parseInt( this._removeLeadingZero( this._dayTextField.getText() ) );
-      var date = new Date(this._lastValidYear, this._monthInt - 1, day);
-      if( this._minimum && date.getTime() < this._minimum.getTime() ) {
-        this.setYear( this._minimum.getFullYear() );
-        this.setMonth( this._minimum.getMonth() );
-        this.setDay( this._minimum.getDate() );
-      }
-      if( this._maximum && date.getTime() > this._maximum.getTime()) {
-        this.setYear( this._maximum.getFullYear() );
-        this.setMonth( this._maximum.getMonth() );
-        this.setDay( this._maximum.getDate() );
+      if( !this._dateDirty ) {
+        var day = parseInt( this._removeLeadingZero( this._dayTextField.getText() ) );
+        var date = new Date( this._lastValidYear, this._monthInt - 1, day );
+        if( this._minimum && date.getTime() < this._minimum.getTime() ) {
+          this._setDate( this._minimum );
+        }
+        if( this._maximum && date.getTime() > this._maximum.getTime() ) {
+          this._setDate( this._maximum );
+        }
       }
     },
 
@@ -710,7 +709,7 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
       if( this._minimum ) {
         this._minimum.setHours( 0, 0, 0, 0 );
       }
-      this._applySpinnerValue(this._focusedTextField);
+      this._applySpinnerValue( this._focusedTextField );
       this._applyLimitRestriction();
       if( this._calendar ) {
         this._calendar.setMinimum( this._minimum );
@@ -722,7 +721,7 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
       if( this._maximum ) {
         this._maximum.setHours( 0, 0, 0, 0 );
       }
-      this._applySpinnerValue(this._focusedTextField);
+      this._applySpinnerValue( this._focusedTextField );
       this._applyLimitRestriction();
       if( this._calendar ) {
         this._calendar.setMaximum( this._maximum );
@@ -730,8 +729,10 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
     },
 
     _setDate : function( date ) {
+      this._dateDirty = true;
       this.setYear( date.getFullYear() );
       this.setMonth( date.getMonth() );
+      this._dateDirty = false;
       this.setDay( date.getDate() );
     },
 
