@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 EclipseSource and others.
+ * Copyright (c) 2011, 2025 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -76,11 +76,14 @@ public final class FileUploadTestUtil {
     TestRequest request = Fixture.fakeNewRequest();
     request.setMethod( "POST" );
     request.setParameter( "servicehandler", "org.eclipse.rap.fileupload" );
+    String queryString = "servicehandler=org.eclipse.rap.fileupload";
     String boundary = "-----4711-----";
     String body = createMultipartBody( boundary, new FileData( content, contentType, fileName ) );
     if( token != null ) {
       request.setParameter( "token", token );
+      queryString += "&token=" + token;
     }
+    request.setQueryString( queryString );
     request.setBody( body );
     request.setContentType( "multipart/form-data; boundary=" + boundary );
   }
@@ -106,11 +109,14 @@ public final class FileUploadTestUtil {
     TestRequest request = Fixture.fakeNewRequest();
     request.setMethod( "POST" );
     request.setParameter( "servicehandler", "org.eclipse.rap.fileupload" );
+    String queryString = "servicehandler=org.eclipse.rap.fileupload";
     String boundary = "-----4711-----";
     String body = createMultipartBody( boundary, fileData );
     if( token != null ) {
       request.setParameter( "token", token );
+      queryString += "&token=" + token;
     }
+    request.setQueryString( queryString );
     request.setBody( body );
     request.setContentType( "multipart/form-data; boundary=" + boundary );
   }

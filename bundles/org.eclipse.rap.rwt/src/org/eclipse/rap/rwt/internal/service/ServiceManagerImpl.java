@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2021 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2025 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,17 +13,18 @@
 package org.eclipse.rap.rwt.internal.service;
 
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.CONNECTION_ID;
+import static org.eclipse.rap.rwt.internal.util.HTTP.getParameter;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 import org.eclipse.rap.rwt.internal.RWTProperties;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.ServiceManager;
 import org.eclipse.rap.rwt.service.UISession;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 
 public class ServiceManagerImpl implements ServiceManager {
@@ -108,7 +109,7 @@ public class ServiceManagerImpl implements ServiceManager {
   }
 
   private static String getCustomHandlerId() {
-    return ContextProvider.getRequest().getParameter( REQUEST_PARAM );
+    return getParameter( ContextProvider.getRequest(), REQUEST_PARAM );
   }
 
   private static String getConnectionId() {

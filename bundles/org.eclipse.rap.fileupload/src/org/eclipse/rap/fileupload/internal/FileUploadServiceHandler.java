@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2024 EclipseSource and others.
+ * Copyright (c) 2002, 2025 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,8 @@
  ******************************************************************************/
 package org.eclipse.rap.fileupload.internal;
 
+import static org.eclipse.rap.rwt.internal.util.HTTP.getParameter;
+
 import java.io.IOException;
 
 import org.apache.commons.fileupload2.jakarta.servlet6.JakartaServletFileUpload;
@@ -24,7 +26,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-
+@SuppressWarnings( "restriction" )
 public final class FileUploadServiceHandler implements ServiceHandler {
 
   private static final String PARAMETER_TOKEN = "token";
@@ -39,7 +41,7 @@ public final class FileUploadServiceHandler implements ServiceHandler {
     // Ignore requests to this service handler without a valid session for security reasons
     boolean hasSession = request.getSession( false ) != null;
     if( hasSession ) {
-      String token = request.getParameter( PARAMETER_TOKEN );
+      String token = getParameter( request, PARAMETER_TOKEN );
       FileUploadHandler registeredHandler = FileUploadHandlerStore.getInstance().getHandler( token );
       if( registeredHandler == null ) {
         String message = "Invalid or missing token";
