@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2024 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2025 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import static jakarta.servlet.http.HttpServletResponse.SC_SERVICE_UNAVAILABLE;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.CONNECTION_ID;
 import static org.eclipse.rap.rwt.internal.util.HTTP.CONTENT_TYPE_JSON;
 import static org.eclipse.rap.rwt.internal.util.HTTP.METHOD_POST;
+import static org.eclipse.rap.rwt.internal.util.HTTP.getParameter;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -154,7 +155,7 @@ public class RWTServlet extends HttpServlet {
   }
 
   private static boolean isServiceHandlerRequest( HttpServletRequest request ) {
-    return request.getParameter( ServiceManagerImpl.REQUEST_PARAM ) != null;
+    return getParameter( request, ServiceManagerImpl.REQUEST_PARAM ) != null;
   }
 
   private static boolean isContentTypeValid( ServletRequest request ) {
@@ -176,7 +177,7 @@ public class RWTServlet extends HttpServlet {
   private static void prepareUISession( ServiceContext context ) {
     HttpServletRequest request = context.getRequest();
     HttpSession httpSession = request.getSession( true );
-    String connectionId = request.getParameter( CONNECTION_ID );
+    String connectionId = getParameter( request, CONNECTION_ID );
     if( connectionId != null ) {
       context.setUISession( UISessionImpl.getInstanceFromSession( httpSession, connectionId ) );
     } else if( isUIRequest( request ) ) {
