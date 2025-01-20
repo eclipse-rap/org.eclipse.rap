@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2021 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2025 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource, and others.
  *
  * All rights reserved. This program and the accompanying materials
@@ -33,7 +33,9 @@ rwt.event.EventHandlerUtil = {
       // Fix for bug 295475:
       // Prevent url-dropping in FF as a whole (see bug 304651)
       var doc = rwt.widgets.base.ClientDocument.getInstance();
-      doc.getElement().setAttribute( "ondrop", "event.preventDefault();" );
+      doc.getElement().addEventListener( "drop", function ( event ) {
+        event.preventDefault();
+      } );
       var docElement = document.documentElement;
       // also see ErrorHandler.js#_enableTextSelection
       this._ffMouseFixListener = function( event ) {
