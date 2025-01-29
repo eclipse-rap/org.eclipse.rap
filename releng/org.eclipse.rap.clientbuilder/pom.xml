@@ -34,7 +34,7 @@
     <repository>
       <id>orbit-repo</id>
       <layout>p2</layout>
-      <url>${orbit-repo.url}</url>
+      <url>https://download.eclipse.org/tools/orbit/simrel/orbit-aggregation/2024-12/</url>
     </repository>
     <repository>
       <id>jetty-repo</id>
