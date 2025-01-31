@@ -25,6 +25,8 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Browser", {
 
   properties : rwt.remote.HandlerUtil.extendControlProperties( [
     "url",
+    "sandbox",
+    "inline",
     "functionResult"
   ] ),
 
@@ -36,6 +38,12 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Browser", {
           widget.syncSource();
         }, 0 );
       }
+    },
+    "sandbox" : function( widget, value ) {
+      widget.setSandbox( value );
+    },
+    "inline" : function( widget, value ) {
+      widget.setInline( value );
     },
     "functionResult" : function( widget, value ) {
       widget.setFunctionResult( value[ 0 ], value[ 1 ], value[ 2 ] );

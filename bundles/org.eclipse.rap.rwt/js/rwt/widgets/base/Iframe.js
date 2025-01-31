@@ -156,7 +156,25 @@ rwt.qx.Class.define("rwt.widgets.base.Iframe",
       check : ["yes", "no", "auto"],
       init  : "auto",
       apply : "_applyScrolling"
-    }
+    },
+
+    /**
+     * Sandboxing restrictions to set on the iframe.
+     */
+    sandbox : 
+    {
+      check : "String",
+      nullable : true
+    },
+
+    /**
+     * Whether the document content should be rendered inline using the srcdoc attribute.
+    */
+    inline : 
+    {
+      check : "Boolean",
+      init : false
+    },
   },
 
 
@@ -282,23 +300,9 @@ rwt.qx.Class.define("rwt.widgets.base.Iframe",
 
         var currentSource = this.queryCurrentUrl() || this.getSource();
 
-        try
-        {
-          /*
-          Some gecko users might have an exception here:
-            Exception... "Component returned failure code: 0x805e000a
-            [nsIDOMLocation.replace]"  nsresult: "0x805e000a (<unknown>)"
-          */
-          try
-          {
-            this.getContentWindow().location.replace(currentSource);
-          }
-          catch(ex)
-          {
-            this.getIframeNode().src = currentSource;
-          }
-        }
-        catch(ex) {
+        try {
+          this._updateSource(currentSource, true);
+        } catch(ex) {
           throw new Error( "Iframe source could not be set! This may be related to AdBlock Plus Firefox Extension." );
         }
       }
@@ -374,6 +378,67 @@ rwt.qx.Class.define("rwt.widgets.base.Iframe",
       }
     },
 
+
+    /**
+     * Updates the src or srcdoc attribute of the iframe, based on the current state of the 
+     * inline property. 
+     * Updates the sandbox attribute with the sandbox property, before changing the source.
+     *
+     * @type member
+     * @param source {String} source to set to src or srcdoc attribute
+     * @param replaceLocation {Boolean} when not inline: whether to first try to replace the 
+     *      current location of the iframe window instead of changing the src attribute
+     */
+    _updateSource : function(source, replaceLocation) {
+      var node = this.getIframeNode();
+
+      //apply current sandbox restrictions for the new source
+      if(this.getSandbox() === null) {
+        if(node.hasAttribute("sandbox")) {
+          node.removeAttribute("sandbox");
+        }
+      } else if(this.getSandbox() !== node.sandbox.value) {
+        node.sandbox = this.getSandbox();
+      }
+
+      //update source
+      if(this.isInline()) { //inline
+
+        if(node.hasAttribute("src")) {
+          node.removeAttribute("src");
+        }
+        if(node.srcdoc !== source) {
+          node.srcdoc = source;
+        }
+	
+      } else { //external
+
+        if(node.hasAttribute("srcdoc")) {
+          node.removeAttribute("srcdoc");
+        }
+
+        if(replaceLocation) {
+          var contentWindow = this.getContentWindow();
+          if(contentWindow === null) {
+            this._updateSource(source, false);
+          } else {
+            /*
+              Some gecko users might have an exception here:
+              Exception... "Component returned failure code: 0x805e000a
+              [nsIDOMLocation.replace]"  nsresult: "0x805e000a (<unknown>)"
+            */
+            try {
+              contentWindow.location.replace(source);
+            } catch(ex) {
+              this._updateSource(source, false);
+            }
+          }
+        } else {
+          node.src = source;
+        }
+
+      }
+    },
 
 
     /*
@@ -550,34 +615,13 @@ rwt.qx.Class.define("rwt.widgets.base.Iframe",
 
       this._isLoaded = false;
 
-      try
-      {
+      try {
         // the guru says ...
         // it is better to use 'replace' than 'src'-attribute, since 'replace' does not interfer
         // with the history (which is taken care of by the history manager), but there
-        // has to be a loaded document
-        if (this.getContentWindow())
-        {
-          /*
-          Some gecko users might have an exception here:
-            Exception... "Component returned failure code: 0x805e000a
-            [nsIDOMLocation.replace]"  nsresult: "0x805e000a (<unknown>)"
-          */
-          try
-          {
-            this.getContentWindow().location.replace(currentSource);
-          }
-          catch(ex)
-          {
-            this.getIframeNode().src = currentSource;
-          }
-        }
-        else
-        {
-          this.getIframeNode().src = currentSource;
-        }
-      }
-      catch(ex) {
+        // has to be a loaded document; pass respective flag to _updateSource;
+        this._updateSource(currentSource, this.getContentWindow());
+      } catch(ex) {
         throw new Error( "Iframe source could not be set! This may be related to AdBlock Plus Firefox Extension." );
       }
     },

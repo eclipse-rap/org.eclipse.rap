@@ -26,6 +26,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
 
     BLANK : "../rwt-resources/resource/static/html/blank.html",
     URL1 : "https://eclipsesource.com/",
+    SRCDOC : "<!DOCTYPE html><html><body><p>srcdoc</p></body></html>",
+    SANDBOX : "allow-scripts allow-modals",
 
     testCreateBrowserByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
@@ -96,6 +98,78 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       },
       function( browser ) {
         assertEquals( this.URL1, browser.getSource() );
+        assertFalse( browser.getIframeNode().hasAttribute( "srcdoc" ) );
+        assertTrue( "slow connection?", browser._isLoaded );
+        browser.destroy();
+      }
+    ],
+
+	testSetSrcdocByProtocol : [
+	  function() {
+	    TestUtil.createShellByProtocol( "w2" );
+        Processor.processOperation( {
+          "target" : "w3",
+          "action" : "create",
+          "type" : "rwt.widgets.Browser",
+          "properties" : {
+            "style" : [],
+            "parent" : "w2"
+          }
+        } );
+        TestUtil.flush();
+
+        Processor.processOperation( {
+          "target" : "w3",
+          "action" : "set",
+          "properties" : {
+            "inline" : true,
+		    "url" : this.SRCDOC
+          }
+        } );
+
+        var browser = ObjectRegistry.getObject( "w3" );
+	    TestUtil.delayTest( 7000 );
+        TestUtil.store( browser );
+      },
+      function( browser ) {
+        assertEquals( this.SRCDOC, browser.getSource() );
+        assertEquals( this.SRCDOC, browser.getIframeNode().srcdoc );
+        assertFalse( browser.getIframeNode().hasAttribute( "src" ) );
+        assertTrue( "slow connection?", browser._isLoaded );
+        browser.destroy();
+      }
+    ],
+
+    testSetSandboxByProtocol : [
+      function() {
+        TestUtil.createShellByProtocol( "w2" );
+        Processor.processOperation( {
+          "target" : "w3",
+          "action" : "create",
+          "type" : "rwt.widgets.Browser",
+          "properties" : {
+            "style" : [],
+            "parent" : "w2"
+          }
+        } );
+        TestUtil.flush();
+
+        Processor.processOperation( {
+          "target" : "w3",
+          "action" : "set",
+          "properties" : {
+            "inline" : true,
+            "sandbox" : this.SANDBOX,
+            "url" : this.SRCDOC
+          }
+        } );
+
+        var browser = ObjectRegistry.getObject( "w3" );
+        TestUtil.delayTest( 7000 );
+        TestUtil.store( browser );
+      },
+      function( browser ) {
+        assertEquals( this.SANDBOX, browser.getIframeNode().sandbox.value );
         assertTrue( "slow connection?", browser._isLoaded );
         browser.destroy();
       }
