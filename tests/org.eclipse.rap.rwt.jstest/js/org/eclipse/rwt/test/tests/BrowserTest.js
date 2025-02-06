@@ -104,9 +104,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       }
     ],
 
-	testSetSrcdocByProtocol : [
-	  function() {
-	    TestUtil.createShellByProtocol( "w2" );
+    testSetSrcdocByProtocol : [
+      function() {
+        TestUtil.createShellByProtocol( "w2" );
         Processor.processOperation( {
           "target" : "w3",
           "action" : "create",
@@ -123,12 +123,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
           "action" : "set",
           "properties" : {
             "inline" : true,
-		    "url" : this.SRCDOC
+            "url" : this.SRCDOC
           }
         } );
 
         var browser = ObjectRegistry.getObject( "w3" );
-	    TestUtil.delayTest( 7000 );
+        TestUtil.delayTest( 7000 );
         TestUtil.store( browser );
       },
       function( browser ) {
