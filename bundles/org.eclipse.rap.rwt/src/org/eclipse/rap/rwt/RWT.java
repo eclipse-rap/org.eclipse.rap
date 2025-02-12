@@ -578,6 +578,7 @@ public final class RWT {
    * </p>
    *
    * @see Control#setData(String,Object)
+   * @since 4.2
    */
   public static final String INLINE = "org.eclipse.rap.rwt.inline";
   
@@ -600,6 +601,7 @@ public final class RWT {
    * </p>
    *
    * @see Control#setData(String,Object)
+   * @since 4.2
    */
   public static final String SANDBOX = "org.eclipse.rap.rwt.sandbox";
 
