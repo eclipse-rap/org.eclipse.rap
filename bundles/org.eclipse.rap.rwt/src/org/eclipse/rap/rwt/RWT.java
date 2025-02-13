@@ -558,6 +558,52 @@ public final class RWT {
    * @since 2.2
    */
   public static final int CELL = 1 << 27;
+  
+  
+  /**
+   * Controls whether a document is embedded inline or as an external source (which is default behavior) in a <code>Browser</code>. For an inline document, this constant must be passed to <code>setData()</code>
+   * together with a value of <code>Boolean.TRUE</code>.
+   * <p>
+   * For example:
+   * <code><pre>
+   *   final Browser browser = new Browser( shell, SWT.BORDER );
+   *   browser.setData( RWT.INLINE, Boolean.TRUE );
+   *   browser.setText("&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;body&gt;&lt;p&gt;Inline document.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;");
+   * </pre></code>
+   * </p>
+   * <b>Used By:</b>
+   * <ul>
+   * <li><code>Browser</code></li>
+   * </ul>
+   * </p>
+   *
+   * @see Control#setData(String,Object)
+   * @since 4.2
+   */
+  public static final String INLINE = "org.eclipse.rap.rwt.inline";
+  
+  /**
+   * Controls the sandbox restrictions set to a <code>Browser</code>. This constant must be passed to <code>setData()</code>
+   * together with an <code>String</code> object. Pass the desired restrictions, or an empty <code>String</code> to apply all restrictions; pass <code>null</code> to remove previously set restrictions. 
+   * <p>
+   * For example:
+   * <code><pre>
+   *   final Browser browser = new Browser( shell, SWT.BORDER );
+   *   browser.setData( RWT.INLINE, Boolean.TRUE );
+   *   browser.setData( RWT.SANDBOX, "allow-scripts allow-modals" );
+   *   browser.setText("&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;body&gt;&lt;script type=&#39;text/javascript&#39;&gt;alert(&#39;Hello world!&#39;);&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;");
+   * </pre></code>
+   * </p>
+   * <b>Used By:</b>
+   * <ul>
+   * <li><code>Browser</code></li>
+   * </ul>
+   * </p>
+   *
+   * @see Control#setData(String,Object)
+   * @since 4.2
+   */
+  public static final String SANDBOX = "org.eclipse.rap.rwt.sandbox";
 
   /**
    * Returns the instance of the resource manager for the current application context. This is a

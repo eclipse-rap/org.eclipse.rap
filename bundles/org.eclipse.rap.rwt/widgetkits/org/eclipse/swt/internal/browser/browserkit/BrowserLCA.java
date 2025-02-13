@@ -105,6 +105,9 @@ public final class BrowserLCA extends WidgetLCA<Browser> {
 
   private static void renderUrl( Browser browser ) throws IOException {
     if( hasUrlChanged( browser ) ) {
+      String restrictions = ( String )browser.getData( RWT.SANDBOX );
+      getRemoteObject( browser ).set( "sandbox", restrictions );
+      getRemoteObject( browser ).set( "inline", isInline( browser ) );
       getRemoteObject( browser ).set( "url", getUrl( browser ) );
       browser.getAdapter( IBrowserAdapter.class ).resetUrlChanged();
     }
@@ -120,7 +123,11 @@ public final class BrowserLCA extends WidgetLCA<Browser> {
     String url = browser.getUrl();
     String result;
     if( !"".equals( text.trim() ) ) {
-      result = registerHtml( text );
+      if( isInline( browser ) ) {
+        result = text;
+      } else {
+        result = registerHtml( text );
+      }
     } else if( !"".equals( url.trim() ) ) {
       result = url;
     } else {
@@ -168,6 +175,10 @@ public final class BrowserLCA extends WidgetLCA<Browser> {
     Object adapter = browser.getAdapter( IBrowserAdapter.class );
     IBrowserAdapter browserAdapter = ( IBrowserAdapter )adapter;
     return browserAdapter.getText();
+  }
+
+  private static boolean isInline( Browser browser ) {
+    return Boolean.TRUE.equals( browser.getData( RWT.INLINE ) );
   }
 
   //////////////////////////////////////
