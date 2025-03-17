@@ -3,10 +3,10 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %bundleName
 Bundle-Vendor: %providerName
 Bundle-SymbolicName: org.eclipse.rap.servletbridge;singleton:=true
-Bundle-Version: 4.2.0.qualifier
+Bundle-Version: 4.3.0.qualifier
 Bundle-Localization: plugin
 Import-Package: jakarta.servlet;version="[5.0.0,7.0.0)",
  jakarta.servlet.http;version="[5.0.0,7.0.0)"
-Export-Package: org.eclipse.rap.servletbridge;version="4.2.0"
+Export-Package: org.eclipse.rap.servletbridge;version="4.3.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: org.eclipse.rap.servletbridge

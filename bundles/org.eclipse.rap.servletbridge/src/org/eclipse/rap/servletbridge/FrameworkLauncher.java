@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2024 Cognos Incorporated, IBM Corporation and others.
+ * Copyright (c) 2005, 2025 Cognos Incorporated, IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -65,7 +65,7 @@ public class FrameworkLauncher {
 	protected static final String LAUNCH_INI = "launch.ini"; //$NON-NLS-1$
 
 	private static final String EXTENSIONBUNDLE_DEFAULT_BSN = "org.eclipse.rap.servletbridge.extensionbundle"; //$NON-NLS-1$
-	private static final String EXTENSIONBUNDLE_DEFAULT_VERSION = "4.2.0"; //$NON-NLS-1$
+	private static final String EXTENSIONBUNDLE_DEFAULT_VERSION = "4.3.0"; //$NON-NLS-1$
 	private static final String MANIFEST_VERSION = "Manifest-Version"; //$NON-NLS-1$
 	private static final String BUNDLE_MANIFEST_VERSION = "Bundle-ManifestVersion"; //$NON-NLS-1$
 	private static final String BUNDLE_NAME = "Bundle-Name"; //$NON-NLS-1$
@@ -256,7 +256,7 @@ public class FrameworkLauncher {
 		String packageExports = null;
 		String servletVersion = context.getMajorVersion() + "." + context.getMinorVersion(); //$NON-NLS-1$
 		if (context.getMajorVersion() >= 6) {
-			packageExports = "org.eclipse.rap.servletbridge; version=4.2" + //$NON-NLS-1$
+			packageExports = "org.eclipse.rap.servletbridge; version=4.3" + //$NON-NLS-1$
 					", jakarta.servlet; version=" + servletVersion + //$NON-NLS-1$
 					", jakarta.servlet.annotation; version=" + servletVersion + //$NON-NLS-1$
 					", jakarta.servlet.descriptor; version=" + servletVersion + //$NON-NLS-1$
