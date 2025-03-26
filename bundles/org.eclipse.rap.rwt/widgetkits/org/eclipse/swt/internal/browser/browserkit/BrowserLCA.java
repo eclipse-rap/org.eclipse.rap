@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2025 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,8 +29,8 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.protocol.JsonUtil;
@@ -159,7 +159,9 @@ public final class BrowserLCA extends WidgetLCA<Browser> {
     byte[] bytes = html.getBytes( "UTF-8" );
     InputStream inputStream = new ByteArrayInputStream( bytes );
     ResourceManager resourceManager = RWT.getResourceManager();
-    resourceManager.register( name, inputStream );
+    if( !resourceManager.isRegistered( name ) ) {
+      resourceManager.register( name, inputStream );
+    }
     return resourceManager.getLocation( name );
   }
 
