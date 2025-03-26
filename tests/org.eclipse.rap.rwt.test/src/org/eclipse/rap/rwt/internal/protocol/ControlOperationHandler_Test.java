@@ -10,12 +10,14 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
+import static org.eclipse.rap.rwt.application.Application.OperationMode.SWT_COMPATIBILITY;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_KEY_DOWN;
 import static org.eclipse.rap.rwt.internal.protocol.ControlOperationHandler.createKeyEvent;
 import static org.eclipse.rap.rwt.internal.protocol.ControlOperationHandler.createMenuDetectEvent;
 import static org.eclipse.rap.rwt.internal.protocol.ControlOperationHandler.createMouseEvent;
 import static org.eclipse.rap.rwt.internal.protocol.ControlOperationHandler.getTraverseKey;
 import static org.eclipse.rap.rwt.internal.protocol.ControlOperationHandler.translateKeyCode;
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -27,6 +29,9 @@ import static org.mockito.Mockito.when;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.rwt.application.Application.OperationMode;
+import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
+import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -71,7 +76,9 @@ public class ControlOperationHandler_Test {
   }
 
   @Test
-  public void testCreateMouseEvent() {
+  public void testCreateMouseEventeJeeMode() {
+    ensureOperationMode(OperationMode.JEE_COMPATIBILITY);
+    
     JsonObject properties = new JsonObject()
       .add( "button", 1 )
       .add( "x", 15 )
@@ -90,6 +97,29 @@ public class ControlOperationHandler_Test {
     assertEquals( 1, event.count );
   }
 
+  @Test
+  public void testCreateMouseEventeSwtMode() {
+    ensureOperationMode(OperationMode.SWT_COMPATIBILITY);
+    
+    JsonObject properties = new JsonObject()
+      .add( "button", 1 )
+      .add( "x", 15 )
+      .add( "y", 20 )
+      .add( "time", 4 );
+
+    Event event = createMouseEvent( SWT.MouseDown, control, properties );
+
+    assertEquals( SWT.MouseDown, event.type );
+    assertEquals( control, event.widget );
+    assertEquals( 0, event.stateMask );
+    assertEquals( 1, event.button );
+    assertEquals( 4, event.x );
+    assertEquals( 9, event.y );
+    assertEquals( 4, event.time );
+    assertEquals( 1, event.count );
+  }
+
+  
   @Test
   public void testCreateMouseEvent_withKeyModifiers() {
     JsonObject properties = new JsonObject()
@@ -496,4 +526,12 @@ public class ControlOperationHandler_Test {
     handler.handleSet( mockedControl, properties );
   }
 
+  private static void ensureOperationMode( OperationMode operationMode ) {
+    LifeCycleFactory lifeCycleFactory = getApplicationContext().getLifeCycleFactory();
+    lifeCycleFactory.deactivate();
+    if( SWT_COMPATIBILITY.equals( operationMode ) ) {
+      lifeCycleFactory.configure( RWTLifeCycle.class );
+    }
+    lifeCycleFactory.activate();
+  }
 }
