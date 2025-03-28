@@ -248,7 +248,7 @@ public abstract class ColumnViewerEditor implements Serializable {
 					tabeditingListener = new TraverseListener() {
 
 						public void keyTraversed(TraverseEvent e) {
-							if ((feature & DEFAULT) != DEFAULT && e.doit) {
+							if ((feature & DEFAULT) != DEFAULT && e.doit && cell != null) {
 								processTraverseEvent(cell.getColumnIndex(),
 										viewer.getViewerRowFromItem(cell
 												.getItem()), e);
