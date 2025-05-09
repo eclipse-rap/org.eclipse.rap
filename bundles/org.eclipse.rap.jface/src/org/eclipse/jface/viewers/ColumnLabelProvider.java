@@ -11,6 +11,9 @@
 
 package org.eclipse.jface.viewers;
 
+import java.util.Objects;
+import java.util.function.Function;
+
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -19,18 +22,15 @@ import org.eclipse.swt.graphics.Image;
  * The ColumnLabelProvider is the label provider for viewers
  * that have column support such as {@link TreeViewer} and
  * {@link TableViewer}
- * 
- * <p><b>This classes is intended to be subclassed</b></p>
- * 
- * @since 1.0
  *
+ * <p><b>This classes is intended to be subclassed</b></p>
+ *
+ * @since 1.0
  */
 public class ColumnLabelProvider extends CellLabelProvider implements
 		IFontProvider, IColorProvider, ILabelProvider {
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.CellLabelProvider#update(org.eclipse.jface.viewers.ViewerCell)
-	 */
+	@Override
 	public void update(ViewerCell cell) {
 		Object element = cell.getElement();
 		cell.setText(getText(element));
@@ -42,40 +42,91 @@ public class ColumnLabelProvider extends CellLabelProvider implements
 
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.IFontProvider#getFont(java.lang.Object)
-	 */
+	@Override
 	public Font getFont(Object element) {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.IColorProvider#getBackground(java.lang.Object)
-	 */
+	@Override
 	public Color getBackground(Object element) {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.IColorProvider#getForeground(java.lang.Object)
-	 */
+	@Override
 	public Color getForeground(Object element) {
 		return null;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.ILabelProvider#getImage(java.lang.Object)
-	 */
+	@Override
 	public Image getImage(Object element) {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.ILabelProvider#getText(java.lang.Object)
-	 */
+	@Override
 	public String getText(Object element) {
 		return element == null ? "" : element.toString();//$NON-NLS-1$
+	}
+
+	/**
+	 * Creates a {@link ColumnLabelProvider} which implements the {@link #getText}
+	 * method by calling the argument function.
+	 *
+	 * @param textFunction the function which returns the text
+	 * @return The new ColumnLabelProvider
+	 * @since 4.3
+	 */
+	public static ColumnLabelProvider createTextProvider(Function<Object, String> textFunction) {
+		Objects.requireNonNull(textFunction);
+		return new ColumnLabelProvider() {
+			@Override
+			public String getText(Object e) {
+				return textFunction.apply(e);
+			}
+		};
+	}
+
+	/**
+	 * Creates a {@link ColumnLabelProvider} which implements the {@link #getImage}
+	 * method by calling the argument function.
+	 *
+	 * @param imageFunction the function which returns the image
+	 * @return The new ColumnLabelProvider
+	 * @since 4.3
+	 */
+	public static ColumnLabelProvider createImageProvider(Function<Object, Image> imageFunction) {
+		Objects.requireNonNull(imageFunction);
+		return new ColumnLabelProvider() {
+			@Override
+			public Image getImage(Object e) {
+				return imageFunction.apply(e);
+			}
+		};
+	}
+
+	/**
+	 * Creates a {@link ColumnLabelProvider} which implements both the
+	 * {@link #getText} and {@link #getImage} methods by calling the argument
+	 * functions.
+	 *
+	 * @param textFunction  the function which returns the text
+	 * @param imageFunction the function which returns the image
+	 * @return The new ColumnLabelProvider
+	 * @since 4.3
+	 */
+	public static ColumnLabelProvider createTextImageProvider(Function<Object, String> textFunction,
+			Function<Object, Image> imageFunction) {
+		Objects.requireNonNull(textFunction);
+		Objects.requireNonNull(imageFunction);
+		return new ColumnLabelProvider() {
+			@Override
+			public String getText(Object e) {
+				return textFunction.apply(e);
+			}
+			@Override
+			public Image getImage(Object e) {
+				return imageFunction.apply(e);
+			}
+		};
 	}
 
 }

@@ -460,7 +460,7 @@ public class SashForm extends Composite {
    *    <li>ERROR_INVALID_ARGUMENT - if the weights value is null or of incorrect length (must match the number of children)</li>
    * </ul>
    */
-  public void setWeights( int[] weights ) {
+  public void setWeights( int... weights ) {
     checkWidget();
     Control[] cArray = getControls( false );
     if( weights == null || weights.length != cArray.length ) {

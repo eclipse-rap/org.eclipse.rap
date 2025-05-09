@@ -275,6 +275,8 @@ public class FilteredTree extends Composite {
 		super(parent, SWT.NONE);
 		this.parent = parent;
 		this.useNewLook = useNewLook;
+		// RAP [rh] initialize image descriptors in session scope  
+		initializeImageDescriptors();
 	}
 	
 // RAP [rh] initialize image descriptors in session scope  
