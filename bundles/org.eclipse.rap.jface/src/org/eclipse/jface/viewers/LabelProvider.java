@@ -10,22 +10,24 @@
  *******************************************************************************/
 package org.eclipse.jface.viewers;
 
+import java.util.Objects;
+import java.util.function.Function;
+
 import org.eclipse.swt.graphics.Image;
 
 /**
  * A label provider implementation which, by default, uses an element's
- * <code>toString</code> value for its text and <code>null</code> for its
- * image.
+ * <code>toString</code> value for its text and <code>null</code> for its image.
  * <p>
  * This class may be used as is, or subclassed to provide richer labels.
  * Subclasses may override any of the following methods:
+ * </p>
  * <ul>
  * <li><code>isLabelProperty</code></li>
  * <li><code>getImage</code></li>
  * <li><code>getText</code></li>
  * <li><code>dispose</code></li>
  * </ul>
- * </p>
  */
 public class LabelProvider extends BaseLabelProvider implements ILabelProvider {
 
@@ -34,7 +36,6 @@ public class LabelProvider extends BaseLabelProvider implements ILabelProvider {
 	 */
 	public LabelProvider() {
 	}
-
 
 	/**
 	 * The <code>LabelProvider</code> implementation of this
@@ -52,5 +53,66 @@ public class LabelProvider extends BaseLabelProvider implements ILabelProvider {
 	 */
 	public String getText(Object element) {
 		return element == null ? "" : element.toString();//$NON-NLS-1$
+	}
+
+	/**
+	 * Creates a {@link LabelProvider} which implements the {@link #getText} method
+	 * by calling the argument function.
+	 *
+	 * @param textFunction the function which returns the text
+	 * @return The new LabelProvider
+	 * @since 4.3
+	 */
+	public static LabelProvider createTextProvider(Function<Object, String> textFunction) {
+		Objects.requireNonNull(textFunction);
+		return new LabelProvider() {
+			@Override
+			public String getText(Object e) {
+				return textFunction.apply(e);
+			}
+		};
+	}
+
+	/**
+	 * Creates a {@link LabelProvider} which implements the {@link #getImage} method
+	 * by calling the argument function.
+	 *
+	 * @param imageFunction the function which returns the image
+	 * @return The new LabelProvider
+	 * @since 4.3
+	 */
+	public static LabelProvider createImageProvider(Function<Object, Image> imageFunction) {
+		Objects.requireNonNull(imageFunction);
+		return new LabelProvider() {
+			@Override
+			public Image getImage(Object e) {
+				return imageFunction.apply(e);
+			}
+		};
+	}
+
+	/**
+	 * Creates a {@link LabelProvider} which implements both the {@link #getText}
+	 * and {@link #getImage} methods by calling the argument functions.
+	 *
+	 * @param textFunction  the function which returns the text
+	 * @param imageFunction the function which returns the image
+	 * @return The new LabelProvider
+	 * @since 4.3
+	 */
+	public static LabelProvider createTextImageProvider(Function<Object, String> textFunction,
+			Function<Object, Image> imageFunction) {
+		Objects.requireNonNull(textFunction);
+		Objects.requireNonNull(imageFunction);
+		return new LabelProvider() {
+			@Override
+			public String getText(Object e) {
+				return textFunction.apply(e);
+			}
+			@Override
+			public Image getImage(Object e) {
+				return imageFunction.apply(e);
+			}
+		};
 	}
 }

@@ -173,14 +173,27 @@ public abstract class ViewerDropAdapter extends DropTargetAdapter {
             if (bounds == null) {
                 return LOCATION_NONE;
             }
-            if ((coordinates.y - bounds.y) < 5) {
+            if ((coordinates.y - bounds.y) < getThreshold()) {
                 return LOCATION_BEFORE;
             }
-            if ((bounds.y + bounds.height - coordinates.y) < 5) {
+            if ((bounds.y + bounds.height - coordinates.y) < getThreshold()) {
                 return LOCATION_AFTER;
             }
         }
         return LOCATION_ON;
+    }
+
+    /**
+     * Get the threshold to determine whether to have before/after feedback or
+     * select feedback. Threshold shall not be bigger than itemHeight/2.
+     *
+     * @return amount of pixels from top/bottom of element that trigger before/after
+     *         behavior.
+     * @since 4.3
+     */
+    protected int getThreshold() {
+        // fixed default threshold provided up to v4.3
+        return 5;
     }
 
     /**
