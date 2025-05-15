@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2016 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2025 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -173,6 +173,9 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
   members : {
 
     destroy : function() {
+      this.removeEventListener( "changeActiveChild", this._onChangeActiveChild );
+      this.removeEventListener( "changeFocusedChild", this._onChangeFocusedChild );
+      this.removeEventListener( "changeActive", this._onChangeActive );
       this.doClose();
       this.getWindowManager().remove( this );
       this.base( arguments );
