@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2020 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2025 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource, and others.
  *
  * All rights reserved. This program and the accompanying materials
@@ -90,7 +90,9 @@ rwt.event.EventHandler = {
   },
 
   getCaptureWidget : function() {
-    return this._captureWidget && this._captureWidget.getEnabled() ? this._captureWidget : null;
+    return this._captureWidget &&
+          !this._captureWidget.isDisposed() &&
+           this._captureWidget.getEnabled() ? this._captureWidget : null;
   },
 
   setFocusRoot : function( widget ) {
