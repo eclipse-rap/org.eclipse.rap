@@ -11,6 +11,9 @@
 
    <plugins>
       <plugin id="com.ibm.icu"/>
+      <plugin id="org.apache.commons.commons-fileupload2-core"/>
+      <plugin id="org.apache.commons.commons-fileupload2-jakarta-servlet6"/>
+      <plugin id="org.apache.commons.commons-io"/>
       <plugin id="org.apache.felix.gogo.command"/>
       <plugin id="org.apache.felix.gogo.runtime"/>
       <plugin id="org.apache.felix.gogo.shell"/>
@@ -35,12 +38,14 @@
       <plugin id="org.eclipse.rap.http.registry"/>
       <plugin id="org.eclipse.rap.http.servlet"/>
       <plugin id="org.eclipse.rap.http.servletbridge"/>
+      <plugin id="org.eclipse.rap.fileupload"/>
       <plugin id="org.eclipse.rap.jface"/>
       <plugin id="org.eclipse.rap.jface.databinding"/>
       <plugin id="org.eclipse.rap.nebula.widgets.grid"/>
       <plugin id="org.eclipse.rap.nebula.widgets.richtext"/>
       <plugin id="org.eclipse.rap.rwt"/>
       <plugin id="org.eclipse.rap.rwt.osgi"/>
+      <plugin id="org.eclipse.rap.rwt.addons"/>
    </plugins>
 
    <configurations>
