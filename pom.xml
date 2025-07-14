@@ -32,6 +32,7 @@
     <module>bundles/org.eclipse.rap.nebula.widgets.richtext</module>
     <module>bundles/org.eclipse.rap.rwt</module>
     <module>bundles/org.eclipse.rap.rwt.osgi</module>
+    <module>bundles/org.eclipse.rap.rwt.addons</module>
     <module>bundles/org.eclipse.rap.ui.cheatsheets</module>
     <module>bundles/org.eclipse.rap.ui.forms</module>
     <module>bundles/org.eclipse.rap.ui</module>
@@ -69,6 +70,7 @@
     <module>tests/org.eclipse.rap.rwt.osgi.test</module>
     <module>tests/org.eclipse.rap.rwt.testfixture</module>
     <module>tests/org.eclipse.rap.rwt.test</module>
+    <module>tests/org.eclipse.rap.rwt.addons.test</module>
     <module>tests/org.eclipse.rap.rwt.themes.test</module>
     <module>tests/org.eclipse.rap.ui.forms.test</module>
     <!-- Packaging projects -->
