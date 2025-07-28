@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 EclipseSource and others.
+ * Copyright (c) 2011, 2025 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -62,31 +62,9 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Canvas", {
      * @see Event#gc
      */
     redraw : function() {
-      var gc = rwt.widgets.util.WidgetUtil.getGC( this );
-      var width = this.getInnerWidth();
-      var height = this.getInnerHeight();
-      var fillStyle = this.getBackgroundColor();
-      var strokeStyle = this.getTextColor();
-      var font = null;
-      if( this.getFont() ) {
-        font = [
-          this.getFont().getFamily(),
-          this.getFont().getSize(),
-          this.getFont().getBold(),
-          this.getFont().getItalic()
-        ];
-      }
-      gc.init(
-        0,
-        0,
-        width,
-        height,
-        font,
-        rwt.util.Colors.stringToRgb( fillStyle ? fillStyle : "#000000" ),
-        rwt.util.Colors.stringToRgb( strokeStyle ? strokeStyle : "#000000" )
-      );
+      this.dispatchSimpleEvent( "paint" );
     }
-  } )
 
+  } )
 
 } );

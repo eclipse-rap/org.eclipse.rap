@@ -136,6 +136,7 @@ public class ControlsDemo extends AbstractEntryPoint {
       new BrowserTab(),
       new CameraTab(),
       new CanvasTab(),
+      new ClientCanvasTab(),
       new CBannerTab(),
       new CLabelTab(),
       new ComboTab(),
