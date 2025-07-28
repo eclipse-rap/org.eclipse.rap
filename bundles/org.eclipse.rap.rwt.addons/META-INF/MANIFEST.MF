@@ -9,4 +9,5 @@ Require-Bundle: org.eclipse.rap.rwt;bundle-version="[4.4.0,5.0.0)",
 Automatic-Module-Name: org.eclipse.rap.rwt.addons
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-17
-Export-Package: org.eclipse.rap.rwt.addons.camera
+Export-Package: org.eclipse.rap.rwt.addons.camera;version="4.4.0",
+ org.eclipse.rap.rwt.addons.canvas;version="4.4.0"
