@@ -50,7 +50,7 @@
 
       <plugin>
         <groupId>com.google.code.maven-replacer-plugin</groupId>
-        <artifactId>maven-replacer-plugin</artifactId>
+        <artifactId>replacer</artifactId>
         <version>${replacer.version}</version>
         <executions>
           <execution>
@@ -61,7 +61,7 @@
           </execution>
         </executions>
         <configuration>
-          <file>target/products/${project.artifactId}/linux/gtk/x86_64/configuration/config.ini</file>
+          <file>${project.build.directory}/products/${project.artifactId}/linux/gtk/x86_64/configuration/config.ini</file>
           <replacements>
             <replacement>
               <token>osgi.bundles=</token>
