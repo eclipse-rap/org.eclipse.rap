@@ -33,7 +33,9 @@ rwt.qx.Class.define( "rwt.runtime.System", {
       this._onunloadWrapped = rwt.util.Functions.bind( this._onunload, this );
       window.addEventListener( "load", this._onloadWrapped, false );
       window.addEventListener( "beforeunload", this._onbeforeunloadWrapped, false );
-      window.addEventListener( "unload", this._onunloadWrapped, false );
+      var unloadEventName = rwt.client.Client.isBlink() ? "pagehide" : "unload";
+      // See: https://developer.chrome.com/docs/web-platform/deprecating-unload
+      window.addEventListener( unloadEventName, this._onunloadWrapped, false );
       rwt.event.EventHandler.setAllowContextMenu( rwt.widgets.Menu.getAllowContextMenu );
     }
   },
@@ -177,7 +179,9 @@ rwt.qx.Class.define( "rwt.runtime.System", {
   destruct : function() {
     window.removeEventListener( "load", this._onloadWrapped, false );
     window.removeEventListener( "beforeunload", this._onbeforeunloadWrapped, false );
-    window.removeEventListener( "unload", this._onunloadWrapped, false );
+    var unloadEventName = rwt.client.Client.isBlink() ? "pagehide" : "unload";
+    // See: https://developer.chrome.com/docs/web-platform/deprecating-unload
+    window.removeEventListener( unloadEventName, this._onunloadWrapped, false );
   },
 
   defer : function( statics )  {
