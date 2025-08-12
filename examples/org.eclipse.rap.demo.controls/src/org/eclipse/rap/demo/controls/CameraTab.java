@@ -40,9 +40,9 @@ public final class CameraTab extends ExampleTab {
   @Override
   protected void createExampleControls( Composite parent ) {
     parent.setLayout( new GridLayout( 2, true ) );
-    camera = new Camera( parent );
+    camera = new Camera( parent, SWT.BORDER );
     camera.setLayoutData( new GridData( 400, 300 ) );
-    Label picture = new Label( parent, SWT.NONE );
+    Label picture = new Label( parent, SWT.BORDER );
     picture.setLayoutData( new GridData( 400, 300 ) );
     camera.addCameraListener( new CameraListener() {
       @Override
