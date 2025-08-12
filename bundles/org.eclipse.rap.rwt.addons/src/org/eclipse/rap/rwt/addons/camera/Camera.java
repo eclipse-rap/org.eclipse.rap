@@ -48,27 +48,31 @@ import org.eclipse.swt.widgets.Display;
  */
 @SuppressWarnings("serial")
 public class Camera extends Composite {
-  
+
   private static final Pattern SERVICE_URL_PATTERN = Pattern.compile(".*/([^/.]*\\?.*)"); //$NON-NLS-1$
-  
+
   public static final String PROPERTY_PARENT = "parent";
   public static final String PROPERTY_UPLOAD_PATH = "uploadPath";
   public static final String PROPERTY_RESOLUTION = "resolution";
   public static final String PROPERTY_COMPRESSON_QUALITY = "compressionQuality";
   public static final String METHOD_TAKE_PICTURE = "takePicture";
-  
-  private static final String JS_PATH = "org/eclipse/rap/rwt/addons/camera/";
+
+  private static final String RESOURCES_PATH = "org/eclipse/rap/rwt/addons/camera/";
   private static final String REGISTER_PATH = "camera/";
 
-  private static final String[] JS_FILES = { "Camera.js" };
+  private static final String[] RESOURCES_FILES = { "Camera.js", "camera-flip-32.png" };
   private static final String REMOTE_TYPE = "rwt.widgets.Camera";
-  
+
   private final RemoteObject remoteObject;
   private final List<CameraListener> cameraListeners;
   private final ServerPushSession serverPush;
 
   public Camera( Composite parent ) {
-    super( parent, SWT.NONE );
+    this( parent, SWT.NONE );
+  }
+
+  public Camera( Composite parent, int style ) {
+    super( parent, style );
     registerResources();
     loadJavaScript();
     Connection connection = RWT.getUISession().getConnection();
@@ -79,7 +83,7 @@ public class Camera extends Composite {
     String uploadPath = registerFileUploadServiceHandler();
     remoteObject.set( PROPERTY_UPLOAD_PATH, stripContextPath( uploadPath ) );
   }
-  
+
   /**
    * <p>
    * Instructs the client to take a picture from the camera. The added {@link CameraListener}s will be called when the
@@ -96,7 +100,7 @@ public class Camera extends Composite {
     remoteObject.call( METHOD_TAKE_PICTURE, createProperties( options ) );
     serverPush.start();
   }
-  
+
   /**
    * <p>
    * Adds a {@link CameraListener} to get notified about image events.
@@ -122,7 +126,7 @@ public class Camera extends Composite {
     }
     cameraListeners.remove( listener );
   }
-  
+
   @Override
   public void dispose() {
     if( !isDisposed() ) {
@@ -130,14 +134,14 @@ public class Camera extends Composite {
     }
     super.dispose();
   }
-  
+
   RemoteObject getRemoteObject() {
     return remoteObject;
   }
-  
+
   private static void registerResources() {
     ResourceManager resourceManager = RWT.getResourceManager();
-    for( String fileName : JS_FILES ) {
+    for( String fileName : RESOURCES_FILES ) {
       registerFileIfNeeded( resourceManager, fileName );
     }
   }
@@ -152,30 +156,30 @@ public class Camera extends Composite {
       }
     }
   }
-  
+
   private static void loadJavaScript() {
     ClientFileLoader loader = RWT.getClient().getService( ClientFileLoader.class );
     ResourceManager resourceManager = RWT.getResourceManager();
     loader.requireJs( resourceManager.getLocation( REGISTER_PATH + "Camera.js" ) );
   }
-  
+
   private static void register( ResourceManager resourceManager, String fileName ) throws IOException {
     ClassLoader classLoader = Camera.class.getClassLoader();
-    InputStream inputStream = classLoader.getResourceAsStream( JS_PATH + fileName );
+    InputStream inputStream = classLoader.getResourceAsStream( RESOURCES_PATH + fileName );
     try {
       resourceManager.register( REGISTER_PATH + fileName, inputStream );
     } finally {
       inputStream.close();
     }
   }
-  
+
   private static JsonObject createProperties( CameraOptions options ) {
     JsonObject properties = new JsonObject();
     addResolution( properties, options );
     addCompressionQuality( properties, options );
     return properties;
   }
-  
+
   private static void addResolution( JsonObject properties, CameraOptions options ) {
     Point resolution = options.getResolution();
     if( resolution != null ) {
@@ -189,7 +193,7 @@ public class Camera extends Composite {
   private static void addCompressionQuality( JsonObject properties, CameraOptions options ) {
     properties.add( PROPERTY_COMPRESSON_QUALITY, options.getCompressionQuality() );
   }
-  
+
   void handleUploadFailed( Display display, final ImageUploadReceiver receiver ) {
     if( display != null && !display.isDisposed() ) {
       display.asyncExec( new Runnable() {
@@ -263,7 +267,7 @@ public class Camera extends Composite {
     }
     return serviceHandlerUrl;
   }
-  
+
   public class ImageUploadReceiver extends FileUploadReceiver {
 
     private final Display display;
@@ -287,5 +291,5 @@ public class Camera extends Composite {
     }
 
   }
-  
+
 }
