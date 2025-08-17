@@ -249,9 +249,14 @@ rwt.qx.Class.define( "rwt.widgets.base.AbstractSlider", {
     _onThumbMouseMove : function( event ) {
       event.stopPropagation();
       if( this._thumb.getCapture() ) {
-        var mousePos = this._getMouseOffset( event );
-        var newSelection = this._pxToVirtual( mousePos - this._thumbDragOffset );
-        this._setSelection( newSelection );
+		if( (event.getDomEvent().buttons & 0x01) === 0x01) ) {
+			var mousePos = this._getMouseOffset( event );
+			var newSelection = this._pxToVirtual( mousePos - this._thumbDragOffset );
+			this._setSelection( newSelection );
+		} else {
+			this._thumb.setCapture(false);
+			this._onMouseUp();
+		}
       }
     },
 
