@@ -97,7 +97,7 @@ public class BarcodeScanner extends Composite {
 
   private static final String[] RESOURCES_FILES = { "BarcodeScanner.js", "camera-flip-32.png" };
   private static final String PROP_ZXING_JS_URL = "org.eclipse.rap.rwt.addons.scanner.zxingJsUrl";
-  private static final String DEF_ZXING_JS_URL = "https://unpkg.com/@zxing/browser@latest";
+  private static final String DEF_ZXING_JS_URL = "https://unpkg.com/@zxing/browser@0.1.5";
 
   private final RemoteObject remoteObject;
   private final List<ScanListener> scanListeners = new ArrayList<ScanListener>();
