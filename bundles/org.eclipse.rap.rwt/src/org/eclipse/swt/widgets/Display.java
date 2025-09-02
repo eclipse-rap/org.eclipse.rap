@@ -2215,7 +2215,7 @@ public class Display extends Device implements Adaptable {
   }
 
   private void deregister() {
-
+    thread = null;
   }
 
   private static Display getDisplay( Thread thread ) {
