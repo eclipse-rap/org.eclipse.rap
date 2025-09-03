@@ -939,7 +939,7 @@ public class Display extends Device implements Adaptable {
    */
   public static Display findDisplay( Thread thread ) {
     Display display = getDisplay( thread );
-    if (display == null || display.isDisposed()) {
+    if (display == null || display.thread == null || display.isDisposed()) {
       return null;
     }
     return display;
@@ -2215,7 +2215,7 @@ public class Display extends Device implements Adaptable {
   }
 
   private void deregister() {
-    thread = null;
+    removeDisplay();
   }
 
   private static Display getDisplay( Thread thread ) {
@@ -2224,6 +2224,10 @@ public class Display extends Device implements Adaptable {
 
   private void addDisplay( Display display ) {
     getApplicationContext().getDisplaysHolder().addDisplay( thread, display );
+  }
+
+  private void removeDisplay() {
+    getApplicationContext().getDisplaysHolder().removeDisplay( thread );
   }
 
   /////////////////////
