@@ -2227,7 +2227,7 @@ public class Display extends Device implements Adaptable {
   }
 
   private void removeDisplay() {
-    getApplicationContext().getDisplaysHolder().removeDisplay( thread );
+    ContextProvider.getApplicationContext().getDisplaysHolder().removeDisplay( thread );
   }
 
   /////////////////////
