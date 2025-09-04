@@ -20,8 +20,9 @@ import org.eclipse.swt.widgets.Display;
 
 
 public final class DisplaysHolder {
+
   private final Map<Thread, WeakReference<Display>> displays;
-  
+
   public DisplaysHolder() {
     displays = Collections.synchronizedMap( new WeakHashMap<>() );
   }
@@ -32,12 +33,10 @@ public final class DisplaysHolder {
 
   public Display getDisplay( Thread thread ) {
     WeakReference<Display> wr = displays.get( thread );
-    if ( wr != null )
+    if ( wr != null ) {
       return wr.get();
+    }
     return null;
   }
 
-  public void removeDisplay( Thread thread ) {
-    displays.remove( thread );
-  }
 }

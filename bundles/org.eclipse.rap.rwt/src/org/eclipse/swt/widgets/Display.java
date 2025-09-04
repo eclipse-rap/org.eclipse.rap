@@ -2215,7 +2215,7 @@ public class Display extends Device implements Adaptable {
   }
 
   private void deregister() {
-    removeDisplay();
+
   }
 
   private static Display getDisplay( Thread thread ) {
@@ -2224,10 +2224,6 @@ public class Display extends Device implements Adaptable {
 
   private void addDisplay( Display display ) {
     getApplicationContext().getDisplaysHolder().addDisplay( thread, display );
-  }
-
-  private void removeDisplay() {
-    ContextProvider.getApplicationContext().getDisplaysHolder().removeDisplay( thread );
   }
 
   /////////////////////
