@@ -939,7 +939,7 @@ public class Display extends Device implements Adaptable {
    */
   public static Display findDisplay( Thread thread ) {
     Display display = getDisplay( thread );
-    if (display == null || display.thread == null || display.isDisposed()) {
+    if (display == null || display.thread != thread || display.isDisposed()) {
       return null;
     }
     return display;
