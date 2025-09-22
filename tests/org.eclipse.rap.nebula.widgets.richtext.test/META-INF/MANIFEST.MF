@@ -2,15 +2,15 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.rap.nebula.widgets.richtext.test
-Bundle-Version: 4.4.0.qualifier
+Bundle-Version: 4.5.0.qualifier
 Bundle-Vendor: %Bundle-Vendor
 Bundle-RequiredExecutionEnvironment: JavaSE-17
-Fragment-Host: org.eclipse.rap.nebula.widgets.richtext;bundle-version="4.4.0"
-Require-Bundle: org.eclipse.rap.rwt;bundle-version="[4.4.0,5.0.0)",
+Fragment-Host: org.eclipse.rap.nebula.widgets.richtext;bundle-version="4.5.0"
+Require-Bundle: org.eclipse.rap.rwt;bundle-version="[4.5.0,5.0.0)",
  org.junit;bundle-version="4.8.1",
  net.bytebuddy.byte-buddy,
  net.bytebuddy.byte-buddy-agent
-Import-Package: org.eclipse.rap.rwt.testfixture;version="[4.4.0,5.0.0)",
+Import-Package: org.eclipse.rap.rwt.testfixture;version="[4.5.0,5.0.0)",
  org.mockito;version="[5.0.0,6.0.0)",
  org.mockito.invocation;version="[5.0.0,6.0.0)",
  org.mockito.stubbing;version="[5.0.0,6.0.0)",

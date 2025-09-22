@@ -3,20 +3,20 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-Vendor: %Bundle-Vendor
 Bundle-SymbolicName: org.eclipse.rap.rwt.test
-Bundle-Version: 4.4.0.qualifier
+Bundle-Version: 4.5.0.qualifier
 Bundle-ClassPath: .
 Require-Bundle: org.junit;bundle-version="4.8.2",
- org.eclipse.rap.rwt;bundle-version="[4.4.0,5.0.0)",
+ org.eclipse.rap.rwt;bundle-version="[4.5.0,5.0.0)",
  net.bytebuddy.byte-buddy,
  net.bytebuddy.byte-buddy-agent
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Import-Package: jakarta.servlet;version="6.0.0",
  jakarta.servlet.http;version="6.0.0",
- org.eclipse.rap.rwt.testfixture;version="[4.4.0,5.0.0)",
- org.eclipse.rap.rwt.testfixture.internal;version="[4.4.0,5.0.0)",
- org.eclipse.rap.rwt.testfixture.internal.engine;version="[4.4.0,5.0.0)",
- org.eclipse.rap.rwt.testfixture.internal.service;version="[4.4.0,5.0.0)",
+ org.eclipse.rap.rwt.testfixture;version="[4.5.0,5.0.0)",
+ org.eclipse.rap.rwt.testfixture.internal;version="[4.5.0,5.0.0)",
+ org.eclipse.rap.rwt.testfixture.internal.engine;version="[4.5.0,5.0.0)",
+ org.eclipse.rap.rwt.testfixture.internal.service;version="[4.5.0,5.0.0)",
  org.mockito;version="[5.0.0,6.0.0)",
  org.mockito.invocation;version="[5.0.0,6.0.0)",
  org.mockito.stubbing;version="[5.0.0,6.0.0)",
