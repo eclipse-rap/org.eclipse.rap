@@ -3,15 +3,15 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %bundleName
 Bundle-Vendor: %providerName
 Bundle-SymbolicName: org.eclipse.rap.http.servlet
-Bundle-Version: 4.4.0.qualifier
+Bundle-Version: 4.5.0.qualifier
 Bundle-Activator: org.eclipse.rap.http.servlet.internal.Activator
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-17
-Export-Package: org.eclipse.rap.http.servlet;version="4.4.0",
- org.eclipse.rap.http.servlet.context;version="4.4.0";x-internal:=true,
- org.eclipse.rap.http.servlet.dto;version="4.4.0";x-internal:=true,
- org.eclipse.rap.http.servlet.session;version="4.4.0";x-internal:=true,
- org.eclipse.rap.service.http;version="4.4.0"
+Export-Package: org.eclipse.rap.http.servlet;version="4.5.0",
+ org.eclipse.rap.http.servlet.context;version="4.5.0";x-internal:=true,
+ org.eclipse.rap.http.servlet.dto;version="4.5.0";x-internal:=true,
+ org.eclipse.rap.http.servlet.session;version="4.5.0";x-internal:=true,
+ org.eclipse.rap.service.http;version="4.5.0"
 Import-Package: jakarta.servlet;version="[5.0.0,7.0.0)",
  jakarta.servlet.descriptor;version="[5.0.0,7.0.0)",
  jakarta.servlet.http;version="[5.0.0,7.0.0)",
