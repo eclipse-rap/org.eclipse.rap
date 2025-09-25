@@ -51,11 +51,11 @@ public class Camera extends Composite {
 
   private static final Pattern SERVICE_URL_PATTERN = Pattern.compile(".*/([^/.]*\\?.*)"); //$NON-NLS-1$
 
-  public static final String PROPERTY_PARENT = "parent";
-  public static final String PROPERTY_UPLOAD_PATH = "uploadPath";
-  public static final String PROPERTY_RESOLUTION = "resolution";
-  public static final String PROPERTY_COMPRESSON_QUALITY = "compressionQuality";
-  public static final String METHOD_TAKE_PICTURE = "takePicture";
+  private static final String PROPERTY_PARENT = "parent";
+  private static final String PROPERTY_UPLOAD_PATH = "uploadPath";
+  private static final String PROPERTY_RESOLUTION = "resolution";
+  private static final String PROPERTY_COMPRESSON_QUALITY = "compressionQuality";
+  private static final String METHOD_TAKE_PICTURE = "takePicture";
 
   private static final String RESOURCES_PATH = "org/eclipse/rap/rwt/addons/camera/";
   private static final String REGISTER_PATH = "camera/";
