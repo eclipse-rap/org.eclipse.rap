@@ -47,59 +47,56 @@ public abstract class AbstractTableViewer extends ColumnViewer {
 		 */
 		private Object[] cachedElements = new Object[0];
 
+// RAP [if] Extract data listenet to a field in order to remove it when viewer is disposed
+    private final Listener dataListener;
+
 		/**
 		 * Create a new instance of the receiver.
 		 *
 		 */
 		public VirtualManager() {
-			addTableListener();
-		}
-
-		/**
-		 * Add the listener for SetData on the table
-		 */
-		private void addTableListener() {
-			getControl().addListener(SWT.SetData, new Listener() {
-				/*
-				 * (non-Javadoc)
-				 *
-				 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-				 */
-				public void handleEvent(Event event) {
-					Item item = (Item) event.item;
-					final int index = doIndexOf(item);
-
-					if (index == -1) {
-						// Should not happen, but the spec for doIndexOf allows returning -1.
-						// See bug 241117.
-						return;
-					}
-
-					Object element = resolveElement(index);
-					if (element == null) {
-						// Didn't find it so make a request
-						// Keep looking if it is not in the cache.
-						IContentProvider contentProvider = getContentProvider();
-						// If we are building lazily then request lookup now
-						if (contentProvider instanceof ILazyContentProvider) {
-							ILazyContentProvider lazyProvider = (ILazyContentProvider) contentProvider;
-							if (!isBusy()) {
-								lazyProvider.updateElement(index);
-							} else {
-								// In case event is sent during doUpdateItem() we
-								// should run async update to avoid RuntimeException
-								// from ColumnViewer.checkBusy(), see bug 488484
-								getControl().getDisplay().asyncExec(() -> lazyProvider.updateElement(index));
-							}
-							return;
-						}
-					}
-
-					associate(element, item);
-					updateItem(item, element);
-				}
-
-			});
+      dataListener = new Listener() {
+      	/*
+      	 * (non-Javadoc)
+      	 *
+      	 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+      	 */
+      	public void handleEvent(Event event) {
+      		Item item = (Item) event.item;
+      		final int index = doIndexOf(item);
+      
+      		if (index == -1) {
+      			// Should not happen, but the spec for doIndexOf allows returning -1.
+      			// See bug 241117.
+      			return;
+      		}
+      
+      		Object element = resolveElement(index);
+      		if (element == null) {
+      			// Didn't find it so make a request
+      			// Keep looking if it is not in the cache.
+      			IContentProvider contentProvider = getContentProvider();
+      			// If we are building lazily then request lookup now
+      			if (contentProvider instanceof ILazyContentProvider) {
+      				ILazyContentProvider lazyProvider = (ILazyContentProvider) contentProvider;
+      				if (!isBusy()) {
+      					lazyProvider.updateElement(index);
+      				} else {
+      					// In case event is sent during doUpdateItem() we
+      					// should run async update to avoid RuntimeException
+      					// from ColumnViewer.checkBusy(), see bug 488484
+      					getControl().getDisplay().asyncExec(() -> lazyProvider.updateElement(index));
+      				}
+      				return;
+      			}
+      		}
+      
+      		associate(element, item);
+      		updateItem(item, element);
+      	}
+      
+      };
+      getControl().addListener(SWT.SetData, dataListener);
 		}
 
 		/**
@@ -210,6 +207,11 @@ public abstract class AbstractTableViewer extends ColumnViewer {
 			}
 		}
 
+// RAP [if] Add dispose method to remove table data listener
+		public void dispose() {
+		  getControl().removeListener(SWT.SetData, dataListener);
+		}
+
 	}
 
 	private VirtualManager virtualManager;
@@ -228,6 +230,7 @@ public abstract class AbstractTableViewer extends ColumnViewer {
 
 	protected void handleDispose(DisposeEvent event) {
 		super.handleDispose(event);
+		virtualManager.dispose();
 		virtualManager = null;
 	}
 
