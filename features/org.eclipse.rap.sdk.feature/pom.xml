@@ -23,6 +23,6 @@
 
   <artifactId>org.eclipse.rap.sdk.feature</artifactId>
   <packaging>eclipse-feature</packaging>
-  <version>4.4.0-SNAPSHOT</version>
+  <version>4.4.1-SNAPSHOT</version>
 
 </project>
