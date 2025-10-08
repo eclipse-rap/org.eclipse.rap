@@ -13,8 +13,8 @@
    <stats location="http://download.eclipse.org/stats/rt/rap">
       <feature url="features/org.eclipse.rap.equinox.target.feature_4.4.0.qualifier.jar" id="org.eclipse.rap.equinox.target.feature" version="4.4.0.qualifier"/>
       <feature url="features/org.eclipse.rap.examples.feature_4.4.0.qualifier.jar" id="org.eclipse.rap.examples.feature" version="4.4.0.qualifier"/>
-      <feature url="features/org.eclipse.rap.feature_4.4.1.qualifier.jar" id="org.eclipse.rap.feature" version="4.4.1.qualifier"/>
-      <feature url="features/org.eclipse.rap.sdk.feature_4.4.1.qualifier.jar" id="org.eclipse.rap.sdk.feature" version="4.4.1.qualifier"/>
+      <feature url="features/org.eclipse.rap.feature_4.4.2.qualifier.jar" id="org.eclipse.rap.feature" version="4.4.2.qualifier"/>
+      <feature url="features/org.eclipse.rap.sdk.feature_4.4.2.qualifier.jar" id="org.eclipse.rap.sdk.feature" version="4.4.2.qualifier"/>
       <bundle id="org.eclipse.rap.rwt" version="4.4.0.qualifier"/>
       <bundle id="org.eclipse.rap.rwt.osgi" version="4.4.0.qualifier"/>
       <bundle id="org.eclipse.rap.ui" version="4.4.0.qualifier"/>
@@ -22,13 +22,13 @@
 
   <feature url="http://eclipse.org/rap"
       id="org.eclipse.rap.feature"
-      version="4.4.1.qualifier">
+      version="4.4.2.qualifier">
     <category name="org.eclipse.rap.category"/>
   </feature>
 
   <feature url="http://eclipse.org/rap"
       id="org.eclipse.rap.sdk.feature"
-      version="4.4.1.qualifier">
+      version="4.4.2.qualifier">
     <category name="org.eclipse.rap.category"/>
   </feature>
 
