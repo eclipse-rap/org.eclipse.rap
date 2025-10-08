@@ -230,7 +230,9 @@ public abstract class AbstractTableViewer extends ColumnViewer {
 
 	protected void handleDispose(DisposeEvent event) {
 		super.handleDispose(event);
-		virtualManager.dispose();
+		if (virtualManager != null) {
+		  virtualManager.dispose();
+		}
 		virtualManager = null;
 	}
 
