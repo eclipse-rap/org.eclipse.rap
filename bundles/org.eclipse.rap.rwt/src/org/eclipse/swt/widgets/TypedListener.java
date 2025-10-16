@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2016 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.swt.widgets;
 
+
+import java.util.EventListener;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ArmEvent;
@@ -68,7 +70,7 @@ public class TypedListener implements Listener {
 	/**
 	 * The receiver's event listener
 	 */
-	protected SWTEventListener eventListener;
+	protected EventListener eventListener;
 
 /**
  * Constructs a new instance of this class for the given event listener.
@@ -86,6 +88,24 @@ public TypedListener (SWTEventListener listener) {
 }
 
 /**
+ * Constructs a new instance of this class for the given event listener.
+ * <p>
+ * <b>IMPORTANT:</b> This method is <em>not</em> part of the SWT
+ * public API. It is marked public only so that it can be shared
+ * within the packages provided by SWT. It should never be
+ * referenced from application code.
+ * </p>
+ *
+ * @param listener the event listener to store in the receiver
+ *
+ * @noreference This method is not intended to be referenced by clients.
+ */
+
+public TypedListener (EventListener listener) {
+    eventListener = listener;
+}
+
+/**
  * Returns the receiver's event listener.
  * <p>
  * <b>IMPORTANT:</b> This method is <em>not</em> part of the SWT
@@ -95,8 +115,9 @@ public TypedListener (SWTEventListener listener) {
  * </p>
  *
  * @return the receiver's event listener
+ * @since 4.5
  */
-public SWTEventListener getEventListener () {
+public EventListener getEventListener () {
 	return eventListener;
 }
 

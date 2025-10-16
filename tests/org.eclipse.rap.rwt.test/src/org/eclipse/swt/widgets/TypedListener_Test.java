@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2025 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
+
+import java.util.EventListener;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ArmEvent;
@@ -73,7 +75,7 @@ public class TypedListener_Test {
     SWTEventListener listener = mock( SWTEventListener.class );
     TypedListener typedListener = new TypedListener( listener );
 
-    SWTEventListener eventListener = typedListener.getEventListener();
+    EventListener eventListener = typedListener.getEventListener();
 
     assertSame( listener, eventListener );
   }

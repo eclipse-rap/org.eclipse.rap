@@ -43,11 +43,16 @@
         </filter>
     </resource>
     <resource path="src/org/eclipse/swt/widgets/TypedListener.java" type="org.eclipse.swt.widgets.TypedListener">
-        <filter comment="See bug 334028" id="643842064">
+        <filter comment="Deprecation and marked for removal of SWTEventListener" id="338792546">
             <message_arguments>
-                <message_argument value="SWTEventListener"/>
-                <message_argument value="TypedListener"/>
+                <message_argument value="org.eclipse.swt.widgets.TypedListener"/>
                 <message_argument value="getEventListener()"/>
+            </message_arguments>
+        </filter>
+        <filter comment="Deprecation and marked for removal of SWTEventListener" id="388161617">
+            <message_arguments>
+                <message_argument value="org.eclipse.swt.widgets.TypedListener"/>
+                <message_argument value="eventListener"/>
             </message_arguments>
         </filter>
         <filter comment="See bug 334028" id="643850349">
