@@ -14,6 +14,10 @@ package org.eclipse.swt.widgets;
 import static org.eclipse.rap.rwt.internal.scripting.ClientListenerUtil.clientListenerAdded;
 import static org.eclipse.rap.rwt.internal.scripting.ClientListenerUtil.clientListenerRemoved;
 
+import java.util.Arrays;
+import java.util.EventListener;
+import java.util.stream.Stream;
+
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
@@ -28,6 +32,7 @@ import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.internal.SWTEventListener;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.events.EventList;
@@ -643,6 +648,37 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
   }
 
   /**
+   * Returns the typed listeners who will be notified when an event of the given type occurs.
+   * The event type is one of the event constants defined in class {@link SWT}
+   * and the specified listener-type must correspond to that event.
+   * If for example the {@code eventType} is {@link SWT#Selection},
+   * the listeners type should be {@link SelectionListener}.
+   *
+   * @param eventType the type of event to listen for
+   * @return a stream of typed listeners that will be notified when the event occurs
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see #addTypedListener(EventListener, int...)
+   * @see #removeTypedListener(int, EventListener)
+   * @see #notifyListeners
+   *
+   * @since 4.5
+   */
+  public <L extends EventListener> Stream<L> getTypedListeners( int eventType,
+                                                                Class<L> listenerType )
+  {
+    return Arrays.stream( getListeners( eventType ) )
+      .filter( TypedListener.class::isInstance )
+      .map( l -> ( ( TypedListener )l ).eventListener )
+      .filter( listenerType::isInstance )
+      .map( listenerType::cast );
+  }
+
+  /**
    * Removes the listener from the collection of listeners who will
    * be notified when an event of the given type occurs.
    * <p>
@@ -670,6 +706,107 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
    * @since 2.0
    */
   protected void removeListener( int eventType, SWTEventListener listener ) {
+    removeTypedListener( eventType, listener );
+  }
+  
+  /**
+   * Removes the listener from the collection of listeners who will
+   * be notified when an event of the given type occurs.
+   * <p>
+   * <b>IMPORTANT:</b> This method is <em>not</em> part of the SWT
+   * public API. It is marked public only so that it can be shared
+   * within the packages provided by SWT. It should never be
+   * referenced from application code.
+   * </p>
+   *
+   * @param eventType the type of event to listen for
+   * @param listener the listener which should no longer be notified
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see Listener
+   * @see #addListener
+   *
+   * @noreference This method is not intended to be referenced by clients.
+   * @nooverride This method is not intended to be re-implemented or extended by clients.
+   * @since 4.5
+   */
+  protected void removeListener( int eventType, EventListener listener ) {
+    removeTypedListener( eventType, listener );
+  }
+  
+  /**
+   * Adds the {@link EventListener typed listener} to the collection of listeners
+   * who will be notified when an event of the given types occurs.
+   * When the event does occur in the widget, the listener is notified
+   * by calling the type's handling methods.
+   * The event type is one of the event constants defined in class {@link SWT}
+   * and must correspond to the listeners type.
+   * If for example a {@link SelectionListener} is passed the {@code eventTypes}
+   * can be {@link SWT#Selection} or {@link SWT#DefaultSelection}.
+   *
+   * @param listener the listener which should be notified when the event occurs
+   * @param eventTypes the types of event to listen for
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see #getTypedListeners(int, Class)
+   * @see #removeTypedListener(int, EventListener)
+   * @see #notifyListeners
+   * @since 4.5
+   */
+  protected void addTypedListener( EventListener listener, int... eventTypes ) {
+    checkWidget();
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedListener typedListener = new TypedListener( listener );
+    for( int eventType : eventTypes ) {
+      addListener( eventType, typedListener );
+    }
+  }
+
+  /**
+   * Removes the listener from the collection of listeners who will
+   * be notified when an event of the given type occurs.
+   * <p>
+   * <b>IMPORTANT:</b> This method is <em>not</em> part of the SWT
+   * public API. It is marked public only so that it can be shared
+   * within the packages provided by SWT. It should never be
+   * referenced from application code.
+   * </p>
+   *
+   * @param eventType the type of event to listen for
+   * @param listener the listener which should no longer be notified
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see Listener
+   * @see #addListener
+   *
+   * @noreference This method is not intended to be referenced by clients.
+   * @nooverride This method is not intended to be re-implemented or extended by clients.
+   * @since 4.5
+   */
+  protected void removeTypedListener( int eventType, EventListener listener ) {
     checkWidget();
     if( listener == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );

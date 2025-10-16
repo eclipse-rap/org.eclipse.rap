@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2015 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.swt.widgets;
+
+import java.util.EventListener;
 
 import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.swt.SWT;
@@ -170,7 +172,7 @@ class EventTable implements SerializableCompatibility {
     }
   }
 
-  public void unhook( int eventType, SWTEventListener listener ) {
+  public void unhook( int eventType, EventListener listener ) {
     if( types == null ) {
       return;
     }
