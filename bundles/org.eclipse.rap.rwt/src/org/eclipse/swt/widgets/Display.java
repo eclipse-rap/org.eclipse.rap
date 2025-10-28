@@ -19,7 +19,6 @@ import static org.eclipse.rap.rwt.remote.JsonMapping.readPoint;
 import static org.eclipse.rap.rwt.remote.JsonMapping.readRectangle;
 
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -939,17 +938,11 @@ public class Display extends Device implements Adaptable {
    * @return the display for the given thread
    */
   public static Display findDisplay( Thread thread ) {
-    synchronized( Device.class ) {
-      for( WeakReference<Display> displayRef : getDisplays() ) {
-        if( displayRef != null ) {
-          Display display = displayRef.get();
-          if( display != null && !display.isDisposed() && display.thread == thread ) {
-            return display;
-          }
-        }
-      }
+    Display display = getDisplay( thread );
+    if (display == null || display.thread != thread || display.isDisposed()) {
       return null;
     }
+    return display;
   }
 
   /**
@@ -2217,57 +2210,20 @@ public class Display extends Device implements Adaptable {
     return false;
   }
 
-  @SuppressWarnings("unchecked")
   private void register() {
-    synchronized( Device.class ) {
-      boolean registered = false;
-      WeakReference<Display>[] displays = getDisplays();
-      for( int i = 0; !registered && i < displays.length; i++ ) {
-        if( canDisplayRefBeReplaced( displays[ i ] ) ) {
-          displays[ i ] = new WeakReference<>( this );
-          registered = true;
-        }
-      }
-      if( !registered ) {
-        WeakReference<Display>[] newDisplays = new WeakReference[ displays.length + 4 ];
-        System.arraycopy( displays, 0, newDisplays, 0, displays.length );
-        newDisplays[ displays.length ] = new WeakReference<>( this );
-        setDisplays( newDisplays );
-      }
-    }
-  }
-
-  private boolean canDisplayRefBeReplaced( WeakReference<Display> displayRef ) {
-    boolean result = false;
-    if( displayRef == null ) {
-      result = true;
-    } else {
-      Display display = displayRef.get();
-      if( display == null || display.thread == thread ) {
-        result = true;
-      }
-    }
-    return result;
+    addDisplay( this );
   }
 
   private void deregister() {
-    synchronized( Device.class ) {
-      WeakReference<Display>[] displays = getDisplays();
-      for( int i = 0; i < displays.length; i++ ) {
-        WeakReference<Display> current = displays[ i ];
-        if( current != null && this == current.get() ) {
-          displays[ i ] = null;
-        }
-      }
-    }
+
   }
 
-  private static WeakReference<Display>[] getDisplays() {
-    return ContextProvider.getApplicationContext().getDisplaysHolder().getDisplays();
+  private static Display getDisplay( Thread thread ) {
+    return ContextProvider.getApplicationContext().getDisplaysHolder().getDisplay( thread );
   }
 
-  private void setDisplays( WeakReference<Display>[] displays ) {
-    getApplicationContext().getDisplaysHolder().setDisplays( displays );
+  private void addDisplay( Display display ) {
+    getApplicationContext().getDisplaysHolder().addDisplay( thread, display );
   }
 
   /////////////////////
