@@ -38,6 +38,9 @@
       await this.init();
       this.layout();
       rap.off( "render", this.onRender );
+      if( this.autoStart ) {
+        this.start( this.currentScanProperties );
+      }
     },
 
     destroy : function() {
@@ -56,6 +59,7 @@
       this.cameraFlipElement.style.cursor = "pointer";
       this.cameraFlipElement.addEventListener( "click", this.showNextVideoInputDevice );
       this.videoInputDeviceId = await initVideoInputDeviceId();
+      this.isInitialized = true;
     },
 
     layout : function() {
@@ -67,7 +71,10 @@
     },
 
     start : async function( properties ) {
-      if( !this.isRunning() ) {
+      if( !this.isInitialized ) {
+        this.currentScanProperties = properties;
+        this.autoStart = true;
+      } else if( !this.isRunning() ) {
         this.currentScanProperties = properties;
         var remoteObject = rap.getRemoteObject( this );
         remoteObject.isListening = rwt.util.Functions.returnTrue;
