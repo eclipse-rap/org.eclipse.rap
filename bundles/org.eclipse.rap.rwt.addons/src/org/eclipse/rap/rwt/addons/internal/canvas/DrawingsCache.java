@@ -14,6 +14,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @since 4.5
+ */
 @SuppressWarnings("serial")
 public class DrawingsCache implements Serializable {
 

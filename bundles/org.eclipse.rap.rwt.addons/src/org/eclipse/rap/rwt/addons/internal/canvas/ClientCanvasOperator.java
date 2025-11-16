@@ -18,10 +18,12 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.canvaskit.CanvasOperationHandler;
 import org.eclipse.swt.widgets.Canvas;
 
-
+/**
+ * @since 4.5
+ */
 @SuppressWarnings({
-  "restriction",
-  "serial"
+  "serial",
+  "restriction"
 })
 public class ClientCanvasOperator extends CanvasOperationHandler {
 

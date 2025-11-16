@@ -19,6 +19,9 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Path;
 import org.eclipse.swt.graphics.RGB;
 
+/**
+ * @since 4.5
+ */
 @SuppressWarnings("serial")
 public class GCOperationDispatcher implements Serializable {
 
