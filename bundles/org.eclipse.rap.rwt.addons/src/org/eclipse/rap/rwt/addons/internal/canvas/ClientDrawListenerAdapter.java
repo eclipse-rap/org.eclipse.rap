@@ -15,6 +15,9 @@ import java.util.Collection;
 
 import org.eclipse.rap.rwt.addons.canvas.ClientDrawListener;
 
+/**
+ * @since 4.5
+ */
 public class ClientDrawListenerAdapter {
 
   private final Collection<ClientDrawListener> drawListeners;
