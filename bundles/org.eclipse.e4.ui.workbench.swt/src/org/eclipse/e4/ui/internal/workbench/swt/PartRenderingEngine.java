@@ -1130,6 +1130,12 @@ public class PartRenderingEngine implements IPresentationEngine {
 							advisor.eventLoopIdle(display);
 						}
 					} catch (ThreadDeath th) {
+
+						for (Shell shell : display.getShells()) {
+							shell.close();
+						}
+						display.close();
+
 						throw th;
 					} catch (Exception ex) {
 						handle(ex, advisor);
