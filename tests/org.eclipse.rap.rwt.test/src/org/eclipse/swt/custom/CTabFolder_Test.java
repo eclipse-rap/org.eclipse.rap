@@ -133,6 +133,11 @@ public class CTabFolder_Test {
     assertEquals( 2, folder.getItemCount() );
     assertEquals( -1, folder.indexOf( item3 ) );
 
+    folder.addDisposeListener( event -> {
+      assertEquals( -1, folder.getSelectionIndex() );
+      assertEquals( null, folder.getSelection() );
+    });
+
     folder.dispose();
     assertTrue( folder.isDisposed() );
     assertTrue( item1.isDisposed() );
