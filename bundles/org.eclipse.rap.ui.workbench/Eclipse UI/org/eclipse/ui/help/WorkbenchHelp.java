@@ -11,7 +11,6 @@
 package org.eclipse.ui.help;
 
 import org.eclipse.help.IContext;
-import org.eclipse.help.IHelp;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.widgets.Control;
@@ -207,19 +206,6 @@ public class WorkbenchHelp {
         return menuItem.getData(WorkbenchHelpSystem.HELP_KEY);
     }
 
-    /**
-     * Returns the help support system for the platform, if available.
-     *
-     * @return the help support system, or <code>null</code> if none
-     * @deprecated Use the static methods on this class and on
-     * {@link org.eclipse.help.HelpSystem HelpSystem} instead of the IHelp methods
-     * on the object returned by this method.
-     */
-    public static IHelp getHelpSupport() {
-    	return WorkbenchHelpSystem.getInstance().getHelpSupport();
-    }
-
-    
     /**
      * Returns whether the context-sensitive help window is currently being
      * displayed. Returns <code>false</code> if the help UI has not been
