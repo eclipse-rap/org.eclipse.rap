@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<component id="org.eclipse.rap.ui.workbench" version="2">
+    <resource path="Eclipse UI/org/eclipse/ui/help/WorkbenchHelp.java" type="org.eclipse.ui.help.WorkbenchHelp">
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.eclipse.ui.help.WorkbenchHelp"/>
+                <message_argument value="getHelpSupport()"/>
+            </message_arguments>
+        </filter>
+    </resource>
+</component>
