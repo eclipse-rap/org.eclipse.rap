@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.eclipse.rap.fileupload.test
 Bundle-Version: 4.6.0.qualifier
 Fragment-Host: org.eclipse.rap.fileupload;bundle-version="[4.6.0,5.0.0)"
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Bundle-Name: %Bundle-Name
 Bundle-Vendor: %Bundle-Vendor
 Import-Package: jakarta.servlet;version="[6.0.0,7.0.0)",

@@ -19,6 +19,6 @@ Import-Package: com.ibm.icu.text,
  javax.xml.parsers,
  org.w3c.dom,
  org.xml.sax
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .

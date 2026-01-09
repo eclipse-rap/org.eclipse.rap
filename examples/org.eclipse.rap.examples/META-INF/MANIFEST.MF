@@ -6,7 +6,7 @@ Bundle-Name: %Bundle-Name
 Bundle-Vendor: %Bundle-Vendor
 Bundle-Activator: org.eclipse.rap.examples.internal.Activator
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Bundle-Localization: plugin
 Import-Package: jakarta.servlet;version="6.0.0",
  jakarta.servlet.http;version="6.0.0",

@@ -4,7 +4,7 @@ Bundle-Name: RWT Cluster Tests
 Bundle-SymbolicName: org.eclipse.rap.rwt.cluster.test
 Bundle-Version: 4.1.0.qualifier
 Bundle-Vendor: Eclipse.org - RAP
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Require-Bundle: org.eclipse.rap.rwt;bundle-version="[4.1.0,5.0.0)",
  org.eclipse.rap.rwt.cluster.testfixture;bundle-version="[4.1.0,5.0.0)",
  org.junit;bundle-version="4.8.2"

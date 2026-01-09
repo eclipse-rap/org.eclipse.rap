@@ -10,7 +10,7 @@ Require-Bundle: org.junit;bundle-version="4.8.2",
  net.bytebuddy.byte-buddy,
  net.bytebuddy.byte-buddy-agent
 Bundle-Localization: plugin
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Import-Package: jakarta.servlet;version="6.0.0",
  jakarta.servlet.http;version="6.0.0",
  org.eclipse.rap.rwt.testfixture;version="[4.6.0,5.0.0)",

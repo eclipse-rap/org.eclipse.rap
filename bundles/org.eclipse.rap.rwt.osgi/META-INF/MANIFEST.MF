@@ -5,7 +5,7 @@ Bundle-Vendor: %Bundle-Vendor
 Bundle-Localization: plugin
 Bundle-SymbolicName: org.eclipse.rap.rwt.osgi
 Bundle-Version: 4.6.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Import-Package: jakarta.servlet;version="[5.0.0,7.0.0)",
  jakarta.servlet.descriptor;version="[5.0.0,7.0.0)";resolution:=optional,
  jakarta.servlet.http;version="[5.0.0,7.0.0)",

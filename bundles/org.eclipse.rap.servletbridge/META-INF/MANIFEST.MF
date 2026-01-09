@@ -8,5 +8,5 @@ Bundle-Localization: plugin
 Import-Package: jakarta.servlet;version="[5.0.0,7.0.0)",
  jakarta.servlet.http;version="[5.0.0,7.0.0)"
 Export-Package: org.eclipse.rap.servletbridge;version="4.6.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Automatic-Module-Name: org.eclipse.rap.servletbridge
