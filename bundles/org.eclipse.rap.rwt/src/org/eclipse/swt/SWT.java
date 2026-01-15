@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2016 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2026 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -3000,6 +3000,20 @@ public class SWT {
    * System color used to paint inactive title background gradient (value is 35).
    */
   public static final int COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT = 35;
+  
+  /**
+   * System color used to paint link text (value is 36).
+   *
+   * @since 4.6
+   */
+  public static final int COLOR_LINK_FOREGROUND = 36;
+  
+  /**
+   * System color used to paint disabled foreground areas (value is 39).
+   *
+   * @since 4.6
+   */
+  public static final int COLOR_WIDGET_DISABLED_FOREGROUND = 39;
 
   /**
    * System color used to paint with alpha 0 (value is 37).
