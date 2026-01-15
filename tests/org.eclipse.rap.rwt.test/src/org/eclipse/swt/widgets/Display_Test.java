@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2021 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2026 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -939,6 +939,10 @@ public class Display_Test {
                   display.getSystemColor( SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT ).getRGB() );
     assertEquals( new RGB( 255, 255, 255 ),
                   display.getSystemColor( SWT.COLOR_TITLE_INACTIVE_FOREGROUND ).getRGB() );
+    assertEquals( new RGB( 207, 207, 207 ),
+                  display.getSystemColor( SWT.COLOR_WIDGET_DISABLED_FOREGROUND ).getRGB() );
+    assertEquals( new RGB( 0, 0, 255 ),
+                  display.getSystemColor( SWT.COLOR_LINK_FOREGROUND ).getRGB() );
   }
 
   @Test
