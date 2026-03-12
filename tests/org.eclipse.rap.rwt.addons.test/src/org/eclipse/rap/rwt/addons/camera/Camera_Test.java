@@ -69,6 +69,18 @@ public class Camera_Test {
   }
 
   @Test
+  public void testConstructor_activatesServerPush() {
+    assertTrue( ServerPushManager.getInstance().isServerPushActive() );
+  }
+
+  @Test
+  public void testDisposal_deactivatesServerPush() {
+    camera.dispose();
+
+    assertFalse( ServerPushManager.getInstance().isServerPushActive() );
+  }
+
+  @Test
   public void testCameraListenerIsSerializable() {
     assertTrue( Serializable.class.isAssignableFrom( CameraListener.class ) );
   }
@@ -110,13 +122,6 @@ public class Camera_Test {
   }
 
   @Test
-  public void testDelegatesImage_activatesServerPush() {
-    camera.takePicture( createOptions() );
-
-    assertTrue( ServerPushManager.getInstance().isServerPushActive() );
-  }
-
-  @Test
   public void testDelegatesImage_withFailedUpload() {
     CameraListener listener = mock( CameraListener.class );
     camera.addCameraListener( listener );
@@ -128,7 +133,6 @@ public class Camera_Test {
 
     verify( listener ).receivedPicture( null );
     verify( receiver ).reset();
-    assertFalse( ServerPushManager.getInstance().isServerPushActive() );
   }
 
   @Test
@@ -145,7 +149,6 @@ public class Camera_Test {
 
     verify( listener ).receivedPicture( image );
     verify( receiver ).reset();
-    assertFalse( ServerPushManager.getInstance().isServerPushActive() );
   }
 
   @Test
