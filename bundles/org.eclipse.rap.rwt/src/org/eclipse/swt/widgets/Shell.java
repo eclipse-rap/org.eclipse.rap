@@ -985,6 +985,11 @@ public class Shell extends Decorations {
     removeListener( SWT.Activate, listener );
     removeListener( SWT.Deactivate, listener );
   }
+  
+  @Override
+  public void requestLayout () {
+      layout (null, SWT.DEFER);
+  }
 
   ///////////
   // Disposal
