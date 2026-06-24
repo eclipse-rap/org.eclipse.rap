@@ -114,11 +114,13 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
     },
 
     showWaitHint : function() {
-      this._overlay = this._createOverlay();
+	  if (this._overlay === null) {
+      	this._overlay = this._createOverlay();
+      }
       var themeStore = rwt.theme.ThemeStore.getInstance();
       var cssElement = "SystemMessage-DisplayOverlay";
       var icon = themeStore.getSizedImage( cssElement, {}, "background-image" );
-      if( icon && icon[ 0 ] ) {
+      if( this._box === null && icon && icon[ 0 ] ) {
         this._box = this._createErrorBoxArea( icon[ 1 ], icon[ 2 ] );
         rwt.html.Style.setBackgroundImage( this._box, icon[ 0 ] );
         this._box.style.backgroundColor = "transparent";
