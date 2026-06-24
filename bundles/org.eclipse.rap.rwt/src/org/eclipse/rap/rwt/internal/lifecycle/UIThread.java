@@ -115,17 +115,19 @@ final class UIThread extends Thread implements IUIThreadHolder, ISessionShutdown
     // Prepare a service context to be used by the UI thread that may continue
     // to run as a result of the interrupt call
     ServiceContext serviceContext = ContextUtil.createFakeContext( uiSession );
-    setServiceContext( serviceContext );
-    uiThreadTerminating = true;
-    // interrupt the UI thread that is expected to wait in switchThread or already be terminated
-    synchronized( getLock() ) {
-      getThread().interrupt();
-    }
-    try {
-      getThread().join();
-    } catch( InterruptedException e ) {
-      String msg = "Received InterruptedException while terminating UIThread";
-      ServletLog.log( msg, e );
+    setServiceContext( serviceContext );    
+    while (getThread().isAlive()) {
+      uiThreadTerminating = true;
+      // interrupt the UI thread that is expected to wait in switchThread or already be terminated
+      synchronized( getLock() ) {
+        getThread().interrupt();
+      }
+      try {
+        getThread().join(5000);      
+      } catch( InterruptedException e ) {
+        String msg = "Received InterruptedException while terminating UIThread";
+        ServletLog.log( msg, e );
+      }
     }
     uiThreadTerminating = false;
   }
