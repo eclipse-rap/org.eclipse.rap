@@ -21,6 +21,7 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
     this._control.addEventListener( "changeHeight", this._onControlChangeHeight, this );
     this._canvas = null;
     this._context = null;
+    this._scale = 2;
     this._createCanvas();
     this._canvas.rwtObject = this; // like "rwtWidget" in Widget.js, useful for custom JS components
     if( this._control.isCreated() ) {
@@ -73,12 +74,24 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
       this._paused = false;
       this._pendingOperations = null;
       this._cleanPendingImages();
+      
+      // reset lineDash and other properties according to GCData
+      // GCData is recreated every paint with default parameters,
+      // so this should simulate the same behaviour.
+      this._context.setLineDash([]);
+      this._context.lineWidth = 0;
+      this._context.globalAlpha = 1.0;
+      this._context.lineCap = "butt";
+      this._context.lineJoin = "miter";
+      
+      this._ensureScaling();
+      
       this._draw( operations, 0 );
     },
 
     _draw : function( operations, startOffset ) {
-      var offset = startOffset;
-      while( offset < operations.length ) {
+      var offset = startOffset;      
+      while( offset < operations.length ) {        
         try {
           var op = operations[ offset ][ 0 ];
           switch( op ) {
@@ -92,7 +105,7 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
               this._setProperty( operations[ offset ] );
             break;
             case "lineDash":
-              this._context.setLineDash( operations[ offset ][ 1 ] );
+              this._context.setLineDash( operations[ offset ][ 1 ] );              
             break;
             case "createLinearGradient":
             case "addColorStop":
@@ -103,9 +116,11 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
             case "setTransform":
             case "resetClip":
               this[ "_" + op ]( operations[ offset ] );
+              this._ensureScaling();
             break;
             default:
               this._context[ op ].apply( this._context, operations[ offset ].slice( 1 ) );
+              this._ensureScaling();
             break;
           }
         } catch( ex ) {
@@ -153,8 +168,10 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
 
     _createCanvas : function() {
       this._canvas = document.createElement( "canvas" );
-      this._canvas.style.display = 'block';
+      this._canvas.style.display = 'block';      
       this._context = this._canvas.getContext( "2d" );
+            
+      this._context.scale(this._scale, this._scale);
     },
 
     _applyCurrentState: function(state) {
@@ -184,17 +201,24 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
 
     _onControlChangeWidth : function( event ) {
       var width = event.getValue();
-      this._canvas.width = width;
+      this._canvas.width = (width * this._scale);
       this._canvas.style.width = width + "px";
     },
 
     _onControlChangeHeight : function( event ) {
       var height = event.getValue();
-      this._canvas.height = height;
+      this._canvas.height = (height * this._scale);
       this._canvas.style.height = height + "px";
+    },
+    
+    _ensureScaling : function() {
+      // Reset current transformation matrix to the identity matrix
+      this._context.setTransform(1, 0, 0, 1, 0, 0);
+      this._context.scale(this._scale, this._scale);
     },
 
     _initClipping : function( x, y, width, height ) {
+      this._ensureScaling();
       this._context.clearRect( x, y, width, height );
       this._context.beginPath();
       this._context.rect( x, y, width, height );
@@ -220,15 +244,13 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
       var cy = operation[ 2 ];
       var rx = operation[ 3 ];
       var ry = operation[ 4 ];
-      //var rotation = operation[ 5 ]; // not supported
+      var rotation = operation[ 5 ];
       var startAngle = operation[ 6 ];
       var endAngle = operation[ 7 ];
       var dir = operation[ 8 ];
-      if( rx > 0 && ry > 0 ) {
-        this._context.translate( cx, cy );
-        // TODO [tb] : using scale here changes the stroke-width also, looks wrong
-        this._context.scale( 1, ry / rx );
-        this._context.arc( 0, 0, rx, startAngle, endAngle, dir );
+      if( rx > 0 && ry > 0 ) {        
+        // [pw] : lets just use ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, counterclockwise)
+        this._context.ellipse(cx, cy, rx, ry, rotation, startAngle, endAngle, dir);        
       }
     },
 
