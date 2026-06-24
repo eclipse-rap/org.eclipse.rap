@@ -283,6 +283,7 @@ public class CanvasLCA_Test {
     Fixture.fakeResponseWriter();
 
     canvas.setSize( 150, 150 );
+    while (display.readAndDispatch()) {}
     lca.renderChanges( canvas );
 
     CallOperation init = getGCOperation( canvas, "init" );
@@ -310,6 +311,7 @@ public class CanvasLCA_Test {
     Fixture.fakeResponseWriter();
 
     canvas.redraw();
+    while (display.readAndDispatch()) {}
     lca.renderChanges( canvas );
 
     CallOperation draw = getGCOperation( canvas, "draw" );
@@ -333,6 +335,7 @@ public class CanvasLCA_Test {
     Fixture.fakeResponseWriter();
 
     canvas.redraw();
+    while (display.readAndDispatch()) {}
     lca.renderChanges( canvas );
 
     assertNotNull( getGCOperation( canvas, "init" ) );
