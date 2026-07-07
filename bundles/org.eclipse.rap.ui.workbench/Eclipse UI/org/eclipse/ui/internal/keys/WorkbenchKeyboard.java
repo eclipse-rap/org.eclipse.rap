@@ -10,19 +10,18 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.keys;
 
-import com.ibm.icu.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
+
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.NotEnabledException;
 import org.eclipse.core.commands.NotHandledException;
 import org.eclipse.core.commands.ParameterizedCommand;
 import org.eclipse.core.commands.common.CommandException;
 import org.eclipse.core.commands.common.NotDefinedException;
-import org.eclipse.core.commands.util.Tracing;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.bindings.Binding;
@@ -54,6 +53,8 @@ import org.eclipse.ui.internal.misc.StatusUtil;
 import org.eclipse.ui.internal.util.Util;
 import org.eclipse.ui.keys.IBindingService;
 import org.eclipse.ui.statushandlers.StatusManager;
+
+import com.ibm.icu.text.MessageFormat;
 
 /**
  * <p>
@@ -93,31 +94,10 @@ public final class WorkbenchKeyboard {
 		 * @param event
 		 *            The event to process; must not be <code>null</code>.
 		 */
-		public final void handleEvent(final Event event) {
+		@Override
+    public final void handleEvent(final Event event) {
 			if (!enabled) {
 				return;
-			}
-
-			if (DEBUG && DEBUG_VERBOSE) {
-				final StringBuffer buffer = new StringBuffer(
-						"Listener.handleEvent(type = "); //$NON-NLS-1$
-				switch (event.type) {
-				case SWT.KeyDown:
-					buffer.append("KeyDown"); //$NON-NLS-1$
-					break;
-				case SWT.Traverse:
-					buffer.append("Traverse"); //$NON-NLS-1$
-					break;
-				default:
-					buffer.append(event.type);
-				}
-				buffer.append(", stateMask = 0x" //$NON-NLS-1$
-						+ Integer.toHexString(event.stateMask)
-						+ ", keyCode = 0x" //$NON-NLS-1$
-						+ Integer.toHexString(event.keyCode) + ", time = " //$NON-NLS-1$
-						+ event.time + ", character = 0x" //$NON-NLS-1$
-						+ Integer.toHexString(event.character) + ")"); //$NON-NLS-1$
-				Tracing.printTrace("KEYS", buffer.toString()); //$NON-NLS-1$
 			}
 
 			filterKeySequenceBindings(event);
@@ -332,7 +312,8 @@ public final class WorkbenchKeyboard {
 		 *
 		 * @see org.eclipse.ui.IWindowListener#windowActivated(org.eclipse.ui.IWorkbenchWindow)
 		 */
-		public void windowActivated(IWorkbenchWindow window) {
+		@Override
+    public void windowActivated(IWorkbenchWindow window) {
 			checkActiveWindow(window);
 		}
 
@@ -341,7 +322,8 @@ public final class WorkbenchKeyboard {
 		 *
 		 * @see org.eclipse.ui.IWindowListener#windowClosed(org.eclipse.ui.IWorkbenchWindow)
 		 */
-		public void windowClosed(IWorkbenchWindow window) {
+		@Override
+    public void windowClosed(IWorkbenchWindow window) {
 			// Do nothing.
 		}
 
@@ -350,7 +332,8 @@ public final class WorkbenchKeyboard {
 		 *
 		 * @see org.eclipse.ui.IWindowListener#windowDeactivated(org.eclipse.ui.IWorkbenchWindow)
 		 */
-		public void windowDeactivated(IWorkbenchWindow window) {
+		@Override
+    public void windowDeactivated(IWorkbenchWindow window) {
 			// Do nothing
 		}
 
@@ -359,7 +342,8 @@ public final class WorkbenchKeyboard {
 		 *
 		 * @see org.eclipse.ui.IWindowListener#windowOpened(org.eclipse.ui.IWorkbenchWindow)
 		 */
-		public void windowOpened(IWorkbenchWindow window) {
+		@Override
+    public void windowOpened(IWorkbenchWindow window) {
 			// Do nothing.
 		}
 	};
@@ -437,13 +421,6 @@ public final class WorkbenchKeyboard {
 		final ParameterizedCommand parameterizedCommand = binding
 				.getParameterizedCommand();
 
-		if (DEBUG) {
-			Tracing.printTrace("KEYS", //$NON-NLS-1$
-					"WorkbenchKeyboard.executeCommand(commandId = '" //$NON-NLS-1$
-							+ parameterizedCommand.getId() + "', parameters = " //$NON-NLS-1$
-							+ parameterizedCommand.getParameterMap() + ')');
-		}
-
 		// Reset the key binding state (close window, clear status line, etc.)
 		resetState(false);
 
@@ -455,16 +432,6 @@ public final class WorkbenchKeyboard {
 		final boolean commandHandled = command.isHandled();
 		command.setEnabled(handlerService.getCurrentState());
 		final boolean commandEnabled = command.isEnabled();
-
-		if (DEBUG && DEBUG_VERBOSE) {
-			if (!commandDefined) {
-				Tracing.printTrace("KEYS", "    not defined"); //$NON-NLS-1$ //$NON-NLS-2$
-			} else if (!commandHandled) {
-				Tracing.printTrace("KEYS", "    not handled"); //$NON-NLS-1$ //$NON-NLS-2$
-			} else if (!commandEnabled) {
-				Tracing.printTrace("KEYS", "    not enabled"); //$NON-NLS-1$ //$NON-NLS-2$
-			}
-		}
 
 		try {
 			handlerService.executeCommand(parameterizedCommand, trigger);
@@ -635,7 +602,8 @@ public final class WorkbenchKeyboard {
 		// After some time, open a shell displaying the possible completions.
 		final Display display = workbench.getDisplay();
 		display.timerExec(DELAY, new Runnable() {
-			public void run() {
+			@Override
+      public void run() {
 				if ((System.currentTimeMillis() > (myStartTime - DELAY))
 						&& (startTime == myStartTime)) {
 					openMultiKeyAssistShell();
@@ -761,11 +729,6 @@ public final class WorkbenchKeyboard {
 	 *         otherwise.
 	 */
 	public boolean press(List potentialKeyStrokes, Event event) {
-		if (DEBUG && DEBUG_VERBOSE) {
-			Tracing.printTrace("KEYS", //$NON-NLS-1$
-					"WorkbenchKeyboard.press(potentialKeyStrokes = " //$NON-NLS-1$
-							+ potentialKeyStrokes + ')');
-		}
 		final Widget widget = event.widget;
 
 		updateShellKludge(widget);

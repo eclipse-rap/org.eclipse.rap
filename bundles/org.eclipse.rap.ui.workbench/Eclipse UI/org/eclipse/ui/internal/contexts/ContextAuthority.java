@@ -22,7 +22,6 @@ import java.util.Set;
 import java.util.WeakHashMap;
 
 import org.eclipse.core.commands.contexts.ContextManager;
-import org.eclipse.core.commands.util.Tracing;
 import org.eclipse.core.expressions.Expression;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.swt.events.DisposeEvent;
@@ -41,7 +40,7 @@ import org.eclipse.ui.internal.services.ExpressionAuthority;
  * listens to a variety of incoming sources, and updates the underlying context
  * manager if changes occur.
  * </p>
- * 
+ *
  */
 public final class ContextAuthority extends ExpressionAuthority {
 
@@ -118,7 +117,7 @@ public final class ContextAuthority extends ExpressionAuthority {
 
 	/**
 	 * Constructs a new instance of <code>ContextAuthority</code>.
-	 * 
+	 *
 	 * @param contextManager
 	 *            The context manager from which contexts can be retrieved (to
 	 *            update their active state); must not be <code>null</code>.
@@ -141,10 +140,10 @@ public final class ContextAuthority extends ExpressionAuthority {
 		this.contextManager = contextManager;
 		this.contextService = contextService;
 	}
-	
+
 	/**
 	 * Activates a context on the workbench. This will add it to a master list.
-	 * 
+	 *
 	 * @param activation
 	 *            The activation; must not be <code>null</code>.
 	 */
@@ -192,7 +191,7 @@ public final class ContextAuthority extends ExpressionAuthority {
 	 * what type of contexts the shell should have by default. This is
 	 * determined by parenting. A shell with no parent receives no contexts. A
 	 * shell with a parent, receives the dialog contexts.
-	 * 
+	 *
 	 * @param newShell
 	 *            The newly active shell; may be <code>null</code> or
 	 *            disposed.
@@ -259,10 +258,11 @@ public final class ContextAuthority extends ExpressionAuthority {
 
 					/*
 					 * (non-Javadoc)
-					 * 
+					 *
 					 * @see org.eclipse.swt.events.DisposeListener#widgetDisposed(org.eclipse.swt.events.DisposeEvent)
 					 */
-					public void widgetDisposed(DisposeEvent e) {
+					@Override
+          public void widgetDisposed(DisposeEvent e) {
 						registeredWindows.remove(null);
 						if (!newShell.isDisposed()) {
 							newShell.removeDisposeListener(this);
@@ -296,7 +296,7 @@ public final class ContextAuthority extends ExpressionAuthority {
 	/**
 	 * Returns a subset of the given <code>activations</code> containing only
 	 * those that are active
-	 * 
+	 *
 	 * @param activations
 	 *            The activations to trim; must not be <code>null</code>, but
 	 *            may be empty.
@@ -319,7 +319,7 @@ public final class ContextAuthority extends ExpressionAuthority {
 	/**
 	 * Removes an activation for a context on the workbench. This will remove it
 	 * from the master list, and update the appropriate context, if necessary.
-	 * 
+	 *
 	 * @param activation
 	 *            The activation; must not be <code>null</code>.
 	 */
@@ -371,7 +371,7 @@ public final class ContextAuthority extends ExpressionAuthority {
 
 	/**
 	 * Returns the currently active shell.
-	 * 
+	 *
 	 * @return The currently active shell; may be <code>null</code>.
 	 */
 	final Shell getActiveShell() {
@@ -380,7 +380,7 @@ public final class ContextAuthority extends ExpressionAuthority {
 
 	/**
 	 * Returns the shell type for the given shell.
-	 * 
+	 *
 	 * @param shell
 	 *            The shell for which the type should be determined. If this
 	 *            value is <code>null</code>, then
@@ -460,14 +460,14 @@ public final class ContextAuthority extends ExpressionAuthority {
 	 * If the provided shell has already been registered, then this method will
 	 * change the registration.
 	 * </p>
-	 * 
+	 *
 	 * @param shell
 	 *            The shell to register for key bindings; must not be
 	 *            <code>null</code>.
 	 * @param type
 	 *            The type of shell being registered. This value must be one of
 	 *            the constants given in this interface.
-	 * 
+	 *
 	 * @return <code>true</code> if the shell had already been registered
 	 *         (i.e., the registration has changed); <code>false</code>
 	 *         otherwise.
@@ -497,7 +497,6 @@ public final class ContextAuthority extends ExpressionAuthority {
 				buffer.append("unknown"); //$NON-NLS-1$
 				break;
 			}
-			Tracing.printTrace(TRACING_COMPONENT, buffer.toString());
 		}
 
 		// Build the list of submissions.
@@ -564,10 +563,11 @@ public final class ContextAuthority extends ExpressionAuthority {
 
 			/*
 			 * (non-Javadoc)
-			 * 
+			 *
 			 * @see org.eclipse.swt.events.DisposeListener#widgetDisposed(org.eclipse.swt.events.DisposeEvent)
 			 */
-			public void widgetDisposed(DisposeEvent e) {
+			@Override
+      public void widgetDisposed(DisposeEvent e) {
 				registeredWindows.remove(shell);
 				if (!shell.isDisposed()) {
 					shell.removeDisposeListener(this);
@@ -598,11 +598,12 @@ public final class ContextAuthority extends ExpressionAuthority {
 	 * Carries out the actual source change notification. It assumed that by the
 	 * time this method is called, <code>context</code> is up-to-date with the
 	 * current state of the application.
-	 * 
+	 *
 	 * @param sourcePriority
 	 *            A bit mask of all the source priorities that have changed.
 	 */
-	protected final void sourceChanged(final int sourcePriority) {
+	@Override
+  protected final void sourceChanged(final int sourcePriority) {
 		// If tracing, then track how long it takes to process the activations.
 		long startTime = 0L;
 		if (DEBUG_PERFORMANCE) {
@@ -671,16 +672,6 @@ public final class ContextAuthority extends ExpressionAuthority {
 		} finally {
 			contextManager.deferUpdates(false);
 		}
-
-		// If tracing performance, then print the results.
-		if (DEBUG_PERFORMANCE) {
-			final long elapsedTime = System.currentTimeMillis() - startTime;
-			final int size = activationsToRecompute.size();
-			if (size > 0) {
-				Tracing.printTrace(TRACING_COMPONENT, size
-						+ " activations recomputed in " + elapsedTime + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
-			}
-		}
 	}
 
 	/**
@@ -694,11 +685,11 @@ public final class ContextAuthority extends ExpressionAuthority {
 	 * <p>
 	 * If the shell was never registered, or if the shell is <code>null</code>,
 	 * then this method returns <code>false</code> and does nothing.
-	 * 
+	 *
 	 * @param shell
 	 *            The shell to be unregistered; does nothing if this value is
 	 *            <code>null</code>.
-	 * 
+	 *
 	 * @return <code>true</code> if the shell had been registered;
 	 *         <code>false</code> otherwise.
 	 */
@@ -741,7 +732,7 @@ public final class ContextAuthority extends ExpressionAuthority {
 
 	/**
 	 * Updates the context with the given context activation.
-	 * 
+	 *
 	 * @param contextId
 	 *            The identifier of the context which should be updated; must
 	 *            not be <code>null</code>.
@@ -764,7 +755,7 @@ public final class ContextAuthority extends ExpressionAuthority {
 	 * triggers an update of the shell-specific contexts. For example, if a
 	 * dialog becomes active, then the dialog context will be activated by this
 	 * method.
-	 * 
+	 *
 	 * @param name
 	 *            The name of the variable to update; must not be
 	 *            <code>null</code>.
@@ -772,7 +763,8 @@ public final class ContextAuthority extends ExpressionAuthority {
 	 *            The new value of the variable. If this value is
 	 *            <code>null</code>, then the variable is removed.
 	 */
-	protected final void updateEvaluationContext(final String name,
+	@Override
+  protected final void updateEvaluationContext(final String name,
 			final Object value) {
 		/*
 		 * Bug 84056. If we update the active workbench window, then we risk

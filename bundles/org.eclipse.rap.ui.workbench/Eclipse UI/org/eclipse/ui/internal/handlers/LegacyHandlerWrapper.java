@@ -14,7 +14,6 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.commands.IHandlerListener;
-import org.eclipse.core.commands.util.Tracing;
 import org.eclipse.ui.internal.commands.ILegacyAttributeNames;
 import org.eclipse.ui.internal.misc.Policy;
 
@@ -38,7 +37,7 @@ public final class LegacyHandlerWrapper implements IHandler {
 
 	/**
 	 * Constructs a new instance of <code>HandlerWrapper</code>.
-	 * 
+	 *
 	 * @param handler
 	 *            The handler that should be wrapped; must not be
 	 *            <code>null</code>.
@@ -54,24 +53,27 @@ public final class LegacyHandlerWrapper implements IHandler {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.core.commands.IHandler#addHandlerListener(org.eclipse.core.commands.IHandlerListener)
 	 */
-	public final void addHandlerListener(final IHandlerListener handlerListener) {
+	@Override
+  public final void addHandlerListener(final IHandlerListener handlerListener) {
 		handler.addHandlerListener(new LegacyHandlerListenerWrapper(this,
 				handlerListener));
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.core.commands.IHandler#dispose()
 	 */
-	public final void dispose() {
+	@Override
+  public final void dispose() {
 		handler.dispose();
 	}
 
-	public final boolean equals(final Object object) {
+	@Override
+  public final boolean equals(final Object object) {
 		if (object instanceof org.eclipse.ui.commands.IHandler) {
 			return this.handler == object;
 		}
@@ -85,24 +87,12 @@ public final class LegacyHandlerWrapper implements IHandler {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
 	 */
-	public final Object execute(final ExecutionEvent event)
+	@Override
+  public final Object execute(final ExecutionEvent event)
 			throws ExecutionException {
-		// Debugging output
-		if (DEBUG_HANDLERS) {
-			final StringBuffer buffer = new StringBuffer("Executing LegacyHandlerWrapper for "); //$NON-NLS-1$
-			if (handler == null) {
-				buffer.append("no handler"); //$NON-NLS-1$
-			} else {
-				buffer.append('\'');
-				buffer.append(handler.getClass().getName());
-				buffer.append('\'');
-			}
-			Tracing.printTrace("HANDLERS", buffer.toString()); //$NON-NLS-1$
-		}
-
 		try {
 			return handler.execute(event.getParameters());
 		} catch (final org.eclipse.ui.commands.ExecutionException e) {
@@ -110,11 +100,13 @@ public final class LegacyHandlerWrapper implements IHandler {
 		}
 	}
 
-	public final int hashCode() {
+	@Override
+  public final int hashCode() {
 		return this.handler.hashCode();
 	}
 
-	public final boolean isEnabled() {
+	@Override
+  public final boolean isEnabled() {
 		final Object enabled = handler.getAttributeValuesByName().get(
 				ILegacyAttributeNames.ENABLED);
 		if (enabled instanceof Boolean) {
@@ -124,7 +116,8 @@ public final class LegacyHandlerWrapper implements IHandler {
 		return true;
 	}
 
-	public final boolean isHandled() {
+	@Override
+  public final boolean isHandled() {
 		final Object handled = handler.getAttributeValuesByName().get(
 				ILegacyAttributeNames.HANDLED);
 		if (handled instanceof Boolean) {
@@ -134,13 +127,15 @@ public final class LegacyHandlerWrapper implements IHandler {
 		return true;
 	}
 
-	public final void removeHandlerListener(
+	@Override
+  public final void removeHandlerListener(
 			final IHandlerListener handlerListener) {
 		handler.removeHandlerListener(new LegacyHandlerListenerWrapper(this,
 				handlerListener));
 	}
 
-	public final String toString() {
+	@Override
+  public final String toString() {
 		final StringBuffer buffer = new StringBuffer();
 
 		buffer.append("LegacyHandlerWrapper("); //$NON-NLS-1$

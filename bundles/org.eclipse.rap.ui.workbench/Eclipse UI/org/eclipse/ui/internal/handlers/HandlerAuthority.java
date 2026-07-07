@@ -26,7 +26,6 @@ import java.util.TreeSet;
 
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.IHandler;
-import org.eclipse.core.commands.util.Tracing;
 import org.eclipse.core.expressions.EvaluationContext;
 import org.eclipse.core.expressions.EvaluationResult;
 import org.eclipse.core.expressions.Expression;
@@ -129,7 +128,7 @@ final class HandlerAuthority {
 
 	/**
 	 * Constructs a new instance of <code>HandlerAuthority</code>.
-	 * 
+	 *
 	 * @param commandService
 	 *            The command service from which commands can be retrieved (to
 	 *            update their handlers); must not be <code>null</code>.
@@ -161,7 +160,8 @@ final class HandlerAuthority {
 	private IPropertyChangeListener getServiceListener() {
 		if (serviceListener == null) {
 			serviceListener = new IPropertyChangeListener() {
-				public void propertyChange(PropertyChangeEvent event) {
+				@Override
+        public void propertyChange(PropertyChangeEvent event) {
 					if (IEvaluationService.PROP_NOTIFYING.equals(event
 							.getProperty())) {
 						if (event.getNewValue() instanceof Boolean) {
@@ -191,7 +191,7 @@ final class HandlerAuthority {
 	 * Activates a handler on the workbench. This will add it to a master list.
 	 * If conflicts exist, they will be resolved based on the source priority.
 	 * If conflicts still exist, then no handler becomes active.
-	 * 
+	 *
 	 * @param activation
 	 *            The activation; must not be <code>null</code>.
 	 */
@@ -255,7 +255,7 @@ final class HandlerAuthority {
 	/**
 	 * Removes an activation for a handler on the workbench. This will remove it
 	 * from the master list, and update the appropriate command, if necessary.
-	 * 
+	 *
 	 * @param activation
 	 *            The activation; must not be <code>null</code>.
 	 */
@@ -320,7 +320,7 @@ final class HandlerAuthority {
 	 * identifier. This tries to select the best activation based on the source
 	 * priority. For the sake of comparison, activations with the same handler
 	 * are considered equivalent (i.e., non-conflicting).
-	 * 
+	 *
 	 * @param commandId
 	 *            The identifier of the command for which the conflicts should
 	 *            be detected; must not be <code>null</code>. This is only
@@ -350,13 +350,6 @@ final class HandlerAuthority {
 				continue; // only consider potentially active handlers
 			}
 
-			// Check to see if we haven't found a potentially active handler yet
-			if ((DEBUG_VERBOSE)
-					&& ((DEBUG_VERBOSE_COMMAND_ID == null) || (DEBUG_VERBOSE_COMMAND_ID
-							.equals(commandId)))) {
-				Tracing.printTrace(TRACING_COMPONENT,
-						"    resolveConflicts: eval: " + currentActivation); //$NON-NLS-1$
-			}
 			if (bestActivation == null) {
 				bestActivation = currentActivation;
 				conflict = false;
@@ -378,23 +371,6 @@ final class HandlerAuthority {
 
 			} else {
 				break;
-			}
-		}
-
-		// If we are logging information, now is the time to do it.
-		if (DEBUG) {
-			if (conflict) {
-				Tracing.printTrace(TRACING_COMPONENT,
-						"Unresolved conflict detected for '" //$NON-NLS-1$
-								+ commandId + '\'');
-			} else if ((bestActivation != null)
-					&& (DEBUG_VERBOSE)
-					&& ((DEBUG_VERBOSE_COMMAND_ID == null) || (DEBUG_VERBOSE_COMMAND_ID
-							.equals(commandId)))) {
-				Tracing
-						.printTrace(TRACING_COMPONENT,
-								"Resolved conflict detected.  The following activation won: "); //$NON-NLS-1$
-				Tracing.printTrace(TRACING_COMPONENT, "    " + bestActivation); //$NON-NLS-1$
 			}
 		}
 
@@ -430,7 +406,7 @@ final class HandlerAuthority {
 	 * Carries out the actual source change notification. It assumed that by the
 	 * time this method is called, <code>context</code> is up-to-date with the
 	 * current state of the application.
-	 * 
+	 *
 	 * @param sourcePriority
 	 *            A bit mask of all the source priorities that have changed.
 	 */
@@ -440,7 +416,7 @@ final class HandlerAuthority {
 
 	/**
 	 * Updates the command with the given handler activation.
-	 * 
+	 *
 	 * @param commandId
 	 *            The identifier of the command which should be updated; must
 	 *            not be <code>null</code>.
@@ -464,7 +440,7 @@ final class HandlerAuthority {
 	 * <p>
 	 * DO NOT CALL THIS METHOD.
 	 * </p>
-	 * 
+	 *
 	 * @param commandId
 	 *            the command id to check
 	 * @param context
@@ -516,7 +492,7 @@ final class HandlerAuthority {
 	 * <p>
 	 * DO NOT CALL THIS METHOD.
 	 * </p>
-	 * 
+	 *
 	 * @param context
 	 * @param activation
 	 * @return <code>true</code> if the handler expression can evaluate to
@@ -588,10 +564,11 @@ final class HandlerAuthority {
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
 		 */
-		public void propertyChange(PropertyChangeEvent event) {
+		@Override
+    public void propertyChange(PropertyChangeEvent event) {
 			if (handler.getCommandId().equals(event.getProperty())) {
 				boolean val = false;
 				if (event.getNewValue() instanceof Boolean) {
@@ -621,7 +598,7 @@ final class HandlerAuthority {
 		String[] changedIds = (String[]) changedCommandIds.toArray(new String[changedCommandIds.size()]);
 		changedCommandIds.clear();
 		for (int i = 0; i < changedIds.length; i++) {
-			
+
 			final String commandId = changedIds[i];
 			final Object value = handlerActivationsByCommandId.get(commandId);
 			if (value instanceof IHandlerActivation) {
@@ -638,16 +615,6 @@ final class HandlerAuthority {
 		}
 		if (conflicts.getSeverity() != IStatus.OK) {
 			WorkbenchPlugin.log(conflicts);
-		}
-
-		// If tracing performance, then print the results.
-		if (DEBUG_PERFORMANCE) {
-			final long elapsedTime = System.currentTimeMillis() - startTime;
-			final int size = changedCommandIds.size();
-			if (size > 0) {
-				Tracing.printTrace(TRACING_COMPONENT, size
-						+ " command ids changed in " + elapsedTime + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
-			}
 		}
 	}
 

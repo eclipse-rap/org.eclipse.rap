@@ -13,7 +13,6 @@ package org.eclipse.ui;
 
 import java.util.Map;
 
-import org.eclipse.core.commands.util.Tracing;
 import org.eclipse.ui.internal.misc.Policy;
 import org.eclipse.ui.services.IServiceLocator;
 
@@ -23,7 +22,7 @@ import org.eclipse.ui.services.IServiceLocator;
  * support. Subclasses need only call <code>fireSourceChanged</code> whenever
  * appropriate.
  * </p>
- * 
+ *
  * @since 1.0
  */
 public abstract class AbstractSourceProvider implements ISourceProvider {
@@ -31,7 +30,7 @@ public abstract class AbstractSourceProvider implements ISourceProvider {
 	/**
 	 * Whether source providers should print out debugging information to the
 	 * console when events arrive.
-	 * 
+	 *
 	 */
 	protected static boolean DEBUG = Policy.DEBUG_SOURCES;
 
@@ -47,7 +46,8 @@ public abstract class AbstractSourceProvider implements ISourceProvider {
 	 */
 	private int listenerCount = 0;
 
-	public final void addSourceProviderListener(
+	@Override
+  public final void addSourceProviderListener(
 			final ISourceProviderListener listener) {
 		if (listener == null) {
 			throw new NullPointerException("The listener cannot be null"); //$NON-NLS-1$
@@ -63,7 +63,7 @@ public abstract class AbstractSourceProvider implements ISourceProvider {
 
 	/**
 	 * Notifies all listeners that a single source has changed.
-	 * 
+	 *
 	 * @param sourcePriority
 	 *            The source priority that has changed.
 	 * @param sourceName
@@ -82,7 +82,7 @@ public abstract class AbstractSourceProvider implements ISourceProvider {
 
 	/**
 	 * Notifies all listeners that multiple sources have changed.
-	 * 
+	 *
 	 * @param sourcePriority
 	 *            The source priority that has changed.
 	 * @param sourceValuesByName
@@ -103,18 +103,16 @@ public abstract class AbstractSourceProvider implements ISourceProvider {
 	 * Logs a debugging message in an appropriate manner. If the message is
 	 * <code>null</code> or the <code>DEBUG</code> is <code>false</code>,
 	 * then this method does nothing.
-	 * 
+	 *
 	 * @param message
 	 *            The debugging message to log; if <code>null</code>, then
 	 *            nothing is logged.
 	 */
 	protected final void logDebuggingInfo(final String message) {
-		if (DEBUG && (message != null)) {
-			Tracing.printTrace("SOURCES", message); //$NON-NLS-1$
-		}
 	}
 
-	public final void removeSourceProviderListener(
+	@Override
+  public final void removeSourceProviderListener(
 			final ISourceProviderListener listener) {
 		if (listener == null) {
 			throw new NullPointerException("The listener cannot be null"); //$NON-NLS-1$
@@ -141,7 +139,7 @@ public abstract class AbstractSourceProvider implements ISourceProvider {
 	 * This method is called when the source provider is instantiated by
 	 * <code>org.eclipse.ui.services</code>. Clients may override this method
 	 * to perform initialization.
-	 * 
+	 *
 	 * @param locator
 	 *            The global service locator. It can be used to retrieve
 	 *            services like the IContextService

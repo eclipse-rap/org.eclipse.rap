@@ -34,7 +34,6 @@ import org.eclipse.core.commands.contexts.Context;
 import org.eclipse.core.commands.contexts.ContextManager;
 import org.eclipse.core.commands.contexts.ContextManagerEvent;
 import org.eclipse.core.commands.contexts.IContextManagerListener;
-import org.eclipse.core.commands.util.Tracing;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
@@ -428,9 +427,6 @@ public final class BindingManager extends HandleObjectManager implements
 	 * </p>
 	 */
 	private final void clearCache() {
-		if (DEBUG) {
-			Tracing.printTrace("BINDINGS", "Clearing cache"); //$NON-NLS-1$ //$NON-NLS-2$
-		}
 		cachedBindings.clear();
 		clearSolution();
 	}
@@ -658,11 +654,6 @@ public final class BindingManager extends HandleObjectManager implements
 									"org.eclipse.jface", //$NON-NLS-1$
 									sw.toString()));
 						}
-						if (DEBUG) {
-							Tracing.printTrace("BINDINGS", //$NON-NLS-1$
-									"A conflict occurred for " + trigger); //$NON-NLS-1$
-							Tracing.printTrace("BINDINGS", "    " + match); //$NON-NLS-1$ //$NON-NLS-2$
-						}
 					} else {
 						bindingsByTrigger.put(trigger, winner);
 						addReverseLookup(triggersByCommandId, winner
@@ -685,7 +676,8 @@ public final class BindingManager extends HandleObjectManager implements
 	 * This method completes in <code>O(1)</code>.
 	 * </p>
 	 */
-	public final void contextManagerChanged(
+	@Override
+  public final void contextManagerChanged(
 			final ContextManagerEvent contextManagerEvent) {
 		if (contextManagerEvent.isActiveContextsChanged()) {
 // clearSolution();
@@ -987,16 +979,7 @@ public final class BindingManager extends HandleObjectManager implements
 		}
 		Map commandIdsByTrigger = existingCache.getBindingsByTrigger();
 		if (commandIdsByTrigger != null) {
-			if (DEBUG) {
-				Tracing.printTrace("BINDINGS", "Cache hit"); //$NON-NLS-1$ //$NON-NLS-2$
-			}
-
 			return Collections.unmodifiableMap(commandIdsByTrigger);
-		}
-
-		// There is no cached entry for this.
-		if (DEBUG) {
-			Tracing.printTrace("BINDINGS", "Cache miss"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
 		// Compute the active bindings.
@@ -1049,16 +1032,7 @@ public final class BindingManager extends HandleObjectManager implements
 		Map triggersByParameterizedCommand = existingCache
 				.getTriggersByCommandId();
 		if (triggersByParameterizedCommand != null) {
-			if (DEBUG) {
-				Tracing.printTrace("BINDINGS", "Cache hit"); //$NON-NLS-1$ //$NON-NLS-2$
-			}
-
 			return Collections.unmodifiableMap(triggersByParameterizedCommand);
-		}
-
-		// There is no cached entry for this.
-		if (DEBUG) {
-			Tracing.printTrace("BINDINGS", "Cache miss"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
 		// Compute the active bindings.
@@ -1732,18 +1706,10 @@ public final class BindingManager extends HandleObjectManager implements
 		}
 		Map commandIdsByTrigger = existingCache.getBindingsByTrigger();
 		if (commandIdsByTrigger != null) {
-			if (DEBUG) {
-				Tracing.printTrace("BINDINGS", "Cache hit"); //$NON-NLS-1$ //$NON-NLS-2$
-			}
 			setActiveBindings(commandIdsByTrigger, existingCache
 					.getTriggersByCommandId(), existingCache.getPrefixTable(),
 					existingCache.getConflictsByTrigger());
 			return;
-		}
-
-		// There is no cached entry for this.
-		if (DEBUG) {
-			Tracing.printTrace("BINDINGS", "Cache miss"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
 		// Compute the active bindings.
@@ -1918,11 +1884,6 @@ public final class BindingManager extends HandleObjectManager implements
 				bindingsCopy[i] = null;
 				deletedCount++;
 			}
-		}
-
-		if (DEBUG) {
-			Tracing.printTrace("BINDINGS", "There are " + deletions.size() //$NON-NLS-1$ //$NON-NLS-2$
-					+ " deletion markers"); //$NON-NLS-1$
 		}
 
 		// Remove the deleted items.
@@ -2108,7 +2069,8 @@ public final class BindingManager extends HandleObjectManager implements
 	 * @param schemeEvent
 	 *            An event describing the change in the scheme.
 	 */
-	public final void schemeChanged(final SchemeEvent schemeEvent) {
+	@Override
+  public final void schemeChanged(final SchemeEvent schemeEvent) {
 		if (schemeEvent.isDefinedChanged()) {
 			final Scheme scheme = schemeEvent.getScheme();
 			final boolean schemeIdAdded = scheme.isDefined();
@@ -2215,8 +2177,9 @@ public final class BindingManager extends HandleObjectManager implements
 	 *         then return an empty map. Never <code>null</code>
 	 */
 	public Map getCurrentConflicts() {
-		if (currentConflicts == null)
-			return Collections.EMPTY_MAP;
+		if (currentConflicts == null) {
+      return Collections.EMPTY_MAP;
+    }
 		return Collections.unmodifiableMap(currentConflicts);
 	}
 
