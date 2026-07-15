@@ -16,8 +16,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.rap.service.http.HttpContext;
 import org.osgi.framework.Bundle;
+import org.osgi.service.servlet.context.ServletContextHelper;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,7 +25,7 @@ import jakarta.servlet.http.HttpServletResponse;
 // NOTE: This was added to org.eclipse.rap.ui to avoid starting
 //       the workbench bundle before the context is established. The latter
 //       uses the context already on startup
-public final class RAPHttpContext implements HttpContext {
+public final class RAPHttpContext extends ServletContextHelper {
 
   private final Bundle bundle;
 

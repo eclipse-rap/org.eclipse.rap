@@ -13,8 +13,10 @@ Require-Bundle: org.eclipse.rap.http.jetty;bundle-version="[4.8.0,5.0.0)",
  org.eclipse.rap.rwt;bundle-version="[4.8.0,5.0.0)"
 Import-Package: jakarta.servlet;version="6.0.0",
  jakarta.servlet.http;version="6.0.0",
- org.eclipse.rap.service.http;version="[4.8.0,5.0.0)",
  org.osgi.framework;version="1.6.0",
+ org.osgi.service.servlet.runtime;version="[2.0.0,3.0.0)",
+ org.osgi.service.servlet.runtime.dto;version="[2.0.0,3.0.0)",
+ org.osgi.service.servlet.whiteboard;version="[2.0.0,3.0.0)",
  org.osgi.util.tracker;version="1.5.0"
 Bundle-Vendor: Eclipse.org - RAP
 Bundle-Activator: org.eclipse.rap.rwt.jstest.internal.Activator
