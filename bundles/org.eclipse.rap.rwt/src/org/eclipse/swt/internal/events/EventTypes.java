@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 EclipseSource and others.
+ * Copyright (c) 2012, 2025 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,7 +41,6 @@ public final class EventTypes {
     SWT.Activate,
     SWT.Close,
     SWT.Hide,
-    SWT.Show,
     SWT.Dispose,
     SWT.SetData,
     SWT.Traverse,
@@ -55,6 +54,7 @@ public final class EventTypes {
     SWT.MouseDown,
     SWT.MouseDoubleClick,
     SWT.MenuDetect,
+    SWT.Show,
     EventTypes.CTAB_FOLDER_CLOSE,
     EventTypes.CTAB_FOLDER_MINIMIZE,
     EventTypes.CTAB_FOLDER_MAXIMIZE,
