@@ -34,6 +34,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.internal.browser.browserkit.BrowserLCA;
 import org.eclipse.swt.internal.events.EventTypes;
 import org.eclipse.swt.internal.widgets.IBrowserAdapter;
@@ -356,9 +357,12 @@ public class Browser_Test {
       }
     } );
 
-    boolean result = browser.execute( "var x = 2;" );
-
-    assertFalse( result );
+    try {
+      boolean result = browser.execute( "var x = 2;" );
+      fail();
+    } catch( SWTException expected ) {
+      assertEquals( "Widget is disposed", expected.getMessage() );
+    }
   }
 
   @Test
