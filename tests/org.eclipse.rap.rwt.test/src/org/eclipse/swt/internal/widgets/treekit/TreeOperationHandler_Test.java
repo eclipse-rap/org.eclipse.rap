@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.treekit;
 
+import static org.eclipse.rap.rwt.application.Application.OperationMode.SWT_COMPATIBILITY;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_COLLAPSE;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_DEFAULT_SELECTION;
@@ -25,6 +26,7 @@ import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_MOU
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SET_DATA;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_TRAVERSE;
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
@@ -38,6 +40,9 @@ import static org.mockito.Mockito.verify;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.application.Application.OperationMode;
+import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
+import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.CellToolTipUtil;
@@ -240,7 +245,8 @@ public class TreeOperationHandler_Test {
   }
 
   @Test
-  public void testHandleNotifyMouseDown() {
+  public void testHandleNotifyMouseDownJeeMode() {
+    ensureOperationMode( OperationMode.JEE_COMPATIBILITY );
     Tree spyTree = spy( tree );
     handler = new TreeOperationHandler( spyTree );
 
@@ -257,6 +263,32 @@ public class TreeOperationHandler_Test {
     verify( spyTree ).notifyListeners( eq( SWT.MouseDown ), captor.capture() );
     Event event = captor.getValue();
     assertEquals( SWT.ALT | SWT.SHIFT | SWT.BUTTON1, event.stateMask );
+    assertEquals( 1, event.button );
+    assertEquals( 2, event.x );
+    assertEquals( 3, event.y );
+    assertEquals( 4, event.time );
+    assertEquals( 1, event.count );
+  }
+  
+  @Test
+  public void testHandleNotifyMouseDownSwtMode() {
+    ensureOperationMode( OperationMode.SWT_COMPATIBILITY );
+    Tree spyTree = spy( tree );
+    handler = new TreeOperationHandler( spyTree );
+
+    JsonObject properties = new JsonObject()
+      .add( "altKey", true )
+      .add( "shiftKey", true )
+      .add( "button", 1 )
+      .add( "x", 2 )
+      .add( "y", 3 )
+      .add( "time", 4 );
+    handler.handleNotify( EVENT_MOUSE_DOWN, properties );
+
+    ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
+    verify( spyTree ).notifyListeners( eq( SWT.MouseDown ), captor.capture() );
+    Event event = captor.getValue();
+    assertEquals( SWT.ALT | SWT.SHIFT, event.stateMask );
     assertEquals( 1, event.button );
     assertEquals( 2, event.x );
     assertEquals( 3, event.y );
@@ -283,7 +315,8 @@ public class TreeOperationHandler_Test {
   }
 
   @Test
-  public void testHandleNotifyMouseDoubleClick() {
+  public void testHandleNotifyMouseDoubleClickJeeMode() {
+    ensureOperationMode( OperationMode.JEE_COMPATIBILITY );
     Tree spyTree = spy( tree );
     handler = new TreeOperationHandler( spyTree );
 
@@ -306,6 +339,33 @@ public class TreeOperationHandler_Test {
     assertEquals( 4, event.time );
     assertEquals( 2, event.count );
   }
+  
+  @Test
+  public void testHandleNotifyMouseDoubleClickSwtMode() {
+    ensureOperationMode( OperationMode.SWT_COMPATIBILITY );
+    Tree spyTree = spy( tree );
+    handler = new TreeOperationHandler( spyTree );
+
+    JsonObject properties = new JsonObject()
+      .add( "altKey", true )
+      .add( "shiftKey", true )
+      .add( "button", 1 )
+      .add( "x", 2 )
+      .add( "y", 3 )
+      .add( "time", 4 );
+    handler.handleNotify( EVENT_MOUSE_DOUBLE_CLICK, properties );
+
+    ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
+    verify( spyTree ).notifyListeners( eq( SWT.MouseDoubleClick ), captor.capture() );
+    Event event = captor.getValue();
+    assertEquals( SWT.ALT | SWT.SHIFT, event.stateMask );
+    assertEquals( 1, event.button );
+    assertEquals( 2, event.x );
+    assertEquals( 3, event.y );
+    assertEquals( 4, event.time );
+    assertEquals( 2, event.count );
+  }
+
 
   @Test
   public void testHandleNotifyMouseUp() {
@@ -509,4 +569,12 @@ public class TreeOperationHandler_Test {
     return tree.getAdapter( ITreeAdapter.class );
   }
 
+  private static void ensureOperationMode( OperationMode operationMode ) {
+    LifeCycleFactory lifeCycleFactory = getApplicationContext().getLifeCycleFactory();
+    lifeCycleFactory.deactivate();
+    if( SWT_COMPATIBILITY.equals( operationMode ) ) {
+      lifeCycleFactory.configure( RWTLifeCycle.class );
+    }
+    lifeCycleFactory.activate();
+  }
 }

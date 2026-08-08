@@ -12,7 +12,6 @@
 package org.eclipse.jface.layout;
 
 import java.io.Serializable;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.RowLayout;
@@ -214,6 +213,20 @@ public final class RowLayoutFactory implements Serializable {
 		layout.fill = fill;
 		return this;
 	}
+
+    /**
+     * Center specifies whether the controls in a row should be centered vertically
+     * in each cell for horizontal layouts, or centered horizontally in each cell
+     * for vertical layouts.
+     *
+     * @param center the center status
+     * @return this
+     * @since 3.20
+     */
+    public RowLayoutFactory center(boolean center) {
+        layout.center = center;
+        return this;
+    }
 
 	/**
 	 * Justify specifies whether the controls in a row should be fully

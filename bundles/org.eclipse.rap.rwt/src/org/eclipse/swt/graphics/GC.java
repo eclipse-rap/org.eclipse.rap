@@ -17,6 +17,7 @@ import java.io.ObjectOutputStream;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.SWTException;
+import org.eclipse.swt.internal.graphics.FontUtil;
 import org.eclipse.swt.widgets.Control;
 
 
@@ -1726,9 +1727,9 @@ public class GC extends Resource {
     checkDisposed();
     if( string == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
-    }
-    if( string.length() != 0 ) {
-      delegate.drawText( string, x, y, flags );
+    } else if( string.length() != 0 ) {
+      int normalizedHeight = (int) Math.round(getFont().getFontData()[0].getHeight() / FontUtil.LINE_HEIGHT_FACTOR);
+      delegate.drawText(string, x, y + FontUtil.getVerticalOffset(normalizedHeight), flags);
     }
   }
 

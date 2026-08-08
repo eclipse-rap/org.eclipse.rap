@@ -29,12 +29,15 @@ import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PAR
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_Y;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_TRAVERSE;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.wasEventSent;
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.eclipse.swt.internal.events.EventLCAUtil.translateButton;
 import static org.eclipse.swt.internal.widgets.ControlUtil.getControlAdapter;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
@@ -333,7 +336,18 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
     event.x = point.x;
     event.y = point.y;
     event.time = properties.get( EVENT_PARAM_TIME ).asInt();
-    event.stateMask = readStateMask( properties ) | translateButton( event.button );
+    
+    if (isSwtMode()) {
+      event.stateMask = readStateMask( properties );
+      // [pw] The button mask confuses NatTable MouseEventMatcher since 
+      // the button mask is not there in SWT except in MouseUp event, 
+      // see Widget.class line 1351 (in swt)
+      if ( SWT.MouseUp == eventType ) {
+          event.stateMask |= translateButton( event.button );
+      }
+    } else {
+      event.stateMask = readStateMask( properties ) | translateButton( event.button );
+    }
     // TODO: send count by the client
     event.count = determineCount( eventType, control );
     return event;
@@ -540,4 +554,7 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
     return result;
   }
 
+  private static boolean isSwtMode() {
+    return getApplicationContext().getLifeCycleFactory().getLifeCycle() instanceof RWTLifeCycle;
+  }
 }
