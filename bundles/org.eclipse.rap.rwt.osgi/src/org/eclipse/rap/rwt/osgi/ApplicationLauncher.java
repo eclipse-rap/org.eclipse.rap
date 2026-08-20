@@ -12,9 +12,7 @@
 package org.eclipse.rap.rwt.osgi;
 
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
-import org.eclipse.rap.service.http.HttpContext;
-import org.eclipse.rap.service.http.HttpService;
-
+import org.osgi.service.servlet.runtime.HttpServiceRuntime;
 
 /**
  * A launcher for RWT applications in the OSGi environment. An instance of this interface will be
@@ -45,11 +43,10 @@ public interface ApplicationLauncher {
   public static final String PROPERTY_CONTEXT_NAME = "contextName";
 
   /**
-   * Launches an application with the given configuration at the given HTTPService.
+   * Launches an application with the given configuration at the given HttpServiceRuntime.
    *
    * @param configuration the configuration of the application to start
-   * @param httpService the http service to start the application at
-   * @param httpContext the http context to use, or <code>null</code> to use the default context
+   * @param httpService the HttpServiceRuntime
    * @param contextName the context name of the application, defines the first URL path segment to
    *          the application
    * @param contextDirectory the name of a directory to store static web resources
@@ -57,8 +54,7 @@ public interface ApplicationLauncher {
    * @since 4.0
    */
   ApplicationReference launch( ApplicationConfiguration configuration,
-                               HttpService httpService,
-                               HttpContext httpContext,
+                               HttpServiceRuntime httpService,
                                String contextName,
                                String contextDirectory );
 

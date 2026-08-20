@@ -42,7 +42,6 @@ import org.eclipse.rap.rwt.internal.lifecycle.DefaultEntryPointFactory;
 import org.eclipse.rap.rwt.service.ResourceLoader;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.SettingStoreFactory;
-import org.eclipse.rap.service.http.HttpService;
 import org.eclipse.rap.ui.internal.application.EntryPointApplicationWrapper;
 import org.eclipse.rap.ui.internal.branding.AbstractBranding;
 import org.eclipse.rap.ui.internal.branding.BrandingExtension;
@@ -57,6 +56,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.servlet.runtime.HttpServiceRuntime;
 
 public class WorkbenchApplicationConfiguration implements ApplicationConfiguration {
 
@@ -76,7 +76,7 @@ public class WorkbenchApplicationConfiguration implements ApplicationConfigurati
   private static final String PT_APPLICATIONS = "applications"; //$NON-NLS-1$
   private static final String PT_APP_VISIBLE = "visible"; //$NON-NLS-1$
 
-  private final ServiceReference<HttpService> httpServiceReference;
+  private final ServiceReference<HttpServiceRuntime> httpServiceReference;
 
   // Default constructor to enable subclassing without adding a dependency to OSGi API
   public WorkbenchApplicationConfiguration() {
@@ -86,7 +86,7 @@ public class WorkbenchApplicationConfiguration implements ApplicationConfigurati
   /*
    * Note [rst]: public as per request in https://bugs.eclipse.org/bugs/show_bug.cgi?id=372183
    */
-  public WorkbenchApplicationConfiguration( ServiceReference<HttpService> httpServiceReference ) {
+  public WorkbenchApplicationConfiguration( ServiceReference<HttpServiceRuntime> httpServiceReference ) {
     this.httpServiceReference = httpServiceReference;
   }
 

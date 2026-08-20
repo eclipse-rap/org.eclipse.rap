@@ -12,17 +12,21 @@
 package org.eclipse.rap.rwt.osgi.internal;
 
 import java.util.Collection;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
 
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.application.ApplicationRunner;
 import org.eclipse.rap.rwt.engine.RWTServlet;
 import org.eclipse.rap.rwt.osgi.ApplicationReference;
 import org.eclipse.rap.rwt.service.ApplicationContext;
-import org.eclipse.rap.service.http.HttpContext;
-import org.eclipse.rap.service.http.HttpService;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
+import org.osgi.framework.*;
+import org.osgi.service.servlet.runtime.HttpServiceRuntime;
+import org.osgi.service.servlet.whiteboard.HttpWhiteboardConstants;
 
+import jakarta.servlet.Servlet;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServlet;
 
@@ -34,8 +38,7 @@ class ApplicationReferenceImpl implements ApplicationReference {
   static final String RAP_HTTP_CONTEXT_CLASS_NAME = "org.eclipse.rap.ui.internal.RAPHttpContext";
 
   private ApplicationConfiguration configuration;
-  private HttpService httpService;
-  private HttpContext httpContext;
+  private HttpServiceRuntime httpService;
   private String contextLocation;
   private String contextName;
   private ServletContext servletContextWrapper;
@@ -43,20 +46,24 @@ class ApplicationReferenceImpl implements ApplicationReference {
   private ApplicationLauncherImpl applicationLauncher;
   private ServiceRegistration<?> serviceRegistration;
   private volatile boolean alive;
+  private BundleContext bundleContext;
+
+  // Whiteboard-Registrierungen, damit wir sie beim Stoppen wieder abmelden koennen.
+  private final Map<String, ServiceRegistration<Servlet>> servletRegistrations = new HashMap<>();
+  private ServiceRegistration<?> resourceRegistration;
 
   ApplicationReferenceImpl( ApplicationConfiguration configuration,
-                            HttpService httpService,
-                            HttpContext httpContext,
+                            HttpServiceRuntime httpService,
                             String contextName,
                             String contextLocation,
                             ApplicationLauncherImpl applicationLauncher )
   {
     this.configuration = configuration;
     this.httpService = httpService;
-    this.httpContext = isRAPContext( httpContext ) ? httpContext : wrapHttpContext( httpContext );
     this.contextLocation = contextLocation;
     this.contextName = contextName;
     this.applicationLauncher = applicationLauncher;
+    this.bundleContext = FrameworkUtil.getBundle( getClass() ).getBundleContext();
   }
 
   void start() {
@@ -154,18 +161,6 @@ class ApplicationReferenceImpl implements ApplicationReference {
     unregisterServlet( SERVLET_CONTEXT_FINDER_ALIAS );
   }
 
-  private HttpContext wrapHttpContext( HttpContext context ) {
-    HttpContext wrapped = context != null ? context : httpService.createDefaultHttpContext();
-    return new HttpContextWrapper( wrapped );
-  }
-
-  private static boolean isRAPContext( HttpContext context ) {
-    if( context != null ) {
-      return RAP_HTTP_CONTEXT_CLASS_NAME.equals( context.getClass().getName() );
-    }
-    return false;
-  }
-
   private HttpServlet registerServletContextProviderServlet() {
     HttpServlet result = new HttpServlet() {
       private static final long serialVersionUID = 1L;
@@ -186,8 +181,17 @@ class ApplicationReferenceImpl implements ApplicationReference {
 
   private void registerServlet( String alias, HttpServlet servlet ) {
     try {
+      String pattern = getContextSegment() + alias;
       HttpServlet wrapper = new CutOffContextPathWrapper( servlet, servletContextWrapper, alias );
-      httpService.registerServlet( getContextSegment() + alias, wrapper, null, httpContext );
+      Dictionary<String, Object> properties = new Hashtable<>();
+      // Muster, unter dem das Servlet erreichbar ist (Whiteboard-Spec).
+      properties.put( HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN, pattern );
+      // Eindeutiger Name; optional, aber empfohlen.
+      properties.put( HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_NAME,
+                      "rwt-servlet" + pattern );
+      ServiceRegistration<Servlet> registration
+        = bundleContext.registerService( Servlet.class, wrapper, properties );
+      servletRegistrations.put( pattern, registration );
     } catch( RuntimeException rte ) {
       throw rte;
     } catch( Exception shouldNotHappen ) {
@@ -197,9 +201,16 @@ class ApplicationReferenceImpl implements ApplicationReference {
 
   private void registerResourceDirectory() {
     String alias = ApplicationRunner.RESOURCES;
-    String location = contextLocation + "/" + alias;
+    String prefix = contextLocation + "/" + alias;
+    String pattern = getContextSegment() + "/" + alias + "/*";
     try {
-      httpService.registerResources( getContextSegment() + "/" + alias, location, httpContext );
+      Dictionary<String, Object> properties = new Hashtable<>();
+      // Muster + Prefix fuer eine Whiteboard-Ressourcenregistrierung.
+      properties.put( HttpWhiteboardConstants.HTTP_WHITEBOARD_RESOURCE_PATTERN, pattern );
+      properties.put( HttpWhiteboardConstants.HTTP_WHITEBOARD_RESOURCE_PREFIX, prefix );
+      // Ein beliebiges Marker-Objekt genuegt als Service-Instanz.
+      resourceRegistration
+        = bundleContext.registerService( Object.class, new Object(), properties );
     } catch( RuntimeException rte ) {
       throw rte;
     } catch( Exception shouldNotHappen ) {
@@ -209,8 +220,6 @@ class ApplicationReferenceImpl implements ApplicationReference {
 
   private void clearFields() {
     applicationRunner = null;
-    httpService = null;
-    httpContext = null;
     configuration = null;
     contextName = null;
     contextLocation = null;
@@ -219,11 +228,27 @@ class ApplicationReferenceImpl implements ApplicationReference {
   }
 
   private void unregisterServlet( String alias ) {
-    httpService.unregister( getContextSegment() + alias );
+    String pattern = getContextSegment() + alias;
+    ServiceRegistration<Servlet> registration = servletRegistrations.remove( pattern );
+    if( registration != null ) {
+      try {
+        registration.unregister();
+      } catch( IllegalStateException alreadyUnregistered ) {
+        // Registrierung wurde bereits abgemeldet - ignorieren.
+      }
+    }
   }
 
   private void unregisterResourcesDirectory() {
-    httpService.unregister( getContextSegment() + "/" + ApplicationRunner.RESOURCES );
+    if( resourceRegistration != null ) {
+      try {
+        resourceRegistration.unregister();
+      } catch( IllegalStateException alreadyUnregistered ) {
+        // bereits abgemeldet - ignorieren.
+      } finally {
+        resourceRegistration = null;
+      }
+    }
   }
 
   private void notifyAboutToStop() {
@@ -249,5 +274,4 @@ class ApplicationReferenceImpl implements ApplicationReference {
   private void markNotAlive() {
     alive = false;
   }
-
 }
