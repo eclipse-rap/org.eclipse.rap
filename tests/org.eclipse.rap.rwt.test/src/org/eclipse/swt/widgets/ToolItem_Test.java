@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2019 EclipseSource and others.
+ * Copyright (c) 2009, 2026 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,10 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.internal.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -24,6 +26,7 @@ import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
 import org.eclipse.swt.internal.widgets.toolitemkit.ToolItemLCA;
 import org.junit.Before;
@@ -247,6 +250,98 @@ public class ToolItem_Test {
   }
 
   @Test
+  public void testGetBounds_cachesBoundsAndReturnsCopy() {
+    toolItem.layoutCache.invalidateBounds();
+    assertFalse( toolItem.layoutCache.hasBounds() );
+
+    Rectangle cachedBounds = getCachedBounds( toolItem );
+    Rectangle bounds = toolItem.getBounds();
+
+    assertTrue( toolItem.layoutCache.hasBounds() );
+    assertEquals( bounds, cachedBounds );
+    assertNotSame( bounds, cachedBounds );
+    assertEquals( bounds, toolItem.getBounds() );
+    assertNotSame( bounds, toolItem.getBounds() );
+  }
+
+  @Test
+  public void testGetBounds_returnedCopyCanBeModified() {
+    Rectangle bounds = toolItem.getBounds();
+    Rectangle expected = new Rectangle( bounds.x, bounds.y, bounds.width, bounds.height );
+
+    bounds.x++;
+    bounds.y++;
+    bounds.width++;
+    bounds.height++;
+
+    assertEquals( expected, toolItem.getBounds() );
+  }
+
+  @Test
+  public void testSetCustomVariant_invalidatesCachedBounds() {
+    getCachedBounds( toolItem );
+
+    toolItem.setData( RWT.CUSTOM_VARIANT, "variant" );
+
+    assertFalse( toolItem.layoutCache.hasBounds() );
+  }
+
+  @Test
+  public void testSetText_invalidatesCachedBounds() {
+    Rectangle cachedBounds = getCachedBounds( toolItem );
+
+    toolItem.setText( "text" );
+
+    assertNotSame( cachedBounds, toolItem.layoutCache.bounds );
+  }
+
+  @Test
+  public void testSetImage_invalidatesCachedBounds() {
+    Rectangle cachedBounds = getCachedBounds( toolItem );
+
+    toolItem.setImage( display.getSystemImage( SWT.ICON_INFORMATION ) );
+
+    assertNotSame( cachedBounds, toolItem.layoutCache.bounds );
+  }
+
+  @Test
+  public void testSetDisabledImage_invalidatesCachedBounds() {
+    Rectangle cachedBounds = getCachedBounds( toolItem );
+
+    toolItem.setDisabledImage( display.getSystemImage( SWT.ICON_INFORMATION ) );
+
+    assertNotSame( cachedBounds, toolItem.layoutCache.bounds );
+  }
+
+  @Test
+  public void testSetHotImage_invalidatesCachedBounds() {
+    Rectangle cachedBounds = getCachedBounds( toolItem );
+
+    toolItem.setHotImage( display.getSystemImage( SWT.ICON_INFORMATION ) );
+
+    assertNotSame( cachedBounds, toolItem.layoutCache.bounds );
+  }
+
+  @Test
+  public void testSetWidth_invalidatesCachedBounds() {
+    ToolItem separator = new ToolItem( toolbar, SWT.SEPARATOR );
+    Rectangle cachedBounds = getCachedBounds( separator );
+
+    separator.setWidth( 50 );
+
+    assertNotSame( cachedBounds, separator.layoutCache.bounds );
+  }
+
+  @Test
+  public void testLayoutCacheIsSerializable() throws Exception {
+    Rectangle bounds = toolItem.getBounds();
+
+    ToolBar deserializedToolBar = serializeAndDeserialize( toolbar );
+
+    assertEquals( bounds, deserializedToolBar.getItem( 0 ).getBounds() );
+  }
+
+  @Test
   public void testAddSelectionListener() {
     toolItem.addSelectionListener( mock( SelectionListener.class ) );
 
@@ -390,6 +485,11 @@ public class ToolItem_Test {
   public void testGetAdapter_LCA() {
     assertTrue( toolItem.getAdapter( WidgetLCA.class ) instanceof ToolItemLCA );
     assertSame( toolItem.getAdapter( WidgetLCA.class ), toolItem.getAdapter( WidgetLCA.class ) );
+  }
+
+  private static Rectangle getCachedBounds( ToolItem item ) {
+    item.getBounds();
+    return item.layoutCache.bounds;
   }
 
 }

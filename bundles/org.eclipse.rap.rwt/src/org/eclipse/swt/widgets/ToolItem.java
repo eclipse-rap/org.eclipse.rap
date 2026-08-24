@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2019 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2026 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.widgets.IToolItemAdapter;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
 import org.eclipse.swt.internal.widgets.toolbarkit.ToolBarThemeAdapter;
@@ -65,6 +66,7 @@ public class ToolItem extends Item {
   private Image disabledImage;
   private Image hotImage;
   private transient IToolItemAdapter toolItemAdapter;
+  LayoutCache layoutCache;
 
 
   /**
@@ -146,6 +148,7 @@ public class ToolItem extends Item {
     this.parent = parent;
     visible = true;
     computedWidth = true;
+    layoutCache = new LayoutCache();
     parent.createItem( this, index );
     computeInitialWidth();
   }
@@ -404,6 +407,9 @@ public class ToolItem extends Item {
     } else if( RWT.TOOLTIP_MARKUP_ENABLED.equals( key ) && isToolTipMarkupEnabledFor( this ) ) {
       return;
     }
+    if( RWT.CUSTOM_VARIANT.equals( key ) ) {
+      layoutCache.invalidateBounds();
+    }
     checkMarkupPrecondition( key, TOOLTIP, () -> toolTipText == null );
     super.setData( key, value );
   }
@@ -493,6 +499,13 @@ public class ToolItem extends Item {
    */
   public Rectangle getBounds() {
     checkWidget();
+    if( !layoutCache.hasBounds() ) {
+      layoutCache.bounds = calculateBounds();
+    }
+    return safeCopy( layoutCache.bounds );
+  }
+
+  private Rectangle calculateBounds() {
     Rectangle clientArea = parent.getClientArea();
     int left = clientArea.x;
     int top = clientArea.y;
@@ -529,56 +542,55 @@ public class ToolItem extends Item {
     return new Rectangle( left, top, width, height );
   }
 
-   // TODO [tb] : if needed, cache dimensions to optimize performance
-   private int getHeight() {
-     int height;
-     if(    ( parent.style & SWT.VERTICAL ) != 0
-         && ( style & SWT.SEPARATOR ) != 0
-         && getControl() == null )
-     {
-       height = getSeparatorWidth();
-     } else {
-       height = 0;
-       ToolItem[] siblings = getParent().getItems();
-       for( int i = 0; i < siblings.length; i++ ) {
-         height = Math.max(  height, siblings[ i ].getPreferredHeight() );
-       }
-     }
-     return height;
-   }
+  private int getHeight() {
+    int height;
+    if(    ( parent.style & SWT.VERTICAL ) != 0
+        && ( style & SWT.SEPARATOR ) != 0
+        && getControl() == null )
+    {
+      height = getSeparatorWidth();
+    } else {
+      height = 0;
+      ToolItem[] siblings = getParent().getItems();
+      for( int i = 0; i < siblings.length; i++ ) {
+        height = Math.max(  height, siblings[ i ].getPreferredHeight() );
+      }
+    }
+    return height;
+  }
 
-   /**
-    * Gets the width of the receiver.
-    *
-    * @return the width
-    *
-    * @exception SWTException <ul>
-    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that
-    *    created the receiver</li>
-    * </ul>
-    */
-   public int getWidth() {
-     checkWidget();
-     int result;
-     boolean isVertical = ( parent.style & SWT.VERTICAL ) != 0;
-     if( ( style & SWT.SEPARATOR ) != 0 && ( !isVertical || !computedWidth ) ) {
-       result = width;
-     } else {
-       if( isVertical ) {
-         result = 0;
-         ToolItem[] siblings = getParent().getItems();
-         for( int i = 0; i < siblings.length; i++ ) {
-           if( ( siblings[ i ].style & SWT.SEPARATOR ) == 0 ) {
-             result = Math.max(  result, siblings[ i ].getPreferredWidth() );
-           }
-         }
-       } else {
-         result = getPreferredWidth();
-       }
-     }
-     return result;
-   }
+  /**
+   * Gets the width of the receiver.
+   *
+   * @return the width
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that
+   *    created the receiver</li>
+   * </ul>
+   */
+  public int getWidth() {
+    checkWidget();
+    int result;
+    boolean isVertical = ( parent.style & SWT.VERTICAL ) != 0;
+    if( ( style & SWT.SEPARATOR ) != 0 && ( !isVertical || !computedWidth ) ) {
+      result = width;
+    } else {
+      if( isVertical ) {
+        result = 0;
+        ToolItem[] siblings = getParent().getItems();
+        for( int i = 0; i < siblings.length; i++ ) {
+          if( ( siblings[ i ].style & SWT.SEPARATOR ) == 0 ) {
+            result = Math.max(  result, siblings[ i ].getPreferredWidth() );
+          }
+        }
+      } else {
+        result = getPreferredWidth();
+      }
+    }
+    return result;
+  }
 
   int getPreferredHeight() {
     int result = 0;
@@ -855,6 +867,10 @@ public class ToolItem extends Item {
     return parent;
   }
 
+  private static Rectangle safeCopy( Rectangle rect ) {
+    return new Rectangle( rect.x, rect.y, rect.width, rect.height );
+  }
+
   private static int checkStyle( int style ) {
     return checkBits( style,
                       SWT.PUSH,
@@ -867,6 +883,20 @@ public class ToolItem extends Item {
 
   void setVisible( boolean visible ) {
     this.visible = visible;
+  }
+
+  static final class LayoutCache implements SerializableCompatibility {
+
+    Rectangle bounds;
+
+    public boolean hasBounds() {
+      return bounds != null;
+    }
+
+    public void invalidateBounds() {
+      bounds = null;
+    }
+
   }
 
 }

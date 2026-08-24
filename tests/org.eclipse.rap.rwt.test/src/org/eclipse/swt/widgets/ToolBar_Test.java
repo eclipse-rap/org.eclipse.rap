@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2021 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2026 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package org.eclipse.swt.widgets;
 import static org.eclipse.rap.rwt.testfixture.internal.SerializationTestUtil.serializeAndDeserialize;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -29,6 +30,7 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.toolbarkit.ToolBarLCA;
 import org.junit.Before;
 import org.junit.Rule;
@@ -212,6 +214,78 @@ public class ToolBar_Test {
   }
 
   @Test
+  public void testComputeSize_invalidatesItemBoundsInHorizontalToolBar() {
+    ToolItem item = new ToolItem( toolBar, SWT.PUSH );
+    Rectangle cachedBounds = getCachedBounds( item );
+
+    toolBar.computeSize( SWT.DEFAULT, SWT.DEFAULT );
+
+    assertNotSame( cachedBounds, item.layoutCache.bounds );
+  }
+
+  @Test
+  public void testComputeSize_invalidatesItemBoundsInVerticalToolBar() {
+    toolBar = new ToolBar( shell, SWT.VERTICAL );
+    ToolItem item = new ToolItem( toolBar, SWT.PUSH );
+    Rectangle cachedBounds = getCachedBounds( item );
+
+    toolBar.computeSize( SWT.DEFAULT, SWT.DEFAULT );
+
+    assertNotSame( cachedBounds, item.layoutCache.bounds );
+  }
+
+  @Test
+  public void testLayoutItems_invalidatesItemBounds() {
+    ToolItem item = new ToolItem( toolBar, SWT.PUSH );
+    Rectangle cachedBounds = getCachedBounds( item );
+
+    toolBar.layoutItems();
+
+    assertNotSame( cachedBounds, item.layoutCache.bounds );
+  }
+
+  @Test
+  public void testSetBounds_invalidatesItemBounds() {
+    ToolItem item = new ToolItem( toolBar, SWT.PUSH );
+    Rectangle cachedBounds = getCachedBounds( item );
+
+    toolBar.setBounds( 0, 0, 100, 100 );
+
+    assertNotSame( cachedBounds, item.layoutCache.bounds );
+  }
+
+  @Test
+  public void testSetFont_invalidatesItemBounds() {
+    ToolItem item = new ToolItem( toolBar, SWT.PUSH );
+    Rectangle cachedBounds = getCachedBounds( item );
+
+    toolBar.setFont( display.getSystemFont() );
+
+    assertNotSame( cachedBounds, item.layoutCache.bounds );
+  }
+
+  @Test
+  public void testCreateItem_invalidatesExistingItemBounds() {
+    ToolItem item = new ToolItem( toolBar, SWT.PUSH );
+    Rectangle cachedBounds = getCachedBounds( item );
+
+    new ToolItem( toolBar, SWT.PUSH );
+
+    assertNotSame( cachedBounds, item.layoutCache.bounds );
+  }
+
+  @Test
+  public void testDestroyItem_invalidatesRemainingItemBounds() {
+    ToolItem item = new ToolItem( toolBar, SWT.PUSH );
+    ToolItem itemToDestroy = new ToolItem( toolBar, SWT.PUSH );
+    Rectangle cachedBounds = getCachedBounds( item );
+
+    itemToDestroy.dispose();
+
+    assertNotSame( cachedBounds, item.layoutCache.bounds );
+  }
+
+  @Test
   public void testIsSerializable() throws Exception {
     new ToolItem( toolBar, SWT.PUSH );
 
@@ -224,6 +298,11 @@ public class ToolBar_Test {
   public void testGetAdapter_LCA() {
     assertTrue( toolBar.getAdapter( WidgetLCA.class ) instanceof ToolBarLCA );
     assertSame( toolBar.getAdapter( WidgetLCA.class ), toolBar.getAdapter( WidgetLCA.class ) );
+  }
+
+  private static Rectangle getCachedBounds( ToolItem item ) {
+    item.getBounds();
+    return item.layoutCache.bounds;
   }
 
 }
