@@ -19,18 +19,17 @@ import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.osgi.ApplicationLauncher;
 import org.eclipse.rap.rwt.osgi.ApplicationReference;
 import org.eclipse.rap.rwt.osgi.internal.ServiceContainer.ServiceHolder;
-import org.eclipse.rap.service.http.HttpContext;
-import org.eclipse.rap.service.http.HttpService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.log.LogService;
+import org.osgi.service.servlet.runtime.HttpServiceRuntime;
 
 
 public class ApplicationLauncherImpl implements ApplicationLauncher {
 
   private final Object lock;
   private final ServiceContainer<ApplicationConfiguration> configurations;
-  private final ServiceContainer<HttpService> httpServices;
+  private final ServiceContainer<HttpServiceRuntime> httpServices;
   private final HashSet<ApplicationReferenceImpl> applicationReferences;
   private BundleContext bundleContext;
 
@@ -42,8 +41,8 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
     this.bundleContext = bundleContext;
   }
 
-  public HttpService addHttpService( ServiceReference<HttpService> reference ) {
-    ServiceHolder<HttpService> httpServiceHolder;
+  public HttpServiceRuntime addHttpService( ServiceReference<HttpServiceRuntime> reference ) {
+    ServiceHolder<HttpServiceRuntime> httpServiceHolder;
     synchronized( lock ) {
       httpServiceHolder = httpServices.add( reference );
       launchAtHttpService( httpServiceHolder );
@@ -51,7 +50,7 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
     return httpServiceHolder.getService();
   }
 
-  public void removeHttpService( HttpService httpService ) {
+  public void removeHttpService( HttpServiceRuntime httpService ) {
     synchronized( lock ) {
       httpServices.remove( httpService );
       stopApplicationReferences( httpService );
@@ -77,28 +76,25 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
 
   @Override
   public ApplicationReference launch( ApplicationConfiguration configuration,
-                                      HttpService httpService,
-                                      HttpContext httpContext,
+                                      HttpServiceRuntime httpService,
                                       String contextName,
                                       String contextDirectory )
   {
     synchronized( lock ) {
       if( isAlive() ) {
-        return doLaunch( configuration, httpService, httpContext, contextName, contextDirectory );
+        return doLaunch( configuration, httpService, contextName, contextDirectory );
       }
       return null;
     }
   }
 
   private ApplicationReferenceImpl doLaunch( ApplicationConfiguration configuration,
-                                             HttpService httpService,
-                                             HttpContext httpContext,
+                                             HttpServiceRuntime httpService,
                                              String contextName,
                                              String contextDirectory )
   {
     ApplicationReferenceImpl result = new ApplicationReferenceImpl( configuration,
                                                                     httpService,
-                                                                    httpContext,
                                                                     contextName,
                                                                     contextDirectory,
                                                                     this );
@@ -134,7 +130,7 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
     return bundleContext;
   }
 
-  private void launchAtHttpService( ServiceHolder<HttpService> httpServiceHolder ) {
+  private void launchAtHttpService( ServiceHolder<HttpServiceRuntime> httpServiceHolder ) {
     ServiceHolder<ApplicationConfiguration>[] services = configurations.getServices();
     for( ServiceHolder<ApplicationConfiguration> configurationHolder : services ) {
       if( matches( httpServiceHolder, configurationHolder ) ) {
@@ -145,8 +141,8 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
 
   private void launchWithConfiguration( ServiceHolder<ApplicationConfiguration> configurationHolder )
   {
-    ServiceHolder<HttpService>[] services = httpServices.getServices();
-    for( ServiceHolder<HttpService> httpServiceHolder : services ) {
+    ServiceHolder<HttpServiceRuntime>[] services = httpServices.getServices();
+    for( ServiceHolder<HttpServiceRuntime> httpServiceHolder : services ) {
       if( matches( httpServiceHolder, configurationHolder ) ) {
         launch( configurationHolder, httpServiceHolder );
       }
@@ -154,14 +150,14 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
   }
 
   private void launch( ServiceHolder<ApplicationConfiguration> configurationHolder,
-                       ServiceHolder<HttpService> httpServiceHolder )
+                       ServiceHolder<HttpServiceRuntime> httpServiceHolder )
   {
     ApplicationConfiguration configuration = configurationHolder.getService();
-    HttpService httpService = httpServiceHolder.getService();
+    HttpServiceRuntime httpService = httpServiceHolder.getService();
     String contextName = getContextName( configurationHolder );
     String contextLocation = getLocation( contextName, configuration, httpService );
     try {
-      launch( configuration, httpService, null, contextName, contextLocation );
+      launch( configuration, httpService, contextName, contextLocation );
     } catch( RuntimeException rte ) {
       logProblem( "Unable to start RWT application.", rte );
     }
@@ -197,10 +193,10 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
     }
   }
 
-  private static boolean matches( ServiceHolder<HttpService> httpServiceHolder,
+  private static boolean matches( ServiceHolder<HttpServiceRuntime> httpServiceHolder,
                                   ServiceHolder<ApplicationConfiguration> configurationHolder )
   {
-    ServiceReference<HttpService> httpServiceRef = httpServiceHolder.getReference();
+    ServiceReference<HttpServiceRuntime> httpServiceRef = httpServiceHolder.getReference();
     ServiceReference<ApplicationConfiguration> configurationRef = configurationHolder.getReference();
     return new Matcher( httpServiceRef, configurationRef ).matches();
   }
@@ -219,7 +215,7 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
 
   String getLocation( String contextName,
                       ApplicationConfiguration configuration,
-                      HttpService service )
+                      HttpServiceRuntime service )
   {
     String pathToContext = getContextFileName( contextName, configuration, service );
     File dataFile = bundleContext.getDataFile( pathToContext );
@@ -228,7 +224,7 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
 
   static String getContextFileName( String name,
                                     ApplicationConfiguration configuration,
-                                    HttpService service )
+                                    HttpServiceRuntime service )
   {
     return new StringBuilder()
       .append( name == null ? "rwtcontext" : name )

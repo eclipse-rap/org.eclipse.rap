@@ -26,10 +26,10 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.service.ResourceLoader;
-import org.eclipse.rap.service.http.HttpService;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Filter;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.servlet.runtime.HttpServiceRuntime;
 
 
 public final class BrandingExtension {
@@ -53,10 +53,10 @@ public final class BrandingExtension {
   private static final String ATT_CLASS = "class"; //$NON-NLS-1$
 
   private final Application application;
-  private final ServiceReference<HttpService> httpServiceReference;
+  private final ServiceReference<HttpServiceRuntime> httpServiceReference;
 
   public BrandingExtension( Application configuration,
-                            ServiceReference<HttpService> httpServiceReference )
+                            ServiceReference<HttpServiceRuntime> httpServiceReference )
   {
     this.application = configuration;
     this.httpServiceReference = httpServiceReference;

@@ -12,16 +12,16 @@
 package org.eclipse.rap.rwt.osgi.internal;
 
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
-import org.eclipse.rap.service.http.HttpService;
 import org.osgi.framework.*;
+import org.osgi.service.servlet.runtime.HttpServiceRuntime;
 
 
 class Matcher {
 
-  private final ServiceReference<HttpService> httpServiceReference;
+  private final ServiceReference<HttpServiceRuntime> httpServiceReference;
   private final ServiceReference<ApplicationConfiguration> configurationReference;
 
-  Matcher( ServiceReference<HttpService> httpServiceReference,
+  Matcher( ServiceReference<HttpServiceRuntime> httpServiceReference,
            ServiceReference<ApplicationConfiguration> configurationReference )
   {
     this.httpServiceReference = httpServiceReference;
@@ -33,7 +33,7 @@ class Matcher {
   }
 
   private boolean matchesHttpService() {
-    return matchesTarget( configurationReference, httpServiceReference, HttpService.class );
+    return matchesTarget( configurationReference, httpServiceReference, HttpServiceRuntime.class );
   }
 
   private boolean matchesConfigurator() {
