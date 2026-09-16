@@ -68,6 +68,7 @@
         <setEntry value="org.eclipse.jetty.ee10.servlet@default:default"/>
         <setEntry value="org.eclipse.jetty.http@default:default"/>
         <setEntry value="org.eclipse.jetty.io@default:default"/>
+        <setEntry value="org.eclipse.jetty.logging@default:default"/>
         <setEntry value="org.eclipse.jetty.security@default:default"/>
         <setEntry value="org.eclipse.jetty.server@default:default"/>
         <setEntry value="org.eclipse.jetty.session@default:default"/>
@@ -75,12 +76,14 @@
         <setEntry value="org.eclipse.jetty.util@default:default"/>
         <setEntry value="org.eclipse.osgi.util@default:default"/>
         <setEntry value="org.eclipse.osgi@1:true"/>
+        <setEntry value="org.eclipse.rap.fileupload@default:default"/>
         <setEntry value="org.eclipse.rap.http.jetty@default:default"/>
         <setEntry value="org.eclipse.rap.http.registry@default:default"/>
         <setEntry value="org.eclipse.rap.http.servlet@default:default"/>
         <setEntry value="org.eclipse.rap.jface@default:default"/>
         <setEntry value="org.eclipse.rap.nebula.widgets.grid@default:default"/>
         <setEntry value="org.eclipse.rap.nebula.widgets.richtext@default:default"/>
+        <setEntry value="org.eclipse.rap.rwt.addons@default:default"/>
         <setEntry value="org.eclipse.rap.rwt.osgi@default:default"/>
         <setEntry value="org.eclipse.rap.rwt@default:default"/>
         <setEntry value="org.objectweb.asm.commons@default:default"/>
@@ -104,7 +107,6 @@
         <setEntry value="org.osgi.util.promise@default:default"/>
         <setEntry value="org.osgi.util.xml@default:default"/>
         <setEntry value="slf4j.api@default:default"/>
-        <setEntry value="slf4j.nop@default:default"/>
     </setAttribute>
     <setAttribute key="selected_workspace_bundles">
         <setEntry value="org.eclipse.rap.demo.controls@default:default"/>
