@@ -12,23 +12,31 @@
 package org.eclipse.swt.internal.widgets;
 
 import java.lang.ref.WeakReference;
+import java.util.Collections;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 import org.eclipse.swt.widgets.Display;
 
 
-public class DisplaysHolder {
-  private WeakReference<Display>[] displays;
-  
-  @SuppressWarnings("unchecked")
+public final class DisplaysHolder {
+
+  private final Map<Thread, WeakReference<Display>> displays;
+
   public DisplaysHolder() {
-    displays = new WeakReference[ 4 ];
+    displays = Collections.synchronizedMap( new WeakHashMap<>() );
   }
-  
-  public WeakReference<Display>[] getDisplays() {
-    return displays;
+
+  public void addDisplay( Thread tread, Display display ) {
+    displays.put( tread, new WeakReference<>( display ) );
   }
-  
-  public void setDisplays( WeakReference<Display>[] displays ) {
-    this.displays = displays;
+
+  public Display getDisplay( Thread thread ) {
+    WeakReference<Display> wr = displays.get( thread );
+    if ( wr != null ) {
+      return wr.get();
+    }
+    return null;
   }
+
 }
