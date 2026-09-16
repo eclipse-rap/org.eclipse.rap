@@ -1158,6 +1158,8 @@ public class Control_Test {
     control1.redraw();
     display.readAndDispatch();
     display.readAndDispatch();
+    display.readAndDispatch();
+    display.readAndDispatch();
     assertEquals( 2, log.size() );
     assertEquals( control0, log.get( 0 ) );
     assertEquals( control1, log.get( 1 ) );

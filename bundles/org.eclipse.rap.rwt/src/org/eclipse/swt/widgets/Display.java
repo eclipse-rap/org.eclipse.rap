@@ -1213,7 +1213,7 @@ public class Display extends Device implements Adaptable {
       Event event = events[ 0 ];
       EventList.getInstance().remove( event );
       if( EventUtil.allowProcessing( event ) ) {
-        event.widget.notifyListeners( event.type, event );
+        event.widget.notifyListenersInternal( event.type, event, true );
         result = true;
       } else {
         events = EventList.getInstance().getAll();

@@ -61,9 +61,11 @@ public class Canvas_Test {
     } );
 
     canvas.redraw();
+    while (display.readAndDispatch()) {}
 
-    assertEquals( 1, paintEventLog.size() );
-    PaintEvent event = paintEventLog.get( 0 );
+    // 2 = 1 orignal drawing + 1 redraws
+    assertEquals( 2, paintEventLog.size() );
+    PaintEvent event = paintEventLog.get( 1 );
     assertSame( canvas, event.widget );
     assertTrue( event.gc.isDisposed() );
     assertEquals( event.x, 0 );
@@ -82,9 +84,11 @@ public class Canvas_Test {
     } );
 
     canvas.redraw( 1, 2, 3, 4, true );
+    while (display.readAndDispatch()) {}
 
-    assertEquals( 1, paintEventLog.size() );
-    PaintEvent event = paintEventLog.get( 0 );
+    // 2 = 1 orignal drawing + 1 redraws
+    assertEquals( 2, paintEventLog.size() );
+    PaintEvent event = paintEventLog.get( 1 );
     assertSame( canvas, event.widget );
     assertTrue( event.gc.isDisposed() );
     assertEquals( event.x, 1 );
@@ -102,7 +106,10 @@ public class Canvas_Test {
       }
     } );
     canvas.setSize( 100, 100 );
-    assertEquals( 1, paintEventLog.size() );
+    while (display.readAndDispatch()) {}
+
+    // 2 = 1 orignal drawing + 1 redraws after resize
+    assertEquals( 2, paintEventLog.size() );
   }
 
   @Test
@@ -116,7 +123,10 @@ public class Canvas_Test {
     } );
     canvas.redraw();
     canvas.redraw();
-    assertEquals( 2, paintEventLog.size() );
+    while (display.readAndDispatch()) {}
+    
+    // 3 = 1 orignal drawing + 2 redraws
+    assertEquals( 3, paintEventLog.size() );
     GCAdapter adapter = canvas.getAdapter( GCAdapter.class );
     assertEquals( 1, adapter.getGCOperations().length );
   }

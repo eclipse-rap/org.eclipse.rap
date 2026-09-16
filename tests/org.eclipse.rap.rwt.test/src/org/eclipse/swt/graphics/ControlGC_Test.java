@@ -654,7 +654,8 @@ public class ControlGC_Test {
     DrawText operation = ( DrawText )gcOperations[ 0 ];
     assertEquals( "text", operation.text );
     assertEquals( 10, operation.x );
-    assertEquals( 10, operation.y );
+    // vertical offset for swt compatibility
+    assertEquals( 14, operation.y );
     assertEquals( SWT.DRAW_TRANSPARENT, operation.flags );
   }
 
@@ -672,7 +673,8 @@ public class ControlGC_Test {
     DrawText operation = ( DrawText )gcOperations[ 0 ];
     assertEquals( "text", operation.text );
     assertEquals( 10, operation.x );
-    assertEquals( 10, operation.y );
+    // vertical offset for swt compatibility
+    assertEquals( 14, operation.y );
     assertEquals( SWT.DRAW_TRANSPARENT, operation.flags );
   }
 
