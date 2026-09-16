@@ -18,6 +18,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+import java.util.concurrent.CompletableFuture;
+
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.remote.ConnectionImpl;
 import org.eclipse.rap.rwt.remote.RemoteObject;
@@ -75,6 +77,33 @@ public class JavaScriptExecutorImpl_Test {
     verify( remoteObject ).call( eq( "execute" ), eq( new JsonObject().add( "content", "code 2" ) ) );
     verifyNoMoreInteractions( remoteObject );
   }
+  
+  @Test
+  public void testEvaluate_createsCallOperation() {
+    RemoteObject remoteObject = mock( RemoteObject.class );
+    fakeConnection( remoteObject );
+    JavaScriptExecutorImpl executor = new JavaScriptExecutorImpl();
+    
+    CompletableFuture<String> future = executor.evaluate( "5 + 6" );
+    
+    verify( remoteObject ).call( eq( "evaluate" ), eq( new JsonObject().add( "content", "5+6" ) ) );
+    verifyNoMoreInteractions( remoteObject );
+  }
+  
+  @Test
+  public void testEvaluate_createsSeparateOperationForEveryCall() {
+    RemoteObject remoteObject = mock( RemoteObject.class );
+    fakeConnection( remoteObject );
+    JavaScriptExecutorImpl executor = new JavaScriptExecutorImpl();
+    
+    CompletableFuture<String> future = executor.evaluate( "5 + 6" );
+    CompletableFuture<String> future2 = executor.evaluate( "Date.now()" );
+    
+    verify( remoteObject ).call( eq( "evaluate" ), eq( new JsonObject().add( "content", "5+6" ) ) );
+    verify( remoteObject ).call( eq( "evaluate" ), eq( new JsonObject().add( "content", "Date.now()" ) ) );
+    
+    verifyNoMoreInteractions( remoteObject );
+  }
 
   private static ConnectionImpl fakeConnection( RemoteObject remoteObject ) {
     ConnectionImpl connection = mock( ConnectionImpl.class );
@@ -82,5 +111,4 @@ public class JavaScriptExecutorImpl_Test {
     Fixture.fakeConnection( connection );
     return connection;
   }
-
 }
