@@ -16,7 +16,6 @@ import java.util.List;
 import org.eclipse.e4.ui.services.IStylingEngine;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 import org.w3c.dom.css.CSSStyleDeclaration;
 
@@ -37,11 +36,7 @@ public class StylingEngineImpl implements IStylingEngine {
 			if (widget instanceof CTabFolder) {
 				CTabFolder folder = (CTabFolder) widget;
 				Display display = folder.getDisplay();
-				if (parts.contains("active")) {
-					folder.setSelectionBackground(display.getSystemColor(SWT.COLOR_LIST_SELECTION));
-				} else {
-					folder.setSelectionBackground((Color) null);
-				}
+				folder.setBackground(display.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
 			}
 		}
 	}
