@@ -15,3 +15,4 @@ Export-Package: org.eclipse.nebula.widgets.grid,
  org.eclipse.nebula.widgets.grid.internal.gridcolumnkit;x-friends:="org.eclipse.rap.nebula.widgets.grid.test",
  org.eclipse.nebula.widgets.grid.internal.griditemkit;x-friends:="org.eclipse.rap.nebula.widgets.grid.test",
  org.eclipse.nebula.widgets.grid.internal.gridkit;x-friends:="org.eclipse.rap.nebula.widgets.grid.test"
+Bundle-License: https://www.eclipse.org/legal/epl-2.0

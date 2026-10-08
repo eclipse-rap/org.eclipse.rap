@@ -18,3 +18,4 @@ Export-Package: org.eclipse.rap.rwt.internal.application;version="4.9.0";x-inter
  org.eclipse.rap.rwt.testfixture.internal;version="4.9.0";x-internal:=true,
  org.eclipse.rap.rwt.testfixture.internal.engine;version="4.9.0";x-internal:=true,
  org.eclipse.rap.rwt.testfixture.internal.service;version="4.9.0";x-internal:=true
+Bundle-License: https://www.eclipse.org/legal/epl-2.0

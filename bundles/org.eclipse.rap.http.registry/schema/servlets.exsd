@@ -197,10 +197,10 @@ This equivalent to the OSGi Http Service&apos;s registerServlet method.
 
 This program and the accompanying materials are made
 available under the terms of the Eclipse Public License 2.0 which
-accompanies this distribution, and is available at
-&lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+is available at
+&lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-2.0&lt;/a&gt;/
 
-SPDX-License-Identifier: EPL-2.0.
+SPDX-License-Identifier: EPL-2.0
 &lt;br&gt;
 Contributors:&lt;br&gt;
 Cognos Incorporated - initial API and implementation&lt;br&gt;

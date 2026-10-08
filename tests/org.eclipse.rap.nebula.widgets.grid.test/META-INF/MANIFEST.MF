@@ -24,3 +24,4 @@ Export-Package: org.eclipse.nebula.widgets.grid,
  org.eclipse.nebula.widgets.grid.internal.griditemkit;x-internal:=true,
  org.eclipse.nebula.widgets.grid.internal.gridkit;x-internal:=true
 Fragment-Host: org.eclipse.rap.nebula.widgets.grid;bundle-version="[4.9.0,5.0.0)"
+Bundle-License: https://www.eclipse.org/legal/epl-2.0

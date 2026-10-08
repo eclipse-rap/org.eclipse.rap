@@ -30,3 +30,4 @@ Export-Package: org.eclipse.e4.ui.workbench.addons.cleanupaddon;x-internal:=true
  org.eclipse.e4.ui.workbench.addons.minmax;x-internal:=true,
  org.eclipse.e4.ui.workbench.addons.splitteraddon;x-internal:=true,
  org.eclipse.e4.ui.workbench.addons.swt;x-internal:=true
+Bundle-License: https://www.eclipse.org/legal/epl-2.0

@@ -18,3 +18,4 @@ Export-Package: org.eclipse.rap.internal.design.example;version="4.9.0";x-intern
  org.eclipse.rap.internal.design.example.managers;version="4.9.0";x-internal:=true,
  org.eclipse.rap.internal.design.example.stacks;version="4.9.0";x-internal:=true
 Bundle-ClassPath: .
+Bundle-License: https://www.eclipse.org/legal/epl-2.0

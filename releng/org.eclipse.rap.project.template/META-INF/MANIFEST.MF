@@ -4,3 +4,4 @@ Bundle-Name: Project Settings Template
 Bundle-SymbolicName: org.eclipse.rap.project.template
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-21
+Bundle-License: https://www.eclipse.org/legal/epl-2.0
