@@ -12,3 +12,4 @@ Export-Package: org.eclipse.swt.internal.widgets;version="4.9.0";x-friends:="org
 Import-Package: jakarta.servlet;version="[5.0.0,7.0.0)",
  jakarta.servlet.http;version="[5.0.0,7.0.0)"
 Bundle-Localization: plugin
+Bundle-License: https://www.eclipse.org/legal/epl-2.0

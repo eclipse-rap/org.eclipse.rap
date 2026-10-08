@@ -13,3 +13,4 @@ Export-Package: org.eclipse.e4.emf.internal.xpath;x-internal:=true,
 Bundle-Vendor: %Bundle-Vendor
 Automatic-Module-Name: org.eclipse.e4.emf.xpath
 Require-Capability: org.eclipse.rap;filter:="(org.eclipse.rap.rwt=true)"
+Bundle-License: https://www.eclipse.org/legal/epl-2.0

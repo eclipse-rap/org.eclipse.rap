@@ -22,3 +22,4 @@ Import-Package: com.ibm.icu.text,
 Bundle-RequiredExecutionEnvironment: JavaSE-21
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
+Bundle-License: https://www.eclipse.org/legal/epl-2.0

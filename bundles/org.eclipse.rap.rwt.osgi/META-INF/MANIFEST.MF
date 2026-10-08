@@ -21,3 +21,4 @@ Import-Package: jakarta.servlet;version="[5.0.0,7.0.0)",
 Bundle-Activator: org.eclipse.rap.rwt.osgi.internal.Activator
 Export-Package: org.eclipse.rap.rwt.osgi;version="4.9.0",
  org.eclipse.rap.rwt.osgi.internal;version="4.9.0";x-internal:=true
+Bundle-License: https://www.eclipse.org/legal/epl-2.0

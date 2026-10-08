@@ -2,9 +2,11 @@
 <!--
   Copyright (C) 2011, 2026 EclipseSource and others.
   All rights reserved. This program and the accompanying materials
-  are made available under the terms of the Eclipse Public License v1.0
-  which accompanies this distribution, and is available at
-  http://www.eclipse.org/legal/epl-v10.html
+  are made available under the terms of the Eclipse Public License 2.0
+  which is available at
+  https://www.eclipse.org/legal/epl-2.0
+
+  SPDX-License-Identifier: EPL-2.0
 
   Contributors:
      EclipseSource - initial implementation
@@ -13,6 +15,15 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
+  <licenses>
+    <license>
+      <name>Eclipse Public License 2.0</name>
+      <url>https://www.eclipse.org/legal/epl-2.0</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
 
   <groupId>org.eclipse.rap</groupId>
   <artifactId>org.eclipse.rap.runtime-parent</artifactId>
@@ -30,7 +41,6 @@
     <jetty-repo.url>https://download.eclipse.org/tools/orbit/simrel/maven-jetty/release/12.1.13/</jetty-repo.url>
     <orbit-repo.url>https://download.eclipse.org/tools/orbit/simrel/orbit-aggregation/2026-12/</orbit-repo.url>
     <platform-repo.url>https://download.eclipse.org/eclipse/updates/4.42-I-builds/I20261001-2300/</platform-repo.url>
-    <license-repo.url>https://download.eclipse.org/cbi/updates/license/1.0.1.v20140414-1359/</license-repo.url>
     <!-- The build type, N for nighty builds, S for stable builds. S-builds will be signed. -->
     <buildType>N</buildType>
     <build>${maven.build.timestamp}</build>
@@ -50,11 +60,6 @@
       <id>jetty-repo</id>
       <layout>p2</layout>
       <url>${jetty-repo.url}</url>
-    </repository>
-    <repository>
-      <id>license-repo</id>
-      <layout>p2</layout>
-      <url>${license-repo.url}</url>
     </repository>
     <repository>
       <id>orbit-repo</id>

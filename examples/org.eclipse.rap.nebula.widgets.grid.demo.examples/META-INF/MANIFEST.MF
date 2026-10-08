@@ -12,3 +12,4 @@ Require-Bundle: org.eclipse.rap.rwt;bundle-version="4.9.0",
  org.eclipse.rap.examples;bundle-version="4.9.0",
  org.eclipse.rap.nebula.widgets.grid;bundle-version="4.9.0"
 Export-Package: org.eclipse.rap.nebula.widget.grid.demo.examples
+Bundle-License: https://www.eclipse.org/legal/epl-2.0

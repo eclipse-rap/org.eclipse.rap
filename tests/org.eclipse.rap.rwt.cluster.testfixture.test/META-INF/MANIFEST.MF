@@ -9,3 +9,4 @@ Require-Bundle: org.junit;bundle-version="4.8.2"
 Import-Package: org.junit.runner;version="4.8.2",
  org.junit.runners;version="4.8.2"
 Bundle-RequiredExecutionEnvironment: JavaSE-21
+Bundle-License: https://www.eclipse.org/legal/epl-2.0

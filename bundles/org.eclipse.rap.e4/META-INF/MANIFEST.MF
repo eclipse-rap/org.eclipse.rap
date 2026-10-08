@@ -31,3 +31,4 @@ Export-Package: org.eclipse.rap.e4;version="4.9.0",
 Service-Component: OSGI-INF/rapeventbroker.xml,OSGI-INF/rapeventobjectsupplier.xml,OSGI-INF/rapuieventobjectsupplier.xml,OSGI-INF/rappreferenceobjectsupplier.xml,
  OSGI-INF/preferenceserviceCF.xml,OSGI-INF/raptranslationobjectsupplier.xml
 Bundle-RequiredExecutionEnvironment: JavaSE-21
+Bundle-License: https://www.eclipse.org/legal/epl-2.0

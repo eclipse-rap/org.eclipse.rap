@@ -49,6 +49,32 @@ For more information, see the Eclipse Committer Handbook sections on Git in gene
 * [Eclipse Committer Handbook: Git Commit Records](https://www.eclipse.org/projects/handbook/#resources-commit)
 * [Eclipse Committer Handbook: GitHub](https://www.eclipse.org/projects/handbook/#resources-github)
 
+## License notices
+
+New project content uses the [Eclipse Public License 2.0](https://www.eclipse.org/legal/epl-2.0)
+and `SPDX-License-Identifier: EPL-2.0`. Preserve copyright owners, copyright years,
+and contributor information when editing existing files, including ongoing
+development and bugfix credits. Retain third-party license notices.
+
+Use the existing file's comment style. A Java or JavaScript header can use:
+
+```java
+/*******************************************************************************
+ * Copyright (c) {year} {owner} and others.
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *    {contributor} - {contribution}
+ ******************************************************************************/
+```
+
+See the [migration guide](releng/org.eclipse.rap.build/EPL-2.0-MIGRATION.md) for
+legal packaging and verification requirements.
+
 ## Contact
 
 Contact the project developers via the project's "dev" list.

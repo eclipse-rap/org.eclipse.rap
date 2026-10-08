@@ -13,3 +13,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-21
 Bundle-Localization: plugin
 Export-Package: org.eclipse.rap.demo.databinding;version="4.9.0";x-internal:=true,
  org.eclipse.rap.demo.databinding.nestedselection;version="4.9.0";x-internal:=true
+Bundle-License: https://www.eclipse.org/legal/epl-2.0

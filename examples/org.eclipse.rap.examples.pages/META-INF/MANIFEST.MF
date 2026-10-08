@@ -16,3 +16,4 @@ Bundle-Activator: org.eclipse.rap.examples.pages.internal.Activator
 Import-Package: jakarta.servlet.http;version="6.0.0",
  org.eclipse.rap.examples;version="[4.9.0,5.0.0)",
  org.osgi.framework;version="[1.6.0,2.0.0)"
+Bundle-License: https://www.eclipse.org/legal/epl-2.0

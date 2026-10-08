@@ -15,3 +15,4 @@ Require-Bundle: org.eclipse.rap.rwt;bundle-version="[4.9.0,5.0.0)",
 Bundle-Localization: plugin
 Bundle-Activator: org.eclipse.rap.filedialog.demo.examples.Activator
 Export-Package: org.eclipse.rap.filedialog.demo.examples;version="4.9.0"
+Bundle-License: https://www.eclipse.org/legal/epl-2.0

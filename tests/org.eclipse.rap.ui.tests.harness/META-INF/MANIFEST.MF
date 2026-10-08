@@ -16,3 +16,4 @@ Export-Package: org.eclipse.ui.tests.harness,
  org.eclipse.ui.tests.harness.util,
  org.eclipse.ui.tests.internal.util;x-internal:=true
 Bundle-RequiredExecutionEnvironment: J2SE-1.4
+Bundle-License: https://www.eclipse.org/legal/epl-2.0

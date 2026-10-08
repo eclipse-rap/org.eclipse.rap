@@ -21,3 +21,4 @@ Require-Bundle: org.junit;bundle-version="[4.8.2,5.0.0)",
  net.bytebuddy.byte-buddy,
  net.bytebuddy.byte-buddy-agent
 Bundle-Localization: plugin
+Bundle-License: https://www.eclipse.org/legal/epl-2.0

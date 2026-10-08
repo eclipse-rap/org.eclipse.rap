@@ -32,3 +32,4 @@ Import-Package: com.ibm.icu.text,
  org.xml.sax
 Bundle-RequiredExecutionEnvironment: JavaSE-21
 Bundle-ActivationPolicy: lazy
+Bundle-License: https://www.eclipse.org/legal/epl-2.0
