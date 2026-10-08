@@ -42,3 +42,4 @@ Import-Package: com.ibm.icu.text,
  jakarta.inject;version="[2.0.0,3.0.0)",
  org.osgi.service.component.annotations;version="1.2.0";resolution:=optional,
  org.osgi.service.event;version="1.3.0"
+Bundle-License: https://www.eclipse.org/legal/epl-2.0

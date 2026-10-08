@@ -1,6 +1,7 @@
 {
   "name": "org.eclipse.rap",
   "version": "3.21.0",
+  "license": "EPL-2.0",
   "devDependencies": {
     "grunt": "^1.5.2",
     "grunt-contrib-jshint": "^3.2.0"

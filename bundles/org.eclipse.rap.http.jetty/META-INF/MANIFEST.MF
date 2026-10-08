@@ -26,3 +26,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-21
 Export-Package: org.eclipse.rap.http.jetty;version="4.9.0"
 Bundle-ActivationPolicy: lazy
 Automatic-Module-Name: org.eclipse.rap.http.jetty
+Bundle-License: https://www.eclipse.org/legal/epl-2.0

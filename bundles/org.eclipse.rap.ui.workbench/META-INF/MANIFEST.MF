@@ -117,3 +117,4 @@ Import-Package: com.ibm.icu.text,
  org.w3c.dom,
  org.xml.sax
 Bundle-RequiredExecutionEnvironment: JavaSE-21
+Bundle-License: https://www.eclipse.org/legal/epl-2.0

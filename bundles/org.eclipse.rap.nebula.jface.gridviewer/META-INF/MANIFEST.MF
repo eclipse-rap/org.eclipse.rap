@@ -16,3 +16,4 @@ Export-Package: org.eclipse.nebula.jface.gridviewer;
    org.eclipse.jface.layout,
    org.eclipse.jface.viewers",
  org.eclipse.nebula.jface.gridviewer.internal;x-internal:=true
+Bundle-License: https://www.eclipse.org/legal/epl-2.0

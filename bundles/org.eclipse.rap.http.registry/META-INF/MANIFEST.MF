@@ -17,3 +17,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-21
 Export-Package: org.eclipse.rap.http.registry;version="1.0.0"
 Bundle-Vendor: %providerName
 Automatic-Module-Name: org.eclipse.rap.http.registry
+Bundle-License: https://www.eclipse.org/legal/epl-2.0
