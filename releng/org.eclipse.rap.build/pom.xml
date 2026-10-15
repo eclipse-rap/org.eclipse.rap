@@ -16,7 +16,7 @@
 
   <groupId>org.eclipse.rap</groupId>
   <artifactId>org.eclipse.rap.runtime-parent</artifactId>
-  <version>4.8.0-SNAPSHOT</version>
+  <version>4.9.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <properties>
@@ -27,9 +27,9 @@
     <!-- disabled due to bug 393977
     <tycho-baseline-repo.url>http://download.eclipse.org/rt/rap/3.2/</tycho-baseline-repo.url>
      -->
-    <jetty-repo.url>https://download.eclipse.org/tools/orbit/simrel/maven-jetty/release/12.1.12/</jetty-repo.url>
-    <orbit-repo.url>https://download.eclipse.org/tools/orbit/simrel/orbit-aggregation/2026-09/</orbit-repo.url>
-    <platform-repo.url>https://download.eclipse.org/eclipse/updates/4.41-I-builds/I20260820-0719/</platform-repo.url>
+    <jetty-repo.url>https://download.eclipse.org/tools/orbit/simrel/maven-jetty/release/12.1.13/</jetty-repo.url>
+    <orbit-repo.url>https://download.eclipse.org/tools/orbit/simrel/orbit-aggregation/2026-12/</orbit-repo.url>
+    <platform-repo.url>https://download.eclipse.org/eclipse/updates/4.42-I-builds/I20261001-2300/</platform-repo.url>
     <license-repo.url>https://download.eclipse.org/cbi/updates/license/1.0.1.v20140414-1359/</license-repo.url>
     <!-- The build type, N for nighty builds, S for stable builds. S-builds will be signed. -->
     <buildType>N</buildType>

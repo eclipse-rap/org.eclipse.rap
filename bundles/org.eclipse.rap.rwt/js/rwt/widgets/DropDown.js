@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2017 EclipseSource and others.
+ * Copyright (c) 2013, 2026 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -57,8 +57,6 @@
     addParentListeners.call( this );
     addGridListeners.call( this );
     this._.popup.addEventListener( "appear", onAppear, this );
-    this._.parentFocusRoot = args.parent.getFocusRoot();
-    this._.parentFocusRoot.addEventListener( "changeFocusedChild", onFocusChange, this );
   };
 
   rwt.widgets.DropDown.prototype = {
@@ -257,6 +255,7 @@
           this._.grid.getRootItem().setItemCount( 0 );
         }
         if( !this._.parent.isDisposed() ) {
+          this._.parent.removeEventListener( "focus", onParentFocus, this );
           this._.parent.removeEventListener( "appear", onParentVisibilityChange, this );
           this._.parent.removeEventListener( "disappear", onParentVisibilityChange, this );
           this._.parent.removeEventListener( "flush", onParentFlush, this );
@@ -333,6 +332,7 @@
   // Internals
 
   function addParentListeners() {
+    this._.parent.addEventListener( "focus", onParentFocus, this );
     this._.parent.addEventListener( "appear", onParentVisibilityChange, this );
     this._.parent.addEventListener( "disappear", onParentVisibilityChange, this );
     this._.parent.addEventListener( "flush", onParentFlush, this );
@@ -475,6 +475,13 @@
       } else {
         gridItem.setTexts( [ items[ i ] ] );
       }
+    }
+  }
+
+  function onParentFocus() {
+    if( !this._.parentFocusRoot ) {
+      this._.parentFocusRoot = this._.parent.getFocusRoot();
+      this._.parentFocusRoot.addEventListener( "changeFocusedChild", onFocusChange, this );
     }
   }
 

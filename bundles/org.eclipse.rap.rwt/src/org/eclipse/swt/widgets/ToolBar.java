@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2021 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2026 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -248,6 +248,7 @@ public class ToolBar extends Composite {
     if( ( style & SWT.VERTICAL ) != 0 ) {
       for( int i = 0; i < itemHolder.size(); i++ ) {
         ToolItem item = itemHolder.getItem( i );
+        item.layoutCache.invalidateBounds();
         Rectangle itemBounds = item.getBounds();
         width = Math.max( width, itemBounds.width );
         if( i == itemHolder.size() - 1 ) {
@@ -257,6 +258,7 @@ public class ToolBar extends Composite {
     } else {
       for( int i = 0; i < itemHolder.size(); i++ ) {
         ToolItem item = itemHolder.getItem( i );
+        item.layoutCache.invalidateBounds();
         Rectangle itemBounds = item.getBounds();
         height = Math.max( height, itemBounds.height );
         if( i == itemHolder.size() - 1 ) {
@@ -386,6 +388,7 @@ public class ToolBar extends Composite {
   void layoutItems() {
     for( int i = 0; i < itemHolder.size(); i++ ) {
       ToolItem item = itemHolder.getItem( i );
+      item.layoutCache.invalidateBounds();
       Rectangle ibounds = item.getBounds();
       Rectangle bounds = getBounds();
       boolean hasEnoughWidth = ibounds.x + ibounds.width <= bounds.width;

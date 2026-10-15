@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.rap.e4.equinox.target.feature"
       label="RAP Basic E4 Equinox Target"
-      version="4.8.0.qualifier"
+      version="4.9.0.qualifier"
       provider-name="Eclipse.org - RAP"
       license-feature="org.eclipse.license"
       license-feature-version="0.0.0">
@@ -20,7 +20,7 @@
    </license>
 
    <requires>
-      <import feature="org.eclipse.rap.e4.feature" version="4.8.0" match="greaterOrEqual"/>
+      <import feature="org.eclipse.rap.e4.feature" version="4.9.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -780,6 +780,13 @@
 
    <plugin
          id="org.apache.commons.commons-fileupload2-jakarta-servlet6"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.commons.commons-logging"
          download-size="0"
          install-size="0"
          version="0.0.0"
