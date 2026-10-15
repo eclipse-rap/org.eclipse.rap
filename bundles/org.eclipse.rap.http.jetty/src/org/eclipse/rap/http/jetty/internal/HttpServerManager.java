@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
-import org.eclipse.jetty.ee10.servlet.*;
+import org.eclipse.jetty.ee11.servlet.*;
 import org.eclipse.jetty.http.UriCompliance;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.session.DefaultSessionIdManager;
