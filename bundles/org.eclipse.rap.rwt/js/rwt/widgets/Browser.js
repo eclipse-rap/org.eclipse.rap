@@ -146,6 +146,7 @@ rwt.qx.Class.define( "rwt.widgets.Browser", {
       try {
         result = this._parseEvalResult( this._eval( script ) );
       } catch( ex ) {
+		console.log(ex);
         success = false;
       }
       var connection = rwt.remote.Connection.getInstance();
@@ -198,7 +199,7 @@ rwt.qx.Class.define( "rwt.widgets.Browser", {
           // not accessible when it appears it should be
           // => user navigated to external site.
           this._throwSecurityException( true );
-        }
+      	}
       }
     },
 
@@ -215,21 +216,26 @@ rwt.qx.Class.define( "rwt.widgets.Browser", {
     },
 
     _eval : function( script ) {
-      var win = this.getContentWindow();
-      if( !win[ "eval" ] && win[ "execScript" ] ) {
-        // Workaround for IE bug, see: http://www.thismuchiknow.co.uk/?p=25
-        win.execScript( "null;", "JScript" );
-      }
-      return win[ "eval" ]( script );
+      var win = this.getContentWindow();    
+      
+      if (win !== null) {
+	      if( !win[ "eval" ] && win[ "execScript" ] ) {
+	        // Workaround for IE bug, see: http://www.thismuchiknow.co.uk/?p=25
+	        win.execScript( "null;", "JScript" );
+	      }
+	      return win[ "eval" ]( script );
+      } else {
+		  console.error("Window is null, can not execute scipts:\n" + script);
+	  }
     },
 
     _parseEvalResult : function( value ) {
       var result = null;
       var win = this.getContentWindow();
       // NOTE: This mimics the behavior of the evaluate method in SWT:
-      if( value instanceof win.Function || value instanceof Function ) {
+      if( (win !== null && value instanceof win.Function) || value instanceof Function ) {
         result = this.toJSON( [ [] ] );
-      } else if( value instanceof win.Array || value instanceof Array ) {
+      } else if( (win !== null && value instanceof win.Array) || value instanceof Array ) {
         result = this.toJSON( [ value ] );
       } else if( typeof value !== "object" && typeof value !== "function" ) {
         // above: some browser say regular expressions of the type "function"

@@ -34,8 +34,6 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 //import org.eclipse.swt.events.KeyAdapter;
 //import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
@@ -43,7 +41,8 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
-import org.eclipse.swt.events.MouseTrackListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 //import org.eclipse.swt.events.SelectionAdapter;
 //import org.eclipse.swt.events.SelectionEvent;
 //import org.eclipse.swt.events.TraverseEvent;
@@ -59,7 +58,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IWorkbenchPreferenceConstants;
 import org.eclipse.ui.PlatformUI;
@@ -208,7 +206,7 @@ public class FilteredTree extends Composite {
 	 *             {@link #FilteredTree(Composite, int, PatternFilter, boolean)} where using the new
 	 *             look is encouraged
 	 */
-	public FilteredTree(Composite parent, int treeStyle, PatternFilter filter) {
+    public FilteredTree(Composite parent, int treeStyle, PatternFilter filter) {
 		super(parent, SWT.NONE);
 		this.parent = parent;
 // RAP [rh] initialize image descriptors in session scope  
@@ -238,6 +236,41 @@ public class FilteredTree extends Composite {
 		init(treeStyle, filter);
 	}
 
+    /**
+     * Create a new instance of the receiver.
+     *
+     * <p>
+     *
+     * <b>WARNING:</b> Passing false as parameter for useFastHashLookup results in a
+     * slow performing tree and should not be used if the underlying data model uses
+     * a stable and correct hashCode and equals implementation.
+     *
+     * </p>
+     *
+     * @param parent            the parent <code>Composite</code>
+     * @param treeStyle         the style bits for the <code>Tree</code>
+     * @param filter            the filter to be used
+     * @param useNewLook        <code>true</code> if the new 3.5 look should be used
+     * @param useFastHashLookup true, if tree should use fast hash lookup, false, if
+     *                          the tree should be slow but working for data with
+     *                          mutable or broken hashcode implementation. Only used
+     *                          if treeViewer is already initialized
+     * @since 3.116
+     */
+    public FilteredTree(Composite parent, int treeStyle, PatternFilter filter, boolean useNewLook,
+        boolean useFastHashLookup)
+    {
+        super(parent, SWT.NONE);
+        this.parent = parent;
+        this.useNewLook = useNewLook;
+        // RAP [rh] initialize image descriptors in session scope  
+        initializeImageDescriptors();
+        init(treeStyle, filter);
+        if (treeViewer != null) {
+            treeViewer.setUseHashlookup(useFastHashLookup);
+        }
+    }
+
 	/**
 	 * Create a new instance of the receiver. Subclasses that wish to override
 	 * the default creation behavior may use this constructor, but must ensure
@@ -250,7 +283,7 @@ public class FilteredTree extends Composite {
 	 * @deprecated As of 3.5, replaced by {@link #FilteredTree(Composite, boolean)} where using the
 	 *             look is encouraged
 	 */
-	protected FilteredTree(Composite parent) {
+    protected FilteredTree(Composite parent) {
 		super(parent, SWT.NONE);
 		this.parent = parent;
 // RAP [rh] initialize image descriptors in session scope  
@@ -389,10 +422,11 @@ public class FilteredTree extends Composite {
 	 */
 	protected Composite createFilterControls(Composite parent) {
 		createFilterText(parent);
-		if (useNewLook)
-			createClearTextNew(parent);
-		else
-			createClearTextOld(parent);
+		if (useNewLook) {
+            createClearTextNew(parent);
+        } else {
+            createClearTextOld(parent);
+        }
 		if (clearButtonControl != null) {
 			// initially there is no text to clear
 			clearButtonControl.setVisible(false);
@@ -427,7 +461,7 @@ public class FilteredTree extends Composite {
 			 *
 			 * @see org.eclipse.swt.events.DisposeListener#widgetDisposed(org.eclipse.swt.events.DisposeEvent)
 			 */
-			public void widgetDisposed(DisposeEvent e) {
+            public void widgetDisposed(DisposeEvent e) {
 				refreshJob.cancel();
 			}
 		});
@@ -486,7 +520,7 @@ public class FilteredTree extends Composite {
 	 */
 	protected WorkbenchJob doCreateRefreshJob() {
 		return new WorkbenchJob("Refresh Filter") {//$NON-NLS-1$
-			public IStatus runInUIThread(IProgressMonitor monitor) {
+            public IStatus runInUIThread(IProgressMonitor monitor) {
 				if (treeViewer.getControl().isDisposed()) {
 					return Status.CANCEL_STATUS;
 				}
@@ -694,7 +728,7 @@ public class FilteredTree extends Composite {
 			 * 
 			 * @see org.eclipse.swt.events.FocusListener#focusLost(org.eclipse.swt.events.FocusEvent)
 			 */
-			public void focusGained(FocusEvent e) {
+            public void focusGained(FocusEvent e) {
 				if (!useNewLook) {
 					/*
 					 * Running in an asyncExec because the selectAll() does not appear to work when
@@ -702,7 +736,7 @@ public class FilteredTree extends Composite {
 					 */
 					Display display= filterText.getDisplay();
 					display.asyncExec(new Runnable() {
-						public void run() {
+                        public void run() {
 							if (!filterText.isDisposed()) {
 								if (getInitialText().equals(
 										filterText.getText().trim())) {
@@ -721,7 +755,7 @@ public class FilteredTree extends Composite {
 			 * @see org.eclipse.swt.events.FocusAdapter#focusLost(org.eclipse.swt.events.FocusEvent)
 			 */
 
-			public void focusLost(FocusEvent e) {
+            public void focusLost(FocusEvent e) {
 				if (!useNewLook) {
 					return;
 				}
@@ -742,7 +776,7 @@ public class FilteredTree extends Composite {
 				 * @see
 				 * org.eclipse.swt.events.MouseAdapter#mouseDown(org.eclipse.swt.events.MouseEvent)
 				 */
-				public void mouseDown(MouseEvent e) {
+                public void mouseDown(MouseEvent e) {
 					if (filterText.getText().equals(initialText)) {
 						// XXX: We cannot call clearText() due to https://bugs.eclipse.org/bugs/show_bug.cgi?id=260664
 						setFilterText(""); //$NON-NLS-1$
@@ -806,7 +840,7 @@ public class FilteredTree extends Composite {
 			 * 
 			 * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
 			 */
-			public void modifyText(ModifyEvent e) {
+            public void modifyText(ModifyEvent e) {
 				textChanged();
 			}
 		});
@@ -821,10 +855,10 @@ public class FilteredTree extends Composite {
 				 * 
 				 * @see org.eclipse.swt.events.SelectionAdapter#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
 				 */
-				public void widgetDefaultSelected(SelectionEvent e) {
+                public void widgetDefaultSelected(SelectionEvent e) {
 					if (e.detail == SWT.ICON_CANCEL)
-						clearText();
-				}
+                        clearText();
+                }
 			});
 		}
 
@@ -832,7 +866,7 @@ public class FilteredTree extends Composite {
 		// if the text widget supported cancel then it will have it's own
 		// integrated button. We can take all of the space.
 		if ((filterText.getStyle() & SWT.ICON_CANCEL) != 0)
-			gridData.horizontalSpan = 2;
+            gridData.horizontalSpan = 2;
 		filterText.setLayoutData(gridData);
 	}
 
@@ -888,7 +922,7 @@ public class FilteredTree extends Composite {
 	 * @param background
 	 *            background <code>Color</code> to set
 	 */
-	public void setBackground(Color background) {
+    public void setBackground(Color background) {
 		super.setBackground(background);
 		if (filterComposite != null && (!useNewLook || useNativeSearchField(filterComposite))) {
 			filterComposite.setBackground(background);
@@ -917,7 +951,7 @@ public class FilteredTree extends Composite {
 				 * 
 				 * @see org.eclipse.jface.action.Action#run()
 				 */
-				public void run() {
+                public void run() {
 					clearText();
 				}
 			};
@@ -956,12 +990,12 @@ public class FilteredTree extends Composite {
 			clearButton.addMouseListener(new MouseAdapter() {
 				private MouseMoveListener fMoveListener;
 
-				public void mouseDown(MouseEvent e) {
+                public void mouseDown(MouseEvent e) {
 					clearButton.setImage(pressedImage);
 					fMoveListener= new MouseMoveListener() {
 						private boolean fMouseInButton= true;
 
-						public void mouseMove(MouseEvent e) {
+                        public void mouseMove(MouseEvent e) {
 							boolean mouseInButton= isMouseInButton(e);
 							if (mouseInButton != fMouseInButton) {
 								fMouseInButton= mouseInButton;
@@ -973,7 +1007,7 @@ public class FilteredTree extends Composite {
 //					clearButton.addMouseMoveListener(fMoveListener);
 				}
 
-				public void mouseUp(MouseEvent e) {
+                public void mouseUp(MouseEvent e) {
 					if (fMoveListener != null) {
 						// RAP [bm] mouse move listener
 //						clearButton.removeMouseMoveListener(fMoveListener);
@@ -1006,7 +1040,7 @@ public class FilteredTree extends Composite {
 //				}
 //			});
 			clearButton.addDisposeListener(new DisposeListener() {
-				public void widgetDisposed(DisposeEvent e) {
+                public void widgetDisposed(DisposeEvent e) {
 					inactiveImage.dispose();
 					activeImage.dispose();
 					pressedImage.dispose();
@@ -1104,7 +1138,7 @@ public class FilteredTree extends Composite {
 				textChanged();
 			} else {
 				getDisplay().asyncExec(new Runnable() {
-					public void run() {
+                    public void run() {
 						if (!filterText.isDisposed() && filterText.isFocusControl()) {
 							setFilterText(initialText);
 							textChanged();
@@ -1194,79 +1228,79 @@ public class FilteredTree extends Composite {
 			super(parent, style);
 		}
 
-		public void add(Object parentElementOrTreePath, Object childElement) {
+        public void add(Object parentElementOrTreePath, Object childElement) {
 			getPatternFilter().clearCaches();
 			super.add(parentElementOrTreePath, childElement);
 		}
 
-		public void add(Object parentElementOrTreePath, Object[] childElements) {
+        public void add(Object parentElementOrTreePath, Object[] childElements) {
 			getPatternFilter().clearCaches();
 			super.add(parentElementOrTreePath, childElements);
 		}
 
-		protected void inputChanged(Object input, Object oldInput) {
+        protected void inputChanged(Object input, Object oldInput) {
 			getPatternFilter().clearCaches();
 			super.inputChanged(input, oldInput);
 		}
 
-		public void insert(Object parentElementOrTreePath, Object element,
+        public void insert(Object parentElementOrTreePath, Object element,
 				int position) {
 			getPatternFilter().clearCaches();
 			super.insert(parentElementOrTreePath, element, position);
 		}
 
-		public void refresh() {
+        public void refresh() {
 			getPatternFilter().clearCaches();
 			super.refresh();
 		}
 
-		public void refresh(boolean updateLabels) {
+        public void refresh(boolean updateLabels) {
 			getPatternFilter().clearCaches();
 			super.refresh(updateLabels);
 		}
 
-		public void refresh(Object element) {
+        public void refresh(Object element) {
 			getPatternFilter().clearCaches();
 			super.refresh(element);
 		}
 
-		public void refresh(Object element, boolean updateLabels) {
+        public void refresh(Object element, boolean updateLabels) {
 			getPatternFilter().clearCaches();
 			super.refresh(element, updateLabels);
 		}
 
-		public void remove(Object elementsOrTreePaths) {
+        public void remove(Object elementsOrTreePaths) {
 			getPatternFilter().clearCaches();
 			super.remove(elementsOrTreePaths);
 		}
 
-		public void remove(Object parent, Object[] elements) {
+        public void remove(Object parent, Object[] elements) {
 			getPatternFilter().clearCaches();
 			super.remove(parent, elements);
 		}
 
-		public void remove(Object[] elementsOrTreePaths) {
+        public void remove(Object[] elementsOrTreePaths) {
 			getPatternFilter().clearCaches();
 			super.remove(elementsOrTreePaths);
 		}
 
-		public void replace(Object parentElementOrTreePath, int index,
+        public void replace(Object parentElementOrTreePath, int index,
 				Object element) {
 			getPatternFilter().clearCaches();
 			super.replace(parentElementOrTreePath, index, element);
 		}
 
-		public void setChildCount(Object elementOrTreePath, int count) {
+        public void setChildCount(Object elementOrTreePath, int count) {
 			getPatternFilter().clearCaches();
 			super.setChildCount(elementOrTreePath, count);
 		}
 
-		public void setContentProvider(IContentProvider provider) {
+        public void setContentProvider(IContentProvider provider) {
 			getPatternFilter().clearCaches();
 			super.setContentProvider(provider);
 		}
 
-		public void setHasChildren(Object elementOrTreePath, boolean hasChildren) {
+        public void setHasChildren(Object elementOrTreePath, boolean hasChildren) {
 			getPatternFilter().clearCaches();
 			super.setHasChildren(elementOrTreePath, hasChildren);
 		}

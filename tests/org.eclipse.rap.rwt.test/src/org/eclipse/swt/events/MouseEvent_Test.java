@@ -12,6 +12,8 @@
 package org.eclipse.swt.events;
 
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
+import static org.eclipse.rap.rwt.application.Application.OperationMode.SWT_COMPATIBILITY;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
@@ -26,7 +28,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.rwt.application.Application.OperationMode;
+import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
@@ -178,7 +183,8 @@ public class MouseEvent_Test {
   }
 
   @Test
-  public void testTypedMouseEventOrderWithDoubleClick() {
+  public void testTypedMouseEventOrderWithDoubleClickJeeMode() {
+    ensureOperationMode( OperationMode.JEE_COMPATIBILITY );
     MouseListener mouseListener = mock( MouseListener.class );
     shell.setLocation( 100, 100 );
     shell.open();
@@ -221,6 +227,53 @@ public class MouseEvent_Test {
     assertTrue( ( mouseUp.stateMask & SWT.BUTTON1 ) != 0 );
     assertEquals( 2, mouseUp.count );
   }
+  
+  @Test
+  public void testTypedMouseEventOrderWithDoubleClickSwtMode() {
+    ensureOperationMode( OperationMode.SWT_COMPATIBILITY );
+    MouseListener mouseListener = mock( MouseListener.class );
+    shell.setLocation( 100, 100 );
+    shell.open();
+    shell.addMouseListener( mouseListener );
+    int eventX = shell.getLocation().x + shell.getClientArea().x + 1;
+    int eventY = shell.getLocation().y + shell.getClientArea().y + 1;
+
+    // Simulate request that sends a mouseDown + mouseUp + dblClick sequence
+    Fixture.fakeNewRequest();
+    fakeMouseDownRequest( shell, eventX, eventY );
+    fakeMouseUpRequest( shell, eventX, eventY );
+    fakeMouseDoubleClickRequest( shell, eventX, eventY );
+    Fixture.readDataAndProcessAction( display );
+
+    InOrder inOrder = inOrder( mouseListener );
+    ArgumentCaptor<MouseEvent> downCaptor = ArgumentCaptor.forClass( MouseEvent.class );
+    inOrder.verify( mouseListener ).mouseDown( downCaptor.capture() );
+    MouseEvent mouseDown = downCaptor.getValue();
+    assertSame( shell, mouseDown.widget );
+    assertEquals( 1, mouseDown.button );
+    assertEquals( 15, mouseDown.x );
+    assertEquals( 53, mouseDown.y );
+    assertEquals( 2, mouseDown.count );
+    ArgumentCaptor<MouseEvent> doubleClickCaptor = ArgumentCaptor.forClass( MouseEvent.class );
+    inOrder.verify( mouseListener ).mouseDoubleClick( doubleClickCaptor.capture() );
+    MouseEvent mouseDoubleClick = doubleClickCaptor.getValue();
+    assertSame( shell, mouseDoubleClick.widget );
+    assertEquals( 1, mouseDoubleClick.button );
+    assertEquals( 15, mouseDoubleClick.x );
+    assertEquals( 53, mouseDoubleClick.y );
+    assertEquals( 0, mouseDoubleClick.stateMask );
+    assertEquals( 2, mouseDoubleClick.count );
+    ArgumentCaptor<MouseEvent> upCaptor = ArgumentCaptor.forClass( MouseEvent.class );
+    inOrder.verify( mouseListener ).mouseUp( upCaptor.capture() );
+    MouseEvent mouseUp = upCaptor.getValue();
+    assertSame( shell, mouseUp.widget );
+    assertEquals( 1, mouseUp.button );
+    assertEquals( 15, mouseUp.x );
+    assertEquals( 53, mouseUp.y );
+    assertTrue( ( mouseUp.stateMask & SWT.BUTTON1 ) != 0 );
+    assertEquals( 2, mouseUp.count );
+  }
+
 
   @Test
   public void testUntypedMouseEventOrderWithClick() {
@@ -384,6 +437,15 @@ public class MouseEvent_Test {
       .add( ClientMessageConst.EVENT_PARAM_Y, y )
       .add( ClientMessageConst.EVENT_PARAM_TIME, 0 );
     Fixture.fakeNotifyOperation( getId( widget ), ClientMessageConst.EVENT_MOUSE_DOWN, parameters );
+  }
+  
+  private static void ensureOperationMode( OperationMode operationMode ) {
+    LifeCycleFactory lifeCycleFactory = getApplicationContext().getLifeCycleFactory();
+    lifeCycleFactory.deactivate();
+    if( SWT_COMPATIBILITY.equals( operationMode ) ) {
+      lifeCycleFactory.configure( RWTLifeCycle.class );
+    }
+    lifeCycleFactory.activate();
   }
 
   private static class LoggingListener implements Listener {
