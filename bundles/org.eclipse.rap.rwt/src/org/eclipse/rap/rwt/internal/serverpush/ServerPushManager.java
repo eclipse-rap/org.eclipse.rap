@@ -156,8 +156,8 @@ public final class ServerPushManager implements SerializableCompatibility {
   @SuppressWarnings( "unused" )
   private boolean canReleaseBlockedRequest( HttpServletResponse response, long requestStartTime ) {
     boolean result = false;
-    if( !mustBlockCallBackRequest( requestStartTime ) ) {
-      result = true;
+    if( mustBlockCallBackRequest( requestStartTime ) ) {
+      result = false;
     } else if( isSessionExpired( requestStartTime ) ) {
       result = true;
     } else if( !serverPushRequestTracker.isActive( Thread.currentThread() ) ) {
