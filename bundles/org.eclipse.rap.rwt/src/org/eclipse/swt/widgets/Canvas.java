@@ -13,6 +13,8 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import java.io.Serializable;
+
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -184,6 +186,10 @@ public class Canvas extends Composite {
   }
 
   private void repaint( Rectangle paintRect ) {
+    getDisplay().asyncExec( new RepaintRunnable(paintRect)); 
+  }
+
+  private void repaintSync( Rectangle paintRect ) {
     if( gcAdapter != null ) {
       gcAdapter.clearGCOperations();
       gcAdapter.setForceRedraw( true );
@@ -192,11 +198,26 @@ public class Canvas extends Composite {
     Event paintEvent = new Event();
     paintEvent.gc = gc;
     paintEvent.setBounds( paintRect );
-    notifyListeners( SWT.Paint, paintEvent );
+    notifyListenersInternal( SWT.Paint, paintEvent, true );
     gc.dispose();
     if( gcAdapter != null ) {
       gcAdapter.setPaintRect( paintRect );
     }
   }
 
+  private class RepaintRunnable implements Runnable, Serializable {
+    private static final long serialVersionUID = 687991492884005033L; 
+    private Rectangle paintRect;
+    
+    RepaintRunnable(Rectangle paintRect) {
+      this.paintRect = paintRect;
+    }
+    
+    @Override
+    public void run() {
+      if( !isDisposed() ) {
+        repaintSync( paintRect );
+      }
+    }
+  }
 }

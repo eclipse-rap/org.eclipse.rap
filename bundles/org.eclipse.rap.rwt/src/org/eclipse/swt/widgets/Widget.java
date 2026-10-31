@@ -590,6 +590,21 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
    * @since 1.2
    */
   public void notifyListeners( int eventType, Event event ) {
+    notifyListenersInternal( eventType, event, false );
+  }
+
+  /**
+   * Private notifyListeners because childs override the normal notifyListeners, but dispose in
+   * normal swt calls around it.
+   * 
+   * @param eventType
+   * @param event
+   * @param onlyDirectCall no add to eventlist allowed
+   */
+  protected final void notifyListenersInternal( int eventType,
+                                                Event event,
+                                                boolean onlyDirectCall )
+  {
     checkWidget();
     Event newEvent = event == null ? new Event() : event;
     newEvent.widget = this;
@@ -598,7 +613,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     if( newEvent.time == 0 ) {
       newEvent.time = EventUtil.getLastEventTime();
     }
-    sendEvent( newEvent );
+    sendEvent( newEvent, onlyDirectCall );
   }
 
   /**
@@ -819,8 +834,8 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     }
   }
 
-  private void sendEvent( Event event ) {
-    if( isEventProcessingPhase() ) {
+  private void sendEvent( Event event, boolean onlyDirectCall ) {
+    if( isEventProcessingPhase() && ( event.type != SWT.Paint || onlyDirectCall ) ) {
       event.display.filterEvent( event );
       if( eventTable != null ) {
         eventTable.sendEvent( event );
@@ -977,7 +992,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
       }
       if( !hasState( DISPOSE_SENT ) ) {
         addState( DISPOSE_SENT );
-        notifyListeners( SWT.Dispose, new Event() );
+        notifyListenersInternal( SWT.Dispose, new Event(), false );
       }
       if( !hasState( DISPOSED ) ) {
         releaseChildren();
