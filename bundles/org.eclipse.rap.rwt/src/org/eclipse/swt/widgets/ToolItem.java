@@ -151,8 +151,8 @@ public class ToolItem extends Item {
     visible = true;
     computedWidth = true;
     layoutCache = new LayoutCache();
-    parent.createItem( this, index );
     computeInitialWidth();
+    parent.createItem( this, index );
   }
 
   /**
@@ -410,7 +410,7 @@ public class ToolItem extends Item {
       return;
     }
     if( RWT.CUSTOM_VARIANT.equals( key ) ) {
-      layoutCache.invalidateBounds();
+      parent.invalidateItemBounds();
     }
     checkMarkupPrecondition( key, TOOLTIP, () -> toolTipText == null );
     super.setData( key, value );
