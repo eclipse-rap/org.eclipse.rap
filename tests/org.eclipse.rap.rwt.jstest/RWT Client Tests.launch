@@ -33,7 +33,7 @@
         <setEntry value="org.apache.felix.scr@1:true"/>
         <setEntry value="org.eclipse.equinox.common@2:true"/>
         <setEntry value="org.eclipse.equinox.console@default:default"/>
-        <setEntry value="org.eclipse.jetty.ee10.servlet@default:default"/>
+        <setEntry value="org.eclipse.jetty.ee11.servlet@default:default"/>
         <setEntry value="org.eclipse.jetty.http@default:default"/>
         <setEntry value="org.eclipse.jetty.io@default:default"/>
         <setEntry value="org.eclipse.jetty.logging@default:default"/>
