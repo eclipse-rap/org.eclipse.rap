@@ -38,6 +38,7 @@ import org.eclipse.swt.internal.widgets.IBrowserAdapter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TypedListener;
 
 
@@ -82,6 +83,7 @@ public class Browser extends Composite {
   private BrowserCallback browserCallback;
   private transient IBrowserAdapter browserAdapter;
   private final List<BrowserFunction> functions;
+  private boolean clientInited = false;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -260,6 +262,33 @@ public class Browser extends Composite {
     if( executeScript != null ) {
       throw new IllegalStateException( "Another script is already pending" );
     }
+    
+    boolean showedShell = false;
+    Shell shell = getShell();
+
+    try {
+      // Show the shell, so that the browser is created in the browser           
+      if (!clientInited && shell != null && !shell.getVisible()) {
+        showedShell = true;
+        //shell.setMinimized(true);
+        shell.setVisible(true);    
+        internalExecute( "" );
+      }      
+            
+      internalExecute( script );
+    } finally {
+      // if we showed it, we have to hide it again
+      if (showedShell) {
+        //shell.setMinimized(false);
+        shell.setVisible(false);
+        internalExecute( "" );
+      }
+      clientInited = true;
+    }
+    return executeResult.booleanValue();
+  }
+
+  protected void internalExecute( String script ) {
     executeScript = script;
     executeResult = null;
     while( executeResult == null ) {
@@ -270,7 +299,6 @@ public class Browser extends Composite {
     }
     executeScript = null;
     executePending = false;
-    return executeResult.booleanValue();
   }
 
   /**
