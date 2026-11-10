@@ -9,6 +9,7 @@
  *
  * Contributors:
  *    EclipseSource - initial API and implementation
+ *    Kyle Smith - Add evaluate method
  ******************************************************************************/
 
 namespace( "rwt.client" );
@@ -17,6 +18,15 @@ rwt.client.JavaScriptExecutor = function() {
 
   this.execute = function( code ) {
     eval( code );
+  };
+
+  this.evaluate = function( futureId, code ) {
+    const remote = rwt.remote.Connection.getInstance().getRemoteObject( this );
+    const retval = eval( code );
+    remote.call( "complete", {
+        futureId : futureId,
+        retval: retval
+    } );
   };
 
 };
