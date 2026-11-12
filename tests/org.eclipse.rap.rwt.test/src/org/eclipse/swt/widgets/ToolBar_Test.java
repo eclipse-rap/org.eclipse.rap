@@ -15,6 +15,7 @@ package org.eclipse.swt.widgets;
 import static org.eclipse.rap.rwt.testfixture.internal.SerializationTestUtil.serializeAndDeserialize;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -23,6 +24,7 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
@@ -285,6 +287,57 @@ public class ToolBar_Test {
     itemToDestroy.dispose();
 
     assertNotSame( cachedBounds, item.layoutCache.bounds );
+  }
+
+  @Test
+  public void testSetCustomVariant_invalidatesItemBounds() {
+    ToolItem item = new ToolItem( toolBar, SWT.PUSH );
+    getCachedBounds( item );
+
+    toolBar.setData( RWT.CUSTOM_VARIANT, "variant" );
+
+    assertFalse( item.layoutCache.hasBounds() );
+  }
+
+  @Test
+  public void testGetItemBounds_useHeightOfTallestItem() throws IOException {
+    ToolItem item = new ToolItem( toolBar, SWT.PUSH );
+    ToolItem tallItem = new ToolItem( toolBar, SWT.PUSH );
+    getCachedBounds( item );
+
+    tallItem.setImage( createImage( display, Fixture.IMAGE_50x100 ) );
+
+    assertEquals( tallItem.getPreferredHeight(), item.getBounds().height );
+    assertEquals( tallItem.getPreferredHeight(), tallItem.getBounds().height );
+  }
+
+  @Test
+  public void testGetItemBounds_useWidthOfWidestItemInVerticalToolBar() throws IOException {
+    toolBar = new ToolBar( shell, SWT.VERTICAL );
+    ToolItem item = new ToolItem( toolBar, SWT.PUSH );
+    ToolItem wideItem = new ToolItem( toolBar, SWT.PUSH );
+    getCachedBounds( item );
+
+    wideItem.setImage( createImage( display, Fixture.IMAGE_100x50 ) );
+
+    assertEquals( wideItem.getPreferredWidth(), item.getBounds().width );
+    assertEquals( wideItem.getPreferredWidth(), wideItem.getBounds().width );
+  }
+
+  @Test
+  public void testGetItemBounds_placeItemsNextToEachOther() {
+    ToolItem item0 = new ToolItem( toolBar, SWT.PUSH );
+    ToolItem item1 = new ToolItem( toolBar, SWT.PUSH );
+    ToolItem item2 = new ToolItem( toolBar, SWT.PUSH );
+    item1.setText( "text" );
+
+    Rectangle bounds0 = item0.getBounds();
+    Rectangle bounds1 = item1.getBounds();
+    Rectangle bounds2 = item2.getBounds();
+
+    int spacing = bounds1.x - ( bounds0.x + bounds0.width );
+    assertEquals( spacing, bounds2.x - ( bounds1.x + bounds1.width ) );
+    assertEquals( item1.getPreferredWidth(), bounds1.width );
   }
 
   @Test

@@ -13,6 +13,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
@@ -333,6 +334,14 @@ public class ToolBar extends Composite {
     layoutItems();
   }
 
+  @Override
+  public void setData( String key, Object value ) {
+    super.setData( key, value );
+    if( RWT.CUSTOM_VARIANT.equals( key ) ) {
+      invalidateItemBounds();
+    }
+  }
+
   ////////////////////////
   // Child control removal
 
@@ -397,6 +406,16 @@ public class ToolBar extends Composite {
       boolean hasEnoughHeight = ibounds.y + ibounds.height <= bounds.height;
       item.setVisible( hasEnoughWidth && hasEnoughHeight );
       item.resizeControl();
+    }
+  }
+
+  /*
+   * The bounds of an item depend on all other items (common height, position after the previous
+   * item), so a change that affects one item invalidates the cached bounds of all items.
+   */
+  void invalidateItemBounds() {
+    for( int i = 0; i < itemHolder.size(); i++ ) {
+      itemHolder.getItem( i ).layoutCache.invalidateBounds();
     }
   }
 

@@ -289,6 +289,24 @@ public class ToolItem_Test {
   }
 
   @Test
+  public void testSetCustomVariant_invalidatesCachedBoundsOfSiblings() {
+    ToolItem sibling = new ToolItem( toolbar, SWT.NONE );
+    getCachedBounds( sibling );
+
+    toolItem.setData( RWT.CUSTOM_VARIANT, "variant" );
+
+    assertFalse( sibling.layoutCache.hasBounds() );
+  }
+
+  @Test
+  public void testGetBounds_lastSeparatorHasInitialWidth() {
+    ToolItem separator = new ToolItem( toolbar, SWT.SEPARATOR );
+
+    assertTrue( separator.getWidth() > 0 );
+    assertEquals( separator.getWidth(), separator.getBounds().width );
+  }
+
+  @Test
   public void testSetText_invalidatesCachedBounds() {
     Rectangle cachedBounds = getCachedBounds( toolItem );
 
