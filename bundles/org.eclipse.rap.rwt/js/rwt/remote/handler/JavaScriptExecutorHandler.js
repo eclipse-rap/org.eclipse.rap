@@ -9,6 +9,7 @@
  *
  * Contributors:
  *    EclipseSource - initial API and implementation
+ *    Kyle Smith - Add evaluate method
  ******************************************************************************/
 
 rwt.remote.HandlerRegistry.add( "rwt.client.JavaScriptExecutor", {
@@ -22,12 +23,16 @@ rwt.remote.HandlerRegistry.add( "rwt.client.JavaScriptExecutor", {
   destructor : rwt.util.Functions.returnTrue,
 
   methods : [
-    "execute"
+    "execute",
+    "evaluate"
   ],
 
   methodHandler : {
     "execute" : function( object, args ) {
       object.execute( args.content );
+    },
+    "evaluate" : function( object, args ) {
+      object.evaluate( args.futureId, args.content );
     }
   }
 
