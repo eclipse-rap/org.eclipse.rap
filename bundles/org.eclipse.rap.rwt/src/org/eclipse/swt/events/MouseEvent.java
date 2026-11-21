@@ -102,8 +102,7 @@ public class MouseEvent extends TypedEvent {
     return string.substring( 0, string.length() - 1 ) // remove trailing '}'
            + " button="
            + button
-           + " stateMask="
-           + stateMask
+      + " stateMask=0x" + Integer.toHexString( stateMask )
            + " x="
            + x
            + " y="

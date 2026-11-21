@@ -575,7 +575,8 @@ public class GCOperationWriter_Test {
     gc.drawText( "foo", 30, 34, true );
 
     JsonArray ops = getGCOperations( canvas );
-    assertEquals( "[\"strokeText\",\"foo\",false,true,true,30,34]", getOperation( 0, ops ) );
+    // vertical offset for swt compatibility
+    assertEquals( "[\"strokeText\",\"foo\",false,true,true,30,38]", getOperation( 0, ops ) );
   }
 
   @Test
@@ -583,7 +584,8 @@ public class GCOperationWriter_Test {
     gc.drawText( "foo", 30, 34, SWT.DRAW_MNEMONIC );
 
     JsonArray ops = getGCOperations( canvas );
-    assertEquals( "[\"fillText\",\"foo\",true,false,false,30,34]", getOperation( 0, ops ) );
+    // vertical offset for swt compatibility
+    assertEquals( "[\"fillText\",\"foo\",true,false,false,30,38]", getOperation( 0, ops ) );
   }
 
   @Test
@@ -591,7 +593,8 @@ public class GCOperationWriter_Test {
     gc.drawText( "foo", 30, 34, SWT.DRAW_DELIMITER );
 
     JsonArray ops = getGCOperations( canvas );
-    assertEquals( "[\"fillText\",\"foo\",false,true,false,30,34]", getOperation( 0, ops ) );
+    // vertical offset for swt compatibility
+    assertEquals( "[\"fillText\",\"foo\",false,true,false,30,38]", getOperation( 0, ops ) );
   }
 
   @Test
@@ -599,7 +602,8 @@ public class GCOperationWriter_Test {
     gc.drawText( "foo", 30, 34, SWT.DRAW_TAB );
 
     JsonArray ops = getGCOperations( canvas );
-    assertEquals( "[\"fillText\",\"foo\",false,false,true,30,34]", getOperation( 0, ops ) );
+    // vertical offset for swt compatibility
+    assertEquals( "[\"fillText\",\"foo\",false,false,true,30,38]", getOperation( 0, ops ) );
   }
 
   @Test
@@ -607,7 +611,8 @@ public class GCOperationWriter_Test {
     gc.drawText( "foo", 30, 34 );
 
     JsonArray ops = getGCOperations( canvas );
-    assertEquals( "[\"fillText\",\"foo\",false,true,true,30,34]", getOperation( 0, ops ) );
+    // vertical offset for swt compatibility
+    assertEquals( "[\"fillText\",\"foo\",false,true,true,30,38]", getOperation( 0, ops ) );
   }
 
   // bug 351216: [GC] Throws unexpected "Graphic is diposed" exception

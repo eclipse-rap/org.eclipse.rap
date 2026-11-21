@@ -13,7 +13,6 @@
 package org.eclipse.jface.viewers;
 
 import java.io.Serializable;
-
 import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
 import org.eclipse.swt.internal.widgets.ICellToolTipProvider;
@@ -32,17 +31,21 @@ final class CellToolTipProvider implements ICellToolTipProvider, Serializable {
 
   static void attach( ColumnViewer viewer, CellLabelProvider labelProvider ) {
     ICellToolTipAdapter adapter = getAdapter( viewer );
-    if( labelProvider != null ) {
-      CellToolTipProvider provider = new CellToolTipProvider( viewer );
-      adapter.setCellToolTipProvider( provider );
-    } else {
-      adapter.setCellToolTipProvider( null );
+    if (adapter != null) {
+        if (labelProvider != null) {
+            CellToolTipProvider provider = new CellToolTipProvider(viewer);
+            adapter.setCellToolTipProvider(provider);
+        } else {
+            adapter.setCellToolTipProvider(null);
+        }
     }
   }
 
-  public void getToolTipText( final Item item, final int columnIndex ) {
+  @Override
+public void getToolTipText( final Item item, final int columnIndex ) {
     SafeRunnable.run( new SafeRunnable() {
-      public void run() {
+      @Override
+    public void run() {
         Object element = item.getData();
         ViewerColumn column = viewer.getViewerColumn( columnIndex );
         CellLabelProvider labelProvider = column.getLabelProvider();

@@ -521,7 +521,7 @@ public abstract class Control extends Widget implements Drawable {
     background = color;
     updateBackground();
   }
-
+  
   /**
    * Returns the receiver's background color.
    *
@@ -533,6 +533,21 @@ public abstract class Control extends Widget implements Drawable {
    * </ul>
    */
   public Color getBackground() {
+    return getBackgroundInternal();
+  }
+
+  /**
+   * Returns the receiver's background color.
+   * SWT often uses the raw property, this method gets the raw value and not an overriden one.
+   *
+   * @return the background color
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public final Color getBackgroundInternal() {
     checkWidget();
     Control control = findBackgroundControl();
     if( control == null ) {
@@ -545,7 +560,7 @@ public abstract class Control extends Widget implements Drawable {
     Shell shell = control.getShell();
     control = control.parent;
     while( result == null && control != null ) {
-      result = control.getBackground();
+      result = control.getBackgroundInternal();
       control = control == shell ? null : control.parent;
     }
     if( result == null ) {
@@ -645,6 +660,21 @@ public abstract class Control extends Widget implements Drawable {
    *                </ul>
    */
   public Color getForeground() {
+    return getForegroundInternal();
+  }
+  
+  /**
+   * Returns the foreground color that the receiver will use to draw.
+   * SWT often uses the raw property, this method gets the raw value and not an overriden one.
+   *
+   * @return the receiver's foreground color
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *                </ul>
+   */
+  public final Color getForegroundInternal() {
     checkWidget();
     Color result = foreground;
     if( result == null ) {
@@ -764,6 +794,21 @@ public abstract class Control extends Widget implements Drawable {
    *                </ul>
    */
   public Font getFont() {
+    return getFontInternal();
+  }
+  
+  /**
+   * Returns the font that the receiver will use to paint textual information.
+   * SWT often uses the raw property, this method gets the raw value and not an overriden one.
+   * 
+   * @return the receiver's font
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *                </ul>
+   */
+  public final Font getFontInternal() {
     checkWidget();
     Font result = font;
     if( result == null ) {
